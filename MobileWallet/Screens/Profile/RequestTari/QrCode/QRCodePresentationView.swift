@@ -86,7 +86,7 @@ final class QRCodePresentationView: DynamicThemeView {
     // MARK: - Setups
 
     private func setupViews() {
-        backgroundColor = .static.popupOverlay
+        backgroundColor = .Static.popupOverlay
     }
 
     private func setupConstraints() {

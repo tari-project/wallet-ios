@@ -60,9 +60,9 @@ final class RoundedGlassContentView<Subview: UIView>: UIView {
         super.init(frame: .zero)
         setupConstraints()
 
-        layer.borderColor = UIColor.static.white?.withAlphaComponent(0.6).cgColor
+        layer.borderColor = UIColor.Static.white.withAlphaComponent(0.6).cgColor
         layer.borderWidth = 1.0
-        backgroundColor = .static.white?.withAlphaComponent(0.4)
+        backgroundColor = .Static.white.withAlphaComponent(0.4)
 
     }
 

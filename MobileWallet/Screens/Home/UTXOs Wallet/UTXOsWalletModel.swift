@@ -332,9 +332,9 @@ extension UtxoStatus {
     var icon: UIImage? {
         switch self {
         case .mined:
-            return Theme.shared.images.utxoTick
+            return .Icons.General.tick
         case .unconfirmed:
-            return Theme.shared.images.utxoStatusHourglass
+            return .Icons.UTXO.hourglass
         }
     }
 

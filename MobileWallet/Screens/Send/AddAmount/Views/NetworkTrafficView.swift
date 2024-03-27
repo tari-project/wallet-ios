@@ -111,11 +111,11 @@ final class NetworkTrafficView: DynamicThemeView {
     private func updateIcon() {
         switch variant {
         case .lowTraffic:
-            iconView.image = Theme.shared.images.speedometerLow
+            iconView.image = .Icons.Fees.Speedometer.low
         case .mediumTraffic:
-            iconView.image = Theme.shared.images.speedometerMid
+            iconView.image = .Icons.Fees.Speedometer.mid
         case .highTraffic:
-            iconView.image = Theme.shared.images.speedometerHigh
+            iconView.image = .Icons.Fees.Speedometer.high
         }
     }
 }

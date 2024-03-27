@@ -60,7 +60,7 @@ final class RotaryMenuButton: BaseButton {
 
     @View private(set) var iconView: UIImageView = {
         let view = UIImageView()
-        view.tintColor = .static.white
+        view.tintColor = .Static.white
         view.contentMode = .scaleAspectFit
         view.isUserInteractionEnabled = false
         return view
@@ -68,7 +68,7 @@ final class RotaryMenuButton: BaseButton {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.font = .Avenir.heavy.withSize(16.0)
         view.numberOfLines = 0
         return view

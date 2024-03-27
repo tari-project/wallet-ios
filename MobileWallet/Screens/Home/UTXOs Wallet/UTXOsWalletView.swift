@@ -273,9 +273,9 @@ final class UTXOsWalletView: BaseNavigationContentView {
     private func updateListSwitchIcon(selectedListType: ListType) {
         switch selectedListType {
         case .tiles:
-            navigationBar.rightButton(index: 0)?.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
+            navigationBar.rightButton(index: 0)?.setImage(.Icons.UTXO.textListView, for: .normal)
         case .text:
-            navigationBar.rightButton(index: 0)?.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
+            navigationBar.rightButton(index: 0)?.setImage(.Icons.UTXO.tileListView, for: .normal)
         }
     }
 
@@ -290,11 +290,11 @@ final class UTXOsWalletView: BaseNavigationContentView {
 
             switch action {
             case .break:
-                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.break"), image: Theme.shared.images.utxoActionSplit, callback: callback)
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.break"), image: .Icons.UTXO.split, callback: callback)
             case .combine:
-                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.combine"), image: Theme.shared.images.utxoActionJoin, callback: callback)
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.combine"), image: .Icons.UTXO.join, callback: callback)
             case .combineBreak:
-                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.combine_break"), image: Theme.shared.images.utxoActionJoinSplit, callback: callback)
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.combine_break"), image: .Icons.UTXO.joinSplit, callback: callback)
             }
         }
     }

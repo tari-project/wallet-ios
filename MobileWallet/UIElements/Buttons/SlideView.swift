@@ -293,7 +293,7 @@ final class SlideView: DynamicThemeView {
     private func updateSliderState(theme: ColorTheme) {
         sliderTextLabel.textColor = isEnabled ? .clear : theme.buttons.disabled
         sliderHolderView.backgroundColor = isEnabled ? .clear : theme.buttons.disabled
-        textLabel.textColor = isEnabled ? .static.white : theme.buttons.disabledText
+        textLabel.textColor = isEnabled ? .Static.white : theme.buttons.disabledText
 
         thumbnailImageView.backgroundColor = isEnabled ? theme.buttons.primaryText : theme.buttons.disabledText
         thumbnailImageView.tintColor = isEnabled ? theme.brand.purple : theme.buttons.disabled

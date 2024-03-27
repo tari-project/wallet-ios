@@ -142,7 +142,7 @@ final class RoundedAvatarView: DynamicThemeView {
             backgroundColor = theme.backgrounds.primary
             apply(shadow: theme.shadows.box)
         case .static:
-            backgroundColor = .static.white
+            backgroundColor = .Static.white
             apply(shadow: .none)
         }
     }

@@ -46,7 +46,7 @@ final class RotaryMenuOuterCircleView: UIView {
 
     private let shapeLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.strokeColor = UIColor.static.white?.withAlphaComponent(0.8).cgColor
+        layer.strokeColor = UIColor.Static.white.withAlphaComponent(0.8).cgColor
         layer.fillColor = UIColor.clear.cgColor
         layer.lineWidth = 1.0
         layer.lineCap = .round

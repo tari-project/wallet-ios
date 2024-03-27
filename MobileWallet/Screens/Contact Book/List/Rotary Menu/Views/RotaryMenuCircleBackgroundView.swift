@@ -58,7 +58,7 @@ final class RotaryMenuCircleBackgroundView: UIView {
 
     @View private var firstCircleView: UIView = {
         let view = UIView()
-        view.backgroundColor = .static.white?.withAlphaComponent(0.7)
+        view.backgroundColor = .Static.white.withAlphaComponent(0.7)
         view.layer.borderWidth = 1.0
         view.layer.borderColor = UIColor.white.cgColor
         view.alpha = 0.0
@@ -68,7 +68,7 @@ final class RotaryMenuCircleBackgroundView: UIView {
     @View private var secondCircleView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 1.0
-        view.layer.borderColor = UIColor.static.white?.withAlphaComponent(0.8).cgColor
+        view.layer.borderColor = UIColor.Static.white.withAlphaComponent(0.8).cgColor
         view.alpha = 0.0
         return view
     }()

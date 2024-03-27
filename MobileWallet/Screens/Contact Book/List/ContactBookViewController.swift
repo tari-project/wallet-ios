@@ -94,7 +94,7 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
         ]
 
         favoritesPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
-            image: .contactBook.placeholders.favoritesContactsList,
+            image: .Images.ContactBook.Placeholders.favourites,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part2.bold"), style: .bold)
@@ -214,7 +214,7 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
         guard isPermissionGranted else {
 
             contactsPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
-                image: .contactBook.placeholders.contactsList,
+                image: .Images.ContactBook.Placeholders.list,
                 titleComponents: [
                     StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part1"), style: .normal),
                     StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part2.bold"), style: .bold)
@@ -232,7 +232,7 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
         }
 
         contactsPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
-            image: .contactBook.placeholders.contactsList,
+            image: .Images.ContactBook.Placeholders.list,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part2.bold"), style: .bold)

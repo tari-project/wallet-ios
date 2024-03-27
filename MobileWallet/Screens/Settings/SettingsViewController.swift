@@ -116,38 +116,38 @@ final class SettingsViewController: SettingsParentTableViewController {
         }
     }
 
-    private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
-    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .icons.settings.camera, title: SettingsItemTitle.screenRecording.rawValue)
+    private let backUpWalletItem = SystemMenuTableViewCellItem(icon: .Icons.Settings.walletBackups, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
+    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .Icons.Settings.camera, title: SettingsItemTitle.screenRecording.rawValue)
 
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
         backUpWalletItem,
-        SystemMenuTableViewCellItem(icon: .icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
+        SystemMenuTableViewCellItem(icon: .Icons.General.analytics, title: SettingsItemTitle.dataCollection.rawValue)
     ]
 
     private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.theme, title: SettingsItemTitle.selectTheme.rawValue),
         screenRecordingItem,
-        SystemMenuTableViewCellItem(icon: .icons.settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDeleteIcon, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.bridgeConfig, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.network, title: SettingsItemTitle.selectNetwork.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.baseNode, title: SettingsItemTitle.selectBaseNode.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
     ]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = {
 
         var items = [
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsAboutIcon, title: SettingsItemTitle.about.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsReportBugIcon, title: SettingsItemTitle.reportBug.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsVisitTariIcon, title: SettingsItemTitle.visitTari.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsContributeIcon, title: SettingsItemTitle.contributeToTariAurora.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsUserAgreementIcon, title: SettingsItemTitle.userAgreement.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsPrivacyPolicyIcon, title: SettingsItemTitle.privacyPolicy.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDisclaimerIcon, title: SettingsItemTitle.disclaimer.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.about, title: SettingsItemTitle.about.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.reportBug, title: SettingsItemTitle.reportBug.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.visitTari, title: SettingsItemTitle.visitTari.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.contribute, title: SettingsItemTitle.contributeToTariAurora.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.userAgreement, title: SettingsItemTitle.userAgreement.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.privacyPolicy, title: SettingsItemTitle.privacyPolicy.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.disclaimer, title: SettingsItemTitle.disclaimer.rawValue),
         ]
 
         if NetworkManager.shared.selectedNetwork.isBlockExplorerAvailable {
-            items.append(SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBlockExplorerIcon, title: SettingsItemTitle.blockExplorer.rawValue))
+            items.append(SystemMenuTableViewCellItem(icon: .Icons.Settings.blockExplorer, title: SettingsItemTitle.blockExplorer.rawValue))
         }
 
         return items

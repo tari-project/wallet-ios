@@ -75,7 +75,7 @@ final class HomeViewTransactionCell: UITableViewCell {
 
     @View private var titleLabel: StylizedLabel = {
         let view = StylizedLabel()
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.normalFont = .Avenir.medium.withSize(12.0)
         view.boldFont = .Avenir.black.withSize(12.0)
         view.separator = " "
@@ -84,7 +84,7 @@ final class HomeViewTransactionCell: UITableViewCell {
 
     @View private var timestampLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.font = .Avenir.light.withSize(11.0)
         return view
     }()

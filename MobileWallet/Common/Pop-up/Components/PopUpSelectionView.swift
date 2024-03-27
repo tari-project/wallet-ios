@@ -136,7 +136,7 @@ private class PopUpSelectionCell: DynamicThemeCell {
 
     @View private var tickIcon: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.utxoTick
+        view.image = .Icons.General.tick
         view.contentMode = .scaleAspectFit
         view.alpha = 0.0
         return view

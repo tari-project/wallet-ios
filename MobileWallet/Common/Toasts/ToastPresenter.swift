@@ -44,13 +44,11 @@ enum ToastPresenter {
 
     static func show(title: String, duration: TimeInterval = 2.0) {
 
-        guard let toastColor: UIColor = .static.purple else { return }
-
         let toast = SuccessToast()
         toast.label.text = title
 
         var attributes = EKAttributes.topToast
-        attributes.entryBackground = .color(color: EKColor(toastColor))
+        attributes.entryBackground = .color(color: EKColor(.Static.purple))
         attributes.screenBackground = .clear
         attributes.displayDuration = duration
         attributes.hapticFeedbackType = .success
