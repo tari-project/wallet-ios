@@ -56,7 +56,7 @@ final class ContactBookListPlaceholder: DynamicThemeView {
     @View private var backgroundImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.image = .security.onboarding.background
+        view.image = .Images.Security.Onboarding.background
         return view
     }()
 

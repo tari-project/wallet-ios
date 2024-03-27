@@ -89,7 +89,7 @@ final class ProfileView: BaseNavigationContentView {
         let view = RoundedLabeledButton()
         view.buttonSize = 46.0
         view.padding = 12.0
-        view.update(image: .icons.wallet, text: localized("profile_view.button.wallet"))
+        view.update(image: .Icons.General.wallet, text: localized("profile_view.button.wallet"))
         return view
     }()
 
@@ -97,7 +97,7 @@ final class ProfileView: BaseNavigationContentView {
         let view = RoundedLabeledButton()
         view.buttonSize = 46.0
         view.padding = 12.0
-        view.update(image: Theme.shared.images.yatLogo, text: localized("profile_view.button.connect_yat"))
+        view.update(image: .Icons.Yat.logo, text: localized("profile_view.button.connect_yat"))
         return view
     }()
 
@@ -131,13 +131,13 @@ final class ProfileView: BaseNavigationContentView {
         let view = RoundedLabeledButton()
         view.buttonSize = 46.0
         view.padding = 12.0
-        view.update(image: .icons.qr, text: localized("contact_book.share_bar.buttons.qr"))
+        view.update(image: .Icons.General.QR, text: localized("contact_book.share_bar.buttons.qr"))
         return view
     }()
 
     @View private var linkCodeButton: RoundedLabeledButton = {
         let view = RoundedLabeledButton()
-        view.update(image: .icons.link, text: localized("contact_book.share_bar.buttons.link"))
+        view.update(image: .Icons.General.link, text: localized("contact_book.share_bar.buttons.link"))
         view.buttonSize = 46.0
         view.padding = 12.0
         return view
@@ -145,7 +145,7 @@ final class ProfileView: BaseNavigationContentView {
 
     @View private var bleCodeButton: RoundedLabeledButton = {
         let view = RoundedLabeledButton()
-        view.update(image: .icons.bluetooth, text: localized("contact_book.share_bar.buttons.ble"))
+        view.update(image: .Icons.General.bluetooth, text: localized("contact_book.share_bar.buttons.ble"))
         view.buttonSize = 46.0
         view.padding = 12.0
         return view
@@ -323,7 +323,7 @@ final class ProfileView: BaseNavigationContentView {
 
     private func updateYatButton(isOn: Bool) {
         yatButton.isHidden = false
-        let icon = isOn ? Theme.shared.images.yatButtonOn : Theme.shared.images.yatButtonOff
+        let icon: UIImage = isOn ? .Icons.Yat.buttonOn : .Icons.Yat.buttonOff
         yatButton.setImage(icon, for: .normal)
         yatButton.tintColor = isOn ? yatButtonOnTintColor : yatButtonOffTintColor
         yatSpinnerView.isHidden = true

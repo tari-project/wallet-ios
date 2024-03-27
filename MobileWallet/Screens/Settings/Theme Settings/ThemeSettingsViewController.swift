@@ -87,16 +87,16 @@ final class ThemeSettingsViewController: SecureViewController<ThemeSettingsView>
 
 private extension ThemeSettingsModel.Element {
 
-    var image: UIImage? {
+    var image: UIImage {
         switch self {
         case .system:
-            return Theme.shared.images.colorThemeSystem
+            return .Images.Themes.system
         case .light:
-            return Theme.shared.images.colorThemeLight
+            return .Images.Themes.light
         case .dark:
-            return Theme.shared.images.colorThemeDark
+            return .Images.Themes.dark
         case .purple:
-            return Theme.shared.images.colorThemePurple
+            return .Images.Themes.purple
         }
     }
 

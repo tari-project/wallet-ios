@@ -147,7 +147,7 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
         }
 
         return ContactBookListPlaceholder.ViewModel(
-            image: .contactBook.placeholders.linkList,
+            image: .Images.ContactBook.Placeholders.linkList,
             titleComponents: titleComponents,
             messageComponents: messageComponents,
             actionButtonTitle: model.buttonTitle,

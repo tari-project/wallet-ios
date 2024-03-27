@@ -46,7 +46,7 @@ final class QRCodeScannerBoxView: UIView {
 
     private let borderLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.strokeColor = UIColor.static.white?.cgColor
+        layer.strokeColor = UIColor.Static.white.cgColor
         layer.fillColor = UIColor.clear.cgColor
         layer.lineWidth = 10.0
         layer.lineCap = .round

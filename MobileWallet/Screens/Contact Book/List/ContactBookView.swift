@@ -174,8 +174,8 @@ final class ContactBookView: BaseNavigationContentView {
             ]
         } else {
             rightButtons = [
-                NavigationBar.ButtonModel(image: .contactBook.buttons.share, callback: { [weak self] in self?.onShareModeButtonTap?() }),
-                NavigationBar.ButtonModel(image: .contactBook.buttons.addContact, callback: { [weak self] in self?.onAddContactButtonTap?() })
+                NavigationBar.ButtonModel(image: .Images.ContactBook.Buttons.share, callback: { [weak self] in self?.onShareModeButtonTap?() }),
+                NavigationBar.ButtonModel(image: .Images.ContactBook.Buttons.addContact, callback: { [weak self] in self?.onAddContactButtonTap?() })
             ]
         }
 

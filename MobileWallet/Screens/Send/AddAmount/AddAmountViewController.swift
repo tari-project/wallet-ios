@@ -91,7 +91,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         let view = TextButton()
         view.setVariation(.primary, font: .Avenir.medium.withSize(14.0))
         view.spacing = 3.0
-        view.setRightImage(Theme.shared.images.helpButton)
+        view.setRightImage(.Icons.General.roundedQuestionMark)
         return view
     }()
 
@@ -115,7 +115,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @View private var oneSidedPaymentHelpButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(Theme.shared.images.helpButton, for: .normal)
+        view.setImage(.Icons.General.roundedQuestionMark, for: .normal)
         return view
     }()
 

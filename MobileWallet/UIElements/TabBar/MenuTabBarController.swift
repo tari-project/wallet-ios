@@ -179,9 +179,9 @@ private extension MenuTabBarController.Tab {
         case .ttlStore:
             return Theme.shared.images.ttlItem
         case .transactions:
-            return .tabBar.send
+            return .Images.TabBar.send
         case .contactBook:
-            return .icons.tabBar.contactBook
+            return .Icons.TabBar.contactBook
         case .settings:
             return Theme.shared.images.settingsItem
         }

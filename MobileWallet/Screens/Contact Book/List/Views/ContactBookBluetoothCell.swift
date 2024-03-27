@@ -46,7 +46,7 @@ final class ContactBookBluetoothCell: DynamicThemeCell {
 
     @View private var avatarView: RoundedAvatarView = {
         let view = RoundedAvatarView()
-        view.avatar = .image(.icons.bluetooth)
+        view.avatar = .image(.Icons.General.bluetooth)
         view.imagePadding = 10.0
         return view
     }()

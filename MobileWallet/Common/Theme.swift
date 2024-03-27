@@ -72,70 +72,12 @@ struct Images {
     let successIcon = UIImage(named: "SuccessIcon")
     let tariIcon = UIImage(named: "TariIcon")
     let cancelGiphy = UIImage(named: "cancelGiphy")
-    let cancelGrey = UIImage(named: "cancelGrey")
     let poweredByGiphy = UIImage(named: "poweredByGiphy")
     let searchIcon = UIImage(named: "SearchIcon")
-    let yatLogo = UIImage(named: "YatLogo")
-    let yatButtonOff = UIImage(named: "YatButtonOff")
-    let yatButtonOn = UIImage(named: "YatButtonOn")
 
     // Amount
     let delete = UIImage(named: "numpad-delete")
-    let helpButton = UIImage(named: "QuestionMark")
-
-    // Seed words list
-    let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
-
-    // UTXOs Wallet Icons
-    let utxoFaucet = UIImage(named: "icon-faucet")
-    let utxoTileViewIcon = UIImage(named: "icon-blockview")
-    let utxoTextListIcon = UIImage(named: "icon-listview")
-    let utxoStatusHourglass = UIImage(named: "icon-hourglass")
-    let utxoActionJoin = UIImage(named: "icon-join")
-    let utxoActionSplit = UIImage(named: "icon-split")
-    let utxoActionJoinSplit = UIImage(named: "icon-join-split")
-
-    // Settings Icons
-    let settingsAboutIcon = UIImage(named: "icon-about")
-    let settingsBaseNodeIcon = UIImage(named: "icon-base-node")
-    let settingsBlockExplorerIcon = UIImage(named: "icon-block-explorer")
-    let settingsBridgeConfigIcon = UIImage(named: "icon-bridge-config")
-    let settingsContributeIcon = UIImage(named: "icon-contribute")
-    let settingsDeleteIcon = UIImage(named: "icon-delete")
-    let settingsDisclaimerIcon = UIImage(named: "icon-disclaimer")
-    let settingsNetworkIcon = UIImage(named: "icon-network")
-    let settingsPrivacyPolicyIcon = UIImage(named: "icon-privacy-policy")
-    let settingsReportBugIcon = UIImage(named: "icon-report-bug")
-    let settingsUserAgreementIcon = UIImage(named: "icon-user-agreement")
-    let settingsVisitTariIcon = UIImage(named: "icon-visit-tari")
-    let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
-    let settingColorThemeIcon = UIImage(named: "icon-theme")
-
-    // Connection Details Icons
-    let connectionInternetIcon = UIImage(named: "icon-internet")
-    let connectionTorIcon = UIImage(named: "icon-tor")
-    let connectionSyncIcon = UIImage(named: "icon-sync")
-
-    // UTXOs Wallet
-
-    let utxoTick = UIImage(named: "tick")
-    let utxoWalletPlaceholder = UIImage(named: "UtxoWalletPlaceholder")
-    let utxoWalletPickerMinus = UIImage(named: "ValuePickerMinus")
-    let utxoWalletPickerPlus = UIImage(named: "ValuePickerPlus")
-    let utxoSuccessImage = UIImage(named: "UtxoSuccess")
-
-    // Adjustable fees
-
-    let speedometerLow = UIImage(named: "speedometer-low")
-    let speedometerMid = UIImage(named: "speedometer-mid")
-    let speedometerHigh = UIImage(named: "speedometer-high")
-
-    // Color Themes
-
-    let colorThemeSystem = UIImage(named: "Themes/System")
-    let colorThemeLight = UIImage(named: "Themes/Light")
-    let colorThemeDark = UIImage(named: "Themes/Dark")
-    let colorThemePurple = UIImage(named: "Themes/Purple")
+//    let helpButton = UIImage(named: "QuestionMark")
 }
 
 struct Fonts {
@@ -245,136 +187,10 @@ struct Fonts {
 
 struct Sizes {
     let appSidePadding: CGFloat = 22
-    // TODO move other constants here
 }
 
-// MARK: - Color Pallete
-
-extension UIColor {
-    static var `static`: StaticColors.Type { StaticColors.self }
-}
-
-enum StaticColors {
-    static var white: UIColor? { UIColor(named: "White") }
-    static var black: UIColor? { UIColor(named: "Black") }
-    static var purple: UIColor? { UIColor(named: "Purple") }
-    static var red: UIColor? { UIColor(named: "Red") }
-    static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
-    static var popupOverlay: UIColor? { .black.withAlphaComponent(0.7) }
-}
+// MARK: - Shadow
 
 extension Shadow {
     static var none: Self { Self(color: nil, opacity: 0.0, radius: 0.0, offset: .zero) }
-}
-
-// MARK: - Images
-
-extension UIImage {
-    static var security: SecurityImages.Type { SecurityImages.self }
-    static var contactBook: ContactBookImages.Type { ContactBookImages.self }
-    static var icons: IconsImages.Type { IconsImages.self }
-    static var tabBar: TabBarImages.Type { TabBarImages.self }
-}
-
-// MARK: - Security
-
-enum SecurityImages {
-    static var onboarding: SecurityOnboardingImages.Type { SecurityOnboardingImages.self }
-}
-
-enum SecurityOnboardingImages {
-    static var background: UIImage? { UIImage(named: "Images/Security/Onboarding/Background") }
-    static var page1: UIImage? { UIImage(named: "Images/Security/Onboarding/Page1") }
-    static var page2: UIImage? { UIImage(named: "Images/Security/Onboarding/Page2") }
-    static var page3: UIImage? { UIImage(named: "Images/Security/Onboarding/Page3") }
-    static var page4: UIImage? { UIImage(named: "Images/Security/Onboarding/Page4") }
-}
-
-// MARK: - Contact Book
-
-enum ContactBookImages {
-    static var bleDialog: ContactBookBLEDialogImages.Type { ContactBookBLEDialogImages.self }
-    static var buttons: ContactBookButtonImages.Type { ContactBookButtonImages.self }
-    static var placeholders: ContactBookPlaceholderImages.Type { ContactBookPlaceholderImages.self }
-}
-
-enum ContactBookBLEDialogImages {
-    static var icon: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Icon") }
-    static var success: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Success") }
-    static var failure: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Failure") }
-}
-
-enum ContactBookButtonImages {
-    static var addContact: UIImage? { UIImage(named: "Images/Contact Book/Buttons/AddContact") }
-    static var share: UIImage? { UIImage(named: "Images/Contact Book/Buttons/Share") }
-}
-
-enum ContactBookPlaceholderImages {
-    static var contactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListPlaceholder") }
-    static var favoritesContactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListFavPlaceholder") }
-    static var transactionList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/TransactionList") }
-    static var linkList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/LinkList") }
-}
-
-// MARK: - Tab Bar
-
-enum TabBarImages {
-    static var send: UIImage? { UIImage(named: "Images/TabBar/Send") }
-}
-
-// MARK: - Icons
-
-enum IconsImages {
-
-    static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
-    static var network: IconsNetworkImages.Type { IconsNetworkImages.self }
-    static var rotaryMenu: IconsRotaryImages.Type { IconsRotaryImages.self }
-    static var settings: IconsSettingsImages.Type { IconsSettingsImages.self }
-    static var star: IconsStarImages.Type { IconsStarImages.self }
-    static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
-
-    static var analytics: UIImage? { UIImage(named: "Icons/Analytics") }
-    static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
-    static var checkmark: UIImage? { UIImage(named: "Icons/Checkmark") }
-    static var close: UIImage? { UIImage(named: "Icons/Close") }
-    static var link: UIImage? { UIImage(named: "Icons/Link") }
-    static var magnifyingGlass: UIImage? { UIImage(named: "Icons/Magnifying Glass") }
-    static var profile: UIImage? { UIImage(named: "Icons/Profile") }
-    static var send: UIImage? { UIImage(named: "Icons/Send") }
-    static var shieldCheckmark: UIImage? { UIImage(named: "Icons/Shield Checkmark") }
-    static var tariGem: UIImage? { UIImage(named: "Icons/Tari Gem") }
-    static var qr: UIImage? { UIImage(named: "Icons/QR") }
-    static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
-    static var wallet: UIImage? { UIImage(named: "Icons/Wallet") }
-}
-
-enum IconsContactTypesImages {
-    static var `internal`: UIImage? { UIImage(named: "Icons/Contact Types/Internal") }
-    static var external: UIImage? { UIImage(named: "Icons/Contact Types/External") }
-    static var linked: UIImage? { UIImage(named: "Icons/Contact Types/Linked") }
-}
-
-enum IconsNetworkImages {
-    static var full: UIImage? { UIImage(named: "Icons/Network/Full") }
-    static var limited: UIImage? { UIImage(named: "Icons/Network/Limited") }
-    static var off: UIImage? { UIImage(named: "Icons/Network/Off") }
-}
-
-enum IconsRotaryImages {
-    static var close: UIImage? { UIImage(named: "Icons/Rotary Menu/Close") }
-    static var switchSide: UIImage? { UIImage(named: "Icons/Rotary Menu/Switch Side") }
-}
-
-enum IconsSettingsImages {
-    static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
-    static var camera: UIImage? { UIImage(named: "Icons/Settings/Camera") }
-}
-
-enum IconsStarImages {
-    static var border: UIImage? { UIImage(named: "Icons/Star/Border") }
-    static var filled: UIImage? { UIImage(named: "Icons/Star/Filled") }
-}
-
-enum IconsTabBarImages {
-    static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook") }
 }

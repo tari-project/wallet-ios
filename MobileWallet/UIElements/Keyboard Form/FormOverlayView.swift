@@ -82,7 +82,7 @@ final class FormOverlayView: UIView, UIKeyInput {
     // MARK: - Setups
 
     private func setupViews(formView: FormShowable) {
-        backgroundColor = .static.black?.withAlphaComponent(0.7)
+        backgroundColor = .Static.popupOverlay
         formView.translatesAutoresizingMaskIntoConstraints = false
         returnKeyType = formView.initalReturkKeyType
     }

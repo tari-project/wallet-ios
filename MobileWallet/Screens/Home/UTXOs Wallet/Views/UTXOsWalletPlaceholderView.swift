@@ -54,7 +54,7 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
 
     @View private var imageView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.utxoWalletPlaceholder?.withRenderingMode(.alwaysTemplate)
+        view.image = .Images.UTXO.placeholder
         view.contentMode = .scaleAspectFit
         return view
     }()
