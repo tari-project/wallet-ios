@@ -51,7 +51,7 @@ final class ScreenRecordingSettingsViewController: SecureViewController<ScreenRe
 
     init(model: ScreenRecordingSettingsModel) {
         self.model = model
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
