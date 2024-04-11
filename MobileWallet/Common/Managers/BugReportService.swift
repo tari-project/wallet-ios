@@ -44,20 +44,25 @@ import Sentry
 final class BugReportService {
 
     private let workingDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("BugReport")
+    private let filename = "BugReport.zip"
 
     // MARK: - Actions
 
     func send(name: String, email: String, message: String) async throws {
         try clearWorkingDirectory()
         try createWoringDirectory()
-        let attachementURL = try await prepareAttachement()
+        let attachementURL = try await prepareAttachement(zipName: filename)
         sendBugReport(name: name, email: email, message: message, attachementURL: attachementURL)
         try clearWorkingDirectory()
     }
 
-    private func prepareAttachement() async throws -> URL {
+    func prepareLogsURL(name: String) async throws -> URL {
+        try clearWorkingDirectory()
+        try createWoringDirectory()
+        return try await prepareAttachement(zipName: name)
+    }
 
-        let zipName = "BugReport.zip"
+    private func prepareAttachement(zipName: String) async throws -> URL {
 
         let logsURLs = try Tari.shared.logsURLs.prefix(5)
         let localFileURL = workingDirectory.appendingPathComponent(zipName)
@@ -74,7 +79,7 @@ final class BugReportService {
         }
     }
 
-    private func clearWorkingDirectory() throws {
+    func clearWorkingDirectory() throws {
         guard FileManager.default.fileExists(atPath: workingDirectory.path) else { return }
         try FileManager.default.removeItem(at: workingDirectory)
     }
