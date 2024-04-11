@@ -656,6 +656,7 @@
 "debug.popup.options.bug_report"= "Report a bug";
 "debug.popup.options.connection_status"= "View connection status";
 "debug.logs.list.title" = "Debug Logs";
+"debug.logs.list.button.export" = "Export";
 "debug.logs.list.error.message.unable_to_load" = "Unable to load log files. Please try again later or send us a bug report.";
 "debug.logs.details.error.message.cant_open_file" = "Unable to open file. Please try again later.";
 "debug.logs.details.filters.title" = "Filter";

@@ -52,6 +52,10 @@ final class LogsListView: BaseNavigationContentView {
         return view
     }()
 
+    // MARK: - Properties
+
+    var onExportButtonTap: (() -> Void)?
+
     // MARK: - Initialisers
 
     override init() {
@@ -69,6 +73,9 @@ final class LogsListView: BaseNavigationContentView {
     private func setupViews() {
         navigationBar.title = localized("debug.logs.list.title")
         navigationBar.backButtonType = .close
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(title: localized("debug.logs.list.button.export"), callback: { [weak self] in
+            self?.onExportButtonTap?()
+        }))
     }
 
     private func setupConstraints() {
