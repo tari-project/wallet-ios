@@ -141,7 +141,9 @@ final class Tari: MainServiceable {
 
     private func setupCallbacks() {
 
-        Publishers.CombineLatest(connectionMonitor.$baseNodeConnection, connectionMonitor.$syncStatus)
+        Publishers.CombineLatest(connectionMonitor.$baseNodeConnection.removeDuplicates(), connectionMonitor.$syncStatus.removeDuplicates())
+            .dropFirst()
+            .filter { [weak self] _, _ in self?.isWalletConnected == true }
             .filter { $0 == .offline || $1 == .failed }
             .sink { [weak self] _, _ in try? self?.switchBaseNode() }
             .store(in: &cancellables)
