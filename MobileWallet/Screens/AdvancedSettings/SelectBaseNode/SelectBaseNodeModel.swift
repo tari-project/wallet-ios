@@ -40,11 +40,16 @@
 
 final class SelectBaseNodeModel {
 
-    struct NodeModel: Hashable {
+    struct NodeModel: Hashable, Identifiable {
+        let id: UUID = UUID()
         let title: String
         let subtitle: String
         let isSelected: Bool
         let canBeRemoved: Bool
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
     }
 
     // MARK: - View Model
