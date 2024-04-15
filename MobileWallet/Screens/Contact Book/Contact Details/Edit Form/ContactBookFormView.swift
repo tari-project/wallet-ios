@@ -80,9 +80,9 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     // MARK: - Initialisers
 
-    init(title: String?, textFieldsModels: [TextFieldViewModel]) {
+    init(title: String?, rightButtonTitle: String?, textFieldsModels: [TextFieldViewModel]) {
         super.init()
-        setupTitleBar(title: title)
+        setupTitleBar(title: title, rightButtonTitle: rightButtonTitle)
         setupConstraints()
         update(textFieldsModels: textFieldsModels)
     }
@@ -93,9 +93,9 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     // MARK: - Setups
 
-    private func setupTitleBar(title: String?) {
+    private func setupTitleBar(title: String?, rightButtonTitle: String?) {
         titleBar.title = title
-        titleBar.update(rightButton: NavigationBar.ButtonModel(title: localized("common.done"), callback: { [weak self] in self?.onCloseAction?() }))
+        titleBar.update(rightButton: NavigationBar.ButtonModel(title: rightButtonTitle, callback: { [weak self] in self?.onCloseAction?() }))
     }
 
     private func setupConstraints() {

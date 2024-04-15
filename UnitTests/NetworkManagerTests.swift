@@ -116,7 +116,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func testSelectedBaseNodeUpdate() {
 
-        let baseNode = BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43", address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
+        let baseNode = BaseNode(name: "Test Name", hex: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43", address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
 
         networkManager.selectedBaseNode = baseNode
 
@@ -129,7 +129,7 @@ final class NetworkManagerTests: XCTestCase {
 
     func testCustomBaseNodesUpdate() {
 
-        let baseNode = BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43", address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
+        let baseNode = BaseNode(name: "Test Name", hex: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43", address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
 
         networkManager.customBaseNodes = [baseNode]
 

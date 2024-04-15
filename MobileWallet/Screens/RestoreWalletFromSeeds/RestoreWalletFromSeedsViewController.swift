@@ -100,9 +100,9 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
             .assign(to: \.seedWords, on: mainView.tokenView)
             .store(in: &cancelables)
 
-        model.viewModel.$customBaseNode
+        Publishers.CombineLatest(model.viewModel.$customBaseNodeHex, model.viewModel.$customBaseNodeAddress)
             .receive(on: DispatchQueue.main)
-            .map { $0 != nil }
+            .map { $0 != nil && $1 != nil }
             .assign(to: \.isCustomBaseNodeSet, on: mainView)
             .store(in: &cancelables)
 
@@ -147,8 +147,8 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
     }
 
     private func showCustomBaseNodeForm() {
-        FormOverlayPresenter.showSelectCustomBaseNodeForm(address: model.viewModel.customBaseNode, presenter: self) { [weak self] in
-            self?.model.update(customBaseNode: $0)
+        FormOverlayPresenter.showSelectCustomBaseNodeForm(hex: model.viewModel.customBaseNodeHex, address: model.viewModel.customBaseNodeAddress, presenter: self) { [weak self] in
+            self?.model.updateCustomBaseNode(hex: $0, address: $1)
         }
     }
 }
