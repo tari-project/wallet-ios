@@ -292,9 +292,6 @@
 		3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DC270A02B900D50E3B /* WalletSettings.swift */; };
 		3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */; };
 		3ADEBF5D26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */; };
-		3ADEBF6226A59A5900E87C84 /* AddBaseNodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */; };
-		3ADEBF6626A5B5A500E87C84 /* AddBaseNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */; };
-		3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */; };
 		3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADF96CB28585E2400A3C888 /* ContextualButtonsOverlay.swift */; };
 		3ADF96CE2858A93000A3C888 /* ContextualButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADF96CD2858A93000A3C888 /* ContextualButton.swift */; };
 		3AE138C928044A1800443D34 /* PopUpComponentsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE138C828044A1800443D34 /* PopUpComponentsFactory.swift */; };
@@ -482,6 +479,7 @@
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
+		54AC12922BCD1C1E0007FFEA /* StringBaseNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */; };
 		54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */; };
 		54ADC0932A3858C40082C455 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0922A3858C40082C455 /* ErrorView.swift */; };
 		54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7F4442996583800BB484B /* ContactBookCell.swift */; };
@@ -884,9 +882,6 @@
 		3ADA73DC270A02B900D50E3B /* WalletSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettings.swift; sourceTree = "<group>"; };
 		3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsManager.swift; sourceTree = "<group>"; };
 		3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeModel.swift; sourceTree = "<group>"; };
-		3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeViewController.swift; sourceTree = "<group>"; };
-		3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeView.swift; sourceTree = "<group>"; };
-		3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeModel.swift; sourceTree = "<group>"; };
 		3ADF96CB28585E2400A3C888 /* ContextualButtonsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualButtonsOverlay.swift; sourceTree = "<group>"; };
 		3ADF96CD2858A93000A3C888 /* ContextualButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualButton.swift; sourceTree = "<group>"; };
 		3AE138C828044A1800443D34 /* PopUpComponentsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpComponentsFactory.swift; sourceTree = "<group>"; };
@@ -1074,6 +1069,7 @@
 		54AA5D59298122B70031A396 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
+		54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringBaseNodeTests.swift; sourceTree = "<group>"; };
 		54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Utlis.swift"; sourceTree = "<group>"; };
 		54ADC0922A3858C40082C455 /* ErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		54B7F4442996583800BB484B /* ContactBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookCell.swift; sourceTree = "<group>"; };
@@ -1579,7 +1575,6 @@
 				3AFC6E012745050500A20287 /* Views */,
 				3A62674426D76E52007F9895 /* Select Network */,
 				3A4CE33426A1A02700ECF460 /* SelectBaseNode */,
-				3ADEBF6026A59A4700E87C84 /* AddBaseNode */,
 			);
 			path = AdvancedSettings;
 			sourceTree = "<group>";
@@ -1737,6 +1732,7 @@
 				3AEDBE5827CE4F80006B0166 /* DeepLinkFormatterTests.swift */,
 				3A70C4F3292E4C1700212026 /* VersionValidatorTests.swift */,
 				545C92B22B5EDA4000FCB3ED /* StringSimilarityTests.swift */,
+				54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
@@ -2429,16 +2425,6 @@
 				3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */,
 			);
 			path = Wallet;
-			sourceTree = "<group>";
-		};
-		3ADEBF6026A59A4700E87C84 /* AddBaseNode */ = {
-			isa = PBXGroup;
-			children = (
-				3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */,
-				3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */,
-				3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */,
-			);
-			path = AddBaseNode;
 			sourceTree = "<group>";
 		};
 		3AE138CD2804A86A00443D34 /* Toasts */ = {
@@ -3577,7 +3563,6 @@
 				3ACDA70E26B0320900F138B8 /* SeedWordsRecoveryProgressModel.swift in Sources */,
 				3AE138CF2804A88500443D34 /* ToastPresenter.swift in Sources */,
 				3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */,
-				3ADEBF6226A59A5900E87C84 /* AddBaseNodeViewController.swift in Sources */,
 				3A530BD2290AF46500C423C7 /* BackupWalletSettingsHeaderView.swift in Sources */,
 				5419AA7F2A44744A0079E745 /* HomeConstructor.swift in Sources */,
 				3A4BF7CE27B5712900CA499D /* Result+Void.swift in Sources */,
@@ -3669,7 +3654,6 @@
 				545A9D14294F6ED3008D24A6 /* ThemeSettingsViewController.swift in Sources */,
 				3ABBC5DE2726B3A1001BB864 /* YatCacheManager.swift in Sources */,
 				5444C80329F14C2900BF3875 /* PopUpCircleImageHeaderView.swift in Sources */,
-				3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */,
 				3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */,
 				3ACDA70026AFF83D00F138B8 /* OverlayPresentable.swift in Sources */,
 				54621F8E29E01362000E9659 /* DeepLinkKeyedDecodingContainter.swift in Sources */,
@@ -3767,7 +3751,6 @@
 				3ACC4F602876D2F100632F64 /* NSAttributedString+Format.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
-				3ADEBF6626A5B5A500E87C84 /* AddBaseNodeView.swift in Sources */,
 				3AF985FA286B233100290387 /* PopUpSelectionView.swift in Sources */,
 				375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				5455969D29B0A73300D6719E /* ExternalContactsManager.swift in Sources */,
@@ -3913,6 +3896,7 @@
 				3A87C3B927A96423007A553F /* ErrorMessageManagerTests.swift in Sources */,
 				3AEDBE5927CE4F80006B0166 /* DeepLinkFormatterTests.swift in Sources */,
 				545C92B32B5EDA4000FCB3ED /* StringSimilarityTests.swift in Sources */,
+				54AC12922BCD1C1E0007FFEA /* StringBaseNodeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

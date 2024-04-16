@@ -110,21 +110,19 @@ final class SelectBaseNodeCell: DynamicThemeCell {
         [labelsStackView, deleteButton, tickView].forEach(contentView.addSubview)
         [titleLabel, subtitleLabel].forEach(labelsStackView.addArrangedSubview)
 
-        let heightConstraint = contentView.heightAnchor.constraint(equalToConstant: 65.0)
-        heightConstraint.priority = .sceneSizeStayPut
-
         let constraints = [
-            labelsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            labelsStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8.0),
             labelsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
-            deleteButton.topAnchor.constraint(equalTo: topAnchor),
+            labelsStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8.0),
+            deleteButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             deleteButton.leadingAnchor.constraint(equalTo: labelsStackView.trailingAnchor),
-            deleteButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.0),
+            deleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12.0),
             deleteButton.bottomAnchor.constraint(equalTo: bottomAnchor),
-            tickView.centerYAnchor.constraint(equalTo: centerYAnchor),
             tickView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.0),
+            tickView.centerYAnchor.constraint(equalTo: centerYAnchor),
             tickView.widthAnchor.constraint(equalToConstant: 21.0),
             tickView.heightAnchor.constraint(equalToConstant: 21.0),
-            heightConstraint
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 65.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

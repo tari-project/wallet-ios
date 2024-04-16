@@ -120,8 +120,9 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
     // MARK: - Actions
 
     private func presentAddBaseNodeScreen() {
-        let controller = AddBaseNodeViewController()
-        navigationController?.pushViewController(controller, animated: true)
+        FormOverlayPresenter.showAddBaseNodeForm(presenter: self) { [weak self] name, hex, address in
+            self?.model.addNode(name: name, hex: hex, address: address)
+        }
     }
 }
 

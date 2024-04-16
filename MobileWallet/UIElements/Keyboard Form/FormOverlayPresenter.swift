@@ -42,9 +42,9 @@ import UIKit
 
 enum FormOverlayPresenter {
 
-    static func showForm(title: String, textFieldModels: [ContactBookFormView.TextFieldViewModel], presenter: UIViewController, onClose: @escaping () -> Void) {
+    static func showForm(title: String, rightButtonTitle: String? = localized("common.done"), textFieldModels: [ContactBookFormView.TextFieldViewModel], presenter: UIViewController, onClose: @escaping () -> Void) {
 
-        let formView = ContactBookFormView(title: title, textFieldsModels: textFieldModels)
+        let formView = ContactBookFormView(title: title, rightButtonTitle: rightButtonTitle, textFieldsModels: textFieldModels)
         let overlay = FormOverlay(formView: formView)
         overlay.onClose = onClose
 
@@ -131,21 +131,38 @@ extension FormOverlayPresenter {
         }
     }
 
-    static func showSelectCustomBaseNodeForm(address: String?, presenter: UIViewController, onClose: ((_ address: String?) -> Void)?) {
+    static func showSelectCustomBaseNodeForm(hex: String?, address: String?, presenter: UIViewController, onClose: ((_ hex: String?, _ address: String?) -> Void)?) {
 
+        var hex = hex
         var address = address
+
         let title = localized("restore_from_seed_words.form.title")
         let models = [
-            ContactBookFormView.TextFieldViewModel(
-                placeholder: localized("restore_from_seed_words.form.placeholder"),
-                text: address,
-                isEmojiKeyboardVisible: false,
-                callback: { address = $0 }
-            )
+            ContactBookFormView.TextFieldViewModel(placeholder: localized("restore_from_seed_words.form.placeholder.hex"), text: hex, isEmojiKeyboardVisible: false, callback: { hex = $0 }),
+            ContactBookFormView.TextFieldViewModel(placeholder: localized("restore_from_seed_words.form.placeholder.address"), text: address, isEmojiKeyboardVisible: false, callback: { address = $0 })
         ]
 
         showForm(title: title, textFieldModels: models, presenter: presenter) {
-            onClose?(address)
+            onClose?(hex, address)
         }
+    }
+
+    static func showAddBaseNodeForm(presenter: UIViewController, onClose: ((_ name: String, _ hex: String, _ address: String) -> Void)?) {
+
+        var name = ""
+        var hex = ""
+        var address = ""
+
+        showForm(
+            title: localized("add_base_node.form.title"),
+            rightButtonTitle: localized("add_base_node.form.button.save"),
+            textFieldModels: [
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.name"), text: nil, isEmojiKeyboardVisible: false, callback: { name = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.hex"), text: nil, isEmojiKeyboardVisible: false, callback: { hex = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.address"), text: nil, isEmojiKeyboardVisible: false, callback: { address = $0 })
+            ],
+            presenter: presenter,
+            onClose: { onClose?(name, hex, address) }
+        )
     }
 }

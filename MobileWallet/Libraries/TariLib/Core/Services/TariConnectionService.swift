@@ -65,8 +65,8 @@ final class TariConnectionService: CoreTariService {
         return try select(baseNode: selectedBaseNode)
     }
 
-    func addBaseNode(name: String, peer: String, address: String?) throws {
-        let baseNode = BaseNode(name: name, hex: peer, address: address)
+    func addBaseNode(name: String, hex: String, address: String?) throws {
+        let baseNode = BaseNode(name: name, hex: hex, address: address)
         NetworkManager.shared.customBaseNodes.append(baseNode)
         try select(baseNode: baseNode)
     }
@@ -74,7 +74,7 @@ final class TariConnectionService: CoreTariService {
     func addBaseNode(name: String, peer: String) throws {
         let components = peer.components(separatedBy: "::")
         guard components.count == 2 else { throw InternalError.invalidPeerString }
-        try addBaseNode(name: name, peer: components[0], address: components[1])
+        try addBaseNode(name: name, hex: components[0], address: components[1])
     }
 
     func defaultBaseNodePeers() throws -> [BaseNode] {

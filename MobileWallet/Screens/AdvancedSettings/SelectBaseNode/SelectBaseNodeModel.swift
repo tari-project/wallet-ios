@@ -54,8 +54,8 @@ final class SelectBaseNodeModel {
 
     // MARK: - View Model
 
-    @Published var nodes: [NodeModel] = []
-    @Published var errorMessaage: MessageModel?
+    @Published private(set) var nodes: [NodeModel] = []
+    @Published private(set) var errorMessaage: MessageModel?
 
     // MARK: - Properties
 
@@ -100,6 +100,21 @@ final class SelectBaseNodeModel {
             updateViewModelNodes()
         } catch {
             errorMessaage = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+
+    func addNode(name: String, hex: String, address: String) {
+
+        guard !name.isEmpty else {
+            errorMessaage = MessageModel(title: localized("add_base_node.error.title"), message: localized("add_base_node.error.no_name"), type: .error)
+            return
+        }
+
+        do {
+            try Tari.shared.connection.addBaseNode(name: name, hex: hex, address: address)
+            refreshData()
+        } catch {
+            errorMessaage = MessageModel(title: localized("add_base_node.error.title"), message: localized("add_base_node.error.invalid_peer"), type: .error)
         }
     }
 
