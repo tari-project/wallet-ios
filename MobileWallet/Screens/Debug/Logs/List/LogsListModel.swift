@@ -40,15 +40,21 @@
 
 final class LogsListModel {
 
+    enum Action {
+        case share(url: URL)
+    }
+
     // MARK: - View Model
 
     @Published private(set) var logTitles: [String] = []
     @Published private(set) var selectedRowFileURL: URL?
+    @Published private(set) var action: Action?
     @Published private(set) var errorMessage: MessageModel?
 
     // MARK: - Properties
 
     private var logsURLs: [URL] = []
+    private let bugReportService = BugReportService()
 
     // MARK: - Actions
 
@@ -63,6 +69,21 @@ final class LogsListModel {
 
     func select(row: Int) {
         selectedRowFileURL = logsURLs[row]
+    }
+
+    func requestLogsFile() {
+        Task {
+            do {
+                let url = try await bugReportService.prepareLogsURL(name: "logs.zip")
+                action = .share(url: url)
+            } catch {
+                errorMessage = ErrorMessageManager.errorModel(forError: error)
+            }
+        }
+    }
+
+    func removeTempFiles() {
+        try? bugReportService.clearWorkingDirectory()
     }
 
     // MARK: - Handlers

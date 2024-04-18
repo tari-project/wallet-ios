@@ -141,7 +141,9 @@ final class Tari: MainServiceable {
 
     private func setupCallbacks() {
 
-        Publishers.CombineLatest(connectionMonitor.$baseNodeConnection, connectionMonitor.$syncStatus)
+        Publishers.CombineLatest(connectionMonitor.$baseNodeConnection.removeDuplicates(), connectionMonitor.$syncStatus.removeDuplicates())
+            .dropFirst()
+            .filter { [weak self] _, _ in self?.isWalletConnected == true }
             .filter { $0 == .offline || $1 == .failed }
             .sink { [weak self] _, _ in try? self?.switchBaseNode() }
             .store(in: &cancellables)
@@ -241,7 +243,7 @@ final class Tari: MainServiceable {
         let logFilePath = logFilePath
         Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
 
-        let logVerbosity: Int32 = TariSettings.shared.environment == .debug ? 11 : 2
+        let logVerbosity: Int32 = TariSettings.shared.environment == .debug ? 11 : 4
 
         try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name, logVerbosity: logVerbosity)
         resetServices()

@@ -91,10 +91,21 @@ final class LogsListViewController: UIViewController {
             .sink { [weak self] in self?.moveToLogDetails(url: $0) }
             .store(in: &cancellables)
 
+        model.$action
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handle(action: $0) }
+            .store(in: &cancellables)
+
         model.$errorMessage
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
+
+        mainView.onExportButtonTap = { [weak self] in
+            self?.model.requestLogsFile()
+        }
 
         tableDataSource = UITableViewDiffableDataSource(tableView: mainView.tableView) { tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: LogsListCell.self, indexPath: indexPath)
@@ -120,6 +131,22 @@ final class LogsListViewController: UIViewController {
     private func moveToLogDetails(url: URL) {
         let controller = LogConstructor.buildScene(fileURL: url)
         navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func showShareDialog(url: URL) {
+        let controller = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        controller.popoverPresentationController?.sourceView = mainView.navigationBar
+        controller.completionWithItemsHandler = { [weak self] _, _, _, _ in self?.model.removeTempFiles() }
+        present(controller, animated: true)
+    }
+
+    // MARK: - Handlers
+
+    private func handle(action: LogsListModel.Action) {
+        switch action {
+        case let .share(url):
+            showShareDialog(url: url)
+        }
     }
 }
 
