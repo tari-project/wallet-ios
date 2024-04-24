@@ -49,14 +49,14 @@ struct TariNetwork {
 
 extension TariNetwork {
 
-    static var all: [TariNetwork] { [stagenet].compactMap { $0 } }
+    static var all: [TariNetwork] { [nextnet].compactMap { $0 } }
 
     static var stagenet: Self {
         makeNetwork(
             name: "stagenet",
             presentedName: "StageNet",
             isMainNet: false,
-            isRecommended: true,
+            isRecommended: false,
             dnsPeer: "seeds.stagenet.tari.com",
             blockExplorerURL: nil
         )
@@ -67,7 +67,7 @@ extension TariNetwork {
             name: "nextnet",
             presentedName: "NextNet",
             isMainNet: false,
-            isRecommended: false,
+            isRecommended: true,
             dnsPeer: "seeds.nextnet.tari.com",
             blockExplorerURL: URL(string: "https://explore-nextnet.tari.com")
         )

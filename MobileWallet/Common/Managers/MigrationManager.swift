@@ -42,9 +42,14 @@ enum MigrationManager {
 
     // MARK: - Properties
 
-    private static let minValidVersion = "1.0.0-alpha.1"
+    private static let minValidVersion = "0.52.0"
 
     // MARK: - Actions
+
+    static func performPeerDBMigration() async -> Bool {
+        guard let version = await fetchDBVersion() else { return false }
+        return performPeerDBMigration(dbVersion: version)
+    }
 
     static func validateWalletVersion(completion: @escaping (Bool) -> Void) {
 
@@ -63,17 +68,7 @@ enum MigrationManager {
 
     private static func isWalletHasValidVersion(retryCount: Int = 0) async -> Bool {
 
-        let maxRetryCount = 5
-        var version: String?
-
-        do {
-            version = try Tari.shared.walletVersion()
-        } catch {
-            guard retryCount < maxRetryCount else { return false }
-            Logger.log(message: "Waiting for cookies: Retry Count: \(retryCount)", domain: .general, level: .info)
-            try? await Task.sleep(seconds: 1)
-            return await isWalletHasValidVersion(retryCount: retryCount + 1)
-        }
+        let version = await fetchDBVersion()
 
         if let version {
             let isValid = VersionValidator.compare(version, isHigherOrEqualTo: minValidVersion)
@@ -82,6 +77,20 @@ enum MigrationManager {
         } else {
             Logger.log(message: "Unable to get wallet version", domain: .general, level: .info)
             return false
+        }
+    }
+
+    private static func fetchDBVersion(retryCount: Int = 0) async -> String? {
+
+        let maxRetryCount = 5
+
+        do {
+            return try Tari.shared.walletVersion()
+        } catch {
+            guard retryCount < maxRetryCount else { return nil }
+            Logger.log(message: "Waiting for cookies: Retry Count: \(retryCount)", domain: .general, level: .info)
+            try? await Task.sleep(seconds: 1)
+            return await fetchDBVersion(retryCount: retryCount + 1)
         }
     }
 
@@ -96,5 +105,13 @@ enum MigrationManager {
 
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         PopUpPresenter.show(popUp: popUp)
+    }
+
+    // FIXME: Temporary migration mechanism. It should be removed when minValidVersion is greater than 1.0.0-rc.8
+    private static func performPeerDBMigration(dbVersion: String) -> Bool {
+        guard !VersionValidator.compare(dbVersion, isHigherOrEqualTo: "1.0.0-rc.8") else { return false }
+        let peerDBPath = Tari.shared.connectedDatabaseDirectory.appendingPathComponent("data.mdb")
+        try? FileManager.default.removeItem(at: peerDBPath)
+        return true
     }
 }
