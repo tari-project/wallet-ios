@@ -73,6 +73,11 @@ final class ByteVector {
         self.init(pointer: pointer)
     }
 
+    convenience init(string: String) throws {
+        let data = string.data(using: .utf8) ?? Data()
+        try self.init(data: data)
+    }
+
     // MARK: - Actions
 
     func byte(index: UInt32) throws -> UInt8 {

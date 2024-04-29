@@ -64,12 +64,10 @@ final class ChatConversationView: BaseNavigationContentView {
         view.separatorStyle = .none
         view.backgroundColor = .clear
         view.register(type: ChatConversationCell.self)
-        let footer = UIView()
-        footer.frame.size.height = 0.1
-        view.tableFooterView = footer
         return view
     }()
 
+    @View private var attachmentsBar = ChatAttachmentsBar()
     @View private var textInputBar = ChatInputMessageView()
 
     @View private var placeholderImageView: PaintBackgroundImageView = {
@@ -87,10 +85,15 @@ final class ChatConversationView: BaseNavigationContentView {
     }
 
     var onNavigationBarTap: (() -> Void)?
+    var onAddButtonTap: (() -> Void)?
+    var onAddGifButtonTap: (() -> Void)?
+    var onRemoveAttachementButtonTap: (() -> Void)?
     var onSendButtonTap: ((String?) -> Void)?
 
     private var sections: [Section] = []
     private var dataSource: UITableViewDiffableDataSource<Int, ChatConversationCell.Model>?
+    private var tableViewBottomConstraintWithAttachement: NSLayoutConstraint?
+    private var tableViewBottomConstraintWithoutAttachement: NSLayoutConstraint?
 
     // MARK: - Initialisers
 
@@ -99,6 +102,7 @@ final class ChatConversationView: BaseNavigationContentView {
         setupConstraints()
         setupCallbacks()
         updatePlaceholderState()
+        hideAttachmentsBar()
     }
 
     required init?(coder: NSCoder) {
@@ -111,10 +115,14 @@ final class ChatConversationView: BaseNavigationContentView {
 
         placeholder.setup(placeholderView: placeholderImageView)
         navigationBar.centerContentView.addSubview(navigationBarContentView)
-        [tableView, textInputBar].forEach(contentView.addSubview)
+        [tableView, attachmentsBar, textInputBar].forEach(contentView.addSubview)
         [placeholder, contentView].forEach(addSubview)
 
         sendSubviewToBack(placeholder)
+
+        tableViewBottomConstraintWithAttachement = tableView.bottomAnchor.constraint(equalTo: attachmentsBar.topAnchor)
+        let tableViewBottomConstraintWithoutAttachement = tableView.bottomAnchor.constraint(equalTo: textInputBar.topAnchor)
+        self.tableViewBottomConstraintWithoutAttachement = tableViewBottomConstraintWithoutAttachement
 
         let constraints = [
             navigationBarContentView.topAnchor.constraint(equalTo: navigationBar.centerContentView.topAnchor),
@@ -132,7 +140,10 @@ final class ChatConversationView: BaseNavigationContentView {
             tableView.topAnchor.constraint(equalTo: contentView.contentView.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
-            textInputBar.topAnchor.constraint(equalTo: tableView.bottomAnchor),
+            tableViewBottomConstraintWithoutAttachement,
+            attachmentsBar.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
+            attachmentsBar.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
+            textInputBar.topAnchor.constraint(equalTo: attachmentsBar.bottomAnchor),
             textInputBar.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
             textInputBar.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
             textInputBar.bottomAnchor.constraint(equalTo: contentView.contentView.bottomAnchor)
@@ -147,13 +158,28 @@ final class ChatConversationView: BaseNavigationContentView {
             self?.onNavigationBarTap?()
         }
 
+        textInputBar.onAddButtonTap = { [weak self] in
+            self?.onAddButtonTap?()
+        }
+
+        textInputBar.onAddGifButtonTap = { [weak self] in
+            self?.onAddGifButtonTap?()
+        }
+
         textInputBar.onSendButtonTap = { [weak self] in
             self?.onSendButtonTap?($0)
         }
 
-        dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, model in
+        attachmentsBar.onCloseButtonTap = { [weak self] in
+            self?.onRemoveAttachementButtonTap?()
+        }
+
+        dataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: ChatConversationCell.self, indexPath: indexPath)
             cell.update(model: model)
+            cell.onContentChange = { [weak self] in
+                self?.tableView.resizeCellsWithoutAnimation()
+            }
             return cell
         }
 
@@ -189,6 +215,10 @@ final class ChatConversationView: BaseNavigationContentView {
         scrollToBottom()
     }
 
+    func update(attachment: ChatAttachmentsBar.AttachmentType?) {
+        attachmentsBar.attachmentType = attachment
+    }
+
     private func updatePlaceholderState() {
         placeholder.isHidden = !isPlaceholderVisible
         tableView.isHidden = isPlaceholderVisible
@@ -201,6 +231,20 @@ final class ChatConversationView: BaseNavigationContentView {
             let lastIndexPath = IndexPath(row: lastRowIndex - 1, section: lastSectionIndex)
             self.tableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
         }
+    }
+
+    // MARK: - Actions
+
+    func showAttachmentsBar() {
+        attachmentsBar.isHidden = false
+        tableViewBottomConstraintWithoutAttachement?.isActive = false
+        tableViewBottomConstraintWithAttachement?.isActive = true
+    }
+
+    func hideAttachmentsBar() {
+        attachmentsBar.isHidden = true
+        tableViewBottomConstraintWithAttachement?.isActive = false
+        tableViewBottomConstraintWithoutAttachement?.isActive = true
     }
 }
 

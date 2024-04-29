@@ -44,7 +44,7 @@ final class ChatMessage {
 
     let pointer: OpaquePointer
 
-    var metadataCount: Int64 {
+    var metadataCount: UInt32 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
@@ -74,7 +74,7 @@ final class ChatMessage {
         }
     }
 
-    var direction: Int32 {
+    var direction: UInt8 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
@@ -140,10 +140,10 @@ final class ChatMessage {
 
     // MARK: - Actions
 
-    func add(metadataType: UInt8, data: ByteVector) throws {
+    func addMetadata(key: ByteVector, data: ByteVector) throws {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        add_chat_message_metadata(pointer, metadataType, data.pointer, errorCodePointer)
+        add_chat_message_metadata(pointer, key.pointer, data.pointer, errorCodePointer)
         guard errorCode == 0 else { throw ChatError(code: errorCode) }
     }
 
@@ -165,6 +165,26 @@ final class ChatMessage {
 extension ChatMessage {
 
     var isIncomming: Bool {
-        get throws { try direction == 1 }
+        get throws { try direction == 0 }
+    }
+
+    var allMetadata: [ChatMessageMetadata] {
+        get throws {
+            let count = try metadataCount
+            return try (0..<count).map { try metadata(at: $0) }
+        }
+    }
+
+    var allMetadataDictionary: [ChatMessageMetadata.MetadataType: ByteVector] {
+        get throws {
+            try allMetadata.reduce(into: [ChatMessageMetadata.MetadataType: ByteVector]()) { result, metadata in
+                guard let type = try metadata.type else { return }
+                result[type] = try metadata.data
+            }
+        }
+    }
+
+    func add(metadataType: ChatMessageMetadata.MetadataType, data: ByteVector) throws {
+        try addMetadata(key: ByteVector(string: metadataType.rawValue), data: data)
     }
 }

@@ -41,13 +41,18 @@
 import UIKit
 import Combine
 
-final class ChatConversationViewController: UIViewController {
+final class ChatConversationViewController: SecureViewController<ChatConversationView> {
+
+    private enum AddAction: Int {
+        case send
+        case request
+        case pinThread
+    }
 
     // MARK: - Properties
 
     let model: ChatConversationModel
-    let mainView = ChatConversationView()
-
+    private let gifManager = GifManager()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +67,6 @@ final class ChatConversationViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,6 +92,7 @@ final class ChatConversationViewController: UIViewController {
 
         model.$messages
             .compactMap { [weak self] in self?.sectionViewModels(sectionModels: $0) }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.update(sections: $0) }
             .store(in: &cancellables)
 
@@ -98,6 +100,11 @@ final class ChatConversationViewController: UIViewController {
             .map(\.isEmpty)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.isPlaceholderVisible = $0 }
+            .store(in: &cancellables)
+
+        model.$attachement
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handle(attachement: $0) }
             .store(in: &cancellables)
 
         model.$action
@@ -115,29 +122,160 @@ final class ChatConversationViewController: UIViewController {
             self?.model.requestContactDetails()
         }
 
+        mainView.onAddButtonTap = { [weak self] in
+            self?.showAddDialog()
+        }
+
+        mainView.onAddGifButtonTap = { [weak self] in
+            guard let self else { return }
+            self.gifManager.showGifPicker(controller: self)
+        }
+
+        mainView.onRemoveAttachementButtonTap = { [weak self] in
+            self?.model.removeAttachment()
+        }
+
         mainView.onSendButtonTap = { [weak self] in
             self?.model.send(message: $0 ?? "")
         }
+
+        gifManager.$selectedGifID
+            .compactMap { $0 }
+            .sink { [weak self] in self?.model.attach(gifID: $0) }
+            .store(in: &cancellables)
     }
 
     // MARK: - Handlers
 
     private func sectionViewModels(sectionModels: [ChatConversationModel.MessageSection]) -> [ChatConversationView.Section] {
         sectionModels.map {
-            let messages = $0.messages.map {
-                ChatConversationCell.Model(id: $0.id, isIncoming: $0.isIncomming, isLastInContext: $0.isLastInContext, notificationTextComponents: $0.notificationParts, message: $0.message, timestamp: $0.timestamp)
+            let messages = $0.messages.map { message in
+                ChatConversationCell.Model(
+                    id: message.id,
+                    isIncoming: message.isIncomming,
+                    isLastInContext: message.isLastInContext,
+                    notificationsTextComponents: message.notifications
+                    ,
+                    message: message.message,
+                    actionButtonTitle: message.action?.title,
+                    actionCallback: { [weak self] in
+                        guard let action = message.action else { return }
+                        self?.model.handle(messageAction: action)
+                    },
+                    timestamp: message.timestamp,
+                    gifIdentifier: message.gifIdentifier
+                )
             }
             return ChatConversationView.Section(title: $0.relativeDay, messages: messages)
         }
     }
 
-    // MARK: - Actions
+    private func handle(attachement: ChatConversationModel.Attachment?) {
+
+        guard let attachement else {
+            mainView.hideAttachmentsBar()
+            mainView.update(attachment: nil)
+            return
+        }
+
+        switch attachement {
+        case let .request(value):
+            mainView.update(attachment: .request(amount: value))
+        case let .gif(status):
+            mainView.update(attachment: .gif(state: status))
+        }
+
+        mainView.showAttachmentsBar()
+    }
 
     private func handle(action: ChatConversationModel.Action) {
         switch action {
-        case let .openContactDetails(contact):
-            let controller = ContactDetailsConstructor.buildScene(model: contact)
-            navigationController?.pushViewController(controller, animated: true)
+        case let .moveToContactDetails(contact):
+            moveToContactDetailsScene(contact: contact)
+        case let .moveToSendTransction(paymentInfo):
+            moveToSendTrasactionScene(paymentInfo: paymentInfo)
+        case .moveToRequestTokens:
+            moveToRequestTokensScene()
+        case .showReplaceAttachmentDialog:
+            showReplaceAttachmentDialog()
         }
+    }
+
+    private func handle(addActionRow: Int) {
+
+        PopUpPresenter.dismissPopup()
+
+        guard let action = AddAction(rawValue: addActionRow) else { return }
+
+        switch action {
+        case .send:
+            model.requestSendTransaction()
+        case .request:
+            model.requestTokens()
+        case .pinThread:
+            model.switchPinedStatus()
+        }
+    }
+
+    // MARK: - Actions
+
+    private func showAddDialog() {
+
+        let headerSection = PopUpHeaderView()
+        let contentSection = PopUpButtonsTableView()
+        let buttonsSection = PopUpButtonsView()
+
+        headerSection.label.text = localized("chat.conversation.pop_up.add_dialog.title")
+
+        let pinnedThreadButtonTitle = model.isPinned ? localized("chat.conversation.pop_up.add_dialog.buttons.pinned_thread.unpin") : localized("chat.conversation.pop_up.add_dialog.buttons.pinned_thread.pin")
+
+        contentSection.update(options: [
+            PopUpButtonsTableView.Model(id: UUID(), title: localized("chat.conversation.pop_up.add_dialog.buttons.send"), textAlignment: .left, isArrowVisible: true),
+            PopUpButtonsTableView.Model(id: UUID(), title: localized("chat.conversation.pop_up.add_dialog.buttons.request"), textAlignment: .left, isArrowVisible: true),
+            PopUpButtonsTableView.Model(id: UUID(), title: pinnedThreadButtonTitle, textAlignment: .left, isArrowVisible: false)
+        ])
+
+        contentSection.onSelectedRow = { [weak self] in
+            self?.handle(addActionRow: $0.row)
+        }
+
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
+
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+
+        PopUpPresenter.show(popUp: popUp)
+    }
+
+    private func showReplaceAttachmentDialog() {
+
+        PopUpPresenter.showPopUp(model: PopUpDialogModel(
+            title: localized("chat.conversation.pop_up.replace_attachment.title"),
+            message: localized("chat.conversation.pop_up.replace_attachment.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("chat.conversation.pop_up.replace_attachment.buttons.yes"), type: .normal, callback: { [weak self] in self?.model.confirmAttachmentReplacement() }),
+                PopUpDialogButtonModel(title: localized("chat.conversation.pop_up.replace_attachment.buttons.no"), type: .text, callback: { [weak self] in self?.model.cancelAttachmetReplacement() })
+            ],
+            hapticType: .none
+        ))
+    }
+
+    private func moveToContactDetailsScene(contact: ContactsManager.Model) {
+        let controller = ContactDetailsConstructor.buildScene(model: contact)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func moveToSendTrasactionScene(paymentInfo: PaymentInfo) {
+        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+    }
+
+    private func moveToRequestTokensScene() {
+
+        let controller = ChatRequestTokensConstructor.buildScene()
+
+        controller.onSelection = { [weak self] in
+            self?.model.attach(requestedTokenAmount: $0)
+        }
+
+        navigationController?.pushViewController(controller, animated: true)
     }
 }

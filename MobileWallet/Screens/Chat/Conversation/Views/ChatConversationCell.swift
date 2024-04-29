@@ -39,6 +39,7 @@
 */
 
 import TariCommon
+import Combine
 
 final class ChatConversationCell: DynamicThemeCell {
 
@@ -47,9 +48,12 @@ final class ChatConversationCell: DynamicThemeCell {
         let id: String
         let isIncoming: Bool
         let isLastInContext: Bool
-        let notificationTextComponents: [StylizedLabel.StylizedText]
+        let notificationsTextComponents: [ChatNotificationModel]
         let message: String
+        let actionButtonTitle: String?
+        let actionCallback: (() -> Void)?
         let timestamp: String
+        let gifIdentifier: String?
 
         static func == (lhs: ChatConversationCell.Model, rhs: ChatConversationCell.Model) -> Bool { lhs.id == rhs.id }
 
@@ -73,7 +77,12 @@ final class ChatConversationCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var notificationBar = ChatConversationNotificationBar()
+    @View private var notificationsStackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 10.0
+        return view
+    }()
 
     @View private var messageLabel: UILabel = {
         let view = UILabel()
@@ -81,6 +90,9 @@ final class ChatConversationCell: DynamicThemeCell {
         view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
+
+    @View private var actionButton = ActionButton()
+    @View private var gifView = GifView()
 
     @View private var timestampLabel: UILabel = {
         let view = UILabel()
@@ -90,10 +102,15 @@ final class ChatConversationCell: DynamicThemeCell {
 
     // MARK: - Properties
 
+    var onContentChange: (() -> Void)?
+
+    private let gifDynamicModel = GifDynamicModel()
+
     private var contentViewLeadingConstraint: NSLayoutConstraint?
     private var contentViewTrailingConstraint: NSLayoutConstraint?
 
     private var isIncoming: Bool = false
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
@@ -101,6 +118,7 @@ final class ChatConversationCell: DynamicThemeCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -116,7 +134,7 @@ final class ChatConversationCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [notificationBar, messageLabel].forEach(contentStackView.addArrangedSubview)
+        [gifView, notificationsStackView, messageLabel, actionButton].forEach(contentStackView.addArrangedSubview)
         [contentStackView, timestampLabel].forEach(bubbleContentView.addSubview)
         contentView.addSubview(bubbleContentView)
 
@@ -142,6 +160,13 @@ final class ChatConversationCell: DynamicThemeCell {
         NSLayoutConstraint.activate(constraints)
     }
 
+    private func setupCallbacks() {
+        gifDynamicModel.$gif
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handle(gifDataState: $0) }
+            .store(in: &cancellables)
+    }
+
     // MARK: - Updates
 
     override func update(theme: ColorTheme) {
@@ -152,30 +177,69 @@ final class ChatConversationCell: DynamicThemeCell {
     }
 
     private func updateContentBackgroundColor(theme: ColorTheme) {
-        bubbleContentView.backgroundColor = isIncoming ? theme.chat.backgrounds.sender : theme.chat.backgrounds.receiver
-        messageLabel.textColor = theme.chat.text.text
+        bubbleContentView.backgroundColor = isIncoming ? theme.chat.backgrounds.receiver : theme.chat.backgrounds.sender
     }
 
     func update(model: Model) {
 
-        contentViewLeadingConstraint?.constant = model.isIncoming ? 90.0 : 25.0
-        contentViewTrailingConstraint?.constant = model.isIncoming ? -25.0 : -90.0
+        contentViewLeadingConstraint?.constant = model.isIncoming ? 25.0 : 90.0
+        contentViewTrailingConstraint?.constant = model.isIncoming ? -90.0 : -25.0
 
-        notificationBar.update(textComponents: model.notificationTextComponents, isIncomingMessage: model.isIncoming)
-        notificationBar.isHidden = model.notificationTextComponents.isEmpty
+        notificationsStackView.removeAllViews()
+        notificationsStackView.isHidden = model.notificationsTextComponents.isEmpty
+
+        model.notificationsTextComponents
+            .map {
+                let view = ChatConversationNotificationBar()
+                let messageType: ChatConversationNotificationBar.MessageType
+
+                if $0.isValid {
+                    messageType = model.isIncoming ? .incoming : .outgoing
+                } else {
+                    messageType = .error
+                }
+
+                view.update(textComponents: $0.notificationParts, messageType: messageType)
+                return view
+            }
+            .forEach(notificationsStackView.addArrangedSubview)
+
+        actionButton.onTap = model.actionCallback
 
         messageLabel.text = model.message
+        actionButton.setTitle(model.actionButtonTitle, for: .normal)
+        actionButton.isHidden = model.actionButtonTitle == nil
         timestampLabel.text = model.timestamp
         isIncoming = model.isIncoming
+
+        gifDynamicModel.clearData()
+
+        if let gifIdentifier = model.gifIdentifier {
+            gifDynamicModel.fetchGif(identifier: gifIdentifier)
+        }
 
         if !model.isLastInContext {
             bubbleContentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         } else if model.isIncoming {
-            bubbleContentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
-        } else {
             bubbleContentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        } else {
+            bubbleContentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
         }
 
         updateContentBackgroundColor(theme: theme)
+    }
+
+    // MARK: - Handlers
+
+    private func handle(gifDataState: GifDynamicModel.GifDataState) {
+
+        if case .loaded = gifDataState {
+            gifView.isHidden = false
+        } else {
+            gifView.isHidden = true
+        }
+
+        gifView.update(dataState: gifDataState)
+        onContentChange?()
     }
 }

@@ -40,6 +40,8 @@
 
 import UIKit
 
+protocol StylizableComponent {}
+
 final class StylizedLabel: UILabel {
 
     enum Style {
@@ -48,9 +50,13 @@ final class StylizedLabel: UILabel {
         case highlighted
     }
 
-    struct StylizedText {
+    struct StylizedText: StylizableComponent {
         let text: String
         let style: Style
+    }
+
+    struct StylizedImage: StylizableComponent {
+        let image: UIImage?
     }
 
     // MARK: - Properties
@@ -79,7 +85,7 @@ final class StylizedLabel: UILabel {
         didSet { updateText() }
     }
 
-    var textComponents: [StylizedText] = [] {
+    var textComponents: [StylizableComponent] = [] {
         didSet { updateText() }
     }
 
@@ -93,33 +99,41 @@ final class StylizedLabel: UILabel {
             .enumerated()
             .reduce(into: NSMutableAttributedString()) { result, data in
 
-                var font: UIFont?
-                var textColor: UIColor?
-
-                switch data.element.style {
-                case .normal:
-                    font = normalFont
-                    textColor = self.textColor
-                case .bold:
-                    font = boldFont
-                    textColor = self.textColor
-                case .highlighted:
-                    font = normalFont
-                    textColor = highlightedTextColor
-                }
-
                 if data.offset != 0 {
                     result.append(NSAttributedString(string: separator))
                 }
 
-                let location = result.length
-                result.append(NSAttributedString(string: data.element.text))
+                if let textComponent = data.element as? StylizedText {
 
-                if let font {
-                    result.addAttribute(.font, value: font, range: NSRange(location: location, length: data.element.text.utf16.count))
-                }
-                if let textColor {
-                    result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: data.element.text.utf16.count))
+                    var font: UIFont?
+                    var textColor: UIColor?
+
+                    switch textComponent.style {
+                    case .normal:
+                        font = normalFont
+                        textColor = self.textColor
+                    case .bold:
+                        font = boldFont
+                        textColor = self.textColor
+                    case .highlighted:
+                        font = normalFont
+                        textColor = highlightedTextColor
+                    }
+
+                    let location = result.length
+                    result.append(NSAttributedString(string: textComponent.text))
+
+                    if let font {
+                        result.addAttribute(.font, value: font, range: NSRange(location: location, length: textComponent.text.utf16.count))
+                    }
+                    if let textColor {
+                        result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: textComponent.text.utf16.count))
+                    }
+                } else if let imageComponent = data.element as? StylizedImage {
+                    let attachment = NSTextAttachment()
+                    attachment.image = imageComponent.image
+                    attachment.bounds = CGRect(x: 0.0, y: 0.0, width: 12.0, height: 12.0)
+                    result.append(NSAttributedString(attachment: attachment))
                 }
             }
     }

@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class ChatListViewConrtoller: UIViewController {
+final class ChatListViewConrtoller: SecureViewController<ChatListView> {
 
     // MARK: - Properties
 
     private let model: ChatListModel
-    private let mainView = ChatListView()
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +60,6 @@ final class ChatListViewConrtoller: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

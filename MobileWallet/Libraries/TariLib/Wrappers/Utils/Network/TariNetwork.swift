@@ -49,14 +49,14 @@ struct TariNetwork {
 
 extension TariNetwork {
 
-    static var all: [TariNetwork] { [stagenet].compactMap { $0 } }
+    static var all: [TariNetwork] { [esmeralda].compactMap { $0 }}
 
     static var stagenet: Self {
         makeNetwork(
             name: "stagenet",
             presentedName: "StageNet",
             isMainNet: false,
-            isRecommended: true,
+            isRecommended: false,
             dnsPeer: "seeds.stagenet.tari.com",
             blockExplorerURL: nil
         )
@@ -70,6 +70,17 @@ extension TariNetwork {
             isRecommended: false,
             dnsPeer: "seeds.nextnet.tari.com",
             blockExplorerURL: URL(string: "https://explore-nextnet.tari.com")
+        )
+    }
+
+    static var esmeralda: Self {
+        makeNetwork(
+            name: "esmeralda",
+            presentedName: "Esmeralda",
+            isMainNet: false,
+            isRecommended: true,
+            dnsPeer: "seeds.esmeralda.tari.com",
+            blockExplorerURL: nil
         )
     }
 

@@ -42,6 +42,12 @@ import TariCommon
 
 final class ChatConversationNotificationBar: DynamicThemeView {
 
+    enum MessageType {
+        case incoming
+        case outgoing
+        case error
+    }
+
     // MARK: - Subviews
 
     @View private var leftBar: UIView = {
@@ -61,7 +67,7 @@ final class ChatConversationNotificationBar: DynamicThemeView {
 
     // MARK: - Properties
 
-    private var isIncomingMessage: Bool = false
+    private var messageType: MessageType = .incoming
 
     // MARK: - Initialisers
 
@@ -98,18 +104,27 @@ final class ChatConversationNotificationBar: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        leftBar.backgroundColor = theme.chat.text.textNotification
-        textLabel.textColor = theme.chat.text.textNotification
         updateBackgroundColor(theme: theme)
     }
 
-    func update(textComponents: [StylizedLabel.StylizedText], isIncomingMessage: Bool) {
+    func update(textComponents: [StylizableComponent], messageType: MessageType) {
         textLabel.textComponents = textComponents
-        self.isIncomingMessage = isIncomingMessage
+        self.messageType = messageType
         updateBackgroundColor(theme: theme)
     }
 
     private func updateBackgroundColor(theme: ColorTheme) {
-        backgroundColor = isIncomingMessage ? theme.chat.backgrounds.senderNotification : theme.chat.backgrounds.receiverNotification
+
+        textLabel.textColor = messageType == .error ? theme.system.red : theme.chat.text.textNotification
+        leftBar.backgroundColor = messageType == .error ? theme.system.red : theme.chat.text.textNotification
+
+        switch messageType {
+        case .incoming:
+            backgroundColor = theme.chat.backgrounds.receiverNotification
+        case .outgoing:
+            backgroundColor = theme.chat.backgrounds.senderNotification
+        case .error:
+            backgroundColor = theme.system.red?.withAlphaComponent(0.15)
+        }
     }
 }

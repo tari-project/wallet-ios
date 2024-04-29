@@ -44,6 +44,7 @@ final class ChatInputMessageView: DynamicThemeView {
 
     // MARK: - Constants
 
+    private static let addGifButtonHeight: CGFloat = 21.0
     private let maxNumberOfLinesWithoutScrolling = 4
 
     // MARK: - Subviews
@@ -57,9 +58,15 @@ final class ChatInputMessageView: DynamicThemeView {
 
     @View private var textView: UITextView = {
         let view = UITextView()
-        view.textContainerInset = UIEdgeInsets(top: 15.0, left: 15.0, bottom: 15.0, right: 15.0)
+        view.textContainerInset = UIEdgeInsets(top: 15.0, left: 15.0, bottom: 15.0, right: 15.0 + addGifButtonHeight)
         view.font = .Avenir.roman.withSize(14.0)
         view.layer.cornerRadius = 6.0
+        return view
+    }()
+
+    @View private var addGifButton: BaseButton = {
+        let view = BaseButton()
+        view.setImage(.Icons.Chat.document, for: .normal)
         return view
     }()
 
@@ -79,6 +86,8 @@ final class ChatInputMessageView: DynamicThemeView {
 
     // MARK: - Properties
 
+    var onAddButtonTap: (() -> Void)?
+    var onAddGifButtonTap: (() -> Void)?
     var onSendButtonTap: ((String?) -> Void)?
     private var textViewHeightConstraint: NSLayoutConstraint?
 
@@ -98,7 +107,7 @@ final class ChatInputMessageView: DynamicThemeView {
 
     private func setupConstraints() {
 
-        [addButton, textView, textViewPlaceholderLabel, sendButton].forEach(addSubview)
+        [addButton, textView, addGifButton, textViewPlaceholderLabel, sendButton].forEach(addSubview)
 
         let textViewHeightConstraint = textView.heightAnchor.constraint(equalToConstant: 0.0)
         self.textViewHeightConstraint = textViewHeightConstraint
@@ -112,6 +121,10 @@ final class ChatInputMessageView: DynamicThemeView {
             textView.leadingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 10.0),
             textView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10.0),
             textViewHeightConstraint,
+            addGifButton.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -10.0),
+            addGifButton.centerYAnchor.constraint(equalTo: sendButton.centerYAnchor),
+            addGifButton.heightAnchor.constraint(equalToConstant: Self.addGifButtonHeight),
+            addGifButton.widthAnchor.constraint(equalToConstant: Self.addGifButtonHeight),
             textViewPlaceholderLabel.topAnchor.constraint(equalTo: textView.topAnchor, constant: 15.0),
             textViewPlaceholderLabel.leadingAnchor.constraint(equalTo: textView.leadingAnchor, constant: 15.0),
             textViewPlaceholderLabel.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -15.0),
@@ -128,7 +141,16 @@ final class ChatInputMessageView: DynamicThemeView {
     }
 
     private func setupCallbacks() {
+
         textView.delegate = self
+
+        addButton.onTap = { [weak self] in
+            self?.onAddButtonTap?()
+        }
+
+        addGifButton.onTap = { [weak self] in
+            self?.onAddGifButtonTap?()
+        }
 
         sendButton.onTap = { [weak self] in
             self?.onSendButtonTap?(self?.textView.text)
@@ -144,6 +166,7 @@ final class ChatInputMessageView: DynamicThemeView {
         addButton.tintColor = theme.icons.active
         textView.backgroundColor = theme.backgrounds.primary
         textView.textColor = theme.text.body
+        addGifButton.tintColor = theme.icons.active
         textViewPlaceholderLabel.textColor = theme.text.lightText
         sendButton.tintColor = theme.icons.active
     }

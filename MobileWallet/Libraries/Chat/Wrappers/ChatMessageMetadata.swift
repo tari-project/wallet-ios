@@ -40,7 +40,40 @@
 
 final class ChatMessageMetadata {
 
+    enum MetadataType: String {
+        case reply
+        case tokenRequest
+        case gif
+    }
+
     // MARK: - Properties
+
+    var key: ByteVector {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = read_chat_metadata_key(pointer, errorCodePointer)
+            guard errorCode == 0, let result else { throw ChatError(code: errorCode) }
+            return ByteVector(pointer: result)
+        }
+    }
+
+    var type: MetadataType? {
+        get throws {
+            guard let string = try key.string else { return nil }
+            return MetadataType(rawValue: string)
+        }
+    }
+
+    var data: ByteVector {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = read_chat_metadata_data(pointer, errorCodePointer)
+            guard errorCode == 0, let result else { throw ChatError(code: errorCode) }
+            return ByteVector(pointer: result)
+        }
+    }
 
     private let pointer: OpaquePointer
 

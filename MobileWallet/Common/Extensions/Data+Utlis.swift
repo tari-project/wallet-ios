@@ -88,6 +88,11 @@ extension Data {
         data.append(contentsOf: [byte])
         return data
     }
+
+    func value<T: Any>(type: T.Type, byteCount: Int) -> T? {
+        guard byteCount == count else { return nil }
+        return withUnsafeBytes { $0.load(as: T.self) }
+    }
 }
 
 extension Array where Element == Data {
