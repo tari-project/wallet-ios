@@ -44,7 +44,7 @@ final class ChatMessages {
 
     private let pointer: OpaquePointer
 
-    var count: Int32 {
+    var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
@@ -82,7 +82,7 @@ extension ChatMessages {
     var all: [ChatMessage] {
         get throws {
             let count = try count
-            return try (0..<count).map { try message(at: UInt32($0)) }
+            return try (0..<count).map { try message(at: $0) }
         }
     }
 

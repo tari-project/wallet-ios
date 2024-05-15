@@ -61,9 +61,9 @@ extension UIViewController {
         headerSection.label.text = localized("debug.popup.title")
 
         contentSection.update(options: [
-            localized("debug.popup.options.logs"),
-            localized("debug.popup.options.bug_report"),
-            localized("debug.popup.options.connection_status")
+            PopUpButtonsTableView.Model(id: UUID(), title: localized("debug.popup.options.logs"), textAlignment: .center, isArrowVisible: false),
+            PopUpButtonsTableView.Model(id: UUID(), title: localized("debug.popup.options.bug_report"), textAlignment: .center, isArrowVisible: false),
+            PopUpButtonsTableView.Model(id: UUID(), title: localized("debug.popup.options.connection_status"), textAlignment: .center, isArrowVisible: false)
         ])
 
         contentSection.onSelectedRow = { [weak self] in self?.handle(selectedIndexPath: $0) }

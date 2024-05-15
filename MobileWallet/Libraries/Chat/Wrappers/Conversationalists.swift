@@ -44,7 +44,7 @@ final class Conversationalists {
 
     private let pointer: OpaquePointer
 
-    var count: Int32 {
+    var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
@@ -81,7 +81,7 @@ extension Conversationalists {
 
     var all: [TariAddress] {
         get throws {
-            try (0..<count).map { try address(index: UInt32($0)) }
+            try (0..<count).map { try address(index: $0) }
         }
     }
 }

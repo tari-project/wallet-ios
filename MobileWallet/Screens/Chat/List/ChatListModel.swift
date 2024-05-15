@@ -57,6 +57,7 @@ final class ChatListModel {
         let avatarText: String
         let avatarImage: UIImage?
         let isOnline: Bool
+        let isPinned: Bool
         let name: String
         let preview: String
         let timestamp: TimeInterval
@@ -120,6 +121,8 @@ final class ChatListModel {
 
     private func handle(messages: [ChatMessage], onlineStatuses: [String: ChatOnlineStatus]) throws {
 
+        let pinnedAddresses = ChatUserDefaults.pinnedAddresses ?? []
+
         let previews: [MessagePreview] = try messages.compactMap {
             guard let identifier = try $0.identifier.string else { return nil }
 
@@ -129,12 +132,14 @@ final class ChatListModel {
             let timestamp = try TimeInterval($0.timestamp)
             let contact = try contactsManager.contact(address: address)
             let isOnline = onlineStatuses.first { $0.key == hex }?.value == .online
+            let isPinned = try pinnedAddresses.contains(address.byteVector.hex)
 
             return try MessagePreview(
                 id: identifier,
                 avatarText: contact?.avatar ?? emojis.firstOrEmpty,
                 avatarImage: contact?.avatarImage,
                 isOnline: isOnline,
+                isPinned: isPinned,
                 name: contact?.name ?? emojis.obfuscatedText,
                 preview: $0.body.string ?? "",
                 timestamp: timestamp,
@@ -143,11 +148,20 @@ final class ChatListModel {
         }
         .sorted { $0.timestamp > $1.timestamp }
 
+        let pinnedPreviews: [MessagePreview] = previews.filter(\.isPinned)
+        let otherPreciews: [MessagePreview] = previews.filter { !$0.isPinned }
+
         var sections = [MessageSection]()
 
-        if !previews.isEmpty {
-            sections = [
-                MessageSection(title: localized("chat.list.table.section.other"), previews: previews)
+        if !pinnedPreviews.isEmpty {
+            sections += [
+                MessageSection(title: localized("chat.list.table.section.pinned"), previews: pinnedPreviews)
+            ]
+        }
+
+        if !otherPreciews.isEmpty {
+            sections += [
+                MessageSection(title: localized("chat.list.table.section.other"), previews: otherPreciews)
             ]
         }
 

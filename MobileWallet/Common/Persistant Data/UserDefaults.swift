@@ -77,11 +77,27 @@ enum TorManagerUserDefaults {
     }
 }
 
+// MARK: - Chat User Defaults
+
+enum ChatUserDefaults {
+
+    private enum Name: String, CaseIterable {
+        case pinnedAddresses
+    }
+
+    @UserDefault(key: Name.pinnedAddresses.rawValue) static var pinnedAddresses: Set<String>?
+
+    static func removeAll() {
+        Name.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
+    }
+}
+
 // MARK: - Extensions
 
 extension UserDefaults {
     func removeAll() {
         UserDefaultName.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
         TorManagerUserDefaults.removeAll()
+        ChatUserDefaults.removeAll()
     }
 }

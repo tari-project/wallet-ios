@@ -78,21 +78,22 @@ final class ChatManager {
         try existingClient.addContact(address: contact)
     }
 
-    func fetchModels(address: TariAddress, limit: Int32, page: Int32) throws -> ChatMessages {
+    func fetchModels(address: TariAddress, limit: UInt32, page: UInt32) throws -> ChatMessages {
         let client = try existingClient
         return try client.fetchMessages(address: address, limit: limit, page: page)
     }
 
-    func send(message: String, receiver: TariAddress) throws {
+    func send(message: String, receiver: TariAddress, metadata: [ChatMessageMetadata.MetadataType: Data]) throws {
         let client = try existingClient
         let chatMessage = try ChatMessage(receiver: receiver, message: message)
+        try metadata.forEach { try chatMessage.add(metadataType: $0, data: ByteVector(data: $1)) }
         try client.send(message: chatMessage)
     }
 
     func onlineStatus(address: TariAddress) throws -> ChatOnlineStatus? {
         let client = try existingClient
         let result = try client.checkOnlineStatus(address: address)
-        return ChatOnlineStatus(rawValue: UInt8(result)) // TODO: Type mismatch will be fixed in the next version of ChatFFI
+        return ChatOnlineStatus(rawValue: result)
     }
 
     func conversationalists() throws -> Conversationalists {
