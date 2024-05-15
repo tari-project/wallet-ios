@@ -154,8 +154,7 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
                     id: message.id,
                     isIncoming: message.isIncomming,
                     isLastInContext: message.isLastInContext,
-                    notificationsTextComponents: message.notifications
-                    ,
+                    notificationsTextComponents: message.notifications,
                     message: message.message,
                     actionButtonTitle: message.action?.title,
                     actionCallback: { [weak self] in
