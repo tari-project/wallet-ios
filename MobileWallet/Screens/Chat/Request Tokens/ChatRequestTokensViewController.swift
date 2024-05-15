@@ -1,10 +1,10 @@
-//  ChatSelectContactViewController.swift
+//  ChatRequestTokensViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 28/11/2023
+	Created by Adrian Truszczyński on 28/03/2024
 	Using Swift 5.0
-	Running on macOS 14.0
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,25 +38,20 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import Combine
 
-final class ChatSelectContactViewController: SecureViewController<ChatSelectContactView> {
+final class ChatRequestTokensViewController: SecureViewController<ChatRequestTokensView> {
 
     // MARK: - Properties
 
-    private let model: ChatSelectContactModel
+    var onSelection: ((Double) -> Void)?
 
-    private lazy var contactsPageManager = BaseContactViewPageManager(
-        contactsPlaceholderModel: .chat(actionButtonCallback: { [weak self] in self?.moveToContactBook() }),
-        favoritesContactsPlaceholderModel: .chatFavorite
-    )
-
+    private let model: ChatRequestTokensModel
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: ChatSelectContactModel) {
+    init(model: ChatRequestTokensModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
@@ -70,26 +65,20 @@ final class ChatSelectContactViewController: SecureViewController<ChatSelectCont
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
-        mainView.setup(pagerView: contactsPageManager.pagerView)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        model.fetchContacts()
     }
 
     // MARK: - Setups
 
     private func setupCallbacks() {
 
-        model.$contactsList
+        model.$amount
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.contactsPageManager.contactsList = $0 }
+            .sink { [weak self] in self?.mainView.amount = $0 }
             .store(in: &cancellables)
 
-        model.$favoriteContactsList
+        model.$isValidAmount
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.contactsPageManager.favoriteContactsList = $0 }
+            .sink { [weak self] in self?.mainView.isContinueButtonEnabled = $0 }
             .store(in: &cancellables)
 
         model.$action
@@ -98,40 +87,27 @@ final class ChatSelectContactViewController: SecureViewController<ChatSelectCont
             .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
-        model.$errorModel
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { PopUpPresenter.show(message: $0) }
-            .store(in: &cancellables)
-
-        contactsPageManager.onContactPageRowTap = { [weak self] identifier, _ in
-            self?.model.select(contactID: identifier)
+        mainView.onKeyTap = { [weak self] in
+            switch $0 {
+            case let .key(character):
+                self?.model.updateAmount(key: character)
+            case .delete:
+                self?.model.deleteLastCharacter()
+            }
         }
 
-        contactsPageManager.onFavoritesContactPageRowTap = { [weak self] identifier, _ in
-            self?.model.select(contactID: identifier)
+        mainView.onContinueButtonTap = { [weak self] in
+            self?.model.confirmValue()
         }
     }
 
-    // MARK: - Handlers
+    // MARK: Handlers
 
-    private func handle(action: ChatSelectContactModel.Action) {
+    private func handle(action: ChatRequestTokensModel.Action) {
         switch action {
-        case let .startConversation(address):
-            moveToConversationScene(address: address)
+        case let .endFlow(value):
+            onSelection?(value)
+            navigationController?.popViewController(animated: true)
         }
-    }
-
-    // MARK: - Actions
-
-    private func moveToConversationScene(address: TariAddress) {
-        let controller = ChatConversationConstructor.buildScene(address: address)
-        navigationController?.pushViewController(controller, animated: true)
-        removeFromParent()
-    }
-
-    private func moveToContactBook() {
-        navigationController?.popToRootViewController(animated: true)
-        AppRouter.moveToContactBook()
     }
 }

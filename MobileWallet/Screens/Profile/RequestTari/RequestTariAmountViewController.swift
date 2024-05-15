@@ -85,7 +85,7 @@ final class RequestTariAmountViewController: UIViewController {
             .sink { [weak self] in self?.showShareDialog(data: $0) }
             .store(in: &cancellables)
 
-        mainView.keyboard.onKeyTap = { [weak self] in
+        mainView.onKeyboardKeyTap = { [weak self] in
             switch $0 {
             case let .key(character):
                 self?.model.updateAmount(key: character)

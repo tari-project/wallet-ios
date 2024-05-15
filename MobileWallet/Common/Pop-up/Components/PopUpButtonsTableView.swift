@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 final class PopUpButtonsTableView: DynamicThemeView {
@@ -46,6 +45,8 @@ final class PopUpButtonsTableView: DynamicThemeView {
     struct Model: Identifiable, Hashable {
         let id: UUID
         let title: String
+        let textAlignment: NSTextAlignment
+        let isArrowVisible: Bool
     }
 
     // MARK: - Subviews
@@ -104,6 +105,8 @@ final class PopUpButtonsTableView: DynamicThemeView {
         dataSource = UITableViewDiffableDataSource<Int, Model>(tableView: tableView) { tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: PopUpButtonCell.self, indexPath: indexPath)
             cell.text = model.title
+            cell.textAlignment = model.textAlignment
+            cell.isArrowVisible = model.isArrowVisible
             return cell
         }
 
@@ -119,13 +122,11 @@ final class PopUpButtonsTableView: DynamicThemeView {
         footerLabel.textColor = theme.text.body
     }
 
-    func update(options: [String]) {
-
-        let models = options.map { Model(id: UUID(), title: $0) }
+    func update(options: [Model]) {
 
         var snapshot = NSDiffableDataSourceSnapshot<Int, Model>()
         snapshot.appendSections([0])
-        snapshot.appendItems(models)
+        snapshot.appendItems(options)
 
         dataSource?.apply(snapshot, animatingDifferences: false)
     }
@@ -146,11 +147,35 @@ private final class PopUpButtonCell: DynamicThemeCell {
         return view
     }()
 
+    @View private var arrowView: UIImageView = {
+        let view = UIImageView()
+        view.image = Theme.shared.images.forwardArrow
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+
+    @View private var stackView: UIStackView = {
+        let view = UIStackView()
+        return view
+    }()
+
+    @View private var separatorLine = UIView()
+
     // MARK: - Properties
 
     var text: String? {
         get { label.text }
         set { label.text = newValue }
+    }
+
+    var textAlignment: NSTextAlignment {
+        get { label.textAlignment }
+        set { label.textAlignment = newValue }
+    }
+
+    var isArrowVisible: Bool {
+        get { !arrowView.isHidden }
+        set { arrowView.isHidden = !newValue }
     }
 
     // MARK: - Initialisers
@@ -170,17 +195,23 @@ private final class PopUpButtonCell: DynamicThemeCell {
     private func setupViews() {
         selectionStyle = .none
         backgroundColor = .clear
+        isArrowVisible = false
     }
 
     private func setupConstraints() {
 
-        contentView.addSubview(label)
+        [stackView, separatorLine].forEach(contentView.addSubview)
+        [label, arrowView].forEach(stackView.addArrangedSubview)
 
         let constraints = [
-            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30.0),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -22.0)
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            separatorLine.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 22.0),
+            separatorLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            separatorLine.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            separatorLine.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            separatorLine.heightAnchor.constraint(equalToConstant: 1.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -191,5 +222,7 @@ private final class PopUpButtonCell: DynamicThemeCell {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
+        arrowView.tintColor = theme.text.heading
+        separatorLine.backgroundColor = theme.backgrounds.secondary
     }
 }

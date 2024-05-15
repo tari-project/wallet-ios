@@ -1,10 +1,10 @@
-//  RequestTariAmountModel.swift
+//  ChatRequestTokensViewConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 17/01/2022
+	Created by Adrian Truszczyński on 28/03/2024
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,40 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+enum ChatRequestTokensConstructor {
 
-final class RequestTariAmountModel: TariRequestModel {
-
-    struct DeeplinkData {
-        let message: String
-        let deeplink: URL
-    }
-
-    // MARK: - View Model
-
-    @Published private(set) var deeplink: DeeplinkData?
-    @Published private(set) var qrCode: UIImage?
-
-    // MARK: - Actions
-
-    func generateQrRequest() {
-        guard let deeplink = makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8) else { return }
-        Task {
-            qrCode = await QRCodeFactory.makeQrCode(data: deeplinkData)
-        }
-    }
-
-    func shareActionRequest() {
-        guard let deeplink = makeDeeplink() else { return }
-        let message = localized("request.deeplink.message", arguments: amount)
-        self.deeplink = DeeplinkData(message: message, deeplink: deeplink)
-    }
-
-    // MARK: - Factories
-
-    private func makeDeeplink() -> URL? {
-        guard let hex = try? Tari.shared.walletAddress.byteVector.hex, let tariAmount = try? MicroTari(tariValue: amount) else { return nil }
-        let model = TransactionsSendDeeplink(receiverAddress: hex, amount: tariAmount.rawValue, note: nil)
-        return try? DeepLinkFormatter.deeplink(model: model)
+    static func buildScene() -> ChatRequestTokensViewController {
+        let model = ChatRequestTokensModel()
+        return ChatRequestTokensViewController(model: model)
     }
 }

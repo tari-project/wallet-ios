@@ -1,10 +1,10 @@
-//  RequestTariAmountModel.swift
+//  GifManager.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 17/01/2022
+	Created by Adrian Truszczyński on 26/04/2024
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,40 +38,51 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import GiphyUISDK
 
-final class RequestTariAmountModel: TariRequestModel {
+final class GifManager {
 
-    struct DeeplinkData {
-        let message: String
-        let deeplink: URL
+    // MARK: - Properites
+
+    @Published private(set) var selectedGifID: String?
+
+    private let gifDelegateHandler = GifDelegateHandler()
+
+    // MARK: - Initialisers
+
+    init() {
+        setupCallbacks()
     }
 
-    // MARK: - View Model
+    // MARK: - Setups
 
-    @Published private(set) var deeplink: DeeplinkData?
-    @Published private(set) var qrCode: UIImage?
+    private func setupCallbacks() {
+        gifDelegateHandler.$selectedGifID
+            .assign(to: &$selectedGifID)
+    }
 
     // MARK: - Actions
 
-    func generateQrRequest() {
-        guard let deeplink = makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8) else { return }
-        Task {
-            qrCode = await QRCodeFactory.makeQrCode(data: deeplinkData)
-        }
+    func showGifPicker(controller: UIViewController) {
+        let gifController = GiphyViewController()
+        gifController.mediaTypeConfig = [.recents, .gifs, .clips, .emoji, .stickers, .text]
+        gifController.delegate = gifDelegateHandler
+        controller.present(gifController, animated: true)
+    }
+}
+
+final class GifDelegateHandler {
+
+    @Published private(set) var selectedGifID: String?
+}
+
+extension GifDelegateHandler: GiphyDelegate {
+
+    func didSelectMedia(giphyViewController: GiphyUISDK.GiphyViewController, media: GiphyUISDK.GPHMedia) {
+        selectedGifID = media.id
+        giphyViewController.dismiss(animated: true)
     }
 
-    func shareActionRequest() {
-        guard let deeplink = makeDeeplink() else { return }
-        let message = localized("request.deeplink.message", arguments: amount)
-        self.deeplink = DeeplinkData(message: message, deeplink: deeplink)
-    }
-
-    // MARK: - Factories
-
-    private func makeDeeplink() -> URL? {
-        guard let hex = try? Tari.shared.walletAddress.byteVector.hex, let tariAmount = try? MicroTari(tariValue: amount) else { return nil }
-        let model = TransactionsSendDeeplink(receiverAddress: hex, amount: tariAmount.rawValue, note: nil)
-        return try? DeepLinkFormatter.deeplink(model: model)
+    func didDismiss(controller: GiphyUISDK.GiphyViewController?) {
     }
 }

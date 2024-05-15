@@ -83,7 +83,7 @@ final class ChatClient {
         guard errorCode == 0 else { throw ChatError(code: errorCode) }
     }
 
-    func checkOnlineStatus(address: TariAddress) throws -> Int32 {
+    func checkOnlineStatus(address: TariAddress) throws -> UInt8 {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = check_online_status(pointer, address.pointer, errorCodePointer)
@@ -98,7 +98,7 @@ final class ChatClient {
         guard errorCode == 0 else { throw ChatError(code: errorCode) }
     }
 
-    func fetchMessages(address: TariAddress, limit: Int32, page: Int32) throws -> ChatMessages {
+    func fetchMessages(address: TariAddress, limit: UInt32, page: UInt32) throws -> ChatMessages {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = get_chat_messages(pointer, address.pointer, limit, page, errorCodePointer)

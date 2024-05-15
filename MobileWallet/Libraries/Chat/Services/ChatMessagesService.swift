@@ -44,7 +44,7 @@ final class ChatMessagesService: CoreChatService {
 
     // MARK: - Consts
 
-    private let fetchedMessagesLimit: Int32 = 100
+    private let fetchedMessagesLimit: UInt32 = 100
 
     // MARK: - Properties
 
@@ -95,8 +95,8 @@ final class ChatMessagesService: CoreChatService {
             .eraseToAnyPublisher()
     }
 
-    func send(message: String, receiver: TariAddress) throws {
-        try chatManager.send(message: message, receiver: receiver)
+    func send(message: String, receiver: TariAddress, metadata: [ChatMessageMetadata.MetadataType: Data]) throws {
+        try chatManager.send(message: message, receiver: receiver, metadata: metadata)
         fetchData()
     }
 
@@ -111,7 +111,7 @@ final class ChatMessagesService: CoreChatService {
         }
     }
 
-    private func fetchAllMessages(address: TariAddress, page: Int32 = 0) throws -> [ChatMessage] {
+    private func fetchAllMessages(address: TariAddress, page: UInt32 = 0) throws -> [ChatMessage] {
         let messages = try chatManager.fetchModels(address: address, limit: fetchedMessagesLimit, page: page).all
         guard !messages.isEmpty else { return messages }
         return try messages + fetchAllMessages(address: address, page: page + 1)

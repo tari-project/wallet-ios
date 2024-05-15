@@ -44,18 +44,7 @@ final class RequestTariAmountView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var amountLabel: AnimatedBalanceLabel = {
-        let view = AnimatedBalanceLabel()
-        view.animation = .type
-        view.textAlignment = .center(inset: -30)
-        return view
-    }()
-
-    @View var keyboard: AmountKeyboardView = {
-        let view = AmountKeyboardView()
-        view.setup(keys: .amountKeyboard)
-        return view
-    }()
+    @View private var amountComponentView: AmountComponentView = AmountComponentView()
 
     @View var generateQrButton: ActionButton = {
         let view = ActionButton()
@@ -69,8 +58,10 @@ final class RequestTariAmountView: DynamicThemeView {
         return view
     }()
 
-    @View var amountContentView = UIView()
-    @View var keyboardContentView = UIView()
+    var onKeyboardKeyTap: ((AmountKeyboardView.Key) -> Void)? {
+        get { amountComponentView.onKeyTap }
+        set { amountComponentView.onKeyTap = newValue }
+    }
 
     // MARK: - Properties
 
@@ -106,18 +97,13 @@ final class RequestTariAmountView: DynamicThemeView {
 
     private func setupConstraints() {
 
-        amountContentView.addSubview(amountLabel)
-        keyboardContentView.addSubview(keyboard)
-        [amountContentView, keyboardContentView, generateQrButton, shareButton].forEach(addSubview)
+        [amountComponentView, generateQrButton, shareButton].forEach(addSubview)
 
-        var constraints = [
-            amountContentView.topAnchor.constraint(equalTo: topAnchor),
-            amountContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            amountContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            keyboardContentView.topAnchor.constraint(equalTo: amountContentView.bottomAnchor),
-            keyboardContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            keyboardContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            generateQrButton.topAnchor.constraint(equalTo: keyboardContentView.bottomAnchor, constant: 12.0),
+        let constraints = [
+            amountComponentView.topAnchor.constraint(equalTo: topAnchor),
+            amountComponentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            amountComponentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            generateQrButton.topAnchor.constraint(equalTo: amountComponentView.bottomAnchor, constant: 12.0),
             generateQrButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             generateQrButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -25.0),
             shareButton.topAnchor.constraint(equalTo: generateQrButton.topAnchor),
@@ -127,31 +113,7 @@ final class RequestTariAmountView: DynamicThemeView {
             shareButton.widthAnchor.constraint(equalTo: shareButton.heightAnchor)
         ]
 
-        let amountContainnterConstraints = [
-            amountLabel.leadingAnchor.constraint(equalTo: amountContentView.leadingAnchor),
-            amountLabel.trailingAnchor.constraint(equalTo: amountContentView.trailingAnchor),
-            amountLabel.centerYAnchor.constraint(equalTo: amountContentView.centerYAnchor)
-        ]
-
-        let keyboardBottomConstraint: NSLayoutConstraint
-
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            keyboardBottomConstraint = keyboard.bottomAnchor.constraint(equalTo: keyboardContentView.bottomAnchor)
-        } else {
-            let amountContentViewHeightConstraint = amountContentView.heightAnchor.constraint(equalToConstant: 220.0)
-            amountContentViewHeightConstraint.priority = .defaultLow
-            constraints.append(amountContentViewHeightConstraint)
-            keyboardBottomConstraint = keyboard.bottomAnchor.constraint(lessThanOrEqualTo: keyboardContentView.bottomAnchor)
-        }
-
-        let keyboardContainterConstraints = [
-            keyboard.topAnchor.constraint(equalTo: keyboardContentView.topAnchor),
-            keyboard.leadingAnchor.constraint(equalTo: keyboardContentView.leadingAnchor),
-            keyboard.trailingAnchor.constraint(equalTo: keyboardContentView.trailingAnchor),
-            keyboardBottomConstraint
-        ]
-
-        NSLayoutConstraint.activate(constraints + amountContainnterConstraints + keyboardContainterConstraints)
+        NSLayoutConstraint.activate(constraints)
     }
 
     // MARK: - Updates
@@ -159,38 +121,9 @@ final class RequestTariAmountView: DynamicThemeView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
-        updateAmountLabelColor(theme: theme)
     }
 
     private func update(amount: String) {
-
-        let amountAttributedText = NSMutableAttributedString(
-            string: amount,
-            attributes: [.font: Theme.shared.fonts.amountLabel]
-        )
-
-        let gemImageString: NSAttributedString = {
-            let gemAttachment = NSTextAttachment()
-            gemAttachment.image = Theme.shared.images.currencySymbol
-            gemAttachment.bounds = CGRect(x: 0.0, y: 0.0, width: 21.0, height: 21.0)
-            return NSAttributedString(attachment: gemAttachment)
-        }()
-
-        amountAttributedText.insert(gemImageString, at: 0)
-        amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
-
-        amountLabel.attributedText = amountAttributedText
-
-        updateAmountLabelColor(theme: theme)
-    }
-
-    private func updateAmountLabelColor(theme: ColorTheme) {
-
-        guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
-
-        let amountText = NSMutableAttributedString(attributedString: attributedText)
-        amountText.addAttributes([.foregroundColor: color], range: NSRange(location: 0, length: amountText.length))
-
-        amountLabel.attributedText = amountText
+        amountComponentView.amount = amount
     }
 }

@@ -62,7 +62,7 @@ final class ContactsLivenessData {
         }
     }
 
-    var lastSeen: Int64 {
+    var lastSeen: UInt64 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
