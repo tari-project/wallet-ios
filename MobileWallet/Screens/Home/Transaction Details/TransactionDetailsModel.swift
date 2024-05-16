@@ -122,7 +122,7 @@ final class TransactionDetailsModel {
             transactionState = try fetchTransactionState()
             transactionDirection = try fetchTransactionDirection()
             emojiIdViewModel = try fetchEmojiIdViewModel()
-            isContactSectionVisible = try !transaction.isOneSidedPayment
+            isContactSectionVisible = try !transaction.isOneSidedPayment && !transaction.isCoinbase
             subtitle = try fetchSubtitle()
             amount = try fetchAmount()
             fee = try fetchFee()
@@ -209,9 +209,9 @@ final class TransactionDetailsModel {
         }
 
         switch try transaction.status {
-        case .unknown, .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .queued:
+        case .unknown, .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .queued, .coinbaseUnconfirmed, .coinbaseNotInBlockChain:
             return localized("tx_detail.payment_in_progress")
-        case .minedConfirmed, .imported, .rejected, .fauxUnconfirmed, .fauxConfirmed, .coinbase:
+        case .minedConfirmed, .imported, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .coinbase, .coinbaseConfirmed:
             return try transaction.isOutboundTransaction ? localized("tx_detail.payment_sent") : localized("tx_detail.payment_received")
         }
     }
@@ -251,7 +251,7 @@ final class TransactionDetailsModel {
                 return .txCompleted(confirmationCount: 1)
             }
             return .txCompleted(confirmationCount: confirmationCount + 1)
-        case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .fauxUnconfirmed, .fauxConfirmed, .queued, .coinbase:
+        case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbase, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain:
             return nil
         }
     }
@@ -283,9 +283,8 @@ final class TransactionDetailsModel {
     }
 
     private func fetchLinkToOpen() -> URL? {
-        guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
-        let request = [transactionNounce, transactionSignature].joined(separator: "/")
-        return URL(string: TariSettings.shared.blockExplorerKernelUrl + "\(request)")
+        guard let transactionNounce, let transactionSignature else { return nil }
+        return NetworkManager.shared.selectedNetwork.blockExplorerKernelURL(nounce: transactionNounce, signature: transactionSignature)
     }
 
     private func handle(transaction: Transaction) {
@@ -331,7 +330,7 @@ final class TransactionDetailsModel {
     private func handleTransactionKernel() {
 
         defer {
-            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil && TariSettings.shared.isBlockExplorerAvaiable
+            isBlockExplorerActionAvailable = NetworkManager.shared.selectedNetwork.isBlockExplorerAvailable && transactionNounce != nil && transactionSignature != nil
         }
 
         guard let kernel = try? (transaction as? CompletedTransaction)?.transactionKernel else {

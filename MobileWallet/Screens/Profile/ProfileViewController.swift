@@ -42,13 +42,11 @@ import UIKit
 import Combine
 import YatLib
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: SecureViewController<ProfileView> {
 
     // MARK: - Properties
 
-    private let mainView = ProfileView()
     private let model = ProfileModel()
-
     private weak var qrCodePopUpContentView: PopUpQRContentView?
     private var cancellables = Set<AnyCancellable>()
 
@@ -64,10 +62,6 @@ final class ProfileViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -1,10 +1,10 @@
-//  AddBaseNodeModel.swift
+//  SecureViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 19/07/2021
+	Created by Adrian Truszczyński on 20/02/2024
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,34 +38,24 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class AddBaseNodeModel {
+import UIKit
 
-    final class ViewModel {
-        @Published var name: String = ""
-        @Published var peer: String = ""
-        @Published var isFinished: Bool = false
-        @Published var errorMessage: String?
+class SecureViewController<MainView: UIView>: UIViewController {
+
+    // MARK: - Views
+
+    var mainView: MainView { secureWrapper.view }
+
+    var screenshotPreventionStatus: ScreenshotPreventionStatus {
+        get { secureWrapper.screenshotPreventionStatus }
+        set { secureWrapper.screenshotPreventionStatus = newValue }
     }
 
-    // MARK: - Properties
+    private let secureWrapper = SecureWrapperView<MainView>()
 
-    let viewModel = ViewModel()
+    // MARK: - View lifecycle
 
-    // MARK: - Actions
-
-    func saveNode() {
-
-        guard !viewModel.name.isEmpty else {
-            viewModel.errorMessage = localized("add_base_node.error.invalid_peer")
-            return
-        }
-
-        do {
-            try Tari.shared.connection.addBaseNode(name: viewModel.name, peer: viewModel.peer)
-            viewModel.isFinished = true
-            viewModel.errorMessage = nil
-        } catch {
-            viewModel.errorMessage = localized("add_base_node.error.invalid_peer")
-        }
+    override func loadView() {
+        view = secureWrapper
     }
 }

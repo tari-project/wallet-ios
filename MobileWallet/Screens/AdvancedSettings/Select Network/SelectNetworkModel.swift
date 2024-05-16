@@ -61,7 +61,7 @@ final class SelectNetworkModel {
         viewModel.selectedIndex = networks.firstIndex { $0.name == NetworkManager.shared.selectedNetwork.name }
         viewModel.networkModels = networks
             .enumerated()
-            .map { NetworkModel(networkName: $1.presentedName, isSelected: $0 == viewModel.selectedIndex) }
+            .map { NetworkModel(networkName: $1.fullPresentedName, isSelected: $0 == viewModel.selectedIndex) }
     }
 
     func update(selectedIndex: Int) {

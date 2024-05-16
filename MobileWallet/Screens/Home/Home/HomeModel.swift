@@ -87,9 +87,8 @@ final class HomeModel {
             .sink { [weak self] _ in self?.updateAvatar() }
             .store(in: &cancellables)
 
-        let transactionsPublisher = Tari.shared.transactions.all
+        let transactionsPublisher = Tari.shared.transactions.$all
             .map { $0.filterDuplicates() }
-            .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [Transaction]())
 
         Publishers.CombineLatest(transactionsPublisher, onContactUpdated)
@@ -132,7 +131,7 @@ final class HomeModel {
         case (.disconnected, _, _, _),
             (.connected, .disconnected, _, _),
             (.connected, .disconnecting, _, _):
-            connectionStatusIcon = .icons.network.off
+            connectionStatusIcon = .Icons.Network.off
         case (.connected, .connecting, _, _),
             (.connected, .waitingForAuthorization, _, _),
             (.connected, .portsOpen, _, _),
@@ -140,15 +139,15 @@ final class HomeModel {
             (.connected, .connected, .connecting, _),
             (.connected, .connected, .online, .idle),
             (.connected, .connected, .online, .failed):
-            connectionStatusIcon = .icons.network.limited
+            connectionStatusIcon = .Icons.Network.limited
         case (.connected, .connected, .online, .syncing),
             (.connected, .connected, .online, .synced):
-            connectionStatusIcon = .icons.network.full
+            connectionStatusIcon = .Icons.Network.full
         }
     }
 
     private func handle(walletBalance: WalletBalance) {
-        balance = MicroTari(walletBalance.available + walletBalance.incoming).formatted
+        balance = MicroTari(walletBalance.total).formatted
         availableBalance = MicroTari(walletBalance.available).formatted
     }
 

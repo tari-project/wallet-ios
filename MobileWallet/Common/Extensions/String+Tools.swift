@@ -40,6 +40,27 @@
 
 extension String {
 
+    static func isBaseNodeAddress(hex: String, address: String?) -> Bool {
+
+        if #available(iOS 16.0, *) {
+            guard hex.ranges(of: /^[a-f0-9]{64}$/).count == 1 else { return false }
+            guard let address else { return true }
+            return address.ranges(of: /^\/onion3\/[a-z0-9]{56}:[0-9]{2,6}$/).count == 1 || address.ranges(of: /^\/ip4\/[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\/tcp\/[0-9]{2,6}$/).count == 1
+        } else {
+            guard let hexRegex = try? NSRegularExpression(pattern: "^[a-f0-9]{64}$") else { return false }
+            guard hexRegex.matches(in: hex, range: NSRange(location: 0, length: hex.count)).count == 1 else { return false }
+            guard let address else { return true }
+
+            guard let onionRegex = try? NSRegularExpression(pattern: "^\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}$"),
+                    let ip4Regex = try? NSRegularExpression(pattern: "^\\/ip4\\/[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\\/tcp\\/[0-9]{2,6}$") else {
+                return false
+            }
+
+            let range = NSRange(location: 0, length: address.count)
+            return onionRegex.matches(in: address, options: [], range: range).count == 1 || ip4Regex.matches(in: address, range: range).count == 1
+        }
+    }
+
     func splitElementsInBrackets() -> [String] {
         guard #available(iOS 16.0, *) else { return components(separatedBy: CharacterSet(charactersIn: "[]")).map { String($0) }}
         return split(separator: /\[|\]/).map { String($0) }

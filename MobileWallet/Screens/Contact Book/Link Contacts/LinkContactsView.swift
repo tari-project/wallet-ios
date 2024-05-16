@@ -184,7 +184,7 @@ final class LinkContactsView: BaseNavigationContentView {
         snapshot.appendSections([0])
         snapshot.appendItems(viewModels)
 
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     private func update(placeholderViewModel: ContactBookListPlaceholder.ViewModel?) {

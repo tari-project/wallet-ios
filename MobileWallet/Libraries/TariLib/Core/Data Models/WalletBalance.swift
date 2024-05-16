@@ -49,5 +49,5 @@ struct WalletBalance: Equatable {
 }
 
 extension WalletBalance {
-    var total: UInt64 { available + incoming }
+    var total: UInt64 { available + incoming + timeLocked }
 }

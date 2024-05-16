@@ -84,6 +84,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         case blockExplorer
 
         case selectTheme
+        case screenRecording
         case bluetoothConfiguration
         case torBridgeConfiguration
         case selectNetwork
@@ -95,8 +96,9 @@ final class SettingsViewController: SettingsParentTableViewController {
             case .backUpWallet: return localized("settings.item.wallet_backups")
             case .dataCollection: return localized("settings.item.data_collection")
 
-            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .selectTheme: return localized("settings.item.select_theme")
+            case .screenRecording: return localized("settings.item.screen_recording_settings")
+            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
@@ -114,35 +116,38 @@ final class SettingsViewController: SettingsParentTableViewController {
         }
     }
 
-    private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
+    private let backUpWalletItem = SystemMenuTableViewCellItem(icon: .Icons.Settings.walletBackups, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
+    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .Icons.Settings.camera, title: SettingsItemTitle.screenRecording.rawValue)
 
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
         backUpWalletItem,
-        SystemMenuTableViewCellItem(icon: .icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
+        SystemMenuTableViewCellItem(icon: .Icons.General.analytics, title: SettingsItemTitle.dataCollection.rawValue)
     ]
 
-    private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
-        SystemMenuTableViewCellItem(icon: .icons.settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDeleteIcon, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
+    private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.theme, title: SettingsItemTitle.selectTheme.rawValue),
+        screenRecordingItem,
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.bridgeConfig, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.network, title: SettingsItemTitle.selectNetwork.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.baseNode, title: SettingsItemTitle.selectBaseNode.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
     ]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = {
+
         var items = [
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsAboutIcon, title: SettingsItemTitle.about.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsReportBugIcon, title: SettingsItemTitle.reportBug.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsVisitTariIcon, title: SettingsItemTitle.visitTari.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsContributeIcon, title: SettingsItemTitle.contributeToTariAurora.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsUserAgreementIcon, title: SettingsItemTitle.userAgreement.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsPrivacyPolicyIcon, title: SettingsItemTitle.privacyPolicy.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDisclaimerIcon, title: SettingsItemTitle.disclaimer.rawValue)
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.about, title: SettingsItemTitle.about.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.reportBug, title: SettingsItemTitle.reportBug.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.visitTari, title: SettingsItemTitle.visitTari.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.contribute, title: SettingsItemTitle.contributeToTariAurora.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.userAgreement, title: SettingsItemTitle.userAgreement.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.privacyPolicy, title: SettingsItemTitle.privacyPolicy.rawValue),
+            SystemMenuTableViewCellItem(icon: .Icons.Settings.disclaimer, title: SettingsItemTitle.disclaimer.rawValue),
         ]
 
-        if TariSettings.shared.isBlockExplorerAvaiable {
-            items.append(SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBlockExplorerIcon, title: SettingsItemTitle.blockExplorer.rawValue))
+        if NetworkManager.shared.selectedNetwork.isBlockExplorerAvailable {
+            items.append(SystemMenuTableViewCellItem(icon: .Icons.Settings.blockExplorer, title: SettingsItemTitle.blockExplorer.rawValue))
         }
 
         return items
@@ -154,7 +159,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         .userAgreement: URL(string: TariSettings.shared.userAgreementUrl),
         .privacyPolicy: URL(string: TariSettings.shared.privacyPolicyUrl),
         .disclaimer: URL(string: TariSettings.shared.disclaimer),
-        .blockExplorer: URL(string: TariSettings.shared.blockExplorerUrl)
+        .blockExplorer: NetworkManager.shared.selectedNetwork.blockExplorerURL
     ]
 
     private let profileIndexPath = IndexPath(row: 0, section: 0)
@@ -175,9 +180,15 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func setupCallbacks() {
+
         BackupManager.shared.$syncState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.updateItems(syncStatus: $0) }
+            .store(in: &cancellables)
+
+        SecurityManager.shared.$areScreenshotsDisabled
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.screenRecordingItem.mark = $0 ? .none : .attention }
             .store(in: &cancellables)
     }
 
@@ -205,6 +216,11 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onSelectThemeAction() {
         let controller = ThemeSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func onScreenRecordingSettingsAction() {
+        let controller = ScreenRecordingSettingsConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -400,14 +416,16 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 onSelectThemeAction()
             case 1:
-                onBluetoothSettingsAction()
+                onScreenRecordingSettingsAction()
             case 2:
-                onBridgeConfigurationAction()
+                onBluetoothSettingsAction()
             case 3:
-                onSelectNetworkAction()
+                onBridgeConfigurationAction()
             case 4:
-                onSelectBaseNodeAction()
+                onSelectNetworkAction()
             case 5:
+                onSelectBaseNodeAction()
+            case 6:
                 onDeleteWalletAction()
             default:
                 break

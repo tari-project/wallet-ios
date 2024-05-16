@@ -54,20 +54,20 @@ final class SelectBaseNodeModel {
 
     // MARK: - View Model
 
-    @Published var nodes: [NodeModel] = []
-    @Published var errorMessaage: MessageModel?
+    @Published private(set) var nodes: [NodeModel] = []
+    @Published private(set) var errorMessaage: MessageModel?
 
     // MARK: - Properties
 
-    private var predefinedNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.baseNodes }
-    private var avaiableNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.allBaseNodes }
+    private var predefinedNodes: [BaseNode] { NetworkManager.shared.defaultBaseNodes }
+    private var avaiableNodes: [BaseNode] { NetworkManager.shared.allBaseNodes }
     private var selectedNodeIndex: Int?
 
     // MARK: - Setups
 
     private func updateSelectedNodeIndex() {
-        let selectedNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
-        selectedNodeIndex = avaiableNodes.firstIndex { $0 == selectedNode }
+        let selectedBaseNode = NetworkManager.shared.selectedBaseNode
+        selectedNodeIndex = avaiableNodes.firstIndex { $0.peer == selectedBaseNode?.peer }
     }
 
     private func updateViewModelNodes() {
@@ -103,11 +103,26 @@ final class SelectBaseNodeModel {
         }
     }
 
+    func addNode(name: String, hex: String, address: String) {
+
+        guard !name.isEmpty else {
+            errorMessaage = MessageModel(title: localized("add_base_node.error.title"), message: localized("add_base_node.error.no_name"), type: .error)
+            return
+        }
+
+        do {
+            try Tari.shared.connection.addBaseNode(name: name, hex: hex, address: address)
+            refreshData()
+        } catch {
+            errorMessaage = MessageModel(title: localized("add_base_node.error.title"), message: localized("add_base_node.error.invalid_peer"), type: .error)
+        }
+    }
+
     func deleteNode(index: Int) {
         guard avaiableNodes.count >= index else { return }
         let node = avaiableNodes[index]
-        guard let index = NetworkManager.shared.selectedNetwork.customBaseNodes.firstIndex(of: node) else { return }
-        NetworkManager.shared.selectedNetwork.customBaseNodes.remove(at: index)
+        guard let index = NetworkManager.shared.customBaseNodes.firstIndex(of: node) else { return }
+        NetworkManager.shared.customBaseNodes.remove(at: index)
         refreshData()
     }
 }

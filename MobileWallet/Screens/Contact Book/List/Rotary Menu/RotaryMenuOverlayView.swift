@@ -54,18 +54,18 @@ final class RotaryMenuOverlayView: UIView {
 
     @View private var switchSideButton: RoundedButton = {
         let view = RoundedButton()
-        view.setImage(.icons.rotaryMenu.switchSide, for: .normal)
-        view.backgroundColor = .static.white?.withAlphaComponent(0.4)
-        view.tintColor = .static.black
+        view.setImage(.Icons.RotaryMenu.switchSide, for: .normal)
+        view.backgroundColor = .Static.white.withAlphaComponent(0.4)
+        view.tintColor = .Static.black
         view.alpha = 0.0
         return view
     }()
 
     @View private var closeButton: RoundedButton = {
         let view = RoundedButton()
-        view.setImage(.icons.rotaryMenu.close, for: .normal)
-        view.backgroundColor = .static.white?.withAlphaComponent(0.8)
-        view.tintColor = .static.black
+        view.setImage(.Icons.RotaryMenu.close, for: .normal)
+        view.backgroundColor = .Static.white.withAlphaComponent(0.8)
+        view.tintColor = .Static.black
         view.alpha = 0.0
         return view
     }()
@@ -111,7 +111,7 @@ final class RotaryMenuOverlayView: UIView {
     // MARK: - Setups
 
     private func setupViews() {
-        backgroundColor = .static.popupOverlay
+        backgroundColor = .Static.popupOverlay
     }
 
     private func setupConstraints() {

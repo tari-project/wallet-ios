@@ -77,6 +77,7 @@
 "transaction.one_sided_payment.avatar" = "➡️";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
+"transaction.coinbase.user_placeholder" = "🪙 Coinbase";
 "transaction.normal.title.pending.part.2" = "sent a payment";
 "transaction.normal.title.inbound.part.2" = "paid you";
 "transaction.normal.title.outbound.part.1" = "You paid";
@@ -213,6 +214,7 @@
 "settings.last_successful_backup.with_param" = "Last successful backup: %@";
 
 "settings.item.select_theme" = "Select Theme";
+"settings.item.screen_recording_settings" = "Screen Recording";
 "settings.item.bluetooth_settings" = "Bluetooth Settings";
 "settings.item.wallet_backups" = "Wallet Backups";
 "settings.item.data_collection" = "Data Collection";
@@ -588,19 +590,26 @@
 "select_base_node.cell.delete" = "Delete";
 
 /* Add Base Node View */
-"add_base_node.title" = "Add New Base Node";
-"add_base_node.section.name" = "Name";
-"add_base_node.section.peer" = "Peer";
-"add_base_node.button.save" = "Save And Activate";
+"add_base_node.form.title" = "Add Base Node";
+"add_base_node.form.text_field.placeholder.name" = "Name";
+"add_base_node.form.text_field.placeholder.hex" = "Hex";
+"add_base_node.form.text_field.placeholder.address" = "Address";
+"add_base_node.form.button.save" = "Save";
 "add_base_node.error.title" = "Error";
-"add_base_node.error.no_name" = "Name field can't be empty. Please add the nane of the node and try again.";
+"add_base_node.error.no_name" = "Name field can't be empty. Please add the name of the node and try again.";
 "add_base_node.error.invalid_peer" = "Invalid peer. Please correct the peer address and try again.";
-"add_base_node.error.button" = "OK";
 
 /* Restore Wallet From Seed Words */
+"restore_from_seed_words.custom_node_name" = "Recovery Base Node";
+"restore_from_seed_words.title" = "Restore With Seed Phrase";
 "restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet";
-"restore_from_seed_words.button.select_base_node" = "Select base node";
+"restore_from_seed_words.button.select_base_node.select" = "Select Custom Base Node";
+"restore_from_seed_words.button.select_base_node.edit" = "Edit Base Node";
 "restore_from_seed_words.button.submit" = "Restore Wallet";
+"restore_from_seed_words.form.title" = "Enter Custom Base Node";
+"restore_from_seed_words.form.placeholder.hex" = "Hex";
+"restore_from_seed_words.form.placeholder.address" = "Address";
+"restore_from_seed_words.form.error.message" = "Oops, looks like the address you entered isn't good. We had to revert your change.";
 "restore_from_seed_words.autocompletion_toolbar.label.start_typing" = "Start typing to see suggestions";
 "restore_from_seed_words.autocompletion_toolbar.label.no_suggestions" = "There are no suggestions for the phrase";
 "restore_from_seed_words.error.title" = "Error";
@@ -693,6 +702,14 @@
 "theme_switcher.element.title.light" = "Light";
 "theme_switcher.element.title.dark" = "Dark";
 "theme_switcher.element.title.purple" = "Purple";
+
+/* Screen Recording Settings */
+
+"screen_recording.title" = "Screen Recording";
+"screen_recording.label.description" = "Screen recording and taking screenshots can capture your wallet data and transactions. To keep your wallet data private, you can disable this setting.\n\nNote: Screen recording and screenshots will always be disabled for the Seed Phrase screen.";
+"screen_recording.label.confirmation" = "Allow screen recording";
+"screen_recording.pop_up.confirmation.title" = "Screen recording will be enabled";
+"screen_recording.pop_up.confirmation.message" = "You will be able to record your screen. Are you sure you want to proceed?";
 
 /* Bluetooth Settings */
 
@@ -888,3 +905,13 @@
 "tracking.pop_up.consent.message" = "We're always striving to make Aurora better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
 "tracking.pop_up.consent.button.yes" = "Yes, I consent";
 "tracking.pop_up.consent.button.no" = "No, I decline";
+
+/* Address Poisoning Prevention */
+
+"address_poisoning.pop_up.title" = "Heads Up!";
+"address_poisoning.pop_up.message" = "Looks like there are %d very similar addresses in your contact book. Please double check that you’re sending to the right one!";
+"address_poisoning.pop_up.label.tick_message" = "This is a trusted contact";
+"address_poisoning.pop_up.label.trusted_info" = "Marking a contact as trusted means you trust this person and we won’t ask you to double check the address again.";
+"address_poisoning.label.transaction_count" = "No of transactions: %d";
+"address_poisoning.label.last_transction" = "Last transaction date: %@";
+"address_poisoning.label.last_transction.never" = "Never";

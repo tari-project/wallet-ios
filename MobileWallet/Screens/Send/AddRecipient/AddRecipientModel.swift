@@ -82,8 +82,8 @@ final class AddRecipientModel {
     @Published private var contactModels: [ContactsManager.Model] = []
 
     private weak var bleTask: BLECentralTask?
-    private var incomingUserProfile: UserProfileDeeplink?
 
+    private var incomingUserProfile: UserProfileDeeplink?
     private var contactDictornary: [UUID: ContactsManager.Model] = [:]
     private var cancellables = Set<AnyCancellable>()
 
@@ -174,15 +174,15 @@ final class AddRecipientModel {
             if let rawAmount = deeplink.amount {
                 amount = MicroTari(rawAmount)
             }
-            action = .sendTokens(paymentInfo: PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
+            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
         } else if let deeplink = deeplink as? UserProfileDeeplink {
-            action = .sendTokens(paymentInfo: PaymentInfo(address: deeplink.tariAddress, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.tariAddress, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
         }
     }
 
     func select(elementID: UUID) {
         guard let model = contactDictornary[elementID]?.internalModel else { return }
-        action = .sendTokens(paymentInfo: PaymentInfo(address: model.hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
+        handleAddressSelection(paymentInfo: PaymentInfo(address: model.hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
     func fetchTransactionDataViaBLE() {
@@ -210,14 +210,14 @@ final class AddRecipientModel {
     }
 
     func confirmIncomingTransaction() {
+
         guard let incomingUserProfile else {
             action = .show(dialog: .bleFailureDialog(message: ErrorMessageManager.errorMessage(forError: nil)))
             return
         }
 
-        let paymentInfo = PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil)
         self.incomingUserProfile = nil
-        action = .sendTokens(paymentInfo: paymentInfo)
+        handleAddressSelection(paymentInfo: PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
     }
 
     func cancelIncomingTransaction() {
@@ -236,10 +236,14 @@ final class AddRecipientModel {
             return
         }
 
-        action = .sendTokens(paymentInfo: PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
+        handleAddressSelection(paymentInfo: PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
     // MARK: - Handlers
+
+    private func handleAddressSelection(paymentInfo: PaymentInfo) {
+        action = .sendTokens(paymentInfo: paymentInfo)
+    }
 
     private func filter(contacts: [[ContactsManager.Model]], searchText: String) -> [[ContactsManager.Model]] {
 

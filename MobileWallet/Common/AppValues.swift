@@ -39,6 +39,10 @@
 */
 
 enum AppValues {
+    static let general = GeneralValues.self
+}
+
+enum GeneralValues {
     static var isSimulator: Bool {
         #if targetEnvironment(simulator)
         return true

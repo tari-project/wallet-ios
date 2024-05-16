@@ -46,7 +46,7 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
 
     @View private var imageView: PaintBackgroundImageView = {
         let view = PaintBackgroundImageView()
-        view.image = .contactBook.placeholders.transactionList
+        view.image = .Images.ContactBook.Placeholders.transactionList
         return view
     }()
 
@@ -148,7 +148,7 @@ final class PaintBackgroundImageView: DynamicThemeView {
 
     @View private var backgroundView: UIImageView = {
         let view = UIImageView()
-        view.image = .security.onboarding.background
+        view.image = .Images.Security.Onboarding.background
         view.contentMode = .scaleAspectFit
         return view
     }()

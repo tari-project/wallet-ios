@@ -58,7 +58,7 @@ class SettingsParentViewController: DynamicThemeViewController {
 
     private func setupConstraints() {
 
-        view.addSubview(navigationBar)
+        mainView.addSubview(navigationBar)
 
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
@@ -71,7 +71,7 @@ class SettingsParentViewController: DynamicThemeViewController {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        view.backgroundColor = theme.backgrounds.primary
+        mainView.backgroundColor = theme.backgrounds.primary
     }
 }
 

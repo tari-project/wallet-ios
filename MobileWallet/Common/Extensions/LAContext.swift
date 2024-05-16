@@ -79,7 +79,7 @@ extension LAContext {
     func authenticateUser(reason: AuthenticateUserReason = .logIn, showFailedDialog: Bool = true, onSuccess: @escaping () -> Void) {
 
         // Skip auth on simulator, quicker for development
-        guard !AppValues.isSimulator else {
+        guard !AppValues.general.isSimulator else {
             onSuccess()
             return
         }

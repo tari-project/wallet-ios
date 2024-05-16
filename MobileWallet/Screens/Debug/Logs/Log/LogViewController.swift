@@ -38,16 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import Combine
 import TariCommon
 
-final class LogViewController: UIViewController {
+final class LogViewController: SecureViewController<LogView> {
 
     // MARK: - Properties
 
     private let model: LogModel
-    private let mainView = LogView()
     private var tableDataSource: UITableViewDiffableDataSource<Int, LogLineModel>?
     private var cancellables = Set<AnyCancellable>()
 
@@ -63,10 +61,6 @@ final class LogViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,7 +117,7 @@ final class LogViewController: UIViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Int, LogLineModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(items)
-        tableDataSource?.apply(snapshot: snapshot)
+        tableDataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     private func showFiltersPopUp(options: [LogFilterModel]) {
@@ -275,7 +269,7 @@ private class PopUpSwitchListViewCell: DynamicThemeCell {
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15.0),
             switchView.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8.0),
-            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4.0),
             switchView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ]
 

@@ -269,6 +269,8 @@ final class UTXOsWalletModel {
                 heightScale = heightDiff / CGFloat(amountDiff)
             }
 
+            let networkBlockHeight = Tari.shared.blockHeight
+
             utxoModels = utxosData.data
                 .sorted {
                     switch sortMethod {
@@ -283,13 +285,14 @@ final class UTXOsWalletModel {
                     }
                 }
                 .compactMap { [weak self] in
-                    guard let self = self else { return nil }
+                    guard let self else { return nil }
 
                     let tileHeight = CGFloat($0.model.value - minAmount) * heightScale + minTileHeight
                     let timestamp = Date(timeIntervalSince1970: TimeInterval($0.model.mined_timestamp) / 1000.0)
                     let date = timestamp > Date(timeIntervalSince1970: 0) ? self.dateFormatter.string(from: timestamp) : nil
                     let time = timestamp > Date(timeIntervalSince1970: 0) ? self.timeFormatter.string(from: timestamp) : nil
                     let blockHeight = $0.model.mined_height > 0 ? "\($0.model.mined_height)" : nil
+                    let isSelectable = $0.status == .mined && $0.model.lock_height <= networkBlockHeight
                     return UtxoModel(
                         uuid: UUID(),
                         amount: $0.model.value,
@@ -300,7 +303,7 @@ final class UTXOsWalletModel {
                         time: time,
                         commitment: $0.model.commitment.string,
                         blockHeight: blockHeight,
-                        isSelectable: $0.status == .mined
+                        isSelectable: isSelectable
                     )
                 }
 
@@ -329,9 +332,9 @@ extension UtxoStatus {
     var icon: UIImage? {
         switch self {
         case .mined:
-            return Theme.shared.images.utxoTick
+            return .Icons.General.tick
         case .unconfirmed:
-            return Theme.shared.images.utxoStatusHourglass
+            return .Icons.UTXO.hourglass
         }
     }
 

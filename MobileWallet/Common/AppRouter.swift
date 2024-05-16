@@ -130,7 +130,7 @@ enum AppRouter {
         tabBar?.present(controller, animated: true)
     }
 
-    static func presentOnTop(controller: UIViewController) {
+    static func presentOnTop(controller: UIViewController, onFullScreen: Bool = false) {
 
         guard var topViewController = UIApplication.shared.topController else { return }
 
@@ -138,7 +138,11 @@ enum AppRouter {
             topViewController = presentedViewController
         }
 
-        topViewController.present(controller, animated: true)
+        if onFullScreen {
+            topViewController.presentOnFullScreen(controller)
+        } else {
+            topViewController.present(controller, animated: true)
+        }
     }
 
     static func presentVerifiySeedPhrase() {
@@ -169,11 +173,20 @@ enum AppRouter {
         tabBar?.present(navigationController, animated: true)
     }
 
-    static func presentSendTransaction(paymentInfo: PaymentInfo) {
-        let controller = AddAmountViewController(paymentInfo: paymentInfo)
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
-        navigationController.isNavigationBarHidden = true
-        tabBar?.presentOnFullScreen(navigationController)
+    @MainActor static func presentSendTransaction(paymentInfo: PaymentInfo, presenter: UINavigationController? = nil) {
+        AddressPoisoningDataHandler.handleAddressSelection(paymentInfo: paymentInfo) { selectedPaymentInfo in
+
+            let controller = AddAmountViewController(paymentInfo: selectedPaymentInfo)
+
+            guard let presenter else {
+                let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+                navigationController.isNavigationBarHidden = true
+                presentOnTop(controller: navigationController, onFullScreen: true)
+                return
+            }
+
+            presenter.pushViewController(controller, animated: true)
+        }
     }
 
     @MainActor static func presentQrCodeScanner(expectedDataTypes: [QRCodeScannerModel.ExpectedType], onExpectedDataScan: ((QRCodeData) -> Void)?) {

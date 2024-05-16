@@ -41,7 +41,7 @@
 import UIKit
 import Combine
 
-final class TransactionsViewController: UIViewController {
+final class TransactionsViewController: SecureViewController<TransactionsView> {
 
     fileprivate enum Page: Int {
         case send
@@ -50,7 +50,6 @@ final class TransactionsViewController: UIViewController {
 
     // MARK: - Properties
 
-    private let mainView = TransactionsView()
     private let pagerViewController = TariPagerViewController()
     private let addRecipientViewController = AddRecipientConstructor.buildScene()
     private let requestTariAmountViewController = RequestTariAmountViewController()
@@ -58,10 +57,6 @@ final class TransactionsViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,7 +79,7 @@ final class TransactionsViewController: UIViewController {
     private func setupCallbacks() {
 
         addRecipientViewController.onContactSelected = { [weak self] in
-            self?.moveToAddAmount(paymentInfo: $0)
+            AppRouter.presentSendTransaction(paymentInfo: $0, presenter: self?.navigationController)
         }
 
         pagerViewController.pageIndex
@@ -96,13 +91,6 @@ final class TransactionsViewController: UIViewController {
 
     private func updateTitle(index: Int) {
         mainView.navigationBar.title = Page(rawValue: index)?.navBarTitle
-    }
-
-    // MARK: - Actions
-
-    private func moveToAddAmount(paymentInfo: PaymentInfo) {
-        let controller = AddAmountViewController(paymentInfo: paymentInfo)
-        navigationController?.pushViewController(controller, animated: true)
     }
 }
 

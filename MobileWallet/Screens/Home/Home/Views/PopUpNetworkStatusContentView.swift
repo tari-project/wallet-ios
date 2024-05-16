@@ -69,25 +69,25 @@ final class PopUpNetworkStatusContentView: UIView {
 
     @View private var networkStatusView: StatusView = {
         let view = StatusView()
-        view.update(icon: Theme.shared.images.connectionInternetIcon)
+        view.update(icon: .Icons.ConnectionDetails.internet)
         return view
     }()
 
     @View private var torStatusView: StatusView = {
         let view = StatusView()
-        view.update(icon: Theme.shared.images.connectionTorIcon)
+        view.update(icon: .Icons.ConnectionDetails.tor)
         return view
     }()
 
     @View private var baseNodeConnectionStatusView: StatusView = {
         let view = StatusView()
-        view.update(icon: Theme.shared.images.settingsBaseNodeIcon)
+        view.update(icon: .Icons.Settings.baseNode)
         return view
     }()
 
     @View private var baseNodeSyncStatusView: StatusView = {
         let view = StatusView()
-        view.update(icon: Theme.shared.images.connectionSyncIcon)
+        view.update(icon: .Icons.ConnectionDetails.sync)
         return view
     }()
 

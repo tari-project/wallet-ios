@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import TariCommon
 
 final class SelectBaseNodeCell: DynamicThemeCell {
 
@@ -48,40 +48,36 @@ final class SelectBaseNodeCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    private let titleLabel: UILabel = {
+    @View private var titleLabel: UILabel = {
        let view = UILabel()
-        view.font = Theme.shared.fonts.systemTableViewCell
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
 
-    private let subtitleLabel: UILabel = {
+    @View private var subtitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.systemTableViewCellMarkDescriptionSmall
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.font = .Avenir.medium.withSize(11.0)
+        view.numberOfLines = 0
         return view
     }()
 
-    private let labelsStackView: UIStackView = {
+    @View private var labelsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 4.0
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    private let tickView: UIImageView = {
+    @View private var tickView: UIImageView = {
         let view = UIImageView(image: Theme.shared.images.scheduledIcon)
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    private let deleteButton: UIButton = {
+    @View private var deleteButton: UIButton = {
         let view = UIButton()
-        view.titleLabel?.font = UIFont.Avenir.heavy.withSize(14.0)
+        view.titleLabel?.font = .Avenir.heavy.withSize(14.0)
         view.setTitle(localized("select_base_node.cell.delete"), for: .normal)
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
@@ -114,21 +110,19 @@ final class SelectBaseNodeCell: DynamicThemeCell {
         [labelsStackView, deleteButton, tickView].forEach(contentView.addSubview)
         [titleLabel, subtitleLabel].forEach(labelsStackView.addArrangedSubview)
 
-        let heightConstraint = contentView.heightAnchor.constraint(equalToConstant: 65.0)
-        heightConstraint.priority = .sceneSizeStayPut
-
         let constraints = [
-            labelsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            labelsStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8.0),
             labelsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
-            deleteButton.topAnchor.constraint(equalTo: topAnchor),
+            labelsStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8.0),
+            deleteButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             deleteButton.leadingAnchor.constraint(equalTo: labelsStackView.trailingAnchor),
-            deleteButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.0),
+            deleteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12.0),
             deleteButton.bottomAnchor.constraint(equalTo: bottomAnchor),
-            tickView.centerYAnchor.constraint(equalTo: centerYAnchor),
             tickView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.0),
+            tickView.centerYAnchor.constraint(equalTo: centerYAnchor),
             tickView.widthAnchor.constraint(equalToConstant: 21.0),
             tickView.heightAnchor.constraint(equalToConstant: 21.0),
-            heightConstraint
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 65.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

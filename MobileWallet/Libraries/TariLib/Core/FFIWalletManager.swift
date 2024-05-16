@@ -88,11 +88,20 @@ final class FFIWalletManager {
 
     // MARK: - Actions
 
-    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
+    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32) throws {
         do {
             let beforeWalletCreationDate = Date()
             Logger.log(message: "Wallet will be created", domain: .general, level: .info)
-            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName, logVerbosity: logVerbosity)
+            wallet = try Wallet(
+                commsConfig: commsConfig,
+                loggingFilePath: logFilePath,
+                seedWords: seedWords,
+                passphrase: passphrase,
+                networkName: networkName,
+                dnsPeer: dnsPeer,
+                isDnsSecureOn: isDnsSecureOn,
+                logVerbosity: logVerbosity
+            )
             Logger.log(message: "Wallet created after \(-beforeWalletCreationDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
         } catch {
             Logger.log(message: "Wallet wasn't created: \(error)", domain: .general, level: .info)
@@ -285,16 +294,28 @@ final class FFIWalletManager {
         return TariFeePerGramStats(pointer: pointer)
     }
 
-    func addBaseNodePeer(publicKeyPointer: OpaquePointer, address: String) throws -> Bool {
+    func set(baseNodePeer: PublicKey, address: String?) throws -> Bool {
 
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_add_base_node_peer(wallet.pointer, publicKeyPointer, address, errorCodePointer)
+        let result = wallet_set_base_node_peer(wallet.pointer, baseNodePeer.pointer, address, errorCodePointer)
 
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
+    }
+
+    func seedPeers() throws -> PublicKeys {
+
+        let wallet = try exisingWallet
+
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = wallet_get_seed_peers(wallet.pointer, errorCodePointer)
+
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return PublicKeys(pointer: result)
     }
 
     func utxos() throws -> [TariUtxo] {

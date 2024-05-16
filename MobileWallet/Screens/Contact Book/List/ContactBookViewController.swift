@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class ContactBookViewController: UIViewController, OverlayPresentable {
+final class ContactBookViewController: SecureViewController<ContactBookView>, OverlayPresentable {
 
     // MARK: - Properties
 
     private let model: ContactBookModel
-    private let mainView = ContactBookView()
     private let pagerViewController = TariPagerViewController()
 
     private let contactsPageViewController = ContactBookContactListViewController()
@@ -67,10 +66,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,7 +94,7 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         ]
 
         favoritesPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
-            image: .contactBook.placeholders.favoritesContactsList,
+            image: .Images.ContactBook.Placeholders.favourites,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part2.bold"), style: .bold)
@@ -219,7 +214,7 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         guard isPermissionGranted else {
 
             contactsPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
-                image: .contactBook.placeholders.contactsList,
+                image: .Images.ContactBook.Placeholders.list,
                 titleComponents: [
                     StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part1"), style: .normal),
                     StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part2.bold"), style: .bold)
@@ -237,7 +232,7 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         }
 
         contactsPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
-            image: .contactBook.placeholders.contactsList,
+            image: .Images.ContactBook.Placeholders.list,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part2.bold"), style: .bold)
@@ -319,7 +314,9 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
     }
 
     private func moveToSendTokensScreen(paymentInfo: PaymentInfo) {
-        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+        Task { @MainActor in
+            AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+        }
     }
 
     private func moveToLinkContactsScreen(model: ContactsManager.Model) {

@@ -64,7 +64,7 @@ final class SplashView: UIView {
         view.text = localized("splash.title")
         view.font = .Avenir.black.withSize(30.0)
         view.interlineSpacing(spacingValue: 0)
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.textAlignment = .center
         view.numberOfLines = 2
         view.adjustsFontSizeToFitWidth = true
@@ -91,14 +91,14 @@ final class SplashView: UIView {
     @View private var tariIconView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.currencySymbol
-        view.tintColor = .static.white
+        view.tintColor = .Static.white
         return view
     }()
 
     @View private var versionLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.heavy.withSize(9.0)
-        view.textColor = .static.mediumGrey
+        view.textColor = .Static.mediumGrey
         view.textAlignment = .center
         return view
     }()
@@ -148,7 +148,7 @@ final class SplashView: UIView {
     // MARK: - Setups
 
     private func setupViews() {
-        backgroundColor = .static.black
+        backgroundColor = .Static.black
     }
 
     private func setupConstraints() {
@@ -216,7 +216,7 @@ final class SplashView: UIView {
 
     private func setupDisclamerView() {
 
-        guard let textColor = UIColor.static.mediumGrey else { return }
+        let textColor = UIColor.Static.mediumGrey
 
         disclaimerTextView.linkTextAttributes = [
             NSAttributedString.Key.foregroundColor: textColor,

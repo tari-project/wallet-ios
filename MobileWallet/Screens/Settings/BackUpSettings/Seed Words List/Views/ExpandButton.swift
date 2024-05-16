@@ -53,13 +53,13 @@ final class ExpandButton: DynamicThemeView {
 
     @View private var topArrowView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.expandButtonArrow
+        view.image = .Icons.SeedWordsList.expandButtonArrow
         return view
     }()
 
     @View private var bottomArrowView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.expandButtonArrow
+        view.image = .Icons.SeedWordsList.expandButtonArrow
         return view
     }()
 

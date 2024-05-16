@@ -41,15 +41,15 @@
 struct NetworkSettings: Codable, Equatable {
 
     let name: String
-    let selectedBaseNode: BaseNode
+    let selectedBaseNode: BaseNode?
     let customBaseNodes: [BaseNode]
+    let blockHeight: UInt64
 
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.name == rhs.name }
 }
 
 extension NetworkSettings {
-    func update(selectedBaseNode: BaseNode) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
-    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
-    func update(isCloudBackupEnabled: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
-    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
+    func update(selectedBaseNode: BaseNode?) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
+    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
+    func update(blockHeight: UInt64) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
 }

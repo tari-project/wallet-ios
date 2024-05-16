@@ -41,11 +41,9 @@
 import UIKit
 
 @available(*, deprecated, message: "This class is deprecated and will be removed later. Please user PopUpPresenter.showQRCodeDialog() instead.")
-final class QRCodePresentationController: UIViewController {
+final class QRCodePresentationController: SecureViewController<QRCodePresentationView> {
 
     // MARK: - Properties
-
-    private let mainView = QRCodePresentationView()
 
     var onShareButtonTap: (() -> Void)?
 
@@ -64,10 +62,6 @@ final class QRCodePresentationController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -53,7 +53,7 @@ final class ValuePickerView: DynamicThemeView {
 
     @View private var minusButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(Theme.shared.images.utxoWalletPickerMinus, for: .normal)
+        view.setImage(.Icons.UTXO.valuePickerMinus, for: .normal)
         return view
     }()
 
@@ -72,7 +72,7 @@ final class ValuePickerView: DynamicThemeView {
 
     @View private var plusButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(Theme.shared.images.utxoWalletPickerPlus, for: .normal)
+        view.setImage(.Icons.UTXO.valuePickerPlus, for: .normal)
         return view
     }()
 

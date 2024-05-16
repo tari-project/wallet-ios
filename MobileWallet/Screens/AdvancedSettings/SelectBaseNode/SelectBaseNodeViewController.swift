@@ -54,7 +54,6 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
-
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -121,8 +120,9 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
     // MARK: - Actions
 
     private func presentAddBaseNodeScreen() {
-        let controller = AddBaseNodeViewController()
-        navigationController?.pushViewController(controller, animated: true)
+        FormOverlayPresenter.showAddBaseNodeForm(presenter: self) { [weak self] name, hex, address in
+            self?.model.addNode(name: name, hex: hex, address: address)
+        }
     }
 }
 

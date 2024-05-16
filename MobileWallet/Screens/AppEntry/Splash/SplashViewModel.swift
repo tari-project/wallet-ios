@@ -91,7 +91,7 @@ final class SplashViewModel {
     private func setupCallbacks() {
 
         NetworkManager.shared.$selectedNetwork
-            .map(\.presentedName)
+            .map(\.fullPresentedName)
             .sink { [weak self] in self?.networkName = $0 }
             .store(in: &cancellables)
 
@@ -109,7 +109,7 @@ final class SplashViewModel {
 
     private func setupData() {
         appVersion = AppVersionFormatter.version
-        allNetworkNames = TariNetwork.all.map { $0.presentedName }
+        allNetworkNames = TariNetwork.all.map { $0.fullPresentedName }
     }
 
     // MARK: - View Model Actions
@@ -141,11 +141,12 @@ final class SplashViewModel {
     }
 
     private func openWallet() {
-
         Task {
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
+
+                let isMigrationPerformed = await MigrationManager.performPeerDBMigration()
 
                 guard await validateWallet() else {
                     self.deleteWallet()
@@ -156,6 +157,10 @@ final class SplashViewModel {
                 isWalletConnected = false
 
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
+
+                guard isMigrationPerformed else { return }
+                let randomBaseNode = try NetworkManager.shared.randomBaseNode()
+                try Tari.shared.connection.select(baseNode: randomBaseNode)
             } catch {
                 self.handle(error: error)
             }

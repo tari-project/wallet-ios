@@ -104,6 +104,7 @@ final class TransactionFormatter {
     }
 
     private func contactName(transaction: Transaction) throws -> String {
+        guard try !transaction.isCoinbase else { return localized("transaction.coinbase.user_placeholder") }
         let contact = try contact(transaction: transaction)
         return contact?.name ?? localized("transaction.one_sided_payment.inbound_user_placeholder")
     }
@@ -129,7 +130,8 @@ final class TransactionFormatter {
 
     private func amountViewModel(transaction: Transaction) throws -> AmountBadge.ViewModel {
 
-        let amount = try MicroTari(transaction.amount).formattedWithNegativeOperator
+        let tariAmount = try MicroTari(transaction.amount)
+        let amount = try transaction.isOutboundTransaction ? tariAmount.formattedWithNegativeOperator : tariAmount.formattedWithOperator
 
         let valueType: AmountBadge.ValueType
 
@@ -165,7 +167,7 @@ final class TransactionFormatter {
                 return localized("refresh_view.final_processing")
             }
             return localized("refresh_view.final_processing_with_param", arguments: confirmationCount + 1, requiredConfirmationCount + 1)
-        case .imported, .coinbase, .minedConfirmed, .rejected, .fauxUnconfirmed, .fauxConfirmed, .queued, .txNullError, .unknown:
+        case .imported, .coinbase, .minedConfirmed, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain, .txNullError, .unknown:
             return nil
         }
     }

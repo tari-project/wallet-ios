@@ -53,7 +53,7 @@ final class TokenView: DynamicThemeCollectionCell {
 
     @View private var deleteIconView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.cancelGrey
+        view.image = .Icons.General.roundedCancelButton
         return view
     }()
 

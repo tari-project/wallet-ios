@@ -104,12 +104,13 @@ final class Tari: MainServiceable {
 
     @Published private(set) var isWalletConnected: Bool = false
     @Published private(set) var torError: TorError?
+    @Published private(set) var blockHeight: UInt64 = NetworkManager.shared.blockHeight
 
     var canAutomaticalyReconnectWallet: Bool = false
     @Published var isDisconnectionDisabled: Bool = false
 
-    private let torManager = TorManager()
     private let walletManager = FFIWalletManager()
+    private lazy var torManager = TorManager(logPath: logFilePath)
     private var cancellables = Set<AnyCancellable>()
 
     private var passphrase: String {
@@ -183,6 +184,15 @@ final class Tari: MainServiceable {
         torManager.$error
             .assignPublisher(to: \.torError, on: self)
             .store(in: &cancellables)
+
+        WalletCallbacksManager.shared.baseNodeState
+            .compactMap { try? $0.heightOfTheLongestChain }
+            .removeDuplicates()
+            .sink { [weak self] in
+                NetworkManager.shared.blockHeight = $0
+                self?.blockHeight = $0
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -240,12 +250,20 @@ final class Tari: MainServiceable {
             try createWalletDirectory()
         }
 
-        let logFilePath = logFilePath
         Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
 
         let logVerbosity: Int32 = TariSettings.shared.environment == .debug ? 11 : 4
 
-        try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name, logVerbosity: logVerbosity)
+        try walletManager.connectWallet(
+            commsConfig: commsConfig,
+            logFilePath: logFilePath,
+            seedWords: walletSeedWords,
+            passphrase: passphrase,
+            networkName: selectedNetwork.name,
+            dnsPeer: selectedNetwork.dnsPeer,
+            isDnsSecureOn: false,
+            logVerbosity: logVerbosity
+        )
         resetServices()
     }
 
@@ -314,13 +332,18 @@ final class Tari: MainServiceable {
 
     private func switchBaseNode() throws {
 
-        let selectedBaseNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
-        guard NetworkManager.shared.selectedNetwork.baseNodes.contains(selectedBaseNode), NetworkManager.shared.selectedNetwork.baseNodes.count > 1 else { return }
+        guard isWalletConnected else { return }
+
+        let selectedBaseNode = NetworkManager.shared.selectedBaseNode
+
+        if let selectedBaseNode, selectedBaseNode.isCustomBaseNode {
+            return
+        }
 
         var newBaseNode: BaseNode
 
         repeat {
-            newBaseNode = try NetworkManager.shared.selectedNetwork.randomNode()
+            newBaseNode = try NetworkManager.shared.randomBaseNode()
         } while newBaseNode == selectedBaseNode
 
         try connection.select(baseNode: newBaseNode)

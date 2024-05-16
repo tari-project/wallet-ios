@@ -36,7 +36,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
+import TariCommon
 
 final class EmojiIdView: DynamicThemeView {
 
@@ -48,7 +48,7 @@ final class EmojiIdView: DynamicThemeView {
     weak var blackoutParent: UIView?
     private lazy var blackoutView: UIView = {
         let view = UIView()
-        view.backgroundColor = .static.popupOverlay
+        view.backgroundColor = .Static.popupOverlay
         guard let bounds =  UIApplication.shared.firstWindow?.bounds else { return view }
         view.frame = bounds
         view.alpha = 0.0
@@ -97,6 +97,36 @@ final class EmojiIdView: DynamicThemeView {
     }
 
     private weak var superVC: UIViewController?
+    @View private var secureContentView = SecureWrapperView<UIView>()
+
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupSecureContentView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+
+    private func setupSecureContentView() {
+
+        guard let window = UIApplication.shared.firstWindow else { return }
+        window.addSubview(secureContentView)
+
+        let constraints = [
+            secureContentView.topAnchor.constraint(equalTo: window.topAnchor),
+            secureContentView.leadingAnchor.constraint(equalTo: window.leadingAnchor),
+            secureContentView.trailingAnchor.constraint(equalTo: window.trailingAnchor),
+            secureContentView.bottomAnchor.constraint(equalTo: window.bottomAnchor)
+        ]
+
+        secureContentView.isHidden = true
+        NSLayoutConstraint.activate(constraints)
+    }
 
     // MARK: - Updates
 
@@ -123,7 +153,7 @@ final class EmojiIdView: DynamicThemeView {
     private func updateCopyView(theme: ColorTheme) {
         copiedLabel?.textColor = theme.text.links
         containerView?.layer.borderColor = theme.system.green?.cgColor
-        containerView?.backgroundColor = .static.white?.withAlphaComponent(0.75)
+        containerView?.backgroundColor = .Static.white.withAlphaComponent(0.75)
         greenView?.backgroundColor = theme.system.green?.withAlphaComponent(0.12)
     }
 
@@ -249,6 +279,8 @@ final class EmojiIdView: DynamicThemeView {
 
     func expand(completion: (() -> Void)? = nil, callTapCompletion: Bool = false, animated: Bool = true) {
         guard let scrollViewFrame = condensedEmojiIdContainer.globalFrame else { return }
+        secureContentView.isHidden = false
+        secureContentView.isUserInteractionEnabled = blackoutWhileExpanded
         tapActionIsDisabled = true
         expanded = true
         // If they're typing somewhere, close the keyboard
@@ -257,7 +289,7 @@ final class EmojiIdView: DynamicThemeView {
         // fade in blackout
         fadeView(view: condensedEmojiIdContainer, fadeOut: true)
         if blackoutWhileExpanded {
-            UIApplication.shared.firstWindow?.addSubview(blackoutView)
+            addViewToSecureContentView(view: blackoutView)
             fadeView(view: blackoutView, fadeOut: false, maxAlpha: 0.65)
             showCopyEmojiIdButton()
             showHexPubKeyCopyTip()
@@ -273,7 +305,7 @@ final class EmojiIdView: DynamicThemeView {
             width: scrollViewTargetWidth,
             height: scrollViewFrame.height
         )
-        UIApplication.shared.firstWindow?.addSubview(expandedEmojiIdScrollView)
+        addViewToSecureContentView(view: expandedEmojiIdScrollView)
         if animated {
             expandedEmojiIdScrollView.alpha = 0
             expandedEmojiIdScrollView.setContentOffset(
@@ -350,6 +382,7 @@ final class EmojiIdView: DynamicThemeView {
         if !animated {
             if blackoutWhileExpanded {
                 blackoutView.removeFromSuperview()
+                secureContentView.isHidden = true
             }
             expandedEmojiIdScrollView.removeFromSuperview()
             condensedEmojiIdContainer.alpha = 1
@@ -361,6 +394,7 @@ final class EmojiIdView: DynamicThemeView {
         if self.blackoutWhileExpanded {
             self.fadeView(view: self.blackoutView, fadeOut: true) { [weak self] in
                 self?.blackoutView.removeFromSuperview()
+                self?.secureContentView.isHidden = true
             }
         }
         // fade out scroll view
@@ -370,6 +404,7 @@ final class EmojiIdView: DynamicThemeView {
         // fade in condensed emoji id
         self.fadeView(view: self.condensedEmojiIdContainer, fadeOut: false) { [weak self] in
             self?.tapActionIsDisabled = false
+            self?.secureContentView.isHidden = true
             if callTapCompletion == true {
                 self?.tapToExpand?(false)
             }
@@ -414,6 +449,7 @@ final class EmojiIdView: DynamicThemeView {
     deinit {
         UIApplication.shared.menuTabBarController?.tabBar.alpha = 1
         UIApplication.shared.menuTabBarController?.tabBar.isUserInteractionEnabled = true
+        secureContentView.removeFromSuperview()
     }
 }
 
@@ -439,7 +475,7 @@ extension EmojiIdView {
             }
         }
 
-        UIApplication.shared.firstWindow?.addSubview(emojiMenu)
+        addViewToSecureContentView(view: emojiMenu)
         guard let globalFrame = condensedEmojiIdContainer.globalFrame else { return }
         let emojiMenuSize = CGSize(width: 119, height: 37)
         emojiMenu.alpha = 0.0
@@ -468,11 +504,13 @@ extension EmojiIdView {
         hexPubKeyTipView = UIView()
         hexPubKeyTipLabel = UILabel()
         guard let tipView = hexPubKeyTipView,
-              let tipLabel = hexPubKeyTipLabel,
-              let parentView = UIApplication.shared.firstWindow else {
+              let tipLabel = hexPubKeyTipLabel else {
             return
         }
-        parentView.addSubview(tipView)
+
+        let parentView = secureContentView.view
+
+        addViewToSecureContentView(view: tipView)
         parentView.bringSubviewToFront(tipView)
 
         tipView.layer.cornerRadius = 4
@@ -557,6 +595,11 @@ extension EmojiIdView {
         }) { _ in
             completion?()
         }
+    }
+
+    private func addViewToSecureContentView(view: UIView) {
+        secureContentView.view.addSubview(view)
+        UIApplication.shared.firstWindow?.bringSubviewToFront(secureContentView)
     }
 }
 
@@ -684,8 +727,8 @@ extension EmojiIdView {
 
         updateCopyView(theme: theme)
 
-        UIApplication.shared.firstWindow?.addSubview(containerView)
-        UIApplication.shared.firstWindow?.bringSubviewToFront(containerView)
+        addViewToSecureContentView(view: containerView)
+        secureContentView.view.bringSubviewToFront(containerView)
 
         UIView.animate(withDuration: CATransaction.animationDuration(),
                        animations: {

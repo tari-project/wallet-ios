@@ -46,7 +46,7 @@ final class HomeTransactionsPlaceholderView: HomeGlassView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.font = .Avenir.medium.withSize(12.0)
         view.numberOfLines = 0
         return view

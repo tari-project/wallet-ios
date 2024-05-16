@@ -40,16 +40,20 @@
 
 final class TariConnectionService: CoreTariService {
 
+    enum InternalError: Error {
+            case invalidPeerString
+        }
+
     // MARK: - Actions
 
     @discardableResult func select(baseNode: BaseNode) throws -> Bool {
         services.validation.reset()
         do {
-            let result = try walletManager.addBaseNodePeer(publicKeyPointer: baseNode.publicKey.pointer, address: baseNode.address)
-            NetworkManager.shared.selectedNetwork.selectedBaseNode = baseNode
+            let result = try walletManager.set(baseNodePeer: baseNode.makePublicKey(), address: baseNode.address)
+            NetworkManager.shared.selectedBaseNode = baseNode
             return result
         } catch FFIWalletManager.GeneralError.unableToCreateWallet {
-            NetworkManager.shared.selectedNetwork.selectedBaseNode = baseNode
+            NetworkManager.shared.selectedBaseNode = baseNode
             return false
         } catch {
             throw error
@@ -57,12 +61,26 @@ final class TariConnectionService: CoreTariService {
     }
 
     @discardableResult func selectCurrentNode() throws -> Bool {
-        try select(baseNode: NetworkManager.shared.selectedNetwork.selectedBaseNode)
+        guard let selectedBaseNode = NetworkManager.shared.selectedBaseNode else { return false }
+        return try select(baseNode: selectedBaseNode)
+    }
+
+    func addBaseNode(name: String, hex: String, address: String?) throws {
+        let baseNode = BaseNode(name: name, hex: hex, address: address)
+        NetworkManager.shared.customBaseNodes.append(baseNode)
+        try select(baseNode: baseNode)
     }
 
     func addBaseNode(name: String, peer: String) throws {
-        let baseNode = try BaseNode(name: name, peer: peer)
-        NetworkManager.shared.selectedNetwork.customBaseNodes.append(baseNode)
-        try select(baseNode: baseNode)
+        let components = peer.components(separatedBy: "::")
+        guard components.count == 2 else { throw InternalError.invalidPeerString }
+        try addBaseNode(name: name, hex: components[0], address: components[1])
+    }
+
+    func defaultBaseNodePeers() throws -> [BaseNode] {
+        try walletManager.seedPeers()
+            .all
+            .enumerated()
+            .map { try BaseNode(name: "\(NetworkManager.shared.selectedNetwork.presentedName) \($0 + 1)", hex: $1.byteVector.hex, address: nil) }
     }
 }

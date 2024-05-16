@@ -59,6 +59,10 @@ final class PublicKey {
 
     // MARK: - Initialisers
 
+    init(pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
+
     init(hex: String) throws {
 
         guard hex.count == 64, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }

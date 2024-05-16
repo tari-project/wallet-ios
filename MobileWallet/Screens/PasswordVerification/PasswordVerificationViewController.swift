@@ -40,7 +40,7 @@
 
 import UIKit
 
-class PasswordVerificationViewController: SettingsParentViewController {
+final class PasswordVerificationViewController: SettingsParentViewController {
     enum PasswordVerificationScreenStyle {
         case restore
         case change
@@ -175,7 +175,7 @@ extension PasswordVerificationViewController {
         scrollView.showsVerticalScrollIndicator = false
 
         scrollView.backgroundColor = .clear
-        view.addSubview(scrollView)
+        mainView.addSubview(scrollView)
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
@@ -206,7 +206,7 @@ extension PasswordVerificationViewController {
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
         continueButton.variation = .disabled
 
-        view.addSubview(continueButton)
+        mainView.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 
         continueButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,

@@ -54,7 +54,7 @@ final class ContactSearchView: DynamicThemeView {
 
     @View private var yatIconView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.yatLogo?.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
+        view.image = .Icons.Yat.logo.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -63,7 +63,7 @@ final class ContactSearchView: DynamicThemeView {
 
     @View private(set) var qrButton: PulseButton = {
         let view = PulseButton()
-        view.setImage(.icons.qr, for: .normal)
+        view.setImage(.Icons.General.QR, for: .normal)
         view.contentHorizontalAlignment = .fill
         view.contentVerticalAlignment = .fill
         view.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
@@ -116,6 +116,7 @@ final class ContactSearchView: DynamicThemeView {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         layer.borderColor = theme.backgrounds.secondary?.cgColor
+        previewView.backgroundColor = theme.backgrounds.primary
         qrButton.tintColor = theme.brand.purple
         yatIconView.tintColor = theme.icons.default
     }
@@ -136,7 +137,8 @@ final class ContactSearchView: DynamicThemeView {
             previewView.topAnchor.constraint(equalTo: textField.topAnchor),
             previewView.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
             previewView.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
-            previewView.bottomAnchor.constraint(equalTo: textField.bottomAnchor)
+            previewView.bottomAnchor.constraint(equalTo: textField.bottomAnchor),
+            heightAnchor.constraint(equalToConstant: 46.0)
         ]
 
         updateViews()

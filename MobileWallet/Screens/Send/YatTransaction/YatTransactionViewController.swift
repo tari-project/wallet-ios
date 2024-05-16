@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class YatTransactionViewController: UIViewController, TransactionViewControllable {
+final class YatTransactionViewController: SecureViewController<YatTransactionView>, TransactionViewControllable {
 
     var onCompletion: ((WalletTransactionsManager.TransactionError?) -> Void)?
 
-    private let mainView = YatTransactionView()
     private let model: YatTransactionModel
-
     private var cancellables = Set<AnyCancellable>()
 
     init(model: YatTransactionModel) {
@@ -58,10 +56,6 @@ final class YatTransactionViewController: UIViewController, TransactionViewContr
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = mainView
     }
 
     override func viewDidLoad() {

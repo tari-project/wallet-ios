@@ -78,7 +78,7 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     @View private var yatButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(Theme.shared.images.yatButtonOn, for: .disabled)
+        view.setImage(.Icons.Yat.buttonOn, for: .disabled)
         return view
     }()
 
@@ -254,13 +254,13 @@ final class ContactDetailsView: BaseNavigationContentView {
             yatLabel.isHidden = true
             yatButton.isHidden = false
             yatButton.isEnabled = true
-            yatButton.setImage(Theme.shared.images.yatButtonOn, for: .normal)
+            yatButton.setImage(.Icons.Yat.buttonOn, for: .normal)
         case .yatVisible:
             emojiIdView.isHidden = true
             yatLabel.isHidden = false
             yatButton.isHidden = false
             yatButton.isEnabled = true
-            yatButton.setImage(Theme.shared.images.yatButtonOff, for: .normal)
+            yatButton.setImage(.Icons.Yat.buttonOff, for: .normal)
         }
     }
 

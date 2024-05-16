@@ -41,21 +41,16 @@
 import UIKit
 import Combine
 
-final class SeedWordsRecoveryProgressViewController: UIViewController {
+final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWordsRecoveryProgressView> {
 
     // MARK: - Properties
 
     var onSuccess: (() -> Void)?
 
-    private let mainView = SeedWordsRecoveryProgressView()
     private let model = SeedWordsRecoveryProgressModel()
     private var cancelables: Set<AnyCancellable> = []
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -41,11 +41,10 @@
 import UIKit
 import Combine
 
-final class RestoreWalletFromSeedsViewController: SettingsParentViewController, OverlayPresentable {
+final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWalletFromSeedsView>, OverlayPresentable {
 
     // MARK: - Properties
 
-    private let mainView = RestoreWalletFromSeedsView()
     private let model = RestoreWalletFromSeedsModel()
     private var cancelables = Set<AnyCancellable>()
 
@@ -62,26 +61,6 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
     }
 
     // MARK: - Setups
-
-    override func setupViews() {
-        super.setupViews()
-        setupConstraints()
-    }
-
-    private func setupConstraints() {
-
-        view.addSubview(mainView)
-        mainView.translatesAutoresizingMaskIntoConstraints = false
-
-        let constraints = [
-            mainView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            mainView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mainView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
 
     private func setupFeedbacks() {
 
@@ -121,6 +100,12 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
             .assign(to: \.seedWords, on: mainView.tokenView)
             .store(in: &cancelables)
 
+        Publishers.CombineLatest(model.viewModel.$customBaseNodeHex, model.viewModel.$customBaseNodeAddress)
+            .receive(on: DispatchQueue.main)
+            .map { $0 != nil && $1 != nil }
+            .assign(to: \.isCustomBaseNodeSet, on: mainView)
+            .store(in: &cancelables)
+
         mainView.tokenView.$inputText
             .receive(on: DispatchQueue.main)
             .assign(to: \.inputText, on: model)
@@ -139,7 +124,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         }
 
         mainView.selectBaseNodeButton.onTap = { [weak self] in
-            self?.moveToSelectBaseNodeScene()
+            self?.showCustomBaseNodeForm()
         }
 
         mainView.submitButton.onTap = { [weak self] in
@@ -161,7 +146,9 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         show(overlay: overlay)
     }
 
-    private func moveToSelectBaseNodeScene() {
-        navigationController?.pushViewController(SelectBaseNodeViewController(), animated: true)
+    private func showCustomBaseNodeForm() {
+        FormOverlayPresenter.showSelectCustomBaseNodeForm(hex: model.viewModel.customBaseNodeHex, address: model.viewModel.customBaseNodeAddress, presenter: self) { [weak self] in
+            self?.model.updateCustomBaseNode(hex: $0, address: $1)
+        }
     }
 }

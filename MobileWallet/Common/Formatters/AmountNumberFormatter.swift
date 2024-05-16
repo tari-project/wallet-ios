@@ -60,8 +60,6 @@ final class AmountNumberFormatter {
         return formatter
     }()
 
-    private var cancellables = Set<AnyCancellable>()
-
     init() {
         setupBindings()
     }
@@ -71,23 +69,12 @@ final class AmountNumberFormatter {
         let inputStream = $rawAmount
             .filter { [unowned self] in self.isValidNumber(string: $0) }
 
-        if #available(iOS 14.0, *) {
-            inputStream
-                .compactMap { [weak self] in self?.format(string: $0) }
-                .assign(to: &$amount)
-            inputStream
-                .compactMap { [weak self] in self?.formatter.number(from: $0)?.doubleValue }
-                .assign(to: &$amountValue)
-        } else {
-            inputStream
-                .compactMap { [weak self] in self?.format(string: $0) }
-                .assign(to: \.amount, on: self)
-                .store(in: &cancellables)
-            inputStream
-                .compactMap { [weak self] in self?.formatter.number(from: $0)?.doubleValue }
-                .assign(to: \.amountValue, on: self)
-                .store(in: &cancellables)
-        }
+        inputStream
+            .compactMap { [weak self] in self?.format(string: $0) }
+            .assign(to: &$amount)
+        inputStream
+            .compactMap { [weak self] in self?.formatter.number(from: $0)?.doubleValue }
+            .assign(to: &$amountValue)
     }
 
     func append(string: String) {

@@ -38,13 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import Combine
 import TariCommon
 
-final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
+final class RestoreWalletFromSeedsView: BaseNavigationContentView {
 
     // MARK: - Subviews
+
+    @View private var mainContentView = KeyboardAvoidingContentView()
 
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
@@ -59,7 +59,6 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
     @View private(set) var selectBaseNodeButton: TextButton = {
         let view = TextButton()
         view.setVariation(.secondary)
-        view.setTitle(localized("restore_from_seed_words.button.select_base_node"), for: .normal)
         return view
     }()
 
@@ -69,10 +68,20 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
         return view
     }()
 
+    // MARK: - Properties
+
+    var isCustomBaseNodeSet: Bool = false {
+        didSet {
+            let title = isCustomBaseNodeSet ? localized("restore_from_seed_words.button.select_base_node.edit") : localized("restore_from_seed_words.button.select_base_node.select")
+            selectBaseNodeButton.setTitle(title, for: .normal)
+        }
+    }
+
     // MARK: - Initializers
 
     override init() {
         super.init()
+        setupViews()
         setupConstraints()
     }
 
@@ -82,25 +91,34 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
 
     // MARK: - Setups
 
+    private func setupViews() {
+        navigationBar.title = localized("restore_from_seed_words.title")
+    }
+
     private func setupConstraints() {
 
-        [descriptionLabel, tokenView, selectBaseNodeButton, submitButton].forEach(contentView.addSubview)
+        addSubview(mainContentView)
+        [descriptionLabel, tokenView, selectBaseNodeButton, submitButton].forEach(mainContentView.contentView.addSubview)
 
         let constraints = [
-            descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
-            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
+            mainContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            mainContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            mainContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            mainContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            descriptionLabel.topAnchor.constraint(equalTo: mainContentView.contentView.topAnchor, constant: 20.0),
+            descriptionLabel.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
+            descriptionLabel.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
             tokenView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.0),
-            tokenView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
-            tokenView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
+            tokenView.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
+            tokenView.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
             tokenView.heightAnchor.constraint(equalToConstant: 272.0),
             selectBaseNodeButton.topAnchor.constraint(greaterThanOrEqualTo: tokenView.bottomAnchor, constant: 20.0),
-            selectBaseNodeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
-            selectBaseNodeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
+            selectBaseNodeButton.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
+            selectBaseNodeButton.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
             submitButton.topAnchor.constraint(equalTo: selectBaseNodeButton.bottomAnchor, constant: 20.0),
-            submitButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
-            submitButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
-            submitButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -28.0)
+            submitButton.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
+            submitButton.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
+            submitButton.bottomAnchor.constraint(equalTo: mainContentView.contentView.bottomAnchor, constant: -28.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

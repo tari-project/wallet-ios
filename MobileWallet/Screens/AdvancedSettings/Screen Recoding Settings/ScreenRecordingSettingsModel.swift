@@ -1,10 +1,10 @@
-//  UITableViewDiffableDataSource+Update.swift
+//  ScreenRecordingSettingsModel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 19/10/2022
+	Created by Adrian Truszczyński on 23/02/2024
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,15 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Combine
 
-extension UITableViewDiffableDataSource {
+final class ScreenRecordingSettingsModel {
 
-    func apply(snapshot: NSDiffableDataSourceSnapshot<SectionIdentifierType, ItemIdentifierType>, completion: (() -> Void)? = nil) {
-        if #available(iOS 15.0, *) {
-            applySnapshotUsingReloadData(snapshot, completion: completion)
-        } else {
-            apply(snapshot, animatingDifferences: false, completion: completion)
-        }
+    // MARK: - View Model
+
+    @Published var areScreenshotsEnabled: Bool = !SecurityManager.shared.areScreenshotsDisabled {
+        didSet { SecurityManager.shared.areScreenshotsDisabled = !areScreenshotsEnabled }
     }
 }

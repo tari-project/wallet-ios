@@ -52,6 +52,7 @@ final class TariTransactionsService: CoreTariService {
     @Published private(set) var cancelled: [CompletedTransaction] = []
     @Published private(set) var pendingInbound: [PendingInboundTransaction] = []
     @Published private(set) var pendingOutbound: [PendingOutboundTransaction] = []
+    @Published private(set) var all: [Transaction] = []
     @Published private(set) var error: Error?
 
     var requiredConfirmationsCount: UInt64 {
@@ -108,6 +109,10 @@ final class TariTransactionsService: CoreTariService {
             cancelled = try cancelledTransactions
             pendingInbound = try pendingInboundTransactions
             pendingOutbound = try pendingOutboundTransactions
+
+            all = try (completed + cancelled + pendingInbound + pendingOutbound)
+                .sorted { try $0.timestamp > $1.timestamp }
+
         } catch {
             self.error = error
         }
@@ -183,16 +188,8 @@ final class TariTransactionsService: CoreTariService {
 
 extension TariTransactionsService {
 
-    var all: AnyPublisher<[Transaction], Never> {
-        Publishers.CombineLatest4($completed, $cancelled, $pendingInbound, $pendingOutbound)
-            .map { $0 as [Transaction] + $1 + $2 + $3 }
-            .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
-            .replaceError(with: [Transaction]())
-            .eraseToAnyPublisher()
-    }
-
     var onUpdate: AnyPublisher<Void, Never> {
-        Publishers.CombineLatest4($completed, $cancelled, $pendingInbound, $pendingOutbound)
+        $all
             .onChangePublisher()
             .eraseToAnyPublisher()
     }

@@ -41,5 +41,5 @@
 @testable import Tari_Aurora
 
 extension TariNetwork {
-    static let testNetwork = TariNetwork(name: "test_network", presentedName: "Test Network", tickerSymbol: "Test Symbol", baseNodes: [])
+    static let testNetwork = TariNetwork(name: "test_network", presentedName: "Test Network", tickerSymbol: "Test Symbol", isRecommended: false, dnsPeer: "", blockExplorerURL: nil)
 }

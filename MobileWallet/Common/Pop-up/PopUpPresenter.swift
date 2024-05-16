@@ -58,18 +58,14 @@ enum PopUpPresenter {
     // MARK: - Properties
 
     private static let sideOffset = 14.0
-    private static let verticalOffset = hasNotch ? -14.0 : 14.0
 
     private static let defaultAttributes: EKAttributes = {
         var attributes = EKAttributes.bottomFloat
         attributes.entryBackground = .clear
-
-        if let overlayColor = UIColor.static.popupOverlay {
-            attributes.screenBackground = .color(color: EKColor(overlayColor))
-        }
-
-        attributes.positionConstraints.size = EKAttributes.PositionConstraints.Size(width: .offset(value: sideOffset), height: .intrinsic)
-        attributes.positionConstraints.verticalOffset = verticalOffset
+        attributes.screenBackground = .color(color: EKColor(.Static.popupOverlay))
+        attributes.positionConstraints.size.width = .offset(value: sideOffset)
+        attributes.positionConstraints.maxSize.height = .ratio(value: hasNotch ? 0.85 : 0.9)
+        attributes.positionConstraints.safeArea = .empty(fillSafeArea: false)
         attributes.screenInteraction = .absorbTouches
         attributes.entryInteraction = .forward
         attributes.displayDuration = .infinity

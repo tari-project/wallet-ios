@@ -216,7 +216,7 @@ final class AddRecipientView: DynamicThemeView {
                 snapshot.appendItems($1.items)
             }
 
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     private func updateSearchFieldState() {

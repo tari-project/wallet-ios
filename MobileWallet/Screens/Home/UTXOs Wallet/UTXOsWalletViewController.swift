@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class UTXOsWalletViewController: UIViewController {
+final class UTXOsWalletViewController: SecureViewController<UTXOsWalletView> {
 
     // MARK: - Properties
 
     private let model: UTXOsWalletModel
-    private let mainView = UTXOsWalletView()
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +60,6 @@ final class UTXOsWalletViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -341,7 +335,7 @@ final class UTXOsWalletViewController: UIViewController {
         let contentSection = PopUpDescriptionContentView()
         let buttonsSection = PopUpButtonsView()
 
-        headerSection.imageView.image = Theme.shared.images.utxoSuccessImage
+        headerSection.imageView.image = .Images.UTXO.success
         headerSection.imageHeight = 90.0
 
         headerSection.label.text = localized("utxos_wallet.pop_up.success.title")

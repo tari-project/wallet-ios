@@ -41,16 +41,10 @@
 import UIKit
 import Combine
 
-final class AboutViewController: UIViewController {
+final class AboutViewController: SecureViewController<AboutView> {
 
-    private let mainView = AboutView()
     private let model = AboutModel()
-
     private var cancellables = Set<AnyCancellable>()
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

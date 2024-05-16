@@ -42,13 +42,11 @@ import UIKit
 import Combine
 import ContactsUI
 
-final class LinkContactsViewController: UIViewController {
+final class LinkContactsViewController: SecureViewController<LinkContactsView> {
 
     // MARK: - Properties
 
     let model: LinkContactsModel
-    let mainView = LinkContactsView()
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -63,10 +61,6 @@ final class LinkContactsViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -153,7 +147,7 @@ final class LinkContactsViewController: UIViewController {
         }
 
         return ContactBookListPlaceholder.ViewModel(
-            image: .contactBook.placeholders.linkList,
+            image: .Images.ContactBook.Placeholders.linkList,
             titleComponents: titleComponents,
             messageComponents: messageComponents,
             actionButtonTitle: model.buttonTitle,

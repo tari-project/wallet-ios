@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class CustomTorBridgesViewController: UIViewController {
+final class CustomTorBridgesViewController: SecureViewController<CustomTorBridgesView> {
 
     // MARK: - Properties
 
     private let model: CustomTorBridgesModel
-    private let mainView = CustomTorBridgesView()
     private let imageDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
 
     private var cancellables = Set<AnyCancellable>()
@@ -63,10 +62,6 @@ final class CustomTorBridgesViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

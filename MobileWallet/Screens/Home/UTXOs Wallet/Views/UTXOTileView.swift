@@ -76,7 +76,7 @@ final class UTXOTileView: DynamicThemeCollectionCell {
 
     @View private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.font = .Avenir.black.withSize(30.0)
         view.secondaryFont = .Avenir.black.withSize(12.0)
         view.separator = Locale.current.decimalSeparator
@@ -86,7 +86,7 @@ final class UTXOTileView: DynamicThemeCollectionCell {
 
     @View private var dateLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.font = .Avenir.medium.withSize(12.0)
         return view
     }()
@@ -94,7 +94,7 @@ final class UTXOTileView: DynamicThemeCollectionCell {
     @View private var statusIcon: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .static.white
+        view.tintColor = .Static.white
         return view
     }()
 

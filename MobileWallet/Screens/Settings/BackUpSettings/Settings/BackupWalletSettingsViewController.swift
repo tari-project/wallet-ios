@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class BackupWalletSettingsViewController: UIViewController {
+final class BackupWalletSettingsViewController: SecureViewController<BackupWalletSettingsView> {
 
     // MARK: - Properties
 
     private let model: BackupWalletSettingsModel
-    private let mainView = BackupWalletSettingsView()
     private let seedWordsItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.with_recovery_phrase"))
     private let iCloudItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.icloud_backups"), hasArrow: false, hasSwitch: true)
     private let dropboxItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.dropbox_backups"), hasArrow: false, hasSwitch: true)
@@ -70,10 +69,6 @@ final class BackupWalletSettingsViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -186,7 +181,7 @@ final class BackupWalletSettingsViewController: UIViewController {
 
         var items = [seedWordsItem]
 
-        if !AppValues.isSimulator {
+        if !AppValues.general.isSimulator {
             items.append(iCloudItem)
         }
 
