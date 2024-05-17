@@ -45,7 +45,7 @@ final class ChatConversationModel {
 
     enum Attachment {
         case request(value: String)
-        case gif(status: GifDynamicModel.GifDataState)
+        case gif(identifier: String)
     }
 
     enum MessageActionType {
@@ -80,7 +80,6 @@ final class ChatConversationModel {
         case moveToContactDetails(contact: ContactsManager.Model)
         case moveToSendTransction(paymentInfo: PaymentInfo)
         case moveToRequestTokens
-        case showReplaceAttachmentDialog
     }
 
     // MARK: - View Model
@@ -100,10 +99,8 @@ final class ChatConversationModel {
     private let hourFormatter = DateFormatter.hour
     private let contactsManager = ContactsManager()
     private let transactionFormatter = TransactionFormatter()
-    private let gifDynamicModel = GifDynamicModel()
 
     private var isOnline: Bool = false
-    private var unconfirmedAttachmentAction: (() -> Void)?
     private var messageMetadata: [ChatMessageMetadata.MetadataType: Data] = [:]
     private var chatMessages: [ChatMessage] = []
     private var cancellables = Set<AnyCancellable>()
@@ -150,13 +147,6 @@ final class ChatConversationModel {
             }
             .sink { [weak self] in self?.messages = $0 }
             .store(in: &cancellables)
-
-        gifDynamicModel.$gif
-            .sink { [weak self] in
-                guard case .gif = self?.attachement else { return }
-                self?.attachement = .gif(status: $0)
-            }
-            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -199,31 +189,18 @@ final class ChatConversationModel {
     }
 
     func attach(requestedTokenAmount: Double) {
-        handle { [weak self] in
-            do {
-                let value = try MicroTari(decimalValue: requestedTokenAmount)
-                self?.attachement = .request(value: value.formattedPrecise)
-                self?.messageMetadata[.tokenRequest] = value.rawValue.data()
-            } catch {
-                self?.errorModel = ErrorMessageManager.errorModel(forError: error)
-            }
+        do {
+            let value = try MicroTari(decimalValue: requestedTokenAmount)
+            attachement = .request(value: value.formattedPrecise)
+            messageMetadata[.tokenRequest] = value.rawValue.data()
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
     func attach(gifID: String) {
-        handle { [weak self] in
-            self?.attachement = .gif(status: .none)
-            self?.gifDynamicModel.fetchGif(identifier: gifID)
-            self?.messageMetadata[.gif] = gifID.data(using: .utf8)
-        }
-    }
-
-    func confirmAttachmentReplacement() {
-        unconfirmedAttachmentAction?()
-    }
-
-    func cancelAttachmetReplacement() {
-        unconfirmedAttachmentAction = nil
+        attachement = .gif(identifier: gifID)
+        messageMetadata[.gif] = gifID.data(using: .utf8)
     }
 
     func removeAttachment() {
@@ -357,15 +334,6 @@ final class ChatConversationModel {
                 messages.append(message)
                 result[dateOnly] = messages
             }
-    }
-
-    private func handle(attachmentAction: @escaping () -> Void) {
-        guard self.attachement == nil else {
-            unconfirmedAttachmentAction = attachmentAction
-            action = .showReplaceAttachmentDialog
-            return
-        }
-        attachmentAction()
     }
 
     // MARK: - Message Action

@@ -150,24 +150,7 @@ final class AmountComponentView: DynamicThemeView {
     }
 
     private func update(amount: String) {
-
-        let amountAttributedText = NSMutableAttributedString(
-            string: amount,
-            attributes: [.font: Theme.shared.fonts.amountLabel]
-        )
-
-        let gemImageString: NSAttributedString = {
-            let gemAttachment = NSTextAttachment()
-            gemAttachment.image = Theme.shared.images.currencySymbol
-            gemAttachment.bounds = CGRect(x: 0.0, y: 0.0, width: 21.0, height: 21.0)
-            return NSAttributedString(attachment: gemAttachment)
-        }()
-
-        amountAttributedText.insert(gemImageString, at: 0)
-        amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
-
-        amountLabel.attributedText = amountAttributedText
-
+        amountLabel.attributedText = NSAttributedString(amount: amount)
         updateAmountLabelColor(theme: theme)
     }
 }

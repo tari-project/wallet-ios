@@ -945,11 +945,8 @@
 "chat.conversation.pop_up.add_dialog.buttons.request" = "Request Tari";
 "chat.conversation.pop_up.add_dialog.buttons.pinned_thread.pin" = "Pin Thread to Top";
 "chat.conversation.pop_up.add_dialog.buttons.pinned_thread.unpin" = "Unpin Thread from Top";
-"chat.conversation.pop_up.replace_attachment.title" = "Are you sure?";
-"chat.conversation.pop_up.replace_attachment.message" = "This will replace your previous attachment.\nWould you like to go ahead?";
-"chat.conversation.pop_up.replace_attachment.buttons.yes" = "Yes, go ahead!";
-"chat.conversation.pop_up.replace_attachment.buttons.no" = "No, keep the original";
-"chat.conversation.attachements_bar.request.label.request" = "Request";
+"chat.conversation.attachements_overlay.title.request" = "Request Tari";
+"chat.conversation.attachements_overlay.title.gif" = "Attach Gif";
 "chat.conversation.messages.username_placeholder" = "Someone";
 "chat.conversation.messages.you_placeholder" = "You";
 "chat.conversation.messages.payment.inbound.part2" = "paid you";
