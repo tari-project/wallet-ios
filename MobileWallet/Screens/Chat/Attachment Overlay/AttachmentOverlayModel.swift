@@ -1,10 +1,10 @@
-//  NSAttributedString+Format.swift
+//  AttachmentOverlayModel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 07/07/2022
+	Created by Adrian Truszczyński on 15/05/2024
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,39 +38,49 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+final class AttachmentOverlayModel {
 
-extension NSAttributedString {
-
-    convenience init(format: NSAttributedString, arguments: NSAttributedString...) {
-
-        let mutableNSAttributedString = NSMutableAttributedString(attributedString: format)
-
-        arguments
-            .forEach { attributedString in
-                let range = NSString(string: mutableNSAttributedString.string).range(of: "%@")
-                mutableNSAttributedString.replaceCharacters(in: range, with: attributedString)
-            }
-
-        self.init(attributedString: mutableNSAttributedString)
+    enum Payload {
+        case request(value: String)
+        case gif(identifier: String)
     }
 
-    /// Formatted amount with currency symbol (Tari Gem)
-    /// - Parameter amount: Raw amount
-    convenience init(amount: String) {
+    enum Attachment {
+        case request(value: NSAttributedString)
+        case gif(state: GifDynamicModel.GifDataState)
+    }
 
-        let amountAttributedText = NSMutableAttributedString(string: amount, attributes: [.font: Theme.shared.fonts.amountLabel])
+    // MARK: - View Model
 
-        let gemImageString: NSAttributedString = {
-            let gemAttachment = NSTextAttachment()
-            gemAttachment.image = Theme.shared.images.currencySymbol
-            gemAttachment.bounds = CGRect(x: 0.0, y: 0.0, width: 21.0, height: 21.0)
-            return NSAttributedString(attachment: gemAttachment)
-        }()
+    @Published private(set) var attachment: Attachment?
 
-        amountAttributedText.insert(gemImageString, at: 0)
-        amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
+    // MARK: - Properties
 
-        self.init(attributedString: amountAttributedText)
+    private let gifModel = GifDynamicModel()
+
+    // MARK: - Initialisers
+
+    init(payload: Payload) {
+        setupCallbacks()
+        handle(payload: payload)
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+        gifModel.$gif
+            .map { Attachment.gif(state: $0) }
+            .assign(to: &$attachment)
+    }
+
+    // MARK: - Handlers
+
+    private func handle(payload: Payload) {
+        switch payload {
+        case let .request(value):
+            attachment = .request(value: NSAttributedString(amount: value))
+        case let .gif(identifier):
+            gifModel.fetchGif(identifier: identifier)
+        }
     }
 }

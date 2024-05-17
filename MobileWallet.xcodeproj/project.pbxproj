@@ -462,7 +462,6 @@
 		546B03282983F2F700DBED8E /* OnboardingPagerElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */; };
 		546B032A2983F33600DBED8E /* OnboardingPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03292983F33600DBED8E /* OnboardingPagerView.swift */; };
 		546B270D2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B270C2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift */; };
-		546B57C12BB6CC4000528ABB /* ChatAttachmentsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B57C02BB6CC4000528ABB /* ChatAttachmentsBar.swift */; };
 		546CE7F429AF514A00264699 /* FormOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F329AF514A00264699 /* FormOverlay.swift */; };
 		546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F529AF517900264699 /* FormOverlayView.swift */; };
 		546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F829AF523F00264699 /* ContactBookFormView.swift */; };
@@ -574,6 +573,10 @@
 		54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1CB1D29C7292700E6777C /* EmojiTextField.swift */; };
 		54ED0FBE2A5D315400ED1F7E /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ED0FBD2A5D315400ED1F7E /* SearchField.swift */; };
 		54F23DE729BBA0C3001E39A2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */; };
+		54F2D8C02BF49A100083C6AA /* AttachmentOverlayContructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2D8BF2BF49A100083C6AA /* AttachmentOverlayContructor.swift */; };
+		54F2D8C22BF49CD80083C6AA /* AttachmentOverlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2D8C12BF49CD80083C6AA /* AttachmentOverlayModel.swift */; };
+		54F2D8C42BF49CE60083C6AA /* AttachmentOverlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2D8C32BF49CE60083C6AA /* AttachmentOverlayViewController.swift */; };
+		54F2D8C72BF49D0E0083C6AA /* AttachmentOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2D8C62BF49D0E0083C6AA /* AttachmentOverlayView.swift */; };
 		54F2E34329EE6B8A00A7A15A /* ContactTransactionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34229EE6B8A00A7A15A /* ContactTransactionListViewController.swift */; };
 		54F2E34529EE6B9600A7A15A /* ContactTransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34429EE6B9600A7A15A /* ContactTransactionListView.swift */; };
 		54F2E34729EE6BA100A7A15A /* ContactTransactionListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34629EE6BA100A7A15A /* ContactTransactionListModel.swift */; };
@@ -1104,7 +1107,6 @@
 		546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPagerElementView.swift; sourceTree = "<group>"; };
 		546B03292983F33600DBED8E /* OnboardingPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPagerView.swift; sourceTree = "<group>"; };
 		546B270C2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkDefaultActionsHandler.swift; sourceTree = "<group>"; };
-		546B57C02BB6CC4000528ABB /* ChatAttachmentsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAttachmentsBar.swift; sourceTree = "<group>"; };
 		546CE7F329AF514A00264699 /* FormOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlay.swift; sourceTree = "<group>"; };
 		546CE7F529AF517900264699 /* FormOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlayView.swift; sourceTree = "<group>"; };
 		546CE7F829AF523F00264699 /* ContactBookFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookFormView.swift; sourceTree = "<group>"; };
@@ -1216,6 +1218,10 @@
 		54E1CB1D29C7292700E6777C /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 		54ED0FBD2A5D315400ED1F7E /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
 		54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
+		54F2D8BF2BF49A100083C6AA /* AttachmentOverlayContructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentOverlayContructor.swift; sourceTree = "<group>"; };
+		54F2D8C12BF49CD80083C6AA /* AttachmentOverlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentOverlayModel.swift; sourceTree = "<group>"; };
+		54F2D8C32BF49CE60083C6AA /* AttachmentOverlayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentOverlayViewController.swift; sourceTree = "<group>"; };
+		54F2D8C62BF49D0E0083C6AA /* AttachmentOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentOverlayView.swift; sourceTree = "<group>"; };
 		54F2E34229EE6B8A00A7A15A /* ContactTransactionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListViewController.swift; sourceTree = "<group>"; };
 		54F2E34429EE6B9600A7A15A /* ContactTransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListView.swift; sourceTree = "<group>"; };
 		54F2E34629EE6BA100A7A15A /* ContactTransactionListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListModel.swift; sourceTree = "<group>"; };
@@ -2788,7 +2794,6 @@
 				54444F232B15DC2400859D10 /* ChatInputMessageView.swift */,
 				54444F212B15DC0200859D10 /* ChatNavigationContentView.swift */,
 				54444F1A2B15DAE200859D10 /* ChatConversationCell.swift */,
-				546B57C02BB6CC4000528ABB /* ChatAttachmentsBar.swift */,
 				547C28CC2BD7E65C008F9D10 /* GifView.swift */,
 			);
 			path = Views;
@@ -3137,6 +3142,7 @@
 		54C23D6C2AFBBA640037670C /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				54F2D8BE2BF499F20083C6AA /* Attachment Overlay */,
 				546FCE042BB558FB00171FBA /* Request Tokens */,
 				54444F2B2B15F1B500859D10 /* Select Contact */,
 				54444F152B15DAE200859D10 /* Conversation */,
@@ -3232,6 +3238,17 @@
 				54DE32D32930C2640060108A /* DynamicThemeView.swift */,
 			);
 			path = Theme;
+			sourceTree = "<group>";
+		};
+		54F2D8BE2BF499F20083C6AA /* Attachment Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				54F2D8BF2BF49A100083C6AA /* AttachmentOverlayContructor.swift */,
+				54F2D8C12BF49CD80083C6AA /* AttachmentOverlayModel.swift */,
+				54F2D8C32BF49CE60083C6AA /* AttachmentOverlayViewController.swift */,
+				54F2D8C62BF49D0E0083C6AA /* AttachmentOverlayView.swift */,
+			);
+			path = "Attachment Overlay";
 			sourceTree = "<group>";
 		};
 		54F2E34129EE6B6300A7A15A /* Contact Transactions List */ = {
@@ -3652,6 +3669,7 @@
 				3ACDA70926B031CB00F138B8 /* SeedWordsRecoveryProgressView.swift in Sources */,
 				3A87403A2788438E00D80823 /* FFIWalletManager.swift in Sources */,
 				54103CE02A555A4500C456B4 /* TransactionHistoryView.swift in Sources */,
+				54F2D8C72BF49D0E0083C6AA /* AttachmentOverlayView.swift in Sources */,
 				3A7DABA228FDD0A8002CC013 /* LogCell.swift in Sources */,
 				54444F2A2B15DDB300859D10 /* AvatarWithStatusView.swift in Sources */,
 				540F02342A6A67EF00691FF5 /* AddRecipientModel.swift in Sources */,
@@ -3777,6 +3795,7 @@
 				3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
+				54F2D8C22BF49CD80083C6AA /* AttachmentOverlayModel.swift in Sources */,
 				3AFAC362271C6F9E008AA842 /* UITextField+Combine.swift in Sources */,
 				373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */,
@@ -3955,6 +3974,7 @@
 				54103CDE2A555A3D00C456B4 /* TransactionHistoryViewController.swift in Sources */,
 				00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */,
 				3A6A03342802DBB5000432B4 /* PopUpHeaderView.swift in Sources */,
+				54F2D8C02BF49A100083C6AA /* AttachmentOverlayContructor.swift in Sources */,
 				54D419B92995094B00D496B4 /* ContactBookConstructor.swift in Sources */,
 				37D3D4ED251C970F00D24149 /* TxGifManager.swift in Sources */,
 				3A62674A26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */,
@@ -3986,6 +4006,7 @@
 				5431B3A92BDB8FE0007B3D29 /* GifManager.swift in Sources */,
 				54444F202B15DAE200859D10 /* ChatConversationViewController.swift in Sources */,
 				3A03A600288932DE00788A02 /* SplashView.swift in Sources */,
+				54F2D8C42BF49CE60083C6AA /* AttachmentOverlayViewController.swift in Sources */,
 				3A052BFA27B2940900C93671 /* WalletTransactionsManager.swift in Sources */,
 				540CEA862A540D6500BD26C7 /* PulseLayer.swift in Sources */,
 				54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */,
@@ -4021,7 +4042,6 @@
 				54444F312B160DF700859D10 /* ChatSelectContactView.swift in Sources */,
 				3AFC3D60288EC3FA0046D386 /* UnselectableTextView.swift in Sources */,
 				3A7A38D32881689A00D7E8BD /* PopUpNetworkStatusContentView.swift in Sources */,
-				546B57C12BB6CC4000528ABB /* ChatAttachmentsBar.swift in Sources */,
 				3A530BCF290AEDB600C423C7 /* BackupServicable.swift in Sources */,
 				3AF79D602727206200613C24 /* ContactSearchView.swift in Sources */,
 				3AECD490284F3BB300D81C80 /* BaseNavigationContentView.swift in Sources */,
