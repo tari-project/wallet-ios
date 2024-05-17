@@ -1,10 +1,10 @@
-//  NSAttributedString+Format.swift
+//  AttachmentOverlayContructor.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 07/07/2022
+	Created by Adrian Truszczyński on 15/05/2024
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,39 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+enum AttachmentOverlayContructor {
 
-extension NSAttributedString {
-
-    convenience init(format: NSAttributedString, arguments: NSAttributedString...) {
-
-        let mutableNSAttributedString = NSMutableAttributedString(attributedString: format)
-
-        arguments
-            .forEach { attributedString in
-                let range = NSString(string: mutableNSAttributedString.string).range(of: "%@")
-                mutableNSAttributedString.replaceCharacters(in: range, with: attributedString)
-            }
-
-        self.init(attributedString: mutableNSAttributedString)
-    }
-
-    /// Formatted amount with currency symbol (Tari Gem)
-    /// - Parameter amount: Raw amount
-    convenience init(amount: String) {
-
-        let amountAttributedText = NSMutableAttributedString(string: amount, attributes: [.font: Theme.shared.fonts.amountLabel])
-
-        let gemImageString: NSAttributedString = {
-            let gemAttachment = NSTextAttachment()
-            gemAttachment.image = Theme.shared.images.currencySymbol
-            gemAttachment.bounds = CGRect(x: 0.0, y: 0.0, width: 21.0, height: 21.0)
-            return NSAttributedString(attachment: gemAttachment)
-        }()
-
-        amountAttributedText.insert(gemImageString, at: 0)
-        amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
-
-        self.init(attributedString: amountAttributedText)
+    static func buildScene(payload: AttachmentOverlayModel.Payload, initialMessage: String?) -> AttachmentOverlayViewController {
+        let model = AttachmentOverlayModel(payload: payload)
+        return AttachmentOverlayViewController(model: model, initialMessage: initialMessage)
     }
 }

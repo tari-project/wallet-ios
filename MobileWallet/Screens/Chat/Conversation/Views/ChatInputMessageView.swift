@@ -86,10 +86,33 @@ final class ChatInputMessageView: DynamicThemeView {
 
     // MARK: - Properties
 
+    var isAddButtonHidden: Bool = false {
+        didSet {
+            addButton.isHidden = isAddButtonHidden
+            updateTextViewConstraints()
+        }
+    }
+
+    var isGifButtonHidden: Bool {
+        get { addGifButton.isHidden }
+        set { addGifButton.isHidden = newValue }
+    }
+
     var onAddButtonTap: (() -> Void)?
     var onAddGifButtonTap: (() -> Void)?
     var onSendButtonTap: ((String?) -> Void)?
+
+    var text: String? {
+        get { textView.text }
+        set {
+            textView.text = newValue
+            updatePlaceholder()
+        }
+    }
+
     private var textViewHeightConstraint: NSLayoutConstraint?
+    private var textViewAddButtonConstraint: NSLayoutConstraint?
+    private var textViewBorderConstraint: NSLayoutConstraint?
 
     // MARK: - Initialisers
 
@@ -110,7 +133,11 @@ final class ChatInputMessageView: DynamicThemeView {
         [addButton, textView, addGifButton, textViewPlaceholderLabel, sendButton].forEach(addSubview)
 
         let textViewHeightConstraint = textView.heightAnchor.constraint(equalToConstant: 0.0)
+        let textViewAddButtonConstraint = textView.leadingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 10.0)
+
         self.textViewHeightConstraint = textViewHeightConstraint
+        self.textViewAddButtonConstraint = textViewAddButtonConstraint
+        textViewBorderConstraint = textView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0)
 
         let constraints = [
             addButton.topAnchor.constraint(equalTo: topAnchor, constant: 21.0),
@@ -118,7 +145,7 @@ final class ChatInputMessageView: DynamicThemeView {
             addButton.widthAnchor.constraint(equalToConstant: 24.0),
             addButton.heightAnchor.constraint(equalToConstant: 24.0),
             textView.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
-            textView.leadingAnchor.constraint(equalTo: addButton.trailingAnchor, constant: 10.0),
+            textViewAddButtonConstraint,
             textView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10.0),
             textViewHeightConstraint,
             addGifButton.trailingAnchor.constraint(equalTo: textView.trailingAnchor, constant: -10.0),
@@ -185,6 +212,18 @@ final class ChatInputMessageView: DynamicThemeView {
         UIView.animate(withDuration: 0.3) {
             self.textViewPlaceholderLabel.alpha = (!self.textView.isFirstResponder && self.textView.text.isEmpty) ? 1.0 : 0.0
         }
+    }
+
+    private func updateTextViewConstraints() {
+
+        guard isAddButtonHidden else {
+            textViewBorderConstraint?.isActive = false
+            textViewAddButtonConstraint?.isActive = true
+            return
+        }
+
+        textViewAddButtonConstraint?.isActive = false
+        textViewBorderConstraint?.isActive = true
     }
 }
 

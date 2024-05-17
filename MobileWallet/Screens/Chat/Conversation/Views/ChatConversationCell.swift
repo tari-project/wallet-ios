@@ -92,12 +92,18 @@ final class ChatConversationCell: DynamicThemeCell {
     }()
 
     @View private var actionButton = ActionButton()
-    @View private var gifView = GifView()
+
+    @View private var gifView: GifView = {
+        let view = GifView()
+        view.layer.cornerRadius = 5.0
+        view.clipsToBounds = true
+        return view
+    }()
 
     @View private var timestampLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(11.0)
-        return  view
+        return view
     }()
 
     // MARK: - Properties

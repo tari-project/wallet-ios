@@ -103,6 +103,7 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
             .store(in: &cancellables)
 
         model.$attachement
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(attachement: $0) }
             .store(in: &cancellables)
@@ -129,10 +130,6 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
         mainView.onAddGifButtonTap = { [weak self] in
             guard let self else { return }
             self.gifManager.showGifPicker(controller: self)
-        }
-
-        mainView.onRemoveAttachementButtonTap = { [weak self] in
-            self?.model.removeAttachment()
         }
 
         mainView.onSendButtonTap = { [weak self] in
@@ -169,22 +166,13 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
         }
     }
 
-    private func handle(attachement: ChatConversationModel.Attachment?) {
-
-        guard let attachement else {
-            mainView.hideAttachmentsBar()
-            mainView.update(attachment: nil)
-            return
-        }
-
+    private func handle(attachement: ChatConversationModel.Attachment) {
         switch attachement {
         case let .request(value):
-            mainView.update(attachment: .request(amount: value))
-        case let .gif(status):
-            mainView.update(attachment: .gif(state: status))
+            presentAttachementsOverlay(payload: .request(value: value))
+        case let .gif(identifier):
+            presentAttachementsOverlay(payload: .gif(identifier: identifier))
         }
-
-        mainView.showAttachmentsBar()
     }
 
     private func handle(action: ChatConversationModel.Action) {
@@ -195,8 +183,6 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
             moveToSendTrasactionScene(paymentInfo: paymentInfo)
         case .moveToRequestTokens:
             moveToRequestTokensScene()
-        case .showReplaceAttachmentDialog:
-            showReplaceAttachmentDialog()
         }
     }
 
@@ -245,19 +231,6 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
         PopUpPresenter.show(popUp: popUp)
     }
 
-    private func showReplaceAttachmentDialog() {
-
-        PopUpPresenter.showPopUp(model: PopUpDialogModel(
-            title: localized("chat.conversation.pop_up.replace_attachment.title"),
-            message: localized("chat.conversation.pop_up.replace_attachment.message"),
-            buttons: [
-                PopUpDialogButtonModel(title: localized("chat.conversation.pop_up.replace_attachment.buttons.yes"), type: .normal, callback: { [weak self] in self?.model.confirmAttachmentReplacement() }),
-                PopUpDialogButtonModel(title: localized("chat.conversation.pop_up.replace_attachment.buttons.no"), type: .text, callback: { [weak self] in self?.model.cancelAttachmetReplacement() })
-            ],
-            hapticType: .none
-        ))
-    }
-
     private func moveToContactDetailsScene(contact: ContactsManager.Model) {
         let controller = ContactDetailsConstructor.buildScene(model: contact)
         navigationController?.pushViewController(controller, animated: true)
@@ -276,5 +249,23 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
         }
 
         navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func presentAttachementsOverlay(payload: AttachmentOverlayModel.Payload) {
+
+        let controller = AttachmentOverlayContructor.buildScene(payload: payload, initialMessage: mainView.messageText)
+
+        controller.onClose = { [weak self] message, wasSendButtonTapped in
+            if wasSendButtonTapped {
+                guard let message else { return }
+                self?.model.send(message: message)
+                self?.mainView.messageText = nil
+            } else {
+                self?.model.removeAttachment()
+                self?.mainView.messageText = message
+            }
+        }
+
+        present(controller, animated: true)
     }
 }
