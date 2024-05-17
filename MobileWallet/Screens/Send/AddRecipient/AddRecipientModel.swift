@@ -344,8 +344,11 @@ final class AddRecipientModel {
     }
 
     private func makeAddress(text: String) throws -> TariAddress {
-        do { return try TariAddress(emojiID: text) } catch {}
-        return try TariAddress(hex: text)
+
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        do { return try TariAddress(emojiID: trimmedText) } catch {}
+        return try TariAddress(hex: trimmedText)
     }
 
     private func verify(address: TariAddress) -> Bool {

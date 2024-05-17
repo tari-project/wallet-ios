@@ -57,6 +57,7 @@ final class CrashLogger {
         let options = Options()
         options.dsn = sentryPublicDSN
         options.environment = TariSettings.shared.environment.name
+        options.enableAppHangTracking = false
         SentrySDK.start(options: options)
         Logger.log(message: "Data Collection Enabled", domain: .general, level: .info)
     }
