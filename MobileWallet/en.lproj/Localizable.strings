@@ -12,6 +12,7 @@
 "common.done" = "Done";
 "common.confirm" = "Confirm";
 "common.user" = "Aurora User";
+"common.you" = "You";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -955,6 +956,7 @@
 "chat.conversation.messages.request.outgoing.part2" = "requested";
 "chat.conversation.messages.button.send" = "Send";
 "chat.conversation.messages.error.invalid_metadata" = "Oops! 🙊 It seems the data attached to your message couldn't be processed.";
+"chat.conversation.cell.context_menu.reply" = "Reply";
 
 /* Chat Request Tokens */
 

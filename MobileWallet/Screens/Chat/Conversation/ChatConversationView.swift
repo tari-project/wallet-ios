@@ -40,6 +40,10 @@
 
 import TariCommon
 
+enum ChatConversationMenuAction {
+    case reply(identifier: String)
+}
+
 final class ChatConversationView: BaseNavigationContentView {
 
     struct Model {
@@ -63,10 +67,16 @@ final class ChatConversationView: BaseNavigationContentView {
         let view = UITableView(frame: .zero, style: .grouped)
         view.separatorStyle = .none
         view.backgroundColor = .clear
+        if #available(iOS 16.0, *) {
+            view.selfSizingInvalidation = .enabledIncludingConstraints
+        } else {
+            // TODO: Add support for iOS 15
+        }
         view.register(type: ChatConversationCell.self)
         return view
     }()
 
+    @View private var replyBar = ChatReplyBar()
     @View private var textInputBar = ChatInputMessageView()
 
     @View private var placeholderImageView: PaintBackgroundImageView = {
@@ -92,9 +102,18 @@ final class ChatConversationView: BaseNavigationContentView {
     var onAddButtonTap: (() -> Void)?
     var onAddGifButtonTap: (() -> Void)?
     var onSendButtonTap: ((String?) -> Void)?
+    var onCellMenuAction: ((ChatConversationMenuAction) -> Void)?
+
+    var onReplayBarCloseButtonTap: (() -> Void)? {
+        get { replyBar.onCloseButtonTap }
+        set { replyBar.onCloseButtonTap = newValue }
+    }
 
     private var sections: [Section] = []
     private var dataSource: UITableViewDiffableDataSource<Int, ChatConversationCell.Model>?
+
+    private var textInputBarTopConstraint: NSLayoutConstraint?
+    private var replyBarTopConstraint: NSLayoutConstraint?
 
     // MARK: - Initialisers
 
@@ -113,9 +132,13 @@ final class ChatConversationView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
+        let textInputBarTopConstraint = textInputBar.topAnchor.constraint(equalTo: tableView.bottomAnchor)
+        replyBarTopConstraint = replyBar.topAnchor.constraint(equalTo: tableView.bottomAnchor)
+        self.textInputBarTopConstraint = textInputBarTopConstraint
+
         placeholder.setup(placeholderView: placeholderImageView)
         navigationBar.centerContentView.addSubview(navigationBarContentView)
-        [tableView, textInputBar].forEach(contentView.addSubview)
+        [tableView, replyBar, textInputBar].forEach(contentView.addSubview)
         [placeholder, contentView].forEach(addSubview)
 
         sendSubviewToBack(placeholder)
@@ -136,10 +159,13 @@ final class ChatConversationView: BaseNavigationContentView {
             tableView.topAnchor.constraint(equalTo: contentView.contentView.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
-            textInputBar.topAnchor.constraint(equalTo: tableView.bottomAnchor),
+            textInputBarTopConstraint,
             textInputBar.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
             textInputBar.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
-            textInputBar.bottomAnchor.constraint(equalTo: contentView.contentView.bottomAnchor)
+            textInputBar.bottomAnchor.constraint(equalTo: contentView.contentView.bottomAnchor),
+            replyBar.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
+            replyBar.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
+            replyBar.bottomAnchor.constraint(equalTo: textInputBar.topAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -168,6 +194,9 @@ final class ChatConversationView: BaseNavigationContentView {
             cell.update(model: model)
             cell.onContentChange = { [weak self] in
                 self?.tableView.resizeCellsWithoutAnimation()
+            }
+            cell.onContextMenuInteraction = { [weak self] in
+                self?.onCellMenuAction?($0)
             }
             return cell
         }
@@ -204,6 +233,21 @@ final class ChatConversationView: BaseNavigationContentView {
         scrollToBottom()
     }
 
+    func update(replyModel: ChatReplyViewModel?) {
+
+        guard let replyModel else {
+            replyBar.isHidden = true
+            replyBarTopConstraint?.isActive = false
+            textInputBarTopConstraint?.isActive = true
+            return
+        }
+
+        replyBar.update(viewModel: replyModel)
+        replyBar.isHidden = false
+        textInputBarTopConstraint?.isActive = false
+        replyBarTopConstraint?.isActive = true
+    }
+
     private func updatePlaceholderState() {
         placeholder.isHidden = !isPlaceholderVisible
         tableView.isHidden = isPlaceholderVisible
@@ -225,6 +269,21 @@ extension ChatConversationView: UITableViewDelegate {
         let header = ChatConversationSectionHeaderView()
         header.text = sections[section].title
         return header
+    }
+
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+
+        guard let cell = tableView.cellForRow(at: indexPath) as? ChatConversationCell, let identifier = cell.identifier else { return nil }
+
+        let replyAction = UIContextualAction(style: .normal, title: "") { [weak self] _, _, handler in
+            self?.onCellMenuAction?(.reply(identifier: identifier))
+            handler(true)
+        }
+
+        replyAction.image = .Icons.Chat.reply.withTintColor(theme.text.body ?? .clear).withRenderingMode(.alwaysOriginal)
+        replyAction.backgroundColor = backgroundColor
+
+        return UISwipeActionsConfiguration(actions: [replyAction])
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? { UIView() }

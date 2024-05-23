@@ -44,7 +44,7 @@ final class AttachmentOverlayViewController: SecureViewController<AttachmentOver
 
     // MARK: - Properties
 
-    var onClose: ((_ message: String?, _ isSendRequested: Bool) -> Void)?
+    var onDataUpdate: ((_ message: String?, _ isReplyMessageAttached: Bool, _ isSendRequested: Bool) -> Void)?
 
     private let model: AttachmentOverlayModel
     private var wasSendButtonTapped: Bool = false
@@ -72,7 +72,7 @@ final class AttachmentOverlayViewController: SecureViewController<AttachmentOver
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         guard !wasSendButtonTapped else { return }
-        onClose?(mainView.messageText, false)
+        onDataUpdate?(mainView.messageText, false, false)
     }
 
     // MARK: - Setups
@@ -85,10 +85,29 @@ final class AttachmentOverlayViewController: SecureViewController<AttachmentOver
             .sink { [weak self] in self?.handle(attachment: $0) }
             .store(in: &cancellables)
 
+        model.$replyViewModel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.update(replyBarViewModel: $0) }
+            .store(in: &cancellables)
+
+        model.$updateOutputDataAction
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.onDataUpdate?($0.message, $0.isReplyAttached, $0.isSendConfirned) }
+            .store(in: &cancellables)
+
+        model.$shouldCloseAction
+            .filter { $0 }
+            .sink { [weak self] _ in self?.dismiss(animated: true) }
+            .store(in: &cancellables)
+
+        mainView.onReplyBarCloseButtonTap = { [weak self] in
+            self?.model.detachReplyMessage()
+        }
+
         mainView.onSendButtonTap = { [weak self] in
-            self?.wasSendButtonTapped = true
-            self?.onClose?($0, true)
-            self?.dismiss(animated: true)
+            self?.model.update(message: $0)
+            self?.model.sendMessage()
         }
     }
 
@@ -96,8 +115,8 @@ final class AttachmentOverlayViewController: SecureViewController<AttachmentOver
         switch attachment {
         case let .request(value):
             mainView.update(requestedValue: value)
-        case let .gif(state):
-            mainView.update(gifState: state)
+        case let .gif(gifID):
+            mainView.update(gifID: gifID)
         }
     }
 }

@@ -40,16 +40,46 @@
 
 import GiphyUISDK
 import TariCommon
+import Combine
 
 final class GifView: UIView {
 
-    // MARK: - Properties
+    // MARK: - Subviews
 
     private var mediaView: GPHMediaView?
 
-    // MARK: - Actions
+    // MARK: - Properties
 
-    func update(dataState: GifDynamicModel.GifDataState) {
+    var gifID: String? {
+        didSet { handle(gifID: gifID) }
+    }
+
+    private let dynamicModel = GifDynamicModel()
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    init() {
+        super.init(frame: .zero)
+        setupCallbacks()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+        dynamicModel.$gif
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.update(dataState: $0) }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Updates
+
+    private func update(dataState: GifDynamicModel.GifDataState) {
         switch dataState {
         case .none:
             removeGifView()
@@ -61,6 +91,8 @@ final class GifView: UIView {
             break
         }
     }
+
+    // MARK: - Actions
 
     private func addGifView(media: GPHMedia) {
 
@@ -86,5 +118,17 @@ final class GifView: UIView {
         NSLayoutConstraint.deactivate(mediaView.constraints)
         mediaView.removeFromSuperview()
         self.mediaView = nil
+    }
+
+    // MARK: - Handlers
+
+    private func handle(gifID: String?) {
+
+        guard let gifID = gifID else {
+            dynamicModel.clearData()
+            return
+        }
+
+        dynamicModel.fetchGif(identifier: gifID)
     }
 }

@@ -54,6 +54,7 @@ final class ChatConversationCell: DynamicThemeCell {
         let actionCallback: (() -> Void)?
         let timestamp: String
         let gifIdentifier: String?
+        let replyModel: ChatReplyViewModel?
 
         static func == (lhs: ChatConversationCell.Model, rhs: ChatConversationCell.Model) -> Bool { lhs.id == rhs.id }
 
@@ -92,6 +93,7 @@ final class ChatConversationCell: DynamicThemeCell {
     }()
 
     @View private var actionButton = ActionButton()
+    @View private var replyBar = ChatReplyNotificationBar()
 
     @View private var gifView: GifView = {
         let view = GifView()
@@ -109,12 +111,12 @@ final class ChatConversationCell: DynamicThemeCell {
     // MARK: - Properties
 
     var onContentChange: (() -> Void)?
-
-    private let gifDynamicModel = GifDynamicModel()
+    var onContextMenuInteraction: ((ChatConversationMenuAction) -> Void)?
 
     private var contentViewLeadingConstraint: NSLayoutConstraint?
     private var contentViewTrailingConstraint: NSLayoutConstraint?
 
+    private(set) var identifier: String?
     private var isIncoming: Bool = false
     private var cancellables = Set<AnyCancellable>()
 
@@ -124,7 +126,7 @@ final class ChatConversationCell: DynamicThemeCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
-        setupCallbacks()
+        setupContextMenu()
     }
 
     required init?(coder: NSCoder) {
@@ -140,7 +142,7 @@ final class ChatConversationCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [gifView, notificationsStackView, messageLabel, actionButton].forEach(contentStackView.addArrangedSubview)
+        [replyBar, gifView, notificationsStackView, messageLabel, actionButton].forEach(contentStackView.addArrangedSubview)
         [contentStackView, timestampLabel].forEach(bubbleContentView.addSubview)
         contentView.addSubview(bubbleContentView)
 
@@ -166,11 +168,8 @@ final class ChatConversationCell: DynamicThemeCell {
         NSLayoutConstraint.activate(constraints)
     }
 
-    private func setupCallbacks() {
-        gifDynamicModel.$gif
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(gifDataState: $0) }
-            .store(in: &cancellables)
+    private func setupContextMenu() {
+        bubbleContentView.addInteraction(UIContextMenuInteraction(delegate: self))
     }
 
     // MARK: - Updates
@@ -188,8 +187,17 @@ final class ChatConversationCell: DynamicThemeCell {
 
     func update(model: Model) {
 
+        identifier = model.id
+
         contentViewLeadingConstraint?.constant = model.isIncoming ? 25.0 : 90.0
         contentViewTrailingConstraint?.constant = model.isIncoming ? -90.0 : -25.0
+
+        if let replyModel = model.replyModel {
+            replyBar.update(viewModel: replyModel)
+            replyBar.isHidden = false
+        } else {
+            replyBar.isHidden = true
+        }
 
         notificationsStackView.removeAllViews()
         notificationsStackView.isHidden = model.notificationsTextComponents.isEmpty
@@ -218,11 +226,8 @@ final class ChatConversationCell: DynamicThemeCell {
         timestampLabel.text = model.timestamp
         isIncoming = model.isIncoming
 
-        gifDynamicModel.clearData()
-
-        if let gifIdentifier = model.gifIdentifier {
-            gifDynamicModel.fetchGif(identifier: gifIdentifier)
-        }
+        gifView.gifID = model.gifIdentifier
+        gifView.isHidden = model.gifIdentifier == nil
 
         if !model.isLastInContext {
             bubbleContentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -234,18 +239,18 @@ final class ChatConversationCell: DynamicThemeCell {
 
         updateContentBackgroundColor(theme: theme)
     }
+}
 
-    // MARK: - Handlers
+extension ChatConversationCell: UIContextMenuInteractionDelegate {
 
-    private func handle(gifDataState: GifDynamicModel.GifDataState) {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
 
-        if case .loaded = gifDataState {
-            gifView.isHidden = false
-        } else {
-            gifView.isHidden = true
-        }
+        guard let identifier else { return nil }
 
-        gifView.update(dataState: gifDataState)
-        onContentChange?()
+        return UIContextMenuConfiguration(actionProvider: { _ in
+            UIMenu(children: [
+                UIAction(title: localized("chat.conversation.cell.context_menu.reply"), image: .Icons.Chat.reply) { [weak self] _ in self?.onContextMenuInteraction?(.reply(identifier: identifier)) }
+            ])
+        })
     }
 }
