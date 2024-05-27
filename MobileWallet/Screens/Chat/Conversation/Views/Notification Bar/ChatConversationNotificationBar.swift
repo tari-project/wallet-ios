@@ -40,21 +40,7 @@
 
 import TariCommon
 
-final class ChatConversationNotificationBar: DynamicThemeView {
-
-    enum MessageType {
-        case incoming
-        case outgoing
-        case error
-    }
-
-    // MARK: - Subviews
-
-    @View private var leftBar: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 1.0
-        return view
-    }()
+final class ChatConversationNotificationBar: BaseChatNotificationBar {
 
     @View private var textLabel: StylizedLabel = {
         let view = StylizedLabel()
@@ -65,14 +51,11 @@ final class ChatConversationNotificationBar: DynamicThemeView {
         return view
     }()
 
-    // MARK: - Properties
-
-    private var messageType: MessageType = .incoming
-
     // MARK: - Initialisers
 
     override init() {
         super.init()
+        setupSubviews()
         setupConstraints()
     }
 
@@ -82,19 +65,19 @@ final class ChatConversationNotificationBar: DynamicThemeView {
 
     // MARK: - Setups
 
+    private func setupSubviews() {
+        contentMargin = 8.0
+    }
+
     private func setupConstraints() {
 
-        [leftBar, textLabel].forEach(addSubview)
+        contentView.addSubview(textLabel)
 
         let constraints = [
-            leftBar.topAnchor.constraint(equalTo: topAnchor, constant: 3.0),
-            leftBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 3.0),
-            leftBar.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -3.0),
-            leftBar.widthAnchor.constraint(equalToConstant: 2.0),
-            textLabel.topAnchor.constraint(equalTo: leftBar.topAnchor, constant: 8.0),
-            textLabel.leadingAnchor.constraint(equalTo: leftBar.leadingAnchor, constant: 5.0),
-            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
-            textLabel.bottomAnchor.constraint(equalTo: leftBar.bottomAnchor, constant: -8.0)
+            textLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            textLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            textLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            textLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -104,27 +87,16 @@ final class ChatConversationNotificationBar: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        updateBackgroundColor(theme: theme)
+        updateTextColor(theme: theme)
     }
 
     func update(textComponents: [StylizableComponent], messageType: MessageType) {
         textLabel.textComponents = textComponents
         self.messageType = messageType
-        updateBackgroundColor(theme: theme)
+        updateTextColor(theme: theme)
     }
 
-    private func updateBackgroundColor(theme: ColorTheme) {
-
+    private func updateTextColor(theme: ColorTheme) {
         textLabel.textColor = messageType == .error ? theme.system.red : theme.chat.text.textNotification
-        leftBar.backgroundColor = messageType == .error ? theme.system.red : theme.chat.text.textNotification
-
-        switch messageType {
-        case .incoming:
-            backgroundColor = theme.chat.backgrounds.receiverNotification
-        case .outgoing:
-            backgroundColor = theme.chat.backgrounds.senderNotification
-        case .error:
-            backgroundColor = theme.system.red?.withAlphaComponent(0.15)
-        }
     }
 }

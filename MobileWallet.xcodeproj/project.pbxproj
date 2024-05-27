@@ -377,6 +377,7 @@
 		542585C82A334697009D12CD /* RotaryMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C72A334697009D12CD /* RotaryMenuView.swift */; };
 		542585CA2A3346C0009D12CD /* RotaryMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C92A3346C0009D12CD /* RotaryMenuButton.swift */; };
 		542725662AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */; };
+		542F99D72BFF624B00969C93 /* ChatReplyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542F99D62BFF624B00969C93 /* ChatReplyViewModel.swift */; };
 		5430B97729B7400900C80AA2 /* LinkContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97629B7400900C80AA2 /* LinkContactsModel.swift */; };
 		5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */; };
 		5430B97B29B7401C00C80AA2 /* LinkContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */; };
@@ -482,6 +483,8 @@
 		54884FBC2B596E640043E2B4 /* AddressPoisoningDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54884FBB2B596E640043E2B4 /* AddressPoisoningDataHandler.swift */; };
 		54885B1929E7FEA8009175AC /* BLECentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54885B1829E7FEA8009175AC /* BLECentralManager.swift */; };
 		54885B1B29E802D7009175AC /* BLEConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54885B1A29E802D7009175AC /* BLEConstants.swift */; };
+		54886F9A2BECD34C000D32BF /* BaseChatNotificationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54886F992BECD34C000D32BF /* BaseChatNotificationBar.swift */; };
+		54886F9D2BECDB3F000D32BF /* ChatReplyNotificationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54886F9C2BECDB3F000D32BF /* ChatReplyNotificationBar.swift */; };
 		548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */; };
 		548C4C322AC1689B00E376EF /* SwitchMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */; };
 		548D0C182BB5D1AA00D5E5CE /* TariRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548D0C172BB5D1AA00D5E5CE /* TariRequestModel.swift */; };
@@ -519,6 +522,7 @@
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
+		54AA83542BFC891E00130C5B /* ChatReplyBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA83532BFC891E00130C5B /* ChatReplyBar.swift */; };
 		54AC12922BCD1C1E0007FFEA /* StringBaseNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */; };
 		54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */; };
 		54ADC0932A3858C40082C455 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0922A3858C40082C455 /* ErrorView.swift */; };
@@ -1022,6 +1026,7 @@
 		542585C72A334697009D12CD /* RotaryMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuView.swift; sourceTree = "<group>"; };
 		542585C92A3346C0009D12CD /* RotaryMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuButton.swift; sourceTree = "<group>"; };
 		542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libminotari_wallet_ffi_ios.xcframework; path = MobileWallet/Libraries/TariLib/libminotari_wallet_ffi_ios.xcframework; sourceTree = "<group>"; };
+		542F99D62BFF624B00969C93 /* ChatReplyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatReplyViewModel.swift; sourceTree = "<group>"; };
 		5430B97629B7400900C80AA2 /* LinkContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsModel.swift; sourceTree = "<group>"; };
 		5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsViewController.swift; sourceTree = "<group>"; };
 		5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsView.swift; sourceTree = "<group>"; };
@@ -1127,6 +1132,8 @@
 		54884FBB2B596E640043E2B4 /* AddressPoisoningDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressPoisoningDataHandler.swift; sourceTree = "<group>"; };
 		54885B1829E7FEA8009175AC /* BLECentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLECentralManager.swift; sourceTree = "<group>"; };
 		54885B1A29E802D7009175AC /* BLEConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEConstants.swift; sourceTree = "<group>"; };
+		54886F992BECD34C000D32BF /* BaseChatNotificationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseChatNotificationBar.swift; sourceTree = "<group>"; };
+		54886F9C2BECDB3F000D32BF /* ChatReplyNotificationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatReplyNotificationBar.swift; sourceTree = "<group>"; };
 		548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Common.swift"; sourceTree = "<group>"; };
 		548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchMenuCell.swift; sourceTree = "<group>"; };
 		548D0C172BB5D1AA00D5E5CE /* TariRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariRequestModel.swift; sourceTree = "<group>"; };
@@ -1164,6 +1171,7 @@
 		54AA5D59298122B70031A396 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
+		54AA83532BFC891E00130C5B /* ChatReplyBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatReplyBar.swift; sourceTree = "<group>"; };
 		54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringBaseNodeTests.swift; sourceTree = "<group>"; };
 		54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Utlis.swift"; sourceTree = "<group>"; };
 		54ADC0922A3858C40082C455 /* ErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
@@ -2740,6 +2748,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		542F99D52BFF624100969C93 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				542F99D62BFF624B00969C93 /* ChatReplyViewModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		5430B97529B73FF600C80AA2 /* Link Contacts */ = {
 			isa = PBXGroup;
 			children = (
@@ -2776,6 +2792,7 @@
 		54444F152B15DAE200859D10 /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
+				542F99D52BFF624100969C93 /* Models */,
 				544FA3592BDA8152009182A4 /* Handlers */,
 				54444F192B15DAE200859D10 /* Views */,
 				54444F162B15DAE200859D10 /* ChatConversationConstructor.swift */,
@@ -2789,12 +2806,13 @@
 		54444F192B15DAE200859D10 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				54886F982BECD33C000D32BF /* Notification Bar */,
 				54444F272B15DD6A00859D10 /* ChatConversationSectionHeaderView.swift */,
-				54444F252B15DD2B00859D10 /* ChatConversationNotificationBar.swift */,
 				54444F232B15DC2400859D10 /* ChatInputMessageView.swift */,
 				54444F212B15DC0200859D10 /* ChatNavigationContentView.swift */,
 				54444F1A2B15DAE200859D10 /* ChatConversationCell.swift */,
 				547C28CC2BD7E65C008F9D10 /* GifView.swift */,
+				54AA83532BFC891E00130C5B /* ChatReplyBar.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3031,6 +3049,16 @@
 				5444C81429F1BDDD00BF3875 /* BLECentralTask.swift */,
 			);
 			path = BLE;
+			sourceTree = "<group>";
+		};
+		54886F982BECD33C000D32BF /* Notification Bar */ = {
+			isa = PBXGroup;
+			children = (
+				54886F992BECD34C000D32BF /* BaseChatNotificationBar.swift */,
+				54444F252B15DD2B00859D10 /* ChatConversationNotificationBar.swift */,
+				54886F9C2BECDB3F000D32BF /* ChatReplyNotificationBar.swift */,
+			);
+			path = "Notification Bar";
 			sourceTree = "<group>";
 		};
 		548D0C162BB5D17A00D5E5CE /* View Models */ = {
@@ -3777,6 +3805,7 @@
 				3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */,
 				3AE138C928044A1800443D34 /* PopUpComponentsFactory.swift in Sources */,
 				4CDEC323273A5E3600999DCB /* Balance.swift in Sources */,
+				54886F9D2BECDB3F000D32BF /* ChatReplyNotificationBar.swift in Sources */,
 				3AAE90B3291C176700BEA262 /* ICloudDocsUploadService.swift in Sources */,
 				3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				54885B1929E7FEA8009175AC /* BLECentralManager.swift in Sources */,
@@ -3859,6 +3888,7 @@
 				5444C81529F1BDDD00BF3875 /* BLECentralTask.swift in Sources */,
 				3A78860E2872FB39003B1F9A /* TariVectorWrapper.swift in Sources */,
 				3A6A03362802DC2B000432B4 /* PopUpDescriptionContentView.swift in Sources */,
+				542F99D72BFF624B00969C93 /* ChatReplyViewModel.swift in Sources */,
 				3AF79D5E2727201A00613C24 /* ScrollableLabel.swift in Sources */,
 				54C23D7A2AFBBB0B0037670C /* DynamicTimestampModel.swift in Sources */,
 				3AE5E5682874696E00D3AF85 /* ValuePickerView.swift in Sources */,
@@ -3900,6 +3930,7 @@
 				54FCC3732AA5FF1B00CA0025 /* CustomTorBridgesModel.swift in Sources */,
 				5495C4792B7B718E00BB9051 /* SecureWrapperView.swift in Sources */,
 				54621F8929E00E38000E9659 /* Dictionary+Tools.swift in Sources */,
+				54AA83542BFC891E00130C5B /* ChatReplyBar.swift in Sources */,
 				3ADF96CE2858A93000A3C888 /* ContextualButton.swift in Sources */,
 				546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
@@ -4175,6 +4206,7 @@
 				3A21FC5128FFD7B8004B09A0 /* PopUpTableView.swift in Sources */,
 				544D9D4C296D9B2000D8ECEF /* UnblindedOutputs.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,
+				54886F9A2BECD34C000D32BF /* BaseChatNotificationBar.swift in Sources */,
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
 				540F02362A6A67FD00691FF5 /* AddRecipientConstructor.swift in Sources */,
 				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
