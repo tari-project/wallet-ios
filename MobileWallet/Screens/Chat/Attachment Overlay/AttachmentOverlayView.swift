@@ -67,7 +67,14 @@ final class AttachmentOverlayView: BaseNavigationContentView {
         return view
     }()
 
+    @View private var replayBar = ChatReplyBar()
+
     // MARK: - Properties
+
+    var onReplyBarCloseButtonTap: (() -> Void)? {
+        get { replayBar.onCloseButtonTap }
+        set { replayBar.onCloseButtonTap = newValue }
+    }
 
     var onSendButtonTap: ((String?) -> Void)? {
         get { textInputBar.onSendButtonTap }
@@ -100,7 +107,7 @@ final class AttachmentOverlayView: BaseNavigationContentView {
     private func setupConstraints() {
 
         addSubview(contentView)
-        [gifView, amountLabel, textInputBar].forEach(contentView.addSubview)
+        [gifView, amountLabel, replayBar, textInputBar].forEach(contentView.addSubview)
 
         let constraints = [
             contentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
@@ -113,6 +120,9 @@ final class AttachmentOverlayView: BaseNavigationContentView {
             amountLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 100.0),
             amountLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             amountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            replayBar.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
+            replayBar.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
+            replayBar.bottomAnchor.constraint(equalTo: textInputBar.topAnchor),
             textInputBar.leadingAnchor.constraint(equalTo: contentView.contentView.leadingAnchor),
             textInputBar.trailingAnchor.constraint(equalTo: contentView.contentView.trailingAnchor),
             textInputBar.bottomAnchor.constraint(equalTo: contentView.contentView.bottomAnchor)
@@ -130,11 +140,21 @@ final class AttachmentOverlayView: BaseNavigationContentView {
         gifView.isHidden = true
     }
 
-    func update(gifState: GifDynamicModel.GifDataState) {
+    func update(gifID: String) {
         navigationBar.title = localized("chat.conversation.attachements_overlay.title.gif")
-        gifView.update(dataState: gifState)
+        gifView.gifID = gifID
         gifView.isHidden = false
         amountLabel.isHidden = true
+    }
 
+    func update(replyBarViewModel: ChatReplyViewModel?) {
+
+        guard let replyBarViewModel else {
+            replayBar.isHidden = true
+            return
+        }
+
+        replayBar.update(viewModel: replyBarViewModel)
+        replayBar.isHidden = false
     }
 }

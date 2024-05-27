@@ -1,8 +1,8 @@
-//  AttachmentOverlayContructor.swift
+//  ChatReplyViewModel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 15/05/2024
+	Created by Adrian Truszczyński on 23/05/2024
 	Using Swift 5.0
 	Running on macOS 14.4
 
@@ -38,10 +38,11 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum AttachmentOverlayContructor {
+import UIKit
 
-    static func buildScene(payload: AttachmentOverlayModel.Payload, initialMessage: String?, replyModel: ChatReplyViewModel?) -> AttachmentOverlayViewController {
-        let model = AttachmentOverlayModel(payload: payload, replyViewModel: replyModel)
-        return AttachmentOverlayViewController(model: model, initialMessage: initialMessage)
-    }
+struct ChatReplyViewModel {
+    let name: String?
+    let icon: UIImage?
+    let message: String?
+    let gifID: String?
 }

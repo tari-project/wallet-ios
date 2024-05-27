@@ -74,6 +74,7 @@ final class ChatConversationModel {
         let rawTimestamp: Date
         let action: MessageActionType?
         let gifIdentifier: String?
+        let replyModel: ChatReplyViewModel?
     }
 
     enum Action {
@@ -87,6 +88,7 @@ final class ChatConversationModel {
     @Published private(set) var userData: UserData?
     @Published private(set) var messages: [MessageSection] = []
     @Published private(set) var attachement: Attachment?
+    @Published private(set) var replyViewModel: ChatReplyViewModel?
     @Published private(set) var action: Action?
     @Published private(set) var errorModel: MessageModel?
 
@@ -203,9 +205,24 @@ final class ChatConversationModel {
         messageMetadata[.gif] = gifID.data(using: .utf8)
     }
 
+    func attach(replyID: String) {
+        do {
+            replyViewModel = try makeReplyModel(messageID: replyID)
+            messageMetadata[.reply] = replyID.data(using: .utf8)
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+
     func removeAttachment() {
         attachement = nil
-        messageMetadata.removeAll()
+        messageMetadata[.tokenRequest] = nil
+        messageMetadata[.gif] = nil
+    }
+
+    func removeReplyMessage() {
+        replyViewModel = nil
+        messageMetadata[.reply] = nil
     }
 
     func requestSendTransaction() {
@@ -283,11 +300,16 @@ final class ChatConversationModel {
                 let allMetadataDictionary = try chatMessage.allMetadataDictionary
                 let isIncomming = try chatMessage.isIncomming
                 var messages = result[dateOnly] ?? []
+                var replyModel: ChatReplyViewModel?
 
                 if let lastMessage = messages.last, lastMessage.isIncomming != isIncomming {
                     let updatedLastMessage = lastMessage.update(isLastInContext: true)
                     messages.removeLast()
                     messages.append(updatedLastMessage)
+                }
+
+                if let replyMessageID = try allMetadataDictionary[.reply]?.string {
+                    replyModel = try makeReplyModel(messageID: replyMessageID)
                 }
 
                 let message = try Message(
@@ -299,7 +321,8 @@ final class ChatConversationModel {
                     timestamp: hourFormatter.string(from: timestamp),
                     rawTimestamp: timestamp,
                     action: makeMessageActionType(message: chatMessage),
-                    gifIdentifier: allMetadataDictionary[.gif]?.string
+                    gifIdentifier: allMetadataDictionary[.gif]?.string,
+                    replyModel: replyModel
                 )
 
                 messages.append(message)
@@ -328,12 +351,22 @@ final class ChatConversationModel {
                     timestamp: hourFormatter.string(from: timestamp),
                     rawTimestamp: timestamp,
                     action: nil,
-                    gifIdentifier: gifIdentifier
+                    gifIdentifier: gifIdentifier,
+                    replyModel: nil
                 )
 
                 messages.append(message)
                 result[dateOnly] = messages
             }
+    }
+
+    private func makeReplyModel(messageID: String) throws -> ChatReplyViewModel? {
+        guard let message = try Tari.shared.chatMessagesService.message(address: address, messageID: messageID) else { return nil }
+        let name = try message.isIncomming ? userData?.name : localized("common.you")
+        let gifID = try message.allMetadata.first { try $0.type == .gif }?.data.string
+        let icon: UIImage? = gifID != nil ? .Icons.Chat.Attachments.gif : nil
+        let replyMessage = try message.body.string
+        return ChatReplyViewModel(name: name, icon: icon, message: replyMessage, gifID: gifID)
     }
 
     // MARK: - Message Action
@@ -374,7 +407,8 @@ private extension ChatConversationModel.Message {
             timestamp: timestamp,
             rawTimestamp: rawTimestamp,
             action: action,
-            gifIdentifier: gifIdentifier
+            gifIdentifier: gifIdentifier,
+            replyModel: replyModel
         )
     }
 }

@@ -100,6 +100,11 @@ final class ChatMessagesService: CoreChatService {
         fetchData()
     }
 
+    func message(address: TariAddress, messageID: String) throws -> ChatMessage? {
+        let emojis = try address.emojis
+        return messages[emojis]?.first { (try? $0.identifier.string) == messageID }
+    }
+
     private func fetchData() {
         do {
             let addresses = try chatManager.conversationalists().all

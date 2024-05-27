@@ -40,6 +40,12 @@
 
 final class AttachmentOverlayModel {
 
+    struct CallbackData {
+        let message: String?
+        let isReplyAttached: Bool
+        let isSendConfirned: Bool
+    }
+
     enum Payload {
         case request(value: String)
         case gif(identifier: String)
@@ -47,30 +53,46 @@ final class AttachmentOverlayModel {
 
     enum Attachment {
         case request(value: NSAttributedString)
-        case gif(state: GifDynamicModel.GifDataState)
+        case gif(gifID: String)
     }
 
     // MARK: - View Model
 
     @Published private(set) var attachment: Attachment?
+    @Published private(set) var replyViewModel: ChatReplyViewModel?
+    @Published private(set) var updateOutputDataAction: CallbackData?
+    @Published private(set) var shouldCloseAction: Bool = false
 
     // MARK: - Properties
 
-    private let gifModel = GifDynamicModel()
+    private var message: String?
+    private var isSendConfirned: Bool = false
 
     // MARK: - Initialisers
 
-    init(payload: Payload) {
-        setupCallbacks()
+    init(payload: Payload, replyViewModel: ChatReplyViewModel?) {
+        self.replyViewModel = replyViewModel
         handle(payload: payload)
     }
 
-    // MARK: - Setups
+    // MARK: - Actions
 
-    private func setupCallbacks() {
-        gifModel.$gif
-            .map { Attachment.gif(state: $0) }
-            .assign(to: &$attachment)
+    func update(message: String?) {
+        self.message = message
+    }
+
+    func detachReplyMessage() {
+        replyViewModel = nil
+    }
+
+    func sendMessage() {
+        isSendConfirned = true
+        updateOutputData()
+        shouldCloseAction = true
+    }
+
+    func updateOutputData() {
+        updateOutputDataAction = CallbackData(message: message, isReplyAttached: replyViewModel != nil, isSendConfirned: isSendConfirned)
     }
 
     // MARK: - Handlers
@@ -80,7 +102,7 @@ final class AttachmentOverlayModel {
         case let .request(value):
             attachment = .request(value: NSAttributedString(amount: value))
         case let .gif(identifier):
-            gifModel.fetchGif(identifier: identifier)
+            attachment = .gif(gifID: identifier)
         }
     }
 }

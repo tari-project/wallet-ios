@@ -108,6 +108,11 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
             .sink { [weak self] in self?.handle(attachement: $0) }
             .store(in: &cancellables)
 
+        model.$replyViewModel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.update(replyModel: $0) }
+            .store(in: &cancellables)
+
         model.$action
             .compactMap { $0 }
             .sink { [weak self] in self?.handle(action: $0) }
@@ -136,6 +141,14 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
             self?.model.send(message: $0 ?? "")
         }
 
+        mainView.onCellMenuAction = { [weak self] in
+            self?.handle(menuAction: $0)
+        }
+
+        mainView.onReplayBarCloseButtonTap = { [weak self] in
+            self?.model.removeReplyMessage()
+        }
+
         gifManager.$selectedGifID
             .compactMap { $0 }
             .sink { [weak self] in self?.model.attach(gifID: $0) }
@@ -159,7 +172,8 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
                         self?.model.handle(messageAction: action)
                     },
                     timestamp: message.timestamp,
-                    gifIdentifier: message.gifIdentifier
+                    gifIdentifier: message.gifIdentifier,
+                    replyModel: message.replyModel
                 )
             }
             return ChatConversationView.Section(title: $0.relativeDay, messages: messages)
@@ -199,6 +213,13 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
             model.requestTokens()
         case .pinThread:
             model.switchPinedStatus()
+        }
+    }
+
+    private func handle(menuAction: ChatConversationMenuAction) {
+        switch menuAction {
+        case let .reply(identifier):
+            model.attach(replyID: identifier)
         }
     }
 
@@ -253,9 +274,9 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
 
     private func presentAttachementsOverlay(payload: AttachmentOverlayModel.Payload) {
 
-        let controller = AttachmentOverlayContructor.buildScene(payload: payload, initialMessage: mainView.messageText)
+        let controller = AttachmentOverlayContructor.buildScene(payload: payload, initialMessage: mainView.messageText, replyModel: model.replyViewModel)
 
-        controller.onClose = { [weak self] message, wasSendButtonTapped in
+        controller.onDataUpdate = { [weak self] message, isReplyMessageAttached, wasSendButtonTapped in
             if wasSendButtonTapped {
                 guard let message else { return }
                 self?.model.send(message: message)
@@ -263,6 +284,10 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
             } else {
                 self?.model.removeAttachment()
                 self?.mainView.messageText = message
+            }
+
+            if !isReplyMessageAttached {
+                self?.model.removeReplyMessage()
             }
         }
 
