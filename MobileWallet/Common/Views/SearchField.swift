@@ -51,6 +51,10 @@ final class SearchField: DynamicThemeTextField {
         return view
     }()
 
+    // MARK: - Properties
+
+    var onReturnTap: (() -> Void)?
+
     // MARK: - Initialisers
 
     override init() {
@@ -70,6 +74,7 @@ final class SearchField: DynamicThemeTextField {
         layer.cornerRadius = 6.0
         layer.borderWidth = 1.0
         heightAnchor.constraint(equalToConstant: 46.0).isActive = true
+        delegate = self
     }
 
     private func setupSideViews() {
@@ -96,5 +101,13 @@ final class SearchField: DynamicThemeTextField {
         rect.origin.x -= 20.0
         rect.size.width += 20.0
         return rect
+    }
+}
+
+extension SearchField: UITextFieldDelegate {
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        onReturnTap?()
+        return true
     }
 }

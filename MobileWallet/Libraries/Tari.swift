@@ -85,6 +85,8 @@ final class Tari: MainServiceable {
     private(set) lazy var chatMessagesService = ChatMessagesService(chatManager: chatManager)
     private(set) lazy var chatUsersService = ChatUsersService(chatManager: chatManager)
 
+    private(set) lazy var chatMessagesBridgeService = ChatMessagesBridgeService(transactionsService: transactions, chatMessagesService: chatMessagesService)
+
     private(set) lazy var logFilePath: String = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"

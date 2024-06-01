@@ -41,7 +41,8 @@
 final class ChatMessageMetadata {
 
     enum MetadataType: String {
-        case reply
+        case replyMessage
+        case replyTransaction
         case tokenRequest
         case gif
     }

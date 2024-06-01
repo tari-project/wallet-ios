@@ -149,6 +149,10 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
             self?.model.removeReplyMessage()
         }
 
+        mainView.onCellBecomeVisible = { [weak self] in
+            self?.model.update(readTimestamp: $0)
+        }
+
         gifManager.$selectedGifID
             .compactMap { $0 }
             .sink { [weak self] in self?.model.attach(gifID: $0) }
@@ -172,6 +176,7 @@ final class ChatConversationViewController: SecureViewController<ChatConversatio
                         self?.model.handle(messageAction: action)
                     },
                     timestamp: message.timestamp,
+                    rawTimestamp: message.rawTimestamp,
                     gifIdentifier: message.gifIdentifier,
                     replyModel: message.replyModel
                 )

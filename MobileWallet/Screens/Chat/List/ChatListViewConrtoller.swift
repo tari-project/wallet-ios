@@ -120,7 +120,7 @@ final class ChatListViewConrtoller: SecureViewController<ChatListView> {
         }
 
         mainView.onSelectRow = { [weak self] in
-            self?.model.select(identifier: $0)
+            self?.model.select(emojiID: $0)
         }
     }
 

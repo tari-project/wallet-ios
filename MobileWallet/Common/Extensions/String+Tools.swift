@@ -65,4 +65,10 @@ extension String {
         guard #available(iOS 16.0, *) else { return components(separatedBy: CharacterSet(charactersIn: "[]")).map { String($0) }}
         return split(separator: /\[|\]/).map { String($0) }
     }
+
+    func splitTransactionMessage() -> (message: String?, gifID: String?) {
+        let result = self.components(separatedBy: "https://giphy.com/embed/")
+        guard result.count >= 2 else { return (message: self, gifID: nil) }
+        return (message: result[0], gifID: result[1])
+    }
 }

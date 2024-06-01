@@ -47,13 +47,26 @@ enum ChatMessageMetadataFormatter {
 
     // MARK: - Actions
 
-    static func format(metadataList: [ChatMessageMetadata], isIncomming: Bool, username: String) throws -> [ChatNotificationModel] {
-        try metadataList.compactMap { try format(metadata: $0, isIncomming: isIncomming, username: username) }
+    static func format(metadata: [ChatMessageMetadata.MetadataType: ByteVector], transactionAmount: MicroTari?, isIncomming: Bool, username: String) throws -> [ChatNotificationModel] {
+        let metadataNotificationModels = try metadata.compactMap { try format(type: $0.key, metadata: $0.value, isIncomming: isIncomming, username: username) }
+        guard let transactionAmount else { return metadataNotificationModels }
+        let transactionNotifcationModels = try format(transactionAmount: transactionAmount, isIncomming: isIncomming, username: username)
+        return metadataNotificationModels + [transactionNotifcationModels]
     }
 
-    static func format(transaction: Transaction, isIncomming: Bool, username: String) throws -> ChatNotificationModel {
+    private static func format(type: ChatMessageMetadata.MetadataType, metadata: ByteVector, isIncomming: Bool, username: String) throws -> ChatNotificationModel? {
+        switch type {
+        case .tokenRequest:
+            let notificationParts = try makeTokenRequestNotificationParts(metadata: metadata, isIncomming: isIncomming, username: username)
+            let isValid = try isRequestMetadataValid(metadata: metadata)
+            return ChatNotificationModel(notificationParts: notificationParts, isValid: isValid)
+        case .replyMessage, .replyTransaction, .gif:
+            return nil
+        }
+    }
 
-        let amount = try MicroTari(transaction.amount).formattedPrecise
+    private static func format(transactionAmount: MicroTari, isIncomming: Bool, username: String) throws -> ChatNotificationModel {
+
         let notificationParts: [StylizableComponent]
 
         if isIncomming {
@@ -61,51 +74,31 @@ enum ChatMessageMetadataFormatter {
                 StylizedLabel.StylizedText(text: username, style: .bold),
                 StylizedLabel.StylizedText(text: localized("chat.conversation.messages.payment.inbound.part2"), style: .normal),
                 StylizedLabel.StylizedImage(image: .Icons.General.tariGem),
-                StylizedLabel.StylizedText(text: amount, style: .normal)
+                StylizedLabel.StylizedText(text: transactionAmount.formattedPrecise, style: .normal)
             ]
         } else {
             notificationParts = [
                 StylizedLabel.StylizedText(text: localized("chat.conversation.messages.payment.outbound.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: username, style: .bold),
                 StylizedLabel.StylizedImage(image: .Icons.General.tariGem),
-                StylizedLabel.StylizedText(text: amount, style: .normal)
+                StylizedLabel.StylizedText(text: transactionAmount.formattedPrecise, style: .normal)
             ]
         }
 
         return ChatNotificationModel(notificationParts: notificationParts, isValid: true)
     }
 
-    private static func format(metadata: ChatMessageMetadata, isIncomming: Bool, username: String) throws -> ChatNotificationModel? {
-        guard let type = try metadata.type, let notificationParts = try makeNotificationParts(metadata: metadata, type: type, isIncomming: isIncomming, username: username) else { return nil }
-        let isValid = try isValid(metadata: metadata, type: type)
-        return ChatNotificationModel(notificationParts: notificationParts, isValid: isValid)
-    }
-
     // MARK: - Validation
 
-    private static func isValid(metadata: ChatMessageMetadata, type: ChatMessageMetadata.MetadataType) throws -> Bool {
-        switch type {
-        case .reply, .gif:
-            return true
-        case .tokenRequest:
-            return try metadata.data.data.value(type: UInt64.self, byteCount: UInt64.bitWidth / 8) != nil
-        }
+    private static func isRequestMetadataValid(metadata: ByteVector) throws -> Bool {
+        try metadata.data.value(type: UInt64.self, byteCount: UInt64.bitWidth / 8) != nil
     }
 
     // MARK: - Notification Parts
 
-    private static func makeNotificationParts(metadata: ChatMessageMetadata, type: ChatMessageMetadata.MetadataType, isIncomming: Bool, username: String) throws -> [StylizableComponent]? {
-        switch type {
-        case .reply, .gif:
-            return nil
-        case .tokenRequest:
-            return try makeTokenRequestNotificationParts(metadata: metadata, isIncomming: isIncomming, username: username)
-        }
-    }
+    private static func makeTokenRequestNotificationParts(metadata: ByteVector, isIncomming: Bool, username: String) throws -> [StylizableComponent] {
 
-    private static func makeTokenRequestNotificationParts(metadata: ChatMessageMetadata, isIncomming: Bool, username: String) throws -> [StylizableComponent] {
-
-        guard let rawValue = try metadata.data.data.value(type: UInt64.self, byteCount: UInt64.bitWidth / 8) else {
+        guard let rawValue = try metadata.data.value(type: UInt64.self, byteCount: UInt64.bitWidth / 8) else {
             return [StylizedLabel.StylizedText(text: localized("chat.conversation.messages.error.invalid_metadata"), style: .normal)]
         }
 

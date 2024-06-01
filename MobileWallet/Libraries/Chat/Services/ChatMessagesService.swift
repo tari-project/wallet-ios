@@ -48,10 +48,8 @@ final class ChatMessagesService: CoreChatService {
 
     // MARK: - Properties
 
-    @Published private(set) var recentMessages: [ChatMessage] = []
+    @Published private(set) var messages: [String: [ChatMessage]] = [:]
     @Published private(set) var error: Error?
-
-    @Published private var messages: [String: [ChatMessage]] = [:]
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -66,22 +64,9 @@ final class ChatMessagesService: CoreChatService {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         ChatCallbackManager.shared.messageReceived
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-
-        $messages
-            .compactMap {
-                try? $0
-                    .mapValues(\.first)
-                    .values
-                    .compactMap { $0 }
-                    .sorted { try $0.timestamp > $1.timestamp }
-            }
-            .sink { [weak self] in self?.recentMessages = $0 }
-            .store(in: &cancellables)
-
     }
 
     // MARK: - Actions

@@ -48,6 +48,8 @@ final class ChatSelectContactModel {
 
     // MARK: - View Model
 
+    @Published var searchText: String = ""
+
     @Published private(set) var contactsList: [ContactBookContactListView.Section] = []
     @Published private(set) var favoriteContactsList: [ContactBookContactListView.Section] = []
     @Published private(set) var action: Action?
@@ -72,18 +74,23 @@ final class ChatSelectContactModel {
 
     private func setupCallbacks() {
 
-        $contacts
-            .map {
-                $0.map { ContactBookCell.ViewModel(
-                    id: $0.id,
-                    name: $0.name,
-                    avatarText: $0.avatar,
-                    avatarImage: $0.avatarImage,
-                    isFavorite: $0.isFavorite,
-                    contactTypeImage: nil,
-                    isSelectable: false
-                )
-                }
+        Publishers.CombineLatest($contacts, $searchText)
+            .map { contacts, searchText in
+                contacts
+                    .filter {
+                        guard !searchText.isEmpty else { return true }
+                        return $0.name.lowercased().contains(searchText.lowercased())
+                    }
+                    .map { ContactBookCell.ViewModel(
+                        id: $0.id,
+                        name: $0.name,
+                        avatarText: $0.avatar,
+                        avatarImage: $0.avatarImage,
+                        isFavorite: $0.isFavorite,
+                        contactTypeImage: nil,
+                        isSelectable: false
+                    )
+                    }
             }
             .sink { [weak self] in self?.contactsList = [ContactBookContactListView.Section(title: nil, items: $0)] }
             .store(in: &cancellables)
@@ -126,5 +133,17 @@ final class ChatSelectContactModel {
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
+    }
+
+    func requestStartConversation() {
+
+        guard !searchText.isEmpty else { return }
+
+        guard let address = (try? TariAddress(emojiID: searchText)) ?? (try? TariAddress(hex: searchText)) else {
+            errorModel = MessageModel(title: localized("common.error"), message: localized("contact_book.add_contact.validation_error.invalid_emoji_id"), type: .error)
+            return
+        }
+
+        action = .startConversation(address: address)
     }
 }

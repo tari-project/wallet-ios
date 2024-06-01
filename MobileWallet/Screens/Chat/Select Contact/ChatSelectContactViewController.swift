@@ -104,6 +104,14 @@ final class ChatSelectContactViewController: SecureViewController<ChatSelectCont
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
+        mainView.searchText
+            .assign(to: \.searchText, on: model)
+            .store(in: &cancellables)
+
+        mainView.onReturnKeyTap = { [weak self] in
+            self?.model.requestStartConversation()
+        }
+
         contactsPageManager.onContactPageRowTap = { [weak self] identifier, _ in
             self?.model.select(contactID: identifier)
         }
