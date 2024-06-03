@@ -243,7 +243,11 @@ extension ContactsManager.Model {
             items.append(.link)
         }
 
-        items += [.chat, .details]
+        if hasIntrenalModel {
+            items.append(.chat)
+        }
+
+        items.append(.details)
 
         return items
     }

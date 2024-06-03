@@ -39,13 +39,12 @@
 */
 
 import TariCommon
-import Combine
 
 final class ChatConversationCell: DynamicThemeCell {
 
     struct Model: Identifiable, Hashable {
 
-        let id: String
+        let id: ChatMessageIdentifier
         let isIncoming: Bool
         let isLastInContext: Bool
         let notificationsTextComponents: [ChatNotificationModel]
@@ -53,6 +52,7 @@ final class ChatConversationCell: DynamicThemeCell {
         let actionButtonTitle: String?
         let actionCallback: (() -> Void)?
         let timestamp: String
+        let rawTimestamp: Date
         let gifIdentifier: String?
         let replyModel: ChatReplyViewModel?
 
@@ -110,15 +110,18 @@ final class ChatConversationCell: DynamicThemeCell {
 
     // MARK: - Properties
 
-    var onContentChange: (() -> Void)?
+    var onContentChange: (() -> Void)? {
+        get { gifView.onStateUpdate }
+        set { gifView.onStateUpdate = newValue }
+    }
+
     var onContextMenuInteraction: ((ChatConversationMenuAction) -> Void)?
 
     private var contentViewLeadingConstraint: NSLayoutConstraint?
     private var contentViewTrailingConstraint: NSLayoutConstraint?
 
-    private(set) var identifier: String?
+    private(set) var dataIdentifier: ChatMessageIdentifier?
     private var isIncoming: Bool = false
-    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
@@ -187,7 +190,7 @@ final class ChatConversationCell: DynamicThemeCell {
 
     func update(model: Model) {
 
-        identifier = model.id
+        dataIdentifier = model.id
 
         contentViewLeadingConstraint?.constant = model.isIncoming ? 25.0 : 90.0
         contentViewTrailingConstraint?.constant = model.isIncoming ? -90.0 : -25.0
@@ -245,11 +248,11 @@ extension ChatConversationCell: UIContextMenuInteractionDelegate {
 
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
 
-        guard let identifier else { return nil }
+        guard let dataIdentifier else { return nil }
 
         return UIContextMenuConfiguration(actionProvider: { _ in
             UIMenu(children: [
-                UIAction(title: localized("chat.conversation.cell.context_menu.reply"), image: .Icons.Chat.reply) { [weak self] _ in self?.onContextMenuInteraction?(.reply(identifier: identifier)) }
+                UIAction(title: localized("chat.conversation.cell.context_menu.reply"), image: .Icons.Chat.reply) { [weak self] _ in self?.onContextMenuInteraction?(.reply(identifier: dataIdentifier)) }
             ])
         })
     }

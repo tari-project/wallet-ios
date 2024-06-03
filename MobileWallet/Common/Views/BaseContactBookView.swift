@@ -39,6 +39,7 @@
 */
 
 import TariCommon
+import Combine
 
 final class BaseContactBookView: DynamicThemeView {
 
@@ -49,6 +50,18 @@ final class BaseContactBookView: DynamicThemeView {
         view.placeholder = localized("contact_book.search_bar.placeholder")
         return view
     }()
+
+    // MARK: - Properties
+
+    var returnKeyType: UIReturnKeyType {
+        get { searchTextField.returnKeyType }
+        set { searchTextField.returnKeyType = newValue }
+    }
+
+    var onReturnKeyTap: (() -> Void)? {
+        get { searchTextField.onReturnTap }
+        set { searchTextField.onReturnTap = newValue }
+    }
 
     // MARK: - Initialisers
 
@@ -63,19 +76,6 @@ final class BaseContactBookView: DynamicThemeView {
 
     // MARK: - Setups
 
-    private func setupConstraints() {
-
-        addSubview(searchTextField)
-
-        let constraints = [
-            searchTextField.topAnchor.constraint(equalTo: topAnchor, constant: 20.0),
-            searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
     func setup(pagerView: UIView) {
 
         addSubview(pagerView)
@@ -85,6 +85,23 @@ final class BaseContactBookView: DynamicThemeView {
             pagerView.leadingAnchor.constraint(equalTo: leadingAnchor),
             pagerView.trailingAnchor.constraint(equalTo: trailingAnchor),
             pagerView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    func setupSearchTextFieldCallback(subject: CurrentValueSubject<String, Never>, storeIn cancellables: inout Set<AnyCancellable>) {
+        searchTextField.bind(withSubject: subject, storeIn: &cancellables)
+    }
+
+    private func setupConstraints() {
+
+        addSubview(searchTextField)
+
+        let constraints = [
+            searchTextField.topAnchor.constraint(equalTo: topAnchor, constant: 20.0),
+            searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

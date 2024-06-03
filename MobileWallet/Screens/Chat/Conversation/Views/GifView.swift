@@ -41,6 +41,7 @@
 import GiphyUISDK
 import TariCommon
 import Combine
+import Lottie
 
 final class GifView: UIView {
 
@@ -48,11 +49,22 @@ final class GifView: UIView {
 
     private var mediaView: GPHMediaView?
 
+    @View private var spinnerView: AnimationView = {
+        let view = AnimationView()
+        view.backgroundBehavior = .pauseAndRestore
+        view.animation = Animation.named(.pendingCircleAnimation)
+        view.loopMode = .loop
+        view.play()
+        return view
+    }()
+
     // MARK: - Properties
 
     var gifID: String? {
         didSet { handle(gifID: gifID) }
     }
+
+    var onStateUpdate: (() -> Void)?
 
     private let dynamicModel = GifDynamicModel()
     private var cancellables = Set<AnyCancellable>()
@@ -62,6 +74,7 @@ final class GifView: UIView {
     init() {
         super.init(frame: .zero)
         setupCallbacks()
+        setupConstraints()
     }
 
     required init?(coder: NSCoder) {
@@ -77,19 +90,39 @@ final class GifView: UIView {
             .store(in: &cancellables)
     }
 
+    private func setupConstraints() {
+
+        [spinnerView].forEach(addSubview)
+
+        let constraints = [
+            spinnerView.topAnchor.constraint(equalTo: topAnchor),
+            spinnerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            spinnerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            spinnerView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
     // MARK: - Updates
 
     private func update(dataState: GifDynamicModel.GifDataState) {
+
         switch dataState {
         case .none:
             removeGifView()
+            updateSpinnerView(isVisible: false)
         case .loading:
-            break
+            updateSpinnerView(isVisible: true)
         case let .loaded(data):
+            updateSpinnerView(isVisible: false)
+            removeGifView()
             addGifView(media: data)
         case .failed:
-            break
+            updateSpinnerView(isVisible: false)
         }
+
+        onStateUpdate?()
     }
 
     // MARK: - Actions
@@ -99,6 +132,8 @@ final class GifView: UIView {
         @View var mediaView = GPHMediaView()
         mediaView.media = media
         addSubview(mediaView)
+
+        mediaView.subviews.forEach { $0.isHidden = true }
 
         let constraints = [
             mediaView.topAnchor.constraint(equalTo: topAnchor),
@@ -118,6 +153,12 @@ final class GifView: UIView {
         NSLayoutConstraint.deactivate(mediaView.constraints)
         mediaView.removeFromSuperview()
         self.mediaView = nil
+    }
+
+    private func updateSpinnerView(isVisible: Bool) {
+        UIView.animate(withDuration: 0.3) {
+            self.spinnerView.alpha = isVisible ? 1.0 : 0.0
+        }
     }
 
     // MARK: - Handlers

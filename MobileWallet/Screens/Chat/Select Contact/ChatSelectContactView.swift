@@ -39,6 +39,7 @@
 */
 
 import TariCommon
+import Combine
 
 final class ChatSelectContactView: BaseNavigationContentView {
 
@@ -46,12 +47,25 @@ final class ChatSelectContactView: BaseNavigationContentView {
 
     @View private var contactBookView = BaseContactBookView()
 
+    // MARK: - Properties
+
+    var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
+
+    var onReturnKeyTap: (() -> Void)? {
+        get { contactBookView.onReturnKeyTap }
+        set { contactBookView.onReturnKeyTap = newValue }
+    }
+
+    private let searchTextSubject = CurrentValueSubject<String, Never>("")
+    private var cancellables = Set<AnyCancellable>()
+
     // MARK: - Initialisers
 
     override init() {
         super.init()
         setupViews()
         setupConstraints()
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -60,8 +74,13 @@ final class ChatSelectContactView: BaseNavigationContentView {
 
     // MARK: - Setups
 
+    func setup(pagerView: UIView) {
+        contactBookView.setup(pagerView: pagerView)
+    }
+
     private func setupViews() {
         navigationBar.title = localized("chat.contacts.title")
+        contactBookView.returnKeyType = .continue
     }
 
     private func setupConstraints() {
@@ -78,8 +97,8 @@ final class ChatSelectContactView: BaseNavigationContentView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    func setup(pagerView: UIView) {
-        contactBookView.setup(pagerView: pagerView)
+    private func setupCallbacks() {
+        contactBookView.setupSearchTextFieldCallback(subject: searchTextSubject, storeIn: &cancellables)
     }
 
     // MARK: - Updates

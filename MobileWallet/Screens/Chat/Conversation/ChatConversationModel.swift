@@ -65,7 +65,7 @@ final class ChatConversationModel {
     }
 
     struct Message: Identifiable {
-        let id: String
+        let id: ChatMessageIdentifier
         let isIncomming: Bool
         let isLastInContext: Bool
         let notifications: [ChatNotificationModel]
@@ -100,11 +100,11 @@ final class ChatConversationModel {
     private let dateFormatter = DateFormatter.shortDate
     private let hourFormatter = DateFormatter.hour
     private let contactsManager = ContactsManager()
-    private let transactionFormatter = TransactionFormatter()
 
     private var isOnline: Bool = false
-    private var messageMetadata: [ChatMessageMetadata.MetadataType: Data] = [:]
-    private var chatMessages: [ChatMessage] = []
+    private var messageMetadata: [ChatMessageMetadata.MetadataType: Data] = [:] {
+        didSet { print("[A][Meta] \(messageMetadata)") }
+    }
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -122,31 +122,8 @@ final class ChatConversationModel {
     // MARK: - Setups
 
     private func setupCallbacks() throws {
-
-        let hex = try address.byteVector.hex
-
-        Tari.shared.chatUsersService
-            .$onlineStatuses
-            .compactMap { $0.first { $0.key == hex }?.value }
-            .map { $0 == .online }
-            .sink { [weak self] in
-                self?.isOnline = $0
-                self?.updateUserData()
-            }
-            .store(in: &cancellables)
-
-        let transactionsPublisher = Tari.shared.transactions.$all
-            .map {
-                $0.filter {
-                    guard let transactionHex = try? $0.address.byteVector.hex else { return false }
-                    return transactionHex == hex
-                }
-            }
-
-        try Publishers.CombineLatest3(Tari.shared.chatMessagesService.messages(address: address), transactionsPublisher, $userData)
-            .compactMap { [weak self] chatMessages, transactions, userData in
-                try? self?.messageSections(chatMessages: chatMessages, transactions: transactions, username: userData?.name ?? localized("chat.conversation.messages.username_placeholder"))
-            }
+        Publishers.CombineLatest(try Tari.shared.chatMessagesBridgeService.messages(address: address), $userData)
+            .compactMap { [weak self] in try? self?.messageSections(messages: $0, username: $1?.name ?? localized("chat.conversation.messages.username_placeholder")) }
             .sink { [weak self] in self?.messages = $0 }
             .store(in: &cancellables)
     }
@@ -183,8 +160,9 @@ final class ChatConversationModel {
 
     func send(message: String) {
         do {
-            try Tari.shared.chatMessagesService.send(message: message, receiver: address, metadata: messageMetadata)
-            attachement = nil
+            try Tari.shared.chatMessagesService.send(message: message, address: address, metadata: messageMetadata)
+            removeAttachment()
+            removeReplyMessage()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
@@ -205,10 +183,18 @@ final class ChatConversationModel {
         messageMetadata[.gif] = gifID.data(using: .utf8)
     }
 
-    func attach(replyID: String) {
+    func attach(replyID: ChatMessageIdentifier) {
         do {
-            replyViewModel = try makeReplyModel(messageID: replyID)
-            messageMetadata[.reply] = replyID.data(using: .utf8)
+            switch replyID {
+            case let .chatMessage(identifier):
+                replyViewModel = try makeReplyModel(messageID: identifier)
+                messageMetadata[.replyMessage] = identifier.data(using: .utf8)
+                messageMetadata[.replyTransaction] = nil
+            case let .transaction(identifier):
+                replyViewModel = try makeReplyModel(transactionID: identifier)
+                messageMetadata[.replyMessage] = nil
+                messageMetadata[.replyTransaction] = identifier.data()
+            }
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
@@ -222,7 +208,8 @@ final class ChatConversationModel {
 
     func removeReplyMessage() {
         replyViewModel = nil
-        messageMetadata[.reply] = nil
+        messageMetadata[.replyMessage] = nil
+        messageMetadata[.replyTransaction] = nil
     }
 
     func requestSendTransaction() {
@@ -254,6 +241,11 @@ final class ChatConversationModel {
         }
     }
 
+    func update(readTimestamp: Date) {
+        guard let emojiID = try? address.emojis else { return }
+        Tari.shared.chatMessagesBridgeService.updateReadTimestamp(emojiID: emojiID, timestamp: readTimestamp)
+    }
+
     private func triggerSendTokensAction(amount: UInt64) {
         do {
             let hex = try address.byteVector.hex
@@ -267,96 +259,36 @@ final class ChatConversationModel {
 
     // MARK: - Handlers
 
-    private func messageSections(chatMessages: [ChatMessage], transactions: [Transaction], username: String) throws -> [MessageSection] {
-
-        let chatMessagesSections = try rawMessagesSections(chatMessages: chatMessages, username: username)
-        let transactionsMessagesSections = try rawMessagesSections(transactions: transactions, username: username)
-
-        self.chatMessages = chatMessages
-
-        return chatMessagesSections
-            .merging(transactionsMessagesSections, uniquingKeysWith: { $0 + $1 })
-            .mapValues {
-                var messages = $0
-                var lastMessages = messages.removeLast()
-                lastMessages = lastMessages.update(isLastInContext: true)
-                messages.append(lastMessages)
-                return messages
-            }
+    private func messageSections(messages: [Date: [ChatMessageData]], username: String) throws -> [MessageSection] {
+        try messages
             .sorted { $0.key < $1.key }
             .map {
-                let messages = $0.value.sorted { $0.rawTimestamp < $1.rawTimestamp }
+
+                let messages = try $0.value.map {
+
+                    var replyModel: ChatReplyViewModel?
+
+                    if let replyMessageID = try $0.metadata[.replyMessage]?.string {
+                        replyModel = try makeReplyModel(messageID: replyMessageID)
+                    } else if let replyTransactionID = try $0.metadata[.replyTransaction]?.data.value(type: UInt64.self, byteCount: UInt64.bitWidth / 8) {
+                        replyModel = try makeReplyModel(transactionID: replyTransactionID)
+                    }
+
+                    return Message(
+                        id: $0.identifier,
+                        isIncomming: $0.isIncomming,
+                        isLastInContext: $0.isLastInContext,
+                        notifications: try ChatMessageMetadataFormatter.format(metadata: $0.metadata, transactionAmount: $0.transactionAmount, isIncomming: $0.isIncomming, username: username),
+                        message: $0.message,
+                        timestamp: hourFormatter.string(from: $0.timestamp),
+                        rawTimestamp: $0.timestamp,
+                        action: try makeMessageActionType(metadata: $0.metadata, isIncommingMessage: $0.isIncomming),
+                        gifIdentifier: try $0.metadata[.gif]?.string,
+                        replyModel: replyModel
+                    )
+                }
+
                 return MessageSection(relativeDay: dateFormatter.string(from: $0.key), messages: messages)
-            }
-    }
-
-    private func rawMessagesSections(chatMessages: [ChatMessage], username: String) throws -> [Date: [Message]] {
-        try chatMessages
-            .reduce(into: [Date: [Message]]()) { result, chatMessage in
-
-                let timestamp = try Date(timeIntervalSince1970: TimeInterval(chatMessage.timestamp))
-                guard let dateOnly = timestamp.dateOnly else { return }
-                let allMetadata = try chatMessage.allMetadata
-                let allMetadataDictionary = try chatMessage.allMetadataDictionary
-                let isIncomming = try chatMessage.isIncomming
-                var messages = result[dateOnly] ?? []
-                var replyModel: ChatReplyViewModel?
-
-                if let lastMessage = messages.last, lastMessage.isIncomming != isIncomming {
-                    let updatedLastMessage = lastMessage.update(isLastInContext: true)
-                    messages.removeLast()
-                    messages.append(updatedLastMessage)
-                }
-
-                if let replyMessageID = try allMetadataDictionary[.reply]?.string {
-                    replyModel = try makeReplyModel(messageID: replyMessageID)
-                }
-
-                let message = try Message(
-                    id: chatMessage.identifier.string ?? "",
-                    isIncomming: chatMessage.isIncomming,
-                    isLastInContext: false,
-                    notifications: try ChatMessageMetadataFormatter.format(metadataList: allMetadata, isIncomming: isIncomming, username: username),
-                    message: chatMessage.body.string ?? "",
-                    timestamp: hourFormatter.string(from: timestamp),
-                    rawTimestamp: timestamp,
-                    action: makeMessageActionType(message: chatMessage),
-                    gifIdentifier: allMetadataDictionary[.gif]?.string,
-                    replyModel: replyModel
-                )
-
-                messages.append(message)
-                result[dateOnly] = messages
-            }
-    }
-
-    private func rawMessagesSections(transactions: [Transaction], username: String) throws -> [Date: [Message]] {
-
-        try transactions
-            .reduce(into: [Date: [Message]]()) { result, transaction in
-
-                let timestamp = try Date(timeIntervalSince1970: TimeInterval(transaction.timestamp))
-                guard let dateOnly = timestamp.dateOnly else { return }
-
-                var messages = result[dateOnly] ?? []
-                let isIncomming = try !transaction.isOutboundTransaction
-                let gifIdentifier = try transactionFormatter.model(transaction: transaction)?.giphyID
-
-                let message = try Message(
-                    id: UUID().uuidString,
-                    isIncomming: isIncomming,
-                    isLastInContext: false,
-                    notifications: [ChatMessageMetadataFormatter.format(transaction: transaction, isIncomming: isIncomming, username: username)],
-                    message: transaction.message,
-                    timestamp: hourFormatter.string(from: timestamp),
-                    rawTimestamp: timestamp,
-                    action: nil,
-                    gifIdentifier: gifIdentifier,
-                    replyModel: nil
-                )
-
-                messages.append(message)
-                result[dateOnly] = messages
             }
     }
 
@@ -369,19 +301,19 @@ final class ChatConversationModel {
         return ChatReplyViewModel(name: name, icon: icon, message: replyMessage, gifID: gifID)
     }
 
+    private func makeReplyModel(transactionID: UInt64) throws -> ChatReplyViewModel? {
+        guard let transaction = try Tari.shared.transactions.all.first(where: { try $0.identifier == transactionID }) else { return nil }
+        let name = try transaction.isOutboundTransaction ?  localized("common.you") : userData?.name
+        let messageData = try transaction.message.splitTransactionMessage()
+        let icon: UIImage? = messageData.gifID != nil ? .Icons.Chat.Attachments.gif : nil
+        return ChatReplyViewModel(name: name, icon: icon, message: messageData.message, gifID: messageData.gifID)
+    }
+
     // MARK: - Message Action
 
-    private func makeMessageActionType(message: ChatMessage) throws -> MessageActionType? {
-
-        guard let metadata = try message.allMetadata.first, let metadataType = try metadata.type else { return nil }
-
-        switch metadataType {
-        case .tokenRequest:
-            guard let value = try metadata.data.data.value(type: UInt64.self, byteCount: UInt64.bitWidth / 8) else { return nil }
-            return try message.isIncomming ? .request(value: value) : nil
-        case .reply, .gif:
-            return nil
-        }
+    private func makeMessageActionType(metadata: [ChatMessageMetadata.MetadataType: ByteVector], isIncommingMessage: Bool) throws -> MessageActionType? {
+        guard let requestMetadata = metadata[.tokenRequest], let value = try requestMetadata.data.value(type: UInt64.self, byteCount: UInt64.bitWidth / 8) else { return nil }
+        return isIncommingMessage ? .request(value: value) : nil
     }
 }
 
@@ -392,23 +324,5 @@ extension ChatConversationModel.MessageActionType {
         case .request:
             return localized("chat.conversation.messages.button.send")
         }
-    }
-}
-
-private extension ChatConversationModel.Message {
-
-    func update(isLastInContext: Bool) -> Self {
-        Self(
-            id: id,
-            isIncomming: isIncomming,
-            isLastInContext: isLastInContext,
-            notifications: notifications,
-            message: message,
-            timestamp: timestamp,
-            rawTimestamp: rawTimestamp,
-            action: action,
-            gifIdentifier: gifIdentifier,
-            replyModel: replyModel
-        )
     }
 }

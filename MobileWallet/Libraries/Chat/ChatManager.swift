@@ -83,9 +83,9 @@ final class ChatManager {
         return try client.fetchMessages(address: address, limit: limit, page: page)
     }
 
-    func send(message: String, receiver: TariAddress, metadata: [ChatMessageMetadata.MetadataType: Data]) throws {
+    func send(message: String, address: TariAddress, metadata: [ChatMessageMetadata.MetadataType: Data]) throws {
         let client = try existingClient
-        let chatMessage = try ChatMessage(receiver: receiver, message: message)
+        let chatMessage = try ChatMessage(address: address, message: message)
         try metadata.forEach { try chatMessage.add(metadataType: $0, data: ByteVector(data: $1)) }
         try client.send(message: chatMessage)
     }

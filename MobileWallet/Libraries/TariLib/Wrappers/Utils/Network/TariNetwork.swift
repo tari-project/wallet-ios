@@ -67,7 +67,7 @@ extension TariNetwork {
             name: "nextnet",
             presentedName: "NextNet",
             isMainNet: false,
-            isRecommended: true,
+            isRecommended: false,
             dnsPeer: "seeds.nextnet.tari.com",
             blockExplorerURL: URL(string: "https://explore-nextnet.tari.com")
         )

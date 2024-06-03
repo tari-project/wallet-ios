@@ -106,6 +106,8 @@ final class ChatInputMessageView: DynamicThemeView {
         get { textView.text }
         set {
             textView.text = newValue
+            updateSendButtonState(text: newValue)
+            updateTextViewHeight(animated: false)
             updatePlaceholder()
         }
     }
@@ -164,7 +166,7 @@ final class ChatInputMessageView: DynamicThemeView {
         ]
 
         NSLayoutConstraint.activate(constraints)
-        updateTextViewHeight()
+        updateTextViewHeight(animated: false)
     }
 
     private func setupCallbacks() {
@@ -181,7 +183,7 @@ final class ChatInputMessageView: DynamicThemeView {
 
         sendButton.onTap = { [weak self] in
             self?.onSendButtonTap?(self?.textView.text)
-            self?.textView.text = ""
+            self?.text = nil
         }
     }
 
@@ -198,7 +200,7 @@ final class ChatInputMessageView: DynamicThemeView {
         sendButton.tintColor = theme.icons.active
     }
 
-    private func updateTextViewHeight() {
+    private func updateTextViewHeight(animated: Bool) {
         let currentText = textView.text
         let height = textView.sizeThatFits(CGSize(width: textView.bounds.width, height: .infinity)).height
         textView.text = (0..<maxNumberOfLinesWithoutScrolling-1).reduce(into: "") { result, _ in result += "\n" }
@@ -206,6 +208,12 @@ final class ChatInputMessageView: DynamicThemeView {
         textView.text = currentText
         textViewHeightConstraint?.constant = min(height, maxHeight)
         textView.scrollToBottom(animated: true)
+
+        guard animated else { return }
+
+        UIView.animate(withDuration: 0.1) {
+            self.textView.layoutIfNeeded()
+        }
     }
 
     private func updatePlaceholder() {
@@ -225,20 +233,18 @@ final class ChatInputMessageView: DynamicThemeView {
         textViewAddButtonConstraint?.isActive = false
         textViewBorderConstraint?.isActive = true
     }
+
+    private func updateSendButtonState(text: String?) {
+        let text = (text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        sendButton.isEnabled = !text.isEmpty
+    }
 }
 
 extension ChatInputMessageView: UITextViewDelegate {
 
     func textViewDidChange(_ textView: UITextView) {
-
-        let text = (textView.text ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        sendButton.isEnabled = !text.isEmpty
-
-        updateTextViewHeight()
-
-        UIView.animate(withDuration: 0.1) {
-            self.textView.layoutIfNeeded()
-        }
+        updateSendButtonState(text: textView.text)
+        updateTextViewHeight(animated: true)
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {

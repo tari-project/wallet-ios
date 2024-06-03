@@ -66,7 +66,7 @@ final class ChatListModel {
 
     // MARK: - View Model
 
-    @Published private(set) var unreadMessagesCount: Int = 0 // TODO: Currently unused
+    @Published private(set) var unreadMessagesCount: Int = 0
     @Published private(set) var previewsSections: [MessageSection] = []
     @Published private(set) var action: Action?
     @Published private(set) var errorMessage: MessageModel?
@@ -74,7 +74,6 @@ final class ChatListModel {
     // MARK: - Properties
 
     private let contactsManager = ContactsManager()
-    private var addressCache: [String: TariAddress] = [:]
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -86,17 +85,22 @@ final class ChatListModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-        Publishers.CombineLatest(Tari.shared.chatMessagesService.$recentMessages, Tari.shared.chatUsersService.$onlineStatuses)
-            .sink { [weak self] in try? self?.handle(messages: $0, onlineStatuses: $1) }
+
+        Publishers.CombineLatest3(Tari.shared.chatMessagesBridgeService.$recentMessages, Tari.shared.chatUsersService.$onlineStatuses, Tari.shared.chatMessagesBridgeService.$unreadMessagesCount)
+            .sink { [weak self] in try? self?.handle(recentMessages: $0, onlineStatuses: $1, unreadMessagesCount: $2) }
             .store(in: &cancellables)
+
+        Tari.shared.chatMessagesBridgeService.$totalUnreadMessagesCount
+            .assign(to: &$unreadMessagesCount)
     }
 
     // MARK: - Updates
 
     private func updateRecentMessages() throws {
-        let messages = Tari.shared.chatMessagesService.recentMessages
+        let messages = Tari.shared.chatMessagesBridgeService.recentMessages
         let onlineStatuses = Tari.shared.chatUsersService.onlineStatuses
-        try handle(messages: messages, onlineStatuses: onlineStatuses)
+        let unreadMessagesCount = Tari.shared.chatMessagesBridgeService.unreadMessagesCount
+        try handle(recentMessages: messages, onlineStatuses: onlineStatuses, unreadMessagesCount: unreadMessagesCount)
     }
 
     // MARK: - Actions
@@ -112,44 +116,43 @@ final class ChatListModel {
         }
     }
 
-    func select(identifier: String) {
-        guard let address = addressCache[identifier] else { return }
+    func select(emojiID: String) {
+        guard let address = try? TariAddress(emojiID: emojiID) else { return }
         action = .openConversation(address: address)
     }
 
     // MARK: Handlers
 
-    private func handle(messages: [ChatMessage], onlineStatuses: [String: ChatOnlineStatus]) throws {
+    private func handle(recentMessages: [String: ChatMessageData], onlineStatuses: [String: ChatOnlineStatus], unreadMessagesCount: [String: Int]) throws {
 
         let pinnedAddresses = ChatUserDefaults.pinnedAddresses ?? []
 
-        let previews: [MessagePreview] = try messages.compactMap {
-            guard let identifier = try $0.identifier.string else { return nil }
+        let previews: [MessagePreview] = try recentMessages
+            .map {
 
-            let address = try $0.address
-            let emojis = try address.emojis
-            let hex = try address.byteVector.hex
-            let timestamp = try TimeInterval($0.timestamp)
-            let contact = try contactsManager.contact(address: address)
-            let isOnline = onlineStatuses.first { $0.key == hex }?.value == .online
-            let isPinned = try pinnedAddresses.contains(address.byteVector.hex)
+                let hex = $0.key
+                let chatMessage = $0.value
+                let contact = try contactsManager.contact(address: chatMessage.address)
+                let emojis = try chatMessage.address.emojis
+                let isOnline = onlineStatuses.first { $0.key == hex }?.value == .online
+                let unreadMessagesCount = unreadMessagesCount[hex] ?? 0
 
-            return try MessagePreview(
-                id: identifier,
-                avatarText: contact?.avatar ?? emojis.firstOrEmpty,
-                avatarImage: contact?.avatarImage,
-                isOnline: isOnline,
-                isPinned: isPinned,
-                name: contact?.name ?? emojis.obfuscatedText,
-                preview: $0.body.string ?? "",
-                timestamp: timestamp,
-                unreadMessagesCount: 0 // TODO: Currently unused
-            )
-        }
-        .sorted { $0.timestamp > $1.timestamp }
+                return MessagePreview(
+                    id: hex,
+                    avatarText: contact?.avatar ?? emojis.firstOrEmpty,
+                    avatarImage: contact?.avatarImage,
+                    isOnline: isOnline,
+                    isPinned: pinnedAddresses.contains(hex),
+                    name: contact?.name ?? emojis.obfuscatedText,
+                    preview: chatMessage.message,
+                    timestamp: chatMessage.timestamp.timeIntervalSince1970,
+                    unreadMessagesCount: unreadMessagesCount
+                )
+            }
+            .sorted { $0.timestamp > $1.timestamp }
 
         let pinnedPreviews: [MessagePreview] = previews.filter(\.isPinned)
-        let otherPreciews: [MessagePreview] = previews.filter { !$0.isPinned }
+        let otherPreviews: [MessagePreview] = previews.filter { !$0.isPinned }
 
         var sections = [MessageSection]()
 
@@ -159,17 +162,12 @@ final class ChatListModel {
             ]
         }
 
-        if !otherPreciews.isEmpty {
+        if !otherPreviews.isEmpty {
             sections += [
-                MessageSection(title: localized("chat.list.table.section.other"), previews: otherPreciews)
+                MessageSection(title: localized("chat.list.table.section.other"), previews: otherPreviews)
             ]
         }
 
         previewsSections = sections
-
-        addressCache = try zip(previews, messages)
-            .reduce(into: [String: TariAddress]()) { result, values in
-                result[values.0.id] = try values.1.address
-            }
     }
 }

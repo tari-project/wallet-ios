@@ -94,6 +94,16 @@ final class ChatMessage {
         }
     }
 
+    var sendTimestamp: UInt64 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = read_chat_message_sent_at(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw ChatError(code: errorCode) }
+            return result
+        }
+    }
+
     var deliveryConfirmationTimestamp: UInt64 {
         get throws {
             var errorCode: Int32 = -1
@@ -126,10 +136,10 @@ final class ChatMessage {
 
     // MARK: - Initialisers
 
-    init(receiver: TariAddress, message: String) throws {
+    init(address: TariAddress, message: String) throws {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = create_chat_message(receiver.pointer, message, errorCodePointer)
+        let result = create_chat_message(address.pointer, message, errorCodePointer)
         guard errorCode == 0, let result else { throw ChatError(code: errorCode) }
         pointer = result
     }

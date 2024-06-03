@@ -384,6 +384,7 @@
 		5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */; };
 		543170852B31B97000B42F83 /* ContactsLivenessData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543170842B31B97000B42F83 /* ContactsLivenessData.swift */; };
 		5431B3A92BDB8FE0007B3D29 /* GifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5431B3A82BDB8FE0007B3D29 /* GifManager.swift */; };
+		5438450A2C07044100A3F11A /* ChatMessagesBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543845092C07044100A3F11A /* ChatMessagesBridgeService.swift */; };
 		54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54394EDD29CA133400E7CAEA /* LoadingImageView.swift */; };
 		543DF19C293F3DA90031EA70 /* TorBridgesFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */; };
 		543F89D02B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */; };
@@ -1033,6 +1034,7 @@
 		5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsConstructor.swift; sourceTree = "<group>"; };
 		543170842B31B97000B42F83 /* ContactsLivenessData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsLivenessData.swift; sourceTree = "<group>"; };
 		5431B3A82BDB8FE0007B3D29 /* GifManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GifManager.swift; sourceTree = "<group>"; };
+		543845092C07044100A3F11A /* ChatMessagesBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessagesBridgeService.swift; sourceTree = "<group>"; };
 		54394EDD29CA133400E7CAEA /* LoadingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImageView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesFooterView.swift; sourceTree = "<group>"; };
 		543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingSettingsConstructor.swift; sourceTree = "<group>"; };
@@ -3095,6 +3097,7 @@
 				5448A1E02B024431006E3989 /* CoreChatService.swift */,
 				5498F87C2AFE2B2500B97275 /* ChatMessagesService.swift */,
 				5402FAFB2B30779E00A4844E /* ChatUsersService.swift */,
+				543845092C07044100A3F11A /* ChatMessagesBridgeService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -4053,6 +4056,7 @@
 				5444C80629F17C1800BF3875 /* BluetoothSettingsViewController.swift in Sources */,
 				546FCE082BB5592100171FBA /* ChatRequestTokensView.swift in Sources */,
 				3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */,
+				5438450A2C07044100A3F11A /* ChatMessagesBridgeService.swift in Sources */,
 				54884FBC2B596E640043E2B4 /* AddressPoisoningDataHandler.swift in Sources */,
 				3A2B956A28648D860085BE21 /* CChar+Helpers.swift in Sources */,
 				544FA3582BDA4DD2009182A4 /* GifDynamicModel.swift in Sources */,

@@ -83,9 +83,11 @@ enum ChatUserDefaults {
 
     private enum Name: String, CaseIterable {
         case pinnedAddresses
+        case readTimestamps
     }
 
     @UserDefault(key: Name.pinnedAddresses.rawValue) static var pinnedAddresses: Set<String>?
+    @UserDefault(key: Name.readTimestamps.rawValue) static var readTimestamps: [String: Date]?
 
     static func removeAll() {
         Name.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }

@@ -41,7 +41,7 @@
 import TariCommon
 
 enum ChatConversationMenuAction {
-    case reply(identifier: String)
+    case reply(identifier: ChatMessageIdentifier)
 }
 
 final class ChatConversationView: BaseNavigationContentView {
@@ -67,11 +67,6 @@ final class ChatConversationView: BaseNavigationContentView {
         let view = UITableView(frame: .zero, style: .grouped)
         view.separatorStyle = .none
         view.backgroundColor = .clear
-        if #available(iOS 16.0, *) {
-            view.selfSizingInvalidation = .enabledIncludingConstraints
-        } else {
-            // TODO: Add support for iOS 15
-        }
         view.register(type: ChatConversationCell.self)
         return view
     }()
@@ -103,12 +98,14 @@ final class ChatConversationView: BaseNavigationContentView {
     var onAddGifButtonTap: (() -> Void)?
     var onSendButtonTap: ((String?) -> Void)?
     var onCellMenuAction: ((ChatConversationMenuAction) -> Void)?
+    var onCellBecomeVisible: ((_ messageTimestamp: Date) -> Void)?
 
     var onReplayBarCloseButtonTap: (() -> Void)? {
         get { replyBar.onCloseButtonTap }
         set { replyBar.onCloseButtonTap = newValue }
     }
 
+    private var isAutoscrollEnabled = true
     private var sections: [Section] = []
     private var dataSource: UITableViewDiffableDataSource<Int, ChatConversationCell.Model>?
 
@@ -194,10 +191,12 @@ final class ChatConversationView: BaseNavigationContentView {
             cell.update(model: model)
             cell.onContentChange = { [weak self] in
                 self?.tableView.resizeCellsWithoutAnimation()
+                self?.scrollToBottom()
             }
             cell.onContextMenuInteraction = { [weak self] in
                 self?.onCellMenuAction?($0)
             }
+            self?.onCellBecomeVisible?(model.rawTimestamp)
             return cell
         }
 
@@ -254,11 +253,14 @@ final class ChatConversationView: BaseNavigationContentView {
     }
 
     private func scrollToBottom() {
+
+        guard isAutoscrollEnabled else { return }
+
         DispatchQueue.main.async {
             guard let lastRowIndex = self.sections.last?.messages.count else { return }
             let lastSectionIndex = self.sections.count - 1
             let lastIndexPath = IndexPath(row: lastRowIndex - 1, section: lastSectionIndex)
-            self.tableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
+            self.tableView.scrollToRow(at: lastIndexPath, at: .top, animated: false)
         }
     }
 }
@@ -273,7 +275,7 @@ extension ChatConversationView: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
-        guard let cell = tableView.cellForRow(at: indexPath) as? ChatConversationCell, let identifier = cell.identifier else { return nil }
+        guard let cell = tableView.cellForRow(at: indexPath) as? ChatConversationCell, let identifier = cell.dataIdentifier else { return nil }
 
         let replyAction = UIContextualAction(style: .normal, title: "") { [weak self] _, _, handler in
             self?.onCellMenuAction?(.reply(identifier: identifier))
@@ -288,4 +290,12 @@ extension ChatConversationView: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? { UIView() }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { 0.0 }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        isAutoscrollEnabled = false
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        isAutoscrollEnabled = scrollView.contentOffset.y > (scrollView.contentSize.height - scrollView.bounds.height)
+    }
 }
