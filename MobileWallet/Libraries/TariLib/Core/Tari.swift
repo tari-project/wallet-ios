@@ -201,7 +201,8 @@ final class Tari: MainServiceable {
         await waitForTor()
         guard await UIApplication.shared.applicationState != .background else { return }
         try startWallet(seedWords: nil)
-        try connection.selectCurrentNode()
+        guard try !connection.selectCurrentNode() else { return }
+        try switchBaseNode()
     }
 
     func restoreWallet(seedWords: [String]) throws {
