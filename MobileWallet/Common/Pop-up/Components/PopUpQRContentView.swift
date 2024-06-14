@@ -55,9 +55,9 @@ final class PopUpQRContentView: DynamicThemeView {
 
     // MARK: - Initailisers
 
-    override init() {
+    init(verticalPadding: CGFloat) {
         super.init()
-        setupConstraints()
+        setupConstraints(verticalPadding: verticalPadding)
         updateViewsState()
     }
 
@@ -67,14 +67,14 @@ final class PopUpQRContentView: DynamicThemeView {
 
     // MARK: - Setups
 
-    private func setupConstraints() {
+    private func setupConstraints(verticalPadding: CGFloat) {
 
         addSubview(qrCodeView)
 
         let constraints = [
             qrCodeView.topAnchor.constraint(equalTo: topAnchor),
-            qrCodeView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 58.0),
-            qrCodeView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -58.0),
+            qrCodeView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: verticalPadding),
+            qrCodeView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -verticalPadding),
             qrCodeView.bottomAnchor.constraint(equalTo: bottomAnchor),
             qrCodeView.heightAnchor.constraint(equalTo: qrCodeView.widthAnchor)
         ]

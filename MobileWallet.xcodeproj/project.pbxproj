@@ -246,8 +246,6 @@
 		3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A08F426E0A83D00D2E75C /* AppRouter.swift */; };
 		3AA2717A279028BF0076E51F /* RequestTariAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA27179279028BF0076E51F /* RequestTariAmountViewController.swift */; };
 		3AA2DD902796C98A00DC3CF7 /* AmountNumberFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA2DD8F2796C98A00DC3CF7 /* AmountNumberFormatterTests.swift */; };
-		3AA2DD942796E8BA00DC3CF7 /* QRCodePresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA2DD932796E8BA00DC3CF7 /* QRCodePresentationController.swift */; };
-		3AA2DD962796F72100DC3CF7 /* QRCodePresentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA2DD952796F72100DC3CF7 /* QRCodePresentationView.swift */; };
 		3AA2E2212885755A00D30B62 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA2E2202885755A00D30B62 /* NetworkMonitor.swift */; };
 		3AABFC9B28F5960100D87773 /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AABFC9A28F5960100D87773 /* LogFormatter.swift */; };
 		3AABFC9D28F59B2200D87773 /* StatusLoggerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AABFC9C28F59B2200D87773 /* StatusLoggerManager.swift */; };
@@ -836,8 +834,6 @@
 		3A9A08F426E0A83D00D2E75C /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		3AA27179279028BF0076E51F /* RequestTariAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTariAmountViewController.swift; sourceTree = "<group>"; };
 		3AA2DD8F2796C98A00DC3CF7 /* AmountNumberFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountNumberFormatterTests.swift; sourceTree = "<group>"; };
-		3AA2DD932796E8BA00DC3CF7 /* QRCodePresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodePresentationController.swift; sourceTree = "<group>"; };
-		3AA2DD952796F72100DC3CF7 /* QRCodePresentationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodePresentationView.swift; sourceTree = "<group>"; };
 		3AA2E2202885755A00D30B62 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		3AABFC9A28F5960100D87773 /* LogFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFormatter.swift; sourceTree = "<group>"; };
 		3AABFC9C28F59B2200D87773 /* StatusLoggerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusLoggerManager.swift; sourceTree = "<group>"; };
@@ -2268,21 +2264,11 @@
 		3AA271782790284E0076E51F /* RequestTari */ = {
 			isa = PBXGroup;
 			children = (
-				3AA2DD922796E89400DC3CF7 /* QrCode */,
 				3AA27179279028BF0076E51F /* RequestTariAmountViewController.swift */,
 				3A6CD3B4279194980034DF81 /* RequestTariAmountView.swift */,
 				3AE9F4E32795A260006101D1 /* RequestTariAmountModel.swift */,
 			);
 			path = RequestTari;
-			sourceTree = "<group>";
-		};
-		3AA2DD922796E89400DC3CF7 /* QrCode */ = {
-			isa = PBXGroup;
-			children = (
-				3AA2DD932796E8BA00DC3CF7 /* QRCodePresentationController.swift */,
-				3AA2DD952796F72100DC3CF7 /* QRCodePresentationView.swift */,
-			);
-			path = QrCode;
 			sourceTree = "<group>";
 		};
 		3AA2E21F2885754500D30B62 /* Connection Monitor */ = {
@@ -3633,7 +3619,6 @@
 				3A87E57F28409D630099EA0E /* AddAmountSpinnerView.swift in Sources */,
 				3A01248327B3BD0700A481F4 /* ProgressBar.swift in Sources */,
 				5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */,
-				3AA2DD942796E8BA00DC3CF7 /* QRCodePresentationController.swift in Sources */,
 				548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */,
 				54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */,
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,
@@ -3831,7 +3816,6 @@
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
 				54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */,
 				54DD2E8629C37A7600C8C0D9 /* UINavigationController+Common.swift in Sources */,
-				3AA2DD962796F72100DC3CF7 /* QRCodePresentationView.swift in Sources */,
 				5444C80A29F17DAD00BF3875 /* BluetoothSettingsModel.swift in Sources */,
 				3A8826C527F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift in Sources */,
 				546B03262983E92700DBED8E /* ContentNavigationViewController.swift in Sources */,

@@ -44,7 +44,7 @@ final class RadialGradientView: UIView {
 
     // MARK: - Properties
 
-    override class var layerClass: AnyClass { CAGradientLayer.self }
+    override static var layerClass: AnyClass { CAGradientLayer.self }
 
     // MARK: - Setups
 

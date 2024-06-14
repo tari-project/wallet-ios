@@ -254,13 +254,13 @@ final class NotificationManager {
             }
 
             var responseDict: [String: Any]?
-            if let responseString = String(data: data, encoding: .utf8) {
-                if let data = responseString.data(using: .utf8) {
-                    do {
-                        responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    } catch {
-                        return onError(error)
-                    }
+            let responseString = data.string
+
+            if let data = responseString.data(using: .utf8) {
+                do {
+                    responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                } catch {
+                    return onError(error)
                 }
             }
 
