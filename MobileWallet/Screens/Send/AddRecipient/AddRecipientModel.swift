@@ -195,7 +195,7 @@ final class AddRecipientModel {
 
         Task {
             do {
-                guard let data = try await bleTask.findAndRead(), let rawDeeplink = String(data: data, encoding: .utf8), let url = URL(string: rawDeeplink) else { return }
+                guard let rawDeeplink = try await bleTask.findAndRead()?.string, let url = URL(string: rawDeeplink) else { return }
                 let deeplink = try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: url)
                 incomingUserProfile = deeplink
                 action = .show(dialog: .bleTransactionConfirmationDialog(receiverName: deeplink.alias))

@@ -640,7 +640,6 @@
 "request.deeplink.message" = "Hi! Please send me %@ Tari(s) using this link:";
 "request.buttons.generate_qr" = "Generate QR Code";
 "request.qr_code.buttons.share" = "Share";
-"request.qr_code.buttons.close" = "Close";
 
 /* Add base node dialog */
 

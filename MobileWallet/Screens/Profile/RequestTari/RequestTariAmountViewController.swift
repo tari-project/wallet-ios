@@ -107,15 +107,20 @@ final class RequestTariAmountViewController: UIViewController {
 
     private func showQrCode(image: UIImage) {
 
-        let controller = QRCodePresentationController(image: image)
+        let content = PopUpPresenter.showQRCodeDialog(
+            additionalButtons: [
+                PopUpDialogButtonModel(
+                    title: localized("request.qr_code.buttons.share"),
+                    type: .normal,
+                    callback: { [weak self] in
+                        PopUpPresenter.dismissPopup()
+                        self?.model.shareActionRequest()
+                    }
+                )
+            ]
+        )
 
-        controller.onShareButtonTap = { [weak controller, weak self] in
-            controller?.dismiss(animated: true) {
-                self?.model.shareActionRequest()
-            }
-        }
-
-        present(controller, animated: true)
+        content.qrCode = image
     }
 
     private func showShareDialog(data: RequestTariAmountModel.DeeplinkData) {
