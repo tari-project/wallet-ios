@@ -82,13 +82,11 @@ struct PopUpDialogButtonModel {
     }
 
     let title: String
-    let icon: UIImage?
     let type: ButtonType
     let callback: (() -> Void)?
 
-    init(title: String, icon: UIImage? = nil, type: ButtonType, callback: (() -> Void)? = nil) {
+    init(title: String, type: ButtonType, callback: (() -> Void)? = nil) {
         self.title = title
-        self.icon = icon
         self.type = type
         self.callback = callback
     }
@@ -147,7 +145,7 @@ extension PopUpPresenter {
         }
 
         additionalButtons.forEach(buttonsView.addButton(model:))
-        buttonsView.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), icon: nil, type: .text, callback: { PopUpPresenter.dismissPopup() }))
+        buttonsView.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
 
         let popUp = TariPopUp(headerSection: headerView, contentSection: contentView, buttonsSection: buttonsView)
         PopUpPresenter.show(popUp: popUp)

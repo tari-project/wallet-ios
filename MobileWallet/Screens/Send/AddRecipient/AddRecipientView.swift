@@ -107,7 +107,7 @@ final class AddRecipientView: DynamicThemeView {
     }
 
     var isContinueButtonEnabled: Bool = false {
-        didSet { continueButton.variation = isContinueButtonEnabled ? .normal : .disabled }
+        didSet { continueButton.isEnabled = isContinueButtonEnabled }
     }
 
     var errorMessage: String? {

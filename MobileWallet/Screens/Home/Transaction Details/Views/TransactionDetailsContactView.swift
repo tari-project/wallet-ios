@@ -62,7 +62,7 @@ final class TransactionDetailsContactView: DynamicThemeView {
     @View private(set) var editButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.edit"), for: .normal)
-        view.setVariation(.secondary)
+        view.style = .secondary
         return view
     }()
 

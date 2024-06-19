@@ -92,8 +92,7 @@ final class VerifySeedWordsViewController: SecureViewController<VerifySeedWordsV
             .store(in: &cancellables)
 
         model.$isContinueButtonEnabled
-            .map { $0 ? .normal : .disabled }
-            .assign(to: \.variation, on: mainView.continueButton)
+            .assign(to: \.isEnabled, on: mainView.continueButton)
             .store(in: &cancellables)
 
         model.$shouldEndFlow

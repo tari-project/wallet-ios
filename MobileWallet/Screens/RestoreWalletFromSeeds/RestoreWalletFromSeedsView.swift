@@ -58,7 +58,7 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
 
     @View private(set) var selectBaseNodeButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
+        view.style = .secondary
         return view
     }()
 
@@ -133,7 +133,7 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
     }
 
     func update(buttonIsEnabledStatus: Bool) {
-        submitButton.variation = buttonIsEnabledStatus ? .normal : .disabled
+        submitButton.isEnabled = buttonIsEnabledStatus
     }
 
     // MARK: - First Responder

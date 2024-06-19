@@ -88,7 +88,7 @@ final class ContactBookListPlaceholder: DynamicThemeView {
 
     @View private var actionButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
+        view.style = .secondary
         return view
     }()
 

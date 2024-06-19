@@ -69,8 +69,8 @@ final class TransactionDetailsValueView: DynamicThemeView {
     @View private(set) var feeButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("common.fee"), for: .normal)
-        view.titleLabel?.font = Theme.shared.fonts.txFeeButton
-        view.setRightImage(Theme.shared.images.txFee)
+        view.font = .Avenir.roman.withSize(13.0)
+        view.image = .Icons.General.roundedQuestionMark
         return view
     }()
 

@@ -109,7 +109,7 @@ final class SeedWordsListView: BaseNavigationContentView {
     }
 
     var isContinueButtonEnabled: Bool = false {
-        didSet { continueButton.variation = isContinueButtonEnabled ? .normal : .disabled }
+        didSet { continueButton.isEnabled = isContinueButtonEnabled }
     }
 
     var isAnimationEnabled: Bool = false

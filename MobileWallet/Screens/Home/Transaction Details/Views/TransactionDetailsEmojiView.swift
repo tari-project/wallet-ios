@@ -50,7 +50,7 @@ final class TransactionDetailsEmojiView: UIView {
     @View private(set) var addContactButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.add_contact_name"), for: .normal)
-        view.setVariation(.secondary)
+        view.style = .secondary
         return view
     }()
 

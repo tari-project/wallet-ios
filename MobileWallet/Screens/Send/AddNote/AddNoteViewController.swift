@@ -425,12 +425,8 @@ extension AddNoteViewController {
         giphyVC.view.bottomAnchor.constraint(equalTo: giphyCarouselContainerView.bottomAnchor).isActive = true
         giphyVC.view.heightAnchor.constraint(equalToConstant: 64).isActive = true
 
-        searchGiphyButton.setImage(Theme.shared.images.searchIcon, for: .normal)
-        searchGiphyButton.titleLabel?.font = Theme.shared.fonts.searchGiphyButtonTitle
-        searchGiphyButton.setTitle(localized("add_note.search_giphy_button"), for: .normal)
         searchGiphyButton.translatesAutoresizingMaskIntoConstraints = false
         searchGiphyButton.layer.cornerRadius = 3
-        searchGiphyButton.titleEdgeInsets = .init(top: 0, left: 5, bottom: 0, right: 0)
         giphyCarouselContainerView.addSubview(searchGiphyButton)
         searchGiphyButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
         searchGiphyButton.leadingAnchor.constraint(equalTo: giphyCarouselContainerView.leadingAnchor).isActive = true
@@ -439,6 +435,18 @@ extension AddNoteViewController {
         searchGiphyButton.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
         searchGiphyButton.addTarget(self, action: #selector(showGiphyPanel), for: .touchUpInside)
         searchGiphyButton.isHidden = true
+
+        var searchGiphyButtonConfiguration = UIButton.Configuration.filled()
+        searchGiphyButtonConfiguration.image = Theme.shared.images.searchIcon
+        searchGiphyButtonConfiguration.attributedTitle = AttributedString(localized("add_note.search_giphy_button"), attributes: AttributeContainer([
+            .font: UIFont.Avenir.black.withSize(9.0)
+        ]))
+        searchGiphyButtonConfiguration.imagePadding = 5.0
+        searchGiphyButtonConfiguration.baseForegroundColor = theme.neutral.primary
+        searchGiphyButtonConfiguration.baseBackgroundColor = theme.text.heading
+        searchGiphyButtonConfiguration.contentInsets = .zero
+
+        searchGiphyButton.configuration = searchGiphyButtonConfiguration
 
         poweredByGiphyImageView.translatesAutoresizingMaskIntoConstraints = false
         giphyCarouselContainerView.addSubview(poweredByGiphyImageView)

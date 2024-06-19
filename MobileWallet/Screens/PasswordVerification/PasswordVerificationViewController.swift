@@ -204,7 +204,7 @@ extension PasswordVerificationViewController {
         }
 
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
-        continueButton.variation = .disabled
+        continueButton.isEnabled = false
 
         mainView.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
@@ -229,7 +229,7 @@ extension PasswordVerificationViewController {
 extension PasswordVerificationViewController: PasswordFieldDelegate {
     func passwordFieldDidChange(_ passwordField: PasswordField) {
         guard let password = passwordField.password else { return }
-        continueButton.variation = password.isEmpty ? .disabled : .normal
+        continueButton.isEnabled = !password.isEmpty
     }
 }
 

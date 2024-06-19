@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import Lottie
 import LocalAuthentication
 import AVFoundation
@@ -86,7 +85,6 @@ final class WalletCreationViewController: DynamicThemeViewController {
     private var continueButtonShowConstraint: NSLayoutConstraint?
 
     private let localAuth = LAContext()
-
     private let radialGradient = RadialGradientView()
 
     // MARK: - Override functions
@@ -115,7 +113,7 @@ final class WalletCreationViewController: DynamicThemeViewController {
     // MARK: - Actions
 
     private func hideSubviews(completion: (() -> Void)?) {
-        let duration: TimeInterval = 1.0
+        let duration: TimeInterval = 0.7
         hideContinueButton()
         firstLabel.hideLabel(duration: duration)
         secondLabel.hideLabel(duration: duration)
@@ -154,12 +152,16 @@ final class WalletCreationViewController: DynamicThemeViewController {
     }
 
     private func hideContinueButton() {
-        continueButton.hideButtonWithAlpha { [weak self] in
-            self?.continueButtonShowConstraint?.isActive = false
-            self?.continueButtonSecondShowConstraint?.isActive = false
-            self?.continueButtonConstraint?.isActive = true
-            self?.view.layoutIfNeeded()
-        }
+        UIView.animate(
+            withDuration: 0.5,
+            animations: { [weak self] in self?.continueButton.alpha = 0.0 },
+            completion: { [weak self] _ in
+                self?.continueButtonShowConstraint?.isActive = false
+                self?.continueButtonSecondShowConstraint?.isActive = false
+                self?.continueButtonConstraint?.isActive = true
+                self?.view.layoutIfNeeded()
+            }
+        )
     }
 
     private func playLottieAnimation(_ animation: LottieAnimation, completion: ((Bool) -> Void)? = nil) {
@@ -592,6 +594,7 @@ extension WalletCreationViewController {
     private func setupContinueButton() {
         continueButton.addTarget(self, action: #selector(onNavigateNext), for: .touchUpInside)
         continueButton.alpha = 0.0
+        continueButton.isAnimated = false
         mainView.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 

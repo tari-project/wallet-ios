@@ -60,7 +60,8 @@ final class AboutViewHeader: DynamicThemeHeaderFooterView {
     @View private var button: TextButton = {
         let view = TextButton()
         view.setTitle(localized("about.button.creative_commons"), for: .normal)
-        view.setVariation(.secondary, font: .Avenir.light.withSize(14.0))
+        view.style = .secondary
+        view.font = .Avenir.light.withSize(14.0)
         return view
     }()
 

@@ -77,7 +77,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
 
     @View private var showHideButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
+        view.style = .secondary
         return view
     }()
 
