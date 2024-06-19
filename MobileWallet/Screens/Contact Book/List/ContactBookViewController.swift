@@ -364,9 +364,10 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
 
         let overlay = RotaryMenuOverlay(model: model)
 
-        overlay.onMenuButtonTap = { [weak self] in
-            self?.dismiss(animated: true)
-            self?.model.performAction(contactID: $0, menuItemID: $1)
+        overlay.onMenuButtonTap = { [weak self] contactID, menuItemID in
+            self?.dismiss(animated: true) {
+                self?.model.performAction(contactID: contactID, menuItemID: menuItemID)
+            }
         }
 
         show(overlay: overlay)
