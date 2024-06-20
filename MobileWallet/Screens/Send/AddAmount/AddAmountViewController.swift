@@ -89,17 +89,16 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @View private var feeButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.primary, font: .Avenir.medium.withSize(14.0))
-        view.spacing = 3.0
-        view.setRightImage(.Icons.General.roundedQuestionMark)
+        view.font = .Avenir.medium.withSize(14.0)
+        view.imageSpacing = 3.0
+        view.image = .Icons.General.roundedQuestionMark
         return view
     }()
 
     @View private var modifyFeeButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary, font: .Avenir.medium.withSize(14.0))
+        view.font = .Avenir.medium.withSize(14.0)
         view.setTitle(localized("add_amount.label.button.adjust_fee"), for: .normal)
-        view.contentEdgeInsets = UIEdgeInsets(top: 0.1, left: 0.1, bottom: 0.1, right: 0.1)
         view.setContentHuggingPriority(.required, for: .vertical)
         return view
     }()
@@ -496,7 +495,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func updateNextStepElements(isEnabled: Bool) {
-        continueButton.variation = isEnabled ? .normal : .disabled
+        continueButton.isEnabled = isEnabled
         sliderBar.isEnabled = isEnabled
     }
 

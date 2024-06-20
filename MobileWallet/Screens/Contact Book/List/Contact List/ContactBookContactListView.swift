@@ -255,7 +255,7 @@ private class ContactBookContactListFooter: UIView {
 
     @View private var button: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
+        view.style = .secondary
         view.setTitle(localized("contact_book.section.list.placeholder.button"), for: .normal)
         return view
     }()

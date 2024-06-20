@@ -66,7 +66,6 @@ final class RequestTariAmountView: DynamicThemeView {
     @View var shareButton: ActionButton = {
         let view = ActionButton()
         view.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
-        view.imageEdgeInsets = .zero
         return view
     }()
 
@@ -81,8 +80,8 @@ final class RequestTariAmountView: DynamicThemeView {
 
     var areButtonsEnabled: Bool = false {
         didSet {
-            generateQrButton.variation = areButtonsEnabled ? .normal : .disabled
-            shareButton.variation = areButtonsEnabled ? .normal : .disabled
+            generateQrButton.isEnabled = areButtonsEnabled
+            shareButton.isEnabled = areButtonsEnabled
         }
     }
 

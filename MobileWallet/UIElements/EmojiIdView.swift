@@ -656,7 +656,7 @@ private class EmojiMenuView: UIView {
     }
 
     private func setupButton() {
-        button.setVariation(.secondary)
+        button.style = .secondary
         button.translatesAutoresizingMaskIntoConstraints = false
         addSubview(button)
 

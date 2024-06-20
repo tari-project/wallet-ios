@@ -86,24 +86,17 @@ final class PopUpButtonsView: UIView {
 
         switch model.type {
         case .normal:
-            let actionButton = ActionButton()
-            actionButton.setImage(model.icon, for: .normal)
-            button = actionButton
+            button = ActionButton()
         case .destructive:
             let actionButton = ActionButton()
-            actionButton.variation = .destructive
-            actionButton.setImage(model.icon, for: .normal)
+            actionButton.style = .destructive
             button = actionButton
         case .text:
             let textButton = TextButton()
-            textButton.setVariation(.secondary)
-            textButton.setRightImage(model.icon)
+            textButton.style = .secondary
             button = textButton
         case .textDimmed:
-            let textButton = TextButton()
-            textButton.setVariation(.primary)
-            textButton.setRightImage(model.icon)
-            button = textButton
+            button = TextButton()
         }
 
         button.setTitle(model.title, for: .normal)

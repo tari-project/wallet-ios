@@ -56,7 +56,7 @@ enum PopUpComponentsFactory {
         let view = PopUpButtonsView()
         models
             .map { model in
-                PopUpDialogButtonModel(title: model.title, icon: model.icon, type: model.type, callback: {
+                PopUpDialogButtonModel(title: model.title, type: model.type, callback: {
                     PopUpPresenter.dismissPopup {
                         model.callback?()
                     }

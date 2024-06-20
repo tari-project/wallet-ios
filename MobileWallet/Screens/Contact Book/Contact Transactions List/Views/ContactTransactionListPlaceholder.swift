@@ -70,7 +70,7 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
 
     @View private var sendButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
+        view.style = .secondary
         view.setTitle(localized("contact_book.transaction_list.placeholder.button.send"), for: .normal)
         return view
     }()

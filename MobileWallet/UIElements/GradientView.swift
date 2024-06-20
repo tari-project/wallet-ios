@@ -50,6 +50,7 @@ final class GradientView: UIView {
     enum Orientation {
         case horizontal
         case vertical
+        case diagonal
     }
 
     // MARK: - Subviews
@@ -100,6 +101,9 @@ final class GradientView: UIView {
         case .vertical:
             gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
             gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        case .diagonal:
+            gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+            gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
         }
     }
 
