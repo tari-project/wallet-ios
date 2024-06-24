@@ -115,4 +115,8 @@ extension ByteVector {
     var data: Data {
         get throws { Data(try bytes) }
     }
+
+    var string: String {
+        get throws { try data.string }
+    }
 }

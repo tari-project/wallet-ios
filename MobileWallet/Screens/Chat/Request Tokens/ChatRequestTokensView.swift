@@ -60,7 +60,7 @@ final class ChatRequestTokensView: BaseNavigationContentView {
     }
 
     var isContinueButtonEnabled: Bool = false {
-        didSet { continueButton.variation = isContinueButtonEnabled ? .normal : .disabled }
+        didSet { continueButton.isEnabled = isContinueButtonEnabled }
     }
 
     var onKeyTap: ((AmountKeyboardView.Key) -> Void)? {

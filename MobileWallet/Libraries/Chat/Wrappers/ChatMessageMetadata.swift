@@ -60,10 +60,7 @@ final class ChatMessageMetadata {
     }
 
     var type: MetadataType? {
-        get throws {
-            guard let string = try key.string else { return nil }
-            return MetadataType(rawValue: string)
-        }
+        get throws { try MetadataType(rawValue: key.string) }
     }
 
     var data: ByteVector {

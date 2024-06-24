@@ -159,13 +159,13 @@ final class ChatMessagesBridgeService {
                 try $0.reduce(into: [Date: [ChatMessageData]]()) { result, chatMessage in
 
                     let timestamp = try Date(timeIntervalSince1970: TimeInterval(chatMessage.timestamp))
-                    guard let day = timestamp.dateOnly, let messageID = try chatMessage.identifier.string else { return }
+                    guard let day = timestamp.dateOnly else { return }
 
                     let messageData = try ChatMessageData(
-                        identifier: .chatMessage(id: messageID),
+                        identifier: .chatMessage(id: chatMessage.identifier.string),
                         timestamp: timestamp,
                         address: chatMessage.address,
-                        message: chatMessage.body.string ?? "",
+                        message: chatMessage.body.string,
                         metadata: chatMessage.allMetadataDictionary,
                         isIncomming: chatMessage.isIncomming,
                         isLastInContext: false,
