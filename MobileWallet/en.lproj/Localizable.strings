@@ -914,3 +914,10 @@
 "address_poisoning.label.transaction_count" = "No of transactions: %d";
 "address_poisoning.label.last_transction" = "Last transaction date: %@";
 "address_poisoning.label.last_transction.never" = "Never";
+
+/* Screen Recording Pop-Up */
+
+"screen_recording.pop_up.title" = "Screenshots Disabled";
+"screen_recording.pop_up.message" = "Oops! Screenshots are disabled in this app to keep your information safe. Thanks for keeping things secure!";
+"screen_recording.pop_up.button.ok" = "No problem, mate!";
+"screen_recording.pop_up.button.enable" = "Enable screenshots";

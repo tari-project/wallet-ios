@@ -521,6 +521,7 @@
 		54E007B62B8DF55600AFCD7C /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E007B52B8DF55600AFCD7C /* SecurityManager.swift */; };
 		54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1CB1D29C7292700E6777C /* EmojiTextField.swift */; };
 		54ED0FBE2A5D315400ED1F7E /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ED0FBD2A5D315400ED1F7E /* SearchField.swift */; };
+		54F1FDA62C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F1FDA52C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift */; };
 		54F23DE729BBA0C3001E39A2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */; };
 		54F2E34329EE6B8A00A7A15A /* ContactTransactionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34229EE6B8A00A7A15A /* ContactTransactionListViewController.swift */; };
 		54F2E34529EE6B9600A7A15A /* ContactTransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34429EE6B9600A7A15A /* ContactTransactionListView.swift */; };
@@ -1109,6 +1110,7 @@
 		54E007B52B8DF55600AFCD7C /* SecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		54E1CB1D29C7292700E6777C /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 		54ED0FBD2A5D315400ED1F7E /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
+		54F1FDA52C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotPopUpHandler.swift; sourceTree = "<group>"; };
 		54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		54F2E34229EE6B8A00A7A15A /* ContactTransactionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListViewController.swift; sourceTree = "<group>"; };
 		54F2E34429EE6B9600A7A15A /* ContactTransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListView.swift; sourceTree = "<group>"; };
@@ -2033,6 +2035,7 @@
 		3A6A03312802DB64000432B4 /* Pop-up */ = {
 			isa = PBXGroup;
 			children = (
+				54F1FDA42C296CBB007B3CD8 /* Handlers */,
 				3A6A03322802DB98000432B4 /* Components */,
 				3A6A03392802DCE7000432B4 /* TariPopUp.swift */,
 				3A6A033B2802DD34000432B4 /* PopUpPresenter.swift */,
@@ -2965,6 +2968,14 @@
 			path = Theme;
 			sourceTree = "<group>";
 		};
+		54F1FDA42C296CBB007B3CD8 /* Handlers */ = {
+			isa = PBXGroup;
+			children = (
+				54F1FDA52C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift */,
+			);
+			path = Handlers;
+			sourceTree = "<group>";
+		};
 		54F2E34129EE6B6300A7A15A /* Contact Transactions List */ = {
 			isa = PBXGroup;
 			children = (
@@ -3600,6 +3611,7 @@
 				549E1A012A5EB7B00063022C /* QRCodeScannerBoxView.swift in Sources */,
 				3A8473CC28EC562E0015E63A /* TariConnectionService.swift in Sources */,
 				3A84CDD62846089B005F2F8D /* UTXOsWalletModel.swift in Sources */,
+				54F1FDA62C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift in Sources */,
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				3A8473C828EC55F50015E63A /* TariValidationService.swift in Sources */,
 				3AE8850C28378BF20070D1AC /* TariSegmentedControl.swift in Sources */,
