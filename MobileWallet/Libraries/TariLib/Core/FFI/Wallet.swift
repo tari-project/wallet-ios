@@ -170,7 +170,7 @@ final class Wallet {
     // MARK: - Deinitialiser
 
     func destroy() {
-        Logger.log(message: "Wallet destroyed", domain: .general, level: .info)
         wallet_destroy(pointer)
+        Logger.log(message: "Wallet destroyed", domain: .general, level: .info)
     }
 }
