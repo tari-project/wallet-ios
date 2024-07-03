@@ -53,7 +53,7 @@ enum AddressPoisoningDataHandler {
 
         Task { @MainActor in
             do {
-                let address = try TariAddress(hex: rawAddress)
+                let address = try TariAddress(base58: rawAddress)
                 let similarAddresses = try await AddressPoisoningManager.shared.similarAddresses(address: address, includeInputAddress: true)
                     .map { similarAddress in
                         PopUpAddressPoisoningContentCell.ViewModel(

@@ -151,7 +151,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             do {
-                let tariAddress = try TariAddress(hex: paymentInfo.address)
+                let tariAddress = try TariAddress(base58: paymentInfo.address)
                 emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
             } catch {
                 PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))

@@ -193,7 +193,7 @@ final class QRCodeScannerModel {
         case .transactionSend:
             guard let deeplink = deeplink as? TransactionsSendDeeplink else { return "" }
             try await transactionFormatter.updateContactsData()
-            let contactName = try transactionFormatter.contact(hex: deeplink.receiverAddress)?.name ?? TariAddress(hex: deeplink.receiverAddress).emojis.obfuscatedText
+            let contactName = try transactionFormatter.contact(hex: deeplink.receiverAddress)?.name ?? TariAddress(base58: deeplink.receiverAddress).emojis.obfuscatedText
             return localized("qr_code_scanner.labels.actions.transaction_send", arguments: contactName)
         case .baseNodesAdd:
             return localized("qr_code_scanner.labels.actions.base_node_add")

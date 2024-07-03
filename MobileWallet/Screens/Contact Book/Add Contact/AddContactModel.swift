@@ -215,6 +215,6 @@ enum TariAddressFactory {
             return address
         }
 
-        return try? TariAddress(hex: text)
+        return try? TariAddress(base58: text)
     }
 }

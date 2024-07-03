@@ -142,7 +142,7 @@ enum BackupFilesManager {
 
         try await Tari.shared.startWallet()
 
-        let sourceAddress = try TariAddress(hex: model.source)
+        let sourceAddress = try TariAddress(base58: model.source)
 
         try model.utxos
             .map { try UnblindedOutput(json: $0) }
