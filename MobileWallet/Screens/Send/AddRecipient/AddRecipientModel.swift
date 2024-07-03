@@ -348,7 +348,7 @@ final class AddRecipientModel {
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
         do { return try TariAddress(emojiID: trimmedText) } catch {}
-        return try TariAddress(hex: trimmedText)
+        return try TariAddress(base58: trimmedText)
     }
 
     private func verify(address: TariAddress) -> Bool {

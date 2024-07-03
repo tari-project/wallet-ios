@@ -100,7 +100,7 @@ final class InternalContactsManager {
     }
 
     func update(name: String, isFavorite: Bool, hex: String) throws {
-        let address = try TariAddress(hex: hex)
+        let address = try TariAddress(base58: hex)
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
     }

@@ -178,7 +178,7 @@ enum DeepLinkDefaultActionsHandler {
 
         try contacts.forEach {
 
-            let address = try TariAddress(hex: $0.address)
+            let address = try TariAddress(base58: $0.address)
 
             if Tari.shared.isWalletConnected {
                 _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)

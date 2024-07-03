@@ -40,9 +40,9 @@
 
 final class TariAddress {
 
-    enum InternalError: Error {
-        case invalidHex
-    }
+//    enum InternalError: Error {
+//        case invalidHex
+//    }
 
     // MARK: - Properties
 
@@ -74,16 +74,14 @@ final class TariAddress {
         self.pointer = pointer
     }
 
-    init(hex: String) throws {
-
-        guard hex.count == 66, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
+    init(base58: String) throws {
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = tari_address_from_hex(hex, errorCodePointer)
+        let pointer = tari_address_from_base58(base58, errorCodePointer)
 
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let pointer else { throw WalletError(code: errorCode) }
         self.pointer = pointer
     }
 

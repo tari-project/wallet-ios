@@ -180,9 +180,8 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-
             guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias else {
-                let tariAddress = try TariAddress(hex: paymentInfo.address)
+                let tariAddress = try TariAddress(base58: paymentInfo.address)
                 emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
                 return
             }
