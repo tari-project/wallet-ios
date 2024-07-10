@@ -102,9 +102,11 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
             .assign(to: \.title, on: mainView.contactView)
             .store(in: &cancellables)
 
-        model.$emojiIdViewModel
+        model.$addressComponents
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .assign(to: \.emojiIdViewModel, on: mainView.contactView.contentView)
+            .map { AddressView.ViewModel(prefix: $0.networkAndFeatures, text: .truncated(prefix: $0.spendKeyPrefix, suffix: $0.spendKeySuffix), isDetailsButtonVisible: true) }
+            .assign(to: \.addressViewModel, on: mainView.contactView.contentView)
             .store(in: &cancellables)
 
         model.$isContactSectionVisible
@@ -175,6 +177,9 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.userAliasUpdateSuccessCallback = {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
+
+        guard let addressComponents = model.addressComponents else { return }
+        mainView.contactView.contentView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
     }
 
     private func setupViewCallbacks() {

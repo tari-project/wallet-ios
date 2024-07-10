@@ -44,6 +44,7 @@ Third-party frameworks and libraries are managed using a pre-compiled [Tari](htt
 - pod 'IPtProxy'
 - pod 'Zip'
 - pod 'SwiftyDropbox'
+- pod 'Base58Swift'
 - pod 'YatLib'
 - pod 'TariCommon'
 ```

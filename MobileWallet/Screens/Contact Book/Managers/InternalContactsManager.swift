@@ -44,8 +44,11 @@ final class InternalContactsManager {
 
         let alias: String?
         let defaultAlias: String?
+        @available(*, deprecated, message: "Use addressComponents instead")
         let emojiID: String
+        @available(*, deprecated, message: "Use addressComponents instead")
         let hex: String
+        let addressComponents: TariAddressComponents
         let isFavorite: Bool
 
         static func == (lhs: InternalContactsManager.ContactModel, rhs: InternalContactsManager.ContactModel) -> Bool {
@@ -61,10 +64,10 @@ final class InternalContactsManager {
 
         var models: [ContactModel] = []
 
-        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, defaultAlias: nil, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex, isFavorite: $0.isFavorite) }
+        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, defaultAlias: nil, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex, addressComponents: $0.address.components, isFavorite: $0.isFavorite) }
         models += try fetchTariAddresses().map {
             let placeholder = try $0.isUnknownUser ? localized("transaction.unknown_source") : nil
-            return try ContactModel(alias: nil, defaultAlias: placeholder, emojiID: $0.emojis, hex: $0.byteVector.hex, isFavorite: false)
+            return try ContactModel(alias: nil, defaultAlias: placeholder, emojiID: $0.emojis, hex: $0.byteVector.hex, addressComponents: $0.components, isFavorite: false)
         }
 
         return models
@@ -96,7 +99,7 @@ final class InternalContactsManager {
     func create(name: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
-        return try ContactModel(alias: name, defaultAlias: nil, emojiID: address.emojis, hex: address.byteVector.hex, isFavorite: isFavorite)
+        return try ContactModel(alias: name, defaultAlias: nil, emojiID: address.emojis, hex: address.byteVector.hex, addressComponents: address.components, isFavorite: isFavorite)
     }
 
     func update(name: String, isFavorite: Bool, hex: String) throws {
@@ -106,7 +109,7 @@ final class InternalContactsManager {
     }
 
     func remove(hex: String) throws {
-        guard let contact = try Tari.shared.contacts.findContact(hex: hex) else { return }
+        guard let contact = try Tari.shared.contacts.findContact(base58: hex) else { return }
         try Tari.shared.contacts.remove(contact: contact)
     }
 
