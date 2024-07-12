@@ -77,11 +77,12 @@ enum DeepLinkDefaultActionsHandler {
             amount = MicroTari(rawAmount)
         }
 
-        let paymentInfo = PaymentInfo(address: transactionSendDeepLink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeepLink.note)
-
-        Task { @MainActor in
-            AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
-        }
+        // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet
+//        let paymentInfo = PaymentInfo(address: transactionSendDeepLink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeepLink.note)
+//
+//        Task { @MainActor in
+//            AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+//        }
     }
 
     private static func handle(deeplink: DeepLinkable, contacts: [ContactData], actionType: ActionType) throws {

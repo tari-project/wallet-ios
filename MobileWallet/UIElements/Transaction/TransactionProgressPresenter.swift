@@ -54,11 +54,12 @@ enum TransactionProgressPresenter {
         let controller: TransactionViewControllable
 
         if let yatID = paymentInfo.yatID {
-            let inputData = YatTransactionModel.InputData(address: paymentInfo.address, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
+            // FIXME: Yat features doesn't support base58 and TariAddressComponent yet.
+            let inputData = YatTransactionModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
             controller = YatTransactionConstructor.buildScene(inputData: inputData)
             presenter.present(controller, animated: false)
         } else {
-            let inputData = SendingTariModel.InputData(address: paymentInfo.address, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
+            let inputData = SendingTariModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
             controller = SendingTariConstructor.buildScene(inputData: inputData)
             presenter.navigationController?.pushViewController(controller, animated: false)
         }
