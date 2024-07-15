@@ -1,8 +1,8 @@
-//  TariAddressComponents.swift
+//  TariEmojis.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 10/07/2024
+	Created by Adrian Truszczyński on 15/07/2024
 	Using Swift 5.0
 	Running on macOS 14.4
 
@@ -38,46 +38,43 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Base58Swift
+final class TariEmojis {
 
-struct TariAddressComponents {
+    var length: UInt32 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = emoji_set_get_length(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
+        }
+    }
 
-    let network: String
-    let networkName: String
-    let features: String
-    let featuresNames: String
-    let viewKey: String?
-    let spendKey: String
-    let checksum: String
+    private let pointer: OpaquePointer
 
-    let fullRaw: String
-    let fullEmoji: String
+    init() {
+        pointer = get_emoji_set()
+    }
+
+    func emoji(at index: UInt32) throws -> ByteVector {
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = emoji_set_get_at(pointer, index, errorCodePointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return ByteVector(pointer: result)
+    }
+
+    deinit {
+        emoji_set_destroy(pointer)
+    }
 }
 
-extension TariAddressComponents {
+extension TariEmojis {
 
-    var networkAndFeatures: String { network + features }
-    var spendKeyPrefix: String { String(spendKey.prefix(3)) }
-    var spendKeySuffix: String { String(spendKey.suffix(3)) }
-
-    init(address: TariAddress) throws {
-
-        let addressNetwork = try address.network
-        let addressFeatures = try address.features
-
-        let networkBase58 = Base58.base58Encode([addressNetwork.value])
-        let featuresBase58 = Base58.base58Encode([addressFeatures.value])
-        let addressData = try address.byteVector.data.dropFirst(2)
-        let addressBase58 = Base58.base58Encode([UInt8](addressData))
-
-        network = try addressNetwork.value.tariEmoji
-        networkName = addressNetwork.name
-        features = try addressFeatures.value.tariEmoji
-        featuresNames = addressFeatures.names.joined(separator: ", ")
-        viewKey = try address.viewKey?.emojis
-        spendKey = try address.spendKey.emojis
-        checksum = try address.checksum.tariEmoji
-        fullRaw = [networkBase58, featuresBase58, addressBase58].joined()
-        fullEmoji = try address.emojis
+    var all: [String] {
+        get throws {
+            try (0..<length)
+                .map { try emoji(at: $0).data.string }
+        }
     }
 }

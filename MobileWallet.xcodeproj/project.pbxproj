@@ -384,6 +384,7 @@
 		5430B97B29B7401C00C80AA2 /* LinkContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */; };
 		5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */; };
 		543537AD2C2E97190005B2B1 /* AddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543537AC2C2E97190005B2B1 /* AddressView.swift */; };
+		54360D162C45555100EC0BBC /* TariEmojis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54360D152C45555100EC0BBC /* TariEmojis.swift */; };
 		54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54394EDD29CA133400E7CAEA /* LoadingImageView.swift */; };
 		543DF19C293F3DA90031EA70 /* TorBridgesFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */; };
 		543F89D02B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */; };
@@ -979,6 +980,7 @@
 		5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsView.swift; sourceTree = "<group>"; };
 		5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsConstructor.swift; sourceTree = "<group>"; };
 		543537AC2C2E97190005B2B1 /* AddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressView.swift; sourceTree = "<group>"; };
+		54360D152C45555100EC0BBC /* TariEmojis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEmojis.swift; sourceTree = "<group>"; };
 		54394EDD29CA133400E7CAEA /* LoadingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImageView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesFooterView.swift; sourceTree = "<group>"; };
 		543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingSettingsConstructor.swift; sourceTree = "<group>"; };
@@ -1805,6 +1807,7 @@
 				3A8005CA28EAF3A90022A38A /* TransactionValidationData.swift */,
 				3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */,
 				3A4D90A3273A75FC00A23FA8 /* Wallet.swift */,
+				54360D152C45555100EC0BBC /* TariEmojis.swift */,
 			);
 			path = FFI;
 			sourceTree = "<group>";
@@ -3772,6 +3775,7 @@
 				543F89D02B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift in Sources */,
 				3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */,
 				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
+				54360D162C45555100EC0BBC /* TariEmojis.swift in Sources */,
 				3A5A3D5829016DE300B689C6 /* BackupWalletSettingsViewController.swift in Sources */,
 				3A94DB21283E7CEF00B0A740 /* TransactionFeesManager.swift in Sources */,
 				54D1E1A52ABD92380021A365 /* DataCollectionSettingsModel.swift in Sources */,
