@@ -47,7 +47,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     private let paymentInfo: PaymentInfo
 
     private let navigationBar = NavigationBar()
-    @View private var emojiIdView = EmojiIdView()
+    @View private var addressView = AddressView()
     private let continueButton = ActionButton()
     private let amountLabel = AnimatedBalanceLabel()
     private let warningView = UIView()
@@ -180,12 +180,12 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias else {
-                let tariAddress = try TariAddress(base58: paymentInfo.address)
-                emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
+            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(base58: paymentInfo.address)?.alias else {
+                let addressComponents = try TariAddress(base58: paymentInfo.address).components // FIXME: Use components from PaymentInfo
+                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix), isDetailsButtonVisible: true))
                 return
             }
-            navigationBar.title = alias
+            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
         }
@@ -534,10 +534,10 @@ extension AddAmountViewController {
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
-        navigationBar.addSubview(emojiIdView)
-
-        emojiIdView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor).isActive = true
-        emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor).isActive = true
+        navigationBar.addSubview(addressView)
+        
+        addressView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor).isActive = true
+        addressView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor).isActive = true
 
         // contiue button
         mainView.addSubview(continueButton)
@@ -746,6 +746,10 @@ extension AddAmountViewController {
 
         sliderBar.onSlideToEnd = { [weak self] in
             self?.showTransactionProgress()
+        }
+
+        if let addressComponents = try? TariAddress(base58: paymentInfo.address).components { // FIXME: Use components from PaymentInfo
+            addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
         }
 
         $fee

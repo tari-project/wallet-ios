@@ -1,10 +1,10 @@
-//  TariContactsService.swift
+//  TariAddressComponents.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Adrian Truszczyński on 10/07/2024
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,23 +38,46 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class TariContactsService: CoreTariService {
+import Base58Swift
 
-    // MARK: - Properties
+struct TariAddressComponents {
 
-    var allContacts: [Contact] {
-        get throws { try walletManager.walletContacts().all }
-    }
+    let network: String
+    let networkName: String
+    let features: String
+    let featuresNames: String
+    let viewKey: String?
+    let spendKey: String
+    let checksum: String
 
-    @discardableResult func upsert(contact: Contact) throws -> Bool {
-        try walletManager.upsert(contact: contact)
-    }
+    let fullRaw: String
+    let fullEmoji: String
+}
 
-    @discardableResult func remove(contact: Contact) throws -> Bool {
-        try walletManager.remove(contact: contact)
-    }
+extension TariAddressComponents {
 
-    func findContact(base58: String) throws -> Contact? {
-        try allContacts.first { try $0.address.components.fullRaw == base58 }
+    var networkAndFeatures: String { network + features }
+    var spendKeyPrefix: String { String(spendKey.prefix(3)) }
+    var spendKeySuffix: String { String(spendKey.suffix(3)) }
+
+    init(address: TariAddress) throws {
+
+        let addressNetwork = try address.network
+        let addressFeatures = try address.features
+
+        let networkBase58 = Base58.base58Encode([addressNetwork.value])
+        let featuresBase58 = Base58.base58Encode([addressFeatures.value])
+        let addressData = try address.byteVector.data.dropFirst(2)
+        let addressBase58 = Base58.base58Encode([UInt8](addressData))
+
+        network = try addressNetwork.value.tariEmoji
+        networkName = addressNetwork.name
+        features = try addressFeatures.value.tariEmoji
+        featuresNames = addressFeatures.names.joined(separator: ", ")
+        viewKey = try address.viewKey?.emojis
+        spendKey = try address.spendKey.emojis
+        checksum = try address.checksum.tariEmoji
+        fullRaw = [networkBase58, featuresBase58, addressBase58].joined()
+        fullEmoji = try address.emojis
     }
 }
