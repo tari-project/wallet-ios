@@ -109,7 +109,7 @@ final class InternalContactsManager {
     }
 
     func remove(hex: String) throws {
-        guard let contact = try Tari.shared.contacts.findContact(base58: hex) else { return }
+        guard let contact = try Tari.shared.contacts.findContact(uniqueIdentifier: hex) else { return }
         try Tari.shared.contacts.remove(contact: contact)
     }
 
