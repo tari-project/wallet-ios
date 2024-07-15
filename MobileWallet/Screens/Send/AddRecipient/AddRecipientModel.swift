@@ -157,7 +157,7 @@ final class AddRecipientModel {
         let allContacts = contactsManager.tariContactModels
 
         do {
-            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.hex == address.byteVector.hex }}
+            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents.fullRaw == address.components.fullRaw }}
         } catch {
             return []
         }
@@ -165,7 +165,7 @@ final class AddRecipientModel {
 
     // MARK: - View Model Actions
 
-    func handle(qrCodeData: QRCodeData) { // FIXME: QR Codes are now use "old" Tari Address hex. The RFC and code need to be need to be updated. All `handleAddressSelection` calls need to check afterwards.
+    func handle(qrCodeData: QRCodeData) { // FIXME: QR Codes are now use the "Old" Tari Address hex. The RFC and code need to be need to be updated. All `handleAddressSelection` calls need to check afterwards.
 
         guard case let .deeplink(deeplink) = qrCodeData else { return }
 
@@ -174,15 +174,17 @@ final class AddRecipientModel {
             if let rawAmount = deeplink.amount {
                 amount = MicroTari(rawAmount)
             }
-            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
+            // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet.
+//            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
         } else if let deeplink = deeplink as? UserProfileDeeplink {
-            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.tariAddress, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+            // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet.
+//            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.tariAddress, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
         }
     }
 
     func select(elementID: UUID) {
         guard let model = contactDictornary[elementID]?.internalModel else { return }
-        handleAddressSelection(paymentInfo: PaymentInfo(address: model.addressComponents.fullRaw, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
+        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: model.addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil)) // TODO: Test it
     }
 
     func fetchTransactionDataViaBLE() {
@@ -217,7 +219,8 @@ final class AddRecipientModel {
         }
 
         self.incomingUserProfile = nil
-        handleAddressSelection(paymentInfo: PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+        // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet.
+//        handleAddressSelection(paymentInfo: PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
     }
 
     func cancelIncomingTransaction() {
@@ -231,12 +234,12 @@ final class AddRecipientModel {
 
     func requestContinue() {
 
-        guard let hex = try? address?.byteVector.hex else {
+        guard let addressComponents = try? address?.components else {
             errorMessage = localized("add_recipient.error.invalid_emoji_id")
             return
         }
 
-        handleAddressSelection(paymentInfo: PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
+        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
     // MARK: - Handlers
@@ -254,8 +257,8 @@ final class AddRecipientModel {
                 $0.filter {
                     guard $0.name.range(of: searchText, options: .caseInsensitive) == nil else { return true }
                     guard let internalModel = $0.internalModel else { return false }
-                    guard internalModel.emojiID.range(of: searchText, options: .caseInsensitive) == nil else { return true }
-                    return internalModel.hex.range(of: searchText, options: .caseInsensitive) != nil
+                    guard internalModel.addressComponents.fullEmoji.range(of: searchText, options: .caseInsensitive) == nil else { return true }
+                    return internalModel.addressComponents.fullRaw.range(of: searchText, options: .caseInsensitive) != nil
                 }
             }
     }
@@ -294,7 +297,7 @@ final class AddRecipientModel {
                 let items: [AddRecipientView.ItemType] = data.element.map {
 
                     let model = $0.model
-                    let name = (!model.name.isEmpty ? model.name : model.internalModel?.emojiID.obfuscatedText) ?? ""
+                    let name = (!model.name.isEmpty ? model.name : model.internalModel?.addressComponents.fullEmoji.obfuscatedText) ?? ""
 
                     let viewModel = ContactBookCell.ViewModel(
                         id: $0.identifier,
@@ -352,10 +355,12 @@ final class AddRecipientModel {
     }
 
     private func verify(address: TariAddress) -> Bool {
-        guard let hex = try? address.byteVector.hex, let userHex = try? Tari.shared.walletAddress.byteVector.hex, hex != userHex else {
+
+        guard let rawAddress = try? address.components.fullRaw, let userAddress = try? Tari.shared.walletAddress.components.fullRaw, rawAddress != userAddress else {
             errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
             return false
         }
+
         errorMessage = nil
         return true
     }

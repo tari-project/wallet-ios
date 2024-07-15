@@ -173,7 +173,7 @@ final class ContactsManager {
         let externalContact = contact.externalModel
 
         if let internalContact {
-            try internalContactsManager.update(name: nameComponents.joined(separator: " "), isFavorite: isFavorite, hex: internalContact.hex)
+            try internalContactsManager.update(name: nameComponents.joined(separator: " "), isFavorite: isFavorite, base58: internalContact.addressComponents.fullRaw)
         }
 
         if let externalContact, nameComponents.count == 2 {
@@ -194,7 +194,7 @@ final class ContactsManager {
 
     func link(internalContact: InternalContactsManager.ContactModel, externalContact: ExternalContactsManager.ContactModel) throws {
         try externalContactsManager.link(hex: internalContact.hex, emojiID: internalContact.emojiID, contactID: externalContact.uuid)
-        try internalContactsManager.update(name: externalContact.fullname, isFavorite: internalContact.isFavorite, hex: internalContact.hex)
+        try internalContactsManager.update(name: externalContact.fullname, isFavorite: internalContact.isFavorite, base58: internalContact.addressComponents.fullRaw)
     }
 
     func unlink(contact: Model) throws {
@@ -223,7 +223,7 @@ extension ContactsManager.Model {
     var paymentInfo: PaymentInfo? {
         get throws {
             guard let internalModel else { return nil }
-            return PaymentInfo(address: internalModel.hex, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil)
+            return PaymentInfo(addressComponents: internalModel.addressComponents, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil)
         }
     }
 }
