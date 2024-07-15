@@ -82,10 +82,10 @@ final class ProfileViewController: SecureViewController<ProfileView> {
             .sink { [weak self] in self?.mainView.update(username: $0) }
             .store(in: &cancellables)
 
-        model.$emojiData
+        model.$addressType
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.update(emojiID: $0.emojiID, hex: $0.hex, copyText: $0.copyText, tooltopText: $0.tooltipText) }
+            .sink { [weak self] in self?.handle(addressType: $0) }
             .store(in: &cancellables)
 
         model.$isYatOutOfSync
@@ -143,9 +143,26 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         mainView.onBleButtonTap = { [weak self] in
             self?.model.shareContactUsingBLE()
         }
+
+        guard let addressComponents = model.addressComponents else { return }
+        mainView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
     }
 
     // MARK: - Actions
+
+    private func handle(addressType: ProfileModel.AddressType) {
+
+        let viewModel: AddressView.ViewModel
+
+        switch addressType {
+        case let .address(components):
+            viewModel = AddressView.ViewModel(prefix: components.networkAndFeatures, text: .truncated(prefix: components.spendKeyPrefix, suffix: components.spendKeySuffix), isDetailsButtonVisible: true)
+        case let .yat(yat):
+            viewModel = AddressView.ViewModel(prefix: nil, text: .single(yat), isDetailsButtonVisible: false)
+        }
+
+        mainView.update(addressViewModel: viewModel)
+    }
 
     private func handle(yatButtonState: ProfileModel.YatButtonState) {
         switch yatButtonState {

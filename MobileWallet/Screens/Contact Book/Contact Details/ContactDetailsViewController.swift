@@ -99,7 +99,12 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
                     self?.mainView.avatar = .text($0.avatarText)
                 }
 
-                self?.mainView.emojiModel = EmojiIdView.ViewModel(emojiID: $0.emojiID, hex: $0.hex)
+                let addressComponents = $0.addressComponents
+                self?.mainView.addressModel = AddressView.ViewModel(
+                    prefix: addressComponents.networkAndFeatures,
+                    text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                    isDetailsButtonVisible: true
+                )
                 self?.mainView.updateFooter(image: $0.contactType.image, text: $0.contactType.text)
             }
             .store(in: &cancellables)
@@ -126,6 +131,12 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { PopUpPresenter.show(message: $0) }
+            .store(in: &cancellables)
+
+        model.$addressComponents
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.onViewAddressDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: $0) }
             .store(in: &cancellables)
 
         mainView.onSelectRow = { [weak self] in

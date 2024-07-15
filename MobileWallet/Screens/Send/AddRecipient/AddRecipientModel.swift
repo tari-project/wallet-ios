@@ -165,7 +165,7 @@ final class AddRecipientModel {
 
     // MARK: - View Model Actions
 
-    func handle(qrCodeData: QRCodeData) {
+    func handle(qrCodeData: QRCodeData) { // FIXME: QR Codes are now use "old" Tari Address hex. The RFC and code need to be need to be updated. All `handleAddressSelection` calls need to check afterwards.
 
         guard case let .deeplink(deeplink) = qrCodeData else { return }
 
@@ -182,7 +182,7 @@ final class AddRecipientModel {
 
     func select(elementID: UUID) {
         guard let model = contactDictornary[elementID]?.internalModel else { return }
-        handleAddressSelection(paymentInfo: PaymentInfo(address: model.hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
+        handleAddressSelection(paymentInfo: PaymentInfo(address: model.addressComponents.fullRaw, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
     func fetchTransactionDataViaBLE() {

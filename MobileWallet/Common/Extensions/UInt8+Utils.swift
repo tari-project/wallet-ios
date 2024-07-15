@@ -1,10 +1,10 @@
-//  TariContactsService.swift
+//  UInt8+Utils.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Adrian Truszczyński on 03/07/2024
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,23 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class TariContactsService: CoreTariService {
+extension UInt8 {
 
-    // MARK: - Properties
-
-    var allContacts: [Contact] {
-        get throws { try walletManager.walletContacts().all }
+    var tariEmoji: String {
+        get throws {
+            try TariEmojis().all[Int(self)]
+        }
     }
 
-    @discardableResult func upsert(contact: Contact) throws -> Bool {
-        try walletManager.upsert(contact: contact)
-    }
-
-    @discardableResult func remove(contact: Contact) throws -> Bool {
-        try walletManager.remove(contact: contact)
-    }
-
-    func findContact(base58: String) throws -> Contact? {
-        try allContacts.first { try $0.address.components.fullRaw == base58 }
-    }
+    func flag(bitmask: UInt8) -> Bool { self & bitmask == bitmask }
 }

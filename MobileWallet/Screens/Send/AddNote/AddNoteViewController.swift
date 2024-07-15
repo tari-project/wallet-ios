@@ -52,7 +52,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
     @View private var navigationBar = NavigationBar()
-    @View private var emojiIdView = EmojiIdView()
+    @View private var addressView = AddressView()
     fileprivate let scrollView = UIScrollView()
     fileprivate let stackView = UIStackView()
     fileprivate let sendButton = SlideView()
@@ -145,21 +145,26 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         var alias: String?
 
         do {
-            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias
+            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(base58: paymentInfo.address)?.alias
         } catch {
         }
 
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             do {
-                let tariAddress = try TariAddress(base58: paymentInfo.address)
-                emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
+                let addressComponents = try TariAddress(base58: paymentInfo.address).components // FIXME: Use components from PaymentInfo
+                addressView.update(
+                    viewModel: AddressView.ViewModel(
+                        prefix: addressComponents.networkAndFeatures,
+                        text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                        isDetailsButtonVisible: true)
+                )
             } catch {
                 PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
             }
             return
         }
 
-        navigationBar.title = alias
+        addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))
     }
 
     func updateTitleColorAndSetSendButtonState() {
@@ -297,7 +302,7 @@ extension AddNoteViewController {
     private func setupNavigationBar() {
 
         mainView.addSubview(navigationBar)
-        navigationBar.addSubview(emojiIdView)
+        navigationBar.addSubview(addressView)
 
         navigationBar.isSeparatorVisible = false
 
@@ -305,11 +310,14 @@ extension AddNoteViewController {
             navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emojiIdView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor),
-            emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor)
+            addressView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor),
+            addressView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
+
+        guard let addressComponents = try? TariAddress(base58: paymentInfo.address).components else { return } // FIXME: Use components from PaymentInfo
+        addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
     }
 
     fileprivate func setupNoteTitle() {

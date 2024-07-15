@@ -344,13 +344,6 @@
 "verify_phrase.header" = "Select the words in the correct order.";
 "verify_phrase.title" = "Verify Seed Phrase";
 
-/* Emoji view */
-"emoji.copied" = "COPIED";
-"emoji.copy" = "Copy Emoji ID";
-"emoji.yat.copy" = "Copy Yat";
-"emoji.paste" = "Paste copied Emoji ID";
-"emoji.hex_tip" = "ℹ️ You can long-press the Copy Emoji ID button to copy the address in hexadecimal format.";
-
 /* Add recipient view */
 "add_recipient.inputbox.placeholder" = "Enter Emoji ID or Contact Name";
 
@@ -919,3 +912,19 @@
 "screen_recording.pop_up.message" = "Oops! Screenshots are disabled in this app to keep your information safe. Thanks for keeping things secure!";
 "screen_recording.pop_up.button.ok" = "No problem, mate!";
 "screen_recording.pop_up.button.enable" = "Enable screenshots";
+
+/* Address View */
+
+"address_view.details.label.title" = "Address Details";
+"address_view.details.label.network.title" = "Network:";
+"address_view.details.label.features.title" = "Features:";
+"address_view.details.label.view_key.title" = "View Key:";
+"address_view.details.label.address.title" = "Core Address:";
+"address_view.details.label.checksum.title" = "Checksum:";
+"address_view.details.button.copy.base58" = "Copy Base58";
+"address_view.details.button.copy.emojis" = "Copy Emojis";
+
+/* Tari Address Featutres */
+
+"address_features.one_sided" = "One Sided Payments";
+"address_features.interactive" = "Interactive Payments";

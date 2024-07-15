@@ -52,7 +52,7 @@ final class ProfileView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var emojiIdView = EmojiIdView()
+    @View private var addressView = AddressView()
     @View var yatButton: BaseButton = BaseButton()
 
     @View private var yatSpinnerView: AnimationView = {
@@ -169,6 +169,11 @@ final class ProfileView: BaseNavigationContentView {
         }
     }
 
+    var onViewDetailsButtonTap: (() -> Void)? {
+        get { addressView.onViewDetailsButtonTap }
+        set { addressView.onViewDetailsButtonTap = newValue }
+    }
+
     var onEditButtonTap: (() -> Void)?
     var onWalletButtonTap: (() -> Void)?
     var onConnectYatButtonTap: (() -> Void)?
@@ -209,11 +214,11 @@ final class ProfileView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [usernameLabel, emojiIdView, yatButton, yatSpinnerView, yatOutOfSyncLabel, shareSectionSeparator, shareSectionTitleLabel, shareSectionDescriptionLabel, auroraButtonsStackView, shareButtonsStackView].forEach(addSubview)
+        [usernameLabel, addressView, yatButton, yatSpinnerView, yatOutOfSyncLabel, shareSectionSeparator, shareSectionTitleLabel, shareSectionDescriptionLabel, auroraButtonsStackView, shareButtonsStackView].forEach(addSubview)
         [walletButton, connectYatButton].forEach(auroraButtonsStackView.addArrangedSubview)
         [qrCodeButton, linkCodeButton, bleCodeButton].forEach(shareButtonsStackView.addArrangedSubview)
 
-        let auroraButtonsTopConstraintOnYatLabelHidden = auroraButtonsStackView.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20.0)
+        let auroraButtonsTopConstraintOnYatLabelHidden = auroraButtonsStackView.topAnchor.constraint(equalTo: addressView.bottomAnchor, constant: 20.0)
         self.auroraButtonsTopConstraintOnYatLabelHidden = auroraButtonsTopConstraintOnYatLabelHidden
         auroraButtonsTopConstraintOnYatLabelShown = auroraButtonsStackView.topAnchor.constraint(equalTo: yatOutOfSyncLabel.bottomAnchor, constant: 20.0)
 
@@ -221,19 +226,18 @@ final class ProfileView: BaseNavigationContentView {
             usernameLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 50.0),
             usernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             usernameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            emojiIdView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 20.0),
-            emojiIdView.widthAnchor.constraint(equalToConstant: 185.0),
-            emojiIdView.heightAnchor.constraint(equalToConstant: 38.0),
-            emojiIdView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            yatButton.leadingAnchor.constraint(equalTo: emojiIdView.trailingAnchor, constant: 4.0),
-            yatButton.centerYAnchor.constraint(equalTo: emojiIdView.centerYAnchor),
+            addressView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 20.0),
+            addressView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 45.0),
+            addressView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -45.0),
+            yatButton.leadingAnchor.constraint(equalTo: addressView.trailingAnchor, constant: 4.0),
+            yatButton.centerYAnchor.constraint(equalTo: addressView.centerYAnchor),
             yatButton.heightAnchor.constraint(equalToConstant: 32.0),
             yatButton.widthAnchor.constraint(equalToConstant: 32.0),
             yatSpinnerView.centerXAnchor.constraint(equalTo: yatButton.centerXAnchor),
             yatSpinnerView.centerYAnchor.constraint(equalTo: yatButton.centerYAnchor),
             yatSpinnerView.heightAnchor.constraint(equalToConstant: 28.0),
             yatSpinnerView.widthAnchor.constraint(equalToConstant: 28.0),
-            yatOutOfSyncLabel.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20.0),
+            yatOutOfSyncLabel.topAnchor.constraint(equalTo: addressView.bottomAnchor, constant: 20.0),
             yatOutOfSyncLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             yatOutOfSyncLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
             auroraButtonsTopConstraintOnYatLabelHidden,
@@ -315,10 +319,8 @@ final class ProfileView: BaseNavigationContentView {
         }
     }
 
-    func update(emojiID: String, hex: String?, copyText: String, tooltopText: String?) {
-        emojiIdView.copyText = copyText
-        emojiIdView.tooltipText = tooltopText
-        emojiIdView.update(viewModel: EmojiIdView.ViewModel(emojiID: emojiID, hex: hex))
+    func update(addressViewModel: AddressView.ViewModel) {
+        addressView.update(viewModel: addressViewModel)
     }
 
     private func updateYatButton(isOn: Bool) {

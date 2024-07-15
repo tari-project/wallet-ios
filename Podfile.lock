@@ -1,5 +1,8 @@
 PODS:
   - Alamofire (5.4.4)
+  - Base58Swift (2.1.10):
+    - BigInt (~> 5.0.0)
+  - BigInt (5.0.0)
   - Giphy (2.1.22):
     - libwebp
   - IPtProxy (3.3.0)
@@ -35,6 +38,7 @@ PODS:
   - Zip (2.1.2)
 
 DEPENDENCIES:
+  - Base58Swift (= 2.1.10)
   - Giphy (= 2.1.22)
   - IPtProxy (= 3.3.0)
   - lottie-ios (= 3.2.3)
@@ -51,6 +55,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Base58Swift
+    - BigInt
     - Giphy
     - IPtProxy
     - libwebp
@@ -68,6 +74,8 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
+  Base58Swift: 53d551f0b33d9478fa63b3445e453a772d6b31a7
+  BigInt: 74b4d88367b0e819d9f77393549226d36faeb0d8
   Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
   IPtProxy: 2136e276560ffd3a1d017683259f52552fc7c2e5
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c

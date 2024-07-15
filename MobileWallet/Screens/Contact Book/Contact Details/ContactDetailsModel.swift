@@ -74,8 +74,7 @@ final class ContactDetailsModel {
     struct ViewModel {
         let avatarText: String?
         let avatarImage: UIImage?
-        let emojiID: String
-        let hex: String?
+        let addressComponents: TariAddressComponents
         let contactType: ContactsManager.ContactType
     }
 
@@ -88,6 +87,7 @@ final class ContactDetailsModel {
     @Published private(set) var menuSections: [MenuSection] = []
     @Published private(set) var action: Action?
     @Published private(set) var errorModel: MessageModel?
+    @Published private(set) var addressComponents: TariAddressComponents?
 
     var hasSplittedName: Bool { model.hasExternalModel }
     var nameComponents: [String] { model.nameComponents }
@@ -218,7 +218,10 @@ final class ContactDetailsModel {
         let avatarImage = model.avatarImage
         let avatarText = avatarImage == nil ? model.avatar : nil
 
-        viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex, contactType: model.type)
+        if let addressComponents = model.internalModel?.addressComponents {
+            self.addressComponents = addressComponents
+            viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, addressComponents: addressComponents, contactType: model.type)
+        }
 
         var mainMenuItems: [MenuItem] = []
 

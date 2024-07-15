@@ -1,10 +1,10 @@
-//  TransactionDetailsEmojiView.swift
+//  PopUpAddressViewDoubleLabel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/03/2022
+	Created by Adrian Truszczyński on 02/07/2024
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,37 +38,37 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class TransactionDetailsEmojiView: UIView {
+final class PopUpAddressViewDoubleLabel: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var addressView = AddressView()
-
-    @View private(set) var addContactButton: TextButton = {
-        let view = TextButton()
-        view.setTitle(localized("tx_detail.add_contact_name"), for: .normal)
-        view.style = .secondary
+    @View private var stackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 10.0
+        view.alignment = .top
         return view
     }()
 
-    // MARK: - Properties
+    @View private var leadingLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(14.0)
+        return view
+    }()
 
-    var addressViewModel: AddressView.ViewModel? {
-        didSet { updateEmojiIdView() }
-    }
-
-    var onViewDetailsButtonTap: (() -> Void)? {
-        get { addressView.onViewDetailsButtonTap }
-        set { addressView.onViewDetailsButtonTap = newValue }
-    }
+    @View private var trailingLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(14.0)
+        view.numberOfLines = 0
+        view.setContentCompressionResistancePriority(.required, for: .vertical)
+        return view
+    }()
 
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
 
@@ -80,24 +80,29 @@ final class TransactionDetailsEmojiView: UIView {
 
     private func setupConstraints() {
 
-        [addressView, addContactButton].forEach(addSubview)
+        addSubview(stackView)
+        [leadingLabel, trailingLabel, UIView()].forEach(stackView.addArrangedSubview)
 
         let constraints = [
-            heightAnchor.constraint(equalToConstant: 85.0),
-            addressView.topAnchor.constraint(equalTo: topAnchor),
-            addressView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            addContactButton.topAnchor.constraint(equalTo: addressView.bottomAnchor, constant: 10.0),
-            addContactButton.leadingAnchor.constraint(equalTo: addressView.leadingAnchor),
-            addContactButton.bottomAnchor.constraint(equalTo: bottomAnchor)
+            stackView.topAnchor.constraint(equalTo: topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
 
-    // MARK: - Actions
+    // MARK: - Updates
 
-    private func updateEmojiIdView() {
-        guard let addressViewModel else { return }
-        addressView.update(viewModel: addressViewModel)
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        leadingLabel.textColor = theme.text.body
+        trailingLabel.textColor = theme.text.body
+    }
+
+    func update(leadingText: String?, trailingText: String?) {
+        leadingLabel.text = leadingText
+        trailingLabel.text = trailingText
     }
 }
