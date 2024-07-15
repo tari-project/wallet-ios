@@ -180,8 +180,8 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(base58: paymentInfo.address)?.alias else {
-                let addressComponents = try TariAddress(base58: paymentInfo.address).components // FIXME: Use components from PaymentInfo
+            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(base58: paymentInfo.addressComponents.fullRaw)?.alias else {
+                let addressComponents = paymentInfo.addressComponents
                 addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix), isDetailsButtonVisible: true))
                 return
             }
@@ -490,7 +490,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func updatedPaymentInfo() -> PaymentInfo? {
         guard let amount = calculateAmount(), let feePerGram = feePerGram else { return nil }
-        return PaymentInfo(address: paymentInfo.address, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
+        return PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
     }
 
     private func updateNextStepElements(isEnabled: Bool) {
@@ -748,9 +748,7 @@ extension AddAmountViewController {
             self?.showTransactionProgress()
         }
 
-        if let addressComponents = try? TariAddress(base58: paymentInfo.address).components { // FIXME: Use components from PaymentInfo
-            addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
-        }
+        addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: paymentInfo.addressComponents)
 
         $fee
             .receive(on: DispatchQueue.main)

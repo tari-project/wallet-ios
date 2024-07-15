@@ -38,9 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-@available(*, deprecated, message: "This stuct have an obsolette structure. It should utilize the TariAddressPart struct to simplify send flow")
 struct PaymentInfo {
-    let address: String
+    let addressComponents: TariAddressComponents
     let alias: String?
     let yatID: String?
     let amount: MicroTari?

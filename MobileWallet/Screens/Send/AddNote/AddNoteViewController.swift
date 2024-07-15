@@ -145,22 +145,18 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         var alias: String?
 
         do {
-            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(base58: paymentInfo.address)?.alias
+            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(base58: paymentInfo.addressComponents.fullRaw)?.alias
         } catch {
         }
 
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
-            do {
-                let addressComponents = try TariAddress(base58: paymentInfo.address).components // FIXME: Use components from PaymentInfo
-                addressView.update(
-                    viewModel: AddressView.ViewModel(
-                        prefix: addressComponents.networkAndFeatures,
-                        text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
-                        isDetailsButtonVisible: true)
-                )
-            } catch {
-                PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
-            }
+            let addressComponents = paymentInfo.addressComponents
+            addressView.update(
+                viewModel: AddressView.ViewModel(
+                    prefix: addressComponents.networkAndFeatures,
+                    text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                    isDetailsButtonVisible: true)
+            )
             return
         }
 
@@ -275,7 +271,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             message += " \(embedUrl)"
         }
 
-        let paymentInfo = PaymentInfo(address: paymentInfo.address, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: message)
+        let paymentInfo = PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: message)
         TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: isOneSidedPayment)
     }
 
@@ -316,8 +312,7 @@ extension AddNoteViewController {
 
         NSLayoutConstraint.activate(constraints)
 
-        guard let addressComponents = try? TariAddress(base58: paymentInfo.address).components else { return } // FIXME: Use components from PaymentInfo
-        addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
+        addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: paymentInfo.addressComponents)
     }
 
     fileprivate func setupNoteTitle() {

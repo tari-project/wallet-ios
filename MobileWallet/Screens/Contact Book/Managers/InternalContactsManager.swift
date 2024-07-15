@@ -102,8 +102,8 @@ final class InternalContactsManager {
         return try ContactModel(alias: name, defaultAlias: nil, emojiID: address.emojis, hex: address.byteVector.hex, addressComponents: address.components, isFavorite: isFavorite)
     }
 
-    func update(name: String, isFavorite: Bool, hex: String) throws {
-        let address = try TariAddress(base58: hex)
+    func update(name: String, isFavorite: Bool, base58: String) throws {
+        let address = try TariAddress(base58: base58)
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
     }
