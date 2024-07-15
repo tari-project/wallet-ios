@@ -158,13 +158,6 @@ final class TariAddress {
     }
 }
 
-extension TariAddress: Equatable {
-    static func == (lhs: TariAddress, rhs: TariAddress) -> Bool {
-        guard let leftHex = try? lhs.byteVector.hex, let rightHex = try? rhs.byteVector.hex else { return false }
-        return leftHex == rightHex
-    }
-}
-
 extension TariAddress {
 
     @available(*, deprecated, message: "This getter is obsolete and it will be removed in the future.")

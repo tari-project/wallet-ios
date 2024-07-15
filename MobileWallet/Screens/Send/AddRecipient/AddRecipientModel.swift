@@ -143,10 +143,13 @@ final class AddRecipientModel {
         let addresses = try transactions
             .sorted { try $0.timestamp > $1.timestamp }
             .map { try $0.address }
-            .reduce(into: [TariAddress]()) { result, address in
-                guard !result.contains(address) else { return }
-                result.append(address)
+            .reduce(into: (identifiers: [String](), output: [TariAddress]())) { result, address in
+                let identifier = try address.components.uniqueIdentifier
+                guard !result.identifiers.contains(identifier) else { return }
+                result.identifiers.append(identifier)
+                result.output.append(address)
             }
+            .output
             .prefix(3)
 
         return Array(addresses)
@@ -157,7 +160,7 @@ final class AddRecipientModel {
         let allContacts = contactsManager.tariContactModels
 
         do {
-            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents.fullRaw == address.components.fullRaw }}
+            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents.uniqueIdentifier == address.components.uniqueIdentifier }}
         } catch {
             return []
         }
@@ -184,7 +187,7 @@ final class AddRecipientModel {
 
     func select(elementID: UUID) {
         guard let model = contactDictornary[elementID]?.internalModel else { return }
-        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: model.addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil)) // TODO: Test it
+        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: model.addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
     func fetchTransactionDataViaBLE() {
@@ -356,7 +359,7 @@ final class AddRecipientModel {
 
     private func verify(address: TariAddress) -> Bool {
 
-        guard let rawAddress = try? address.components.fullRaw, let userAddress = try? Tari.shared.walletAddress.components.fullRaw, rawAddress != userAddress else {
+        guard let uniqueIdentifier = try? address.components.uniqueIdentifier, let userUniqueIdentifier = try? Tari.shared.walletAddress.components.uniqueIdentifier, uniqueIdentifier != userUniqueIdentifier else {
             errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
             return false
         }

@@ -145,7 +145,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         var alias: String?
 
         do {
-            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(base58: paymentInfo.addressComponents.fullRaw)?.alias
+            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias
         } catch {
         }
 
