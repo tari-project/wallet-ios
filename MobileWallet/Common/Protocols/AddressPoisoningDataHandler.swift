@@ -44,25 +44,25 @@ enum AddressPoisoningDataHandler {
 
     static func handleAddressSelection(paymentInfo: PaymentInfo, onContinue: ((PaymentInfo) -> Void)?) {
 
-        let rawAddress = paymentInfo.addressComponents.fullRaw
+        let addressComponents = paymentInfo.addressComponents
 
-        guard !isAddressTrusted(base58: rawAddress) else {
+        guard !isAddressTrusted(addressIdentifier: addressComponents.uniqueIdentifier) else {
             onContinue?(paymentInfo)
             return
         }
 
         Task { @MainActor in
             do {
-                let address = try TariAddress(base58: rawAddress)
+                let address = try TariAddress(base58: addressComponents.fullRaw)
                 let similarAddresses = try await AddressPoisoningManager.shared.similarAddresses(address: address, includeInputAddress: true)
                     .map { similarAddress in
-                        PopUpAddressPoisoningContentCell.ViewModel(
+                        return PopUpAddressPoisoningContentCell.ViewModel(
                             id: UUID(),
                             emojiID: similarAddress.emojiID,
                             name: similarAddress.alias,
                             transactionsCount: similarAddress.transactionsCount,
                             lastTransaction: similarAddress.lastTransaction,
-                            isTrusted: isAddressTrusted(base58: similarAddress.address)
+                            isTrusted: isAddressTrusted(addressIdentifier: similarAddress.address)
                         )
                     }
 
@@ -80,9 +80,9 @@ enum AddressPoisoningDataHandler {
     private static func confirmAddressSelection(emojiID: String, originalPaymentInfo: PaymentInfo, isTrusted: Bool, onContinue: ((PaymentInfo) -> Void)?) {
         do {
             let addressComponents = try TariAddress(emojiID: emojiID).components
-            updateSettings(base58: addressComponents.fullRaw, isTrusted: isTrusted)
+            updateSettings(uniqueIdentifier: addressComponents.uniqueIdentifier, isTrusted: isTrusted)
 
-            if addressComponents.fullRaw == originalPaymentInfo.addressComponents.fullRaw {
+            if addressComponents.uniqueIdentifier == originalPaymentInfo.addressComponents.uniqueIdentifier {
                 onContinue?(originalPaymentInfo)
             } else {
                 onContinue?(PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil))
@@ -111,21 +111,21 @@ enum AddressPoisoningDataHandler {
 
     // MARK: - Helpers
 
-    private static func updateSettings(base58: String, isTrusted: Bool) {
+    private static func updateSettings(uniqueIdentifier: String, isTrusted: Bool) {
 
         if GroupUserDefaults.trustedAddresses == nil {
             GroupUserDefaults.trustedAddresses = Set<String>()
         }
 
         guard isTrusted else {
-            GroupUserDefaults.trustedAddresses?.remove(base58)
+            GroupUserDefaults.trustedAddresses?.remove(uniqueIdentifier)
             return
         }
 
-        GroupUserDefaults.trustedAddresses?.insert(base58)
+        GroupUserDefaults.trustedAddresses?.insert(uniqueIdentifier)
     }
 
-    private static func isAddressTrusted(base58: String) -> Bool {
-        GroupUserDefaults.trustedAddresses?.contains { $0 == base58 } ?? false
+    private static func isAddressTrusted(addressIdentifier: String) -> Bool {
+        GroupUserDefaults.trustedAddresses?.contains { $0 == addressIdentifier } ?? false
     }
 }
