@@ -276,7 +276,7 @@ final class TransactionDetailsModel {
 
     private func fetchContactModel() async throws -> ContactsManager.Model? {
         try await contactsManager.fetchModels()
-        return try contactsManager.tariContactModels.first { try $0.internalModel?.hex == transaction.address.byteVector.hex }
+        return try contactsManager.tariContactModels.first { try $0.internalModel?.addressComponents.uniqueIdentifier == transaction.address.components.uniqueIdentifier }
     }
 
     private func fetchLinkToOpen() -> URL? {

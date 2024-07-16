@@ -100,7 +100,7 @@ final class LinkContactsModel {
             }
         }
 
-        name = contactModel.internalModel?.emojiID.obfuscatedText ?? contactModel.externalModel?.fullname
+        name = contactModel.internalModel?.addressComponents.fullEmoji.obfuscatedText ?? contactModel.externalModel?.fullname
     }
 
     private func updateModels() {
@@ -156,7 +156,7 @@ final class LinkContactsModel {
         unconfirmedInternalModel = internalContact
         unconfirmedExternalModel = externalContact
 
-        action = .showConfirmation(emojiID: internalContact.emojiID.obfuscatedText, name: externalContact.fullname)
+        action = .showConfirmation(emojiID: internalContact.addressComponents.fullEmoji.obfuscatedText, name: externalContact.fullname)
     }
 
     func linkContacts() {
@@ -168,7 +168,7 @@ final class LinkContactsModel {
 
         do {
             try contactsManager.link(internalContact: unconfirmedInternalModel, externalContact: unconfirmedExternalModel)
-            action = .showSuccess(emojiID: unconfirmedInternalModel.emojiID.obfuscatedText, name: unconfirmedExternalModel.fullname)
+            action = .showSuccess(emojiID: unconfirmedInternalModel.addressComponents.fullEmoji.obfuscatedText, name: unconfirmedExternalModel.fullname)
             cancelLinkContacts()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)

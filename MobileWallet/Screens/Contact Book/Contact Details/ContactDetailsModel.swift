@@ -180,7 +180,7 @@ final class ContactDetailsModel {
 
     func unlinkContact() {
 
-        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
+        guard let emojiID = model.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = model.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: model)
@@ -260,7 +260,7 @@ final class ContactDetailsModel {
     }
 
     private func prepareForUnkinkAction() {
-        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
+        guard let emojiID = model.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = model.externalModel?.fullname else { return }
         action = .showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
     }
 

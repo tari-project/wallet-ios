@@ -52,6 +52,7 @@ struct TariAddressComponents {
 
     let fullRaw: String
     let fullEmoji: String
+    let isUnknownAddress: Bool
 }
 
 extension TariAddressComponents {
@@ -80,5 +81,6 @@ extension TariAddressComponents {
         checksum = try address.checksum.tariEmoji
         fullRaw = [networkBase58, featuresBase58, addressBase58].joined()
         fullEmoji = try address.emojis
+        isUnknownAddress = try address.spendKey.byteVector.bytes.first { $0 != 0 } == nil
     }
 }

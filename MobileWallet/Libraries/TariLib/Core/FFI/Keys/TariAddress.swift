@@ -165,10 +165,6 @@ extension TariAddress {
         get throws { try String(byteVector.hex.dropLast(2)) }
     }
 
-    var isUnknownUser: Bool {
-        get throws { try publicKey.filter { $0 == "0" }.count == 64 }
-    }
-
     static func makeTariAddress(input: String) throws -> TariAddress {
         do { return try TariAddress(emojiID: input) } catch {}
         return try TariAddress(base58: input)
