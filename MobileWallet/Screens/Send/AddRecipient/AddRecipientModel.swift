@@ -144,9 +144,9 @@ final class AddRecipientModel {
             .sorted { try $0.timestamp > $1.timestamp }
             .map { try $0.address }
             .reduce(into: (identifiers: [String](), output: [TariAddress]())) { result, address in
-                let identifier = try address.components.uniqueIdentifier
-                guard !result.identifiers.contains(identifier) else { return }
-                result.identifiers.append(identifier)
+                let addressComponents = try address.components
+                guard !result.identifiers.contains(addressComponents.uniqueIdentifier), !addressComponents.isUnknownAddress else { return }
+                result.identifiers.append(addressComponents.uniqueIdentifier)
                 result.output.append(address)
             }
             .output
@@ -298,19 +298,7 @@ final class AddRecipientModel {
                 guard !data.element.isEmpty else { return }
 
                 let items: [AddRecipientView.ItemType] = data.element.map {
-
-                    let model = $0.model
-                    let name = (!model.name.isEmpty ? model.name : model.internalModel?.addressComponents.fullEmoji.obfuscatedText) ?? ""
-
-                    let viewModel = ContactBookCell.ViewModel(
-                        id: $0.identifier,
-                        name: name,
-                        avatarText: model.avatar,
-                        avatarImage: model.avatarImage,
-                        isFavorite: false,
-                        contactTypeImage: model.type.image,
-                        isSelectable: false
-                    )
+                    let viewModel = ContactBookCell.ViewModel(id: $0.identifier, addressViewModel: $0.model.contactBookCellAddressViewModel, isFavorite: false, contactTypeImage: nil, isSelectable: false)
                     return .contact(model: viewModel)
                 }
 

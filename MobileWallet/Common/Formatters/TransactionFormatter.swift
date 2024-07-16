@@ -66,7 +66,7 @@ final class TransactionFormatter {
         let contactName = try contactName(transaction: transaction)
 
         if !filter.isEmpty {
-            guard try transaction.address.emojis.range(of: filter) != nil || transaction.address.byteVector.hex.range(of: filter) != nil || contactName.range(of: filter) != nil else { return nil }
+            guard try transaction.address.components.fullEmoji.range(of: filter) != nil || transaction.address.components.fullRaw.range(of: filter) != nil || contactName.range(of: filter) != nil else { return nil }
         }
 
         let messageComponents = try messageComponents(transaction: transaction)
@@ -83,8 +83,8 @@ final class TransactionFormatter {
         )
     }
 
-    func contact(hex: String) -> ContactsManager.Model? {
-        contactsManager.tariContactModels.first { $0.internalModel?.hex == hex }
+    func contact(uniqueIdentifier: String) -> ContactsManager.Model? {
+        contactsManager.tariContactModels.first { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }
     }
 
     private func avatar(transaction: Transaction) throws -> RoundedAvatarView.Avatar {
@@ -195,7 +195,6 @@ final class TransactionFormatter {
     // MARK: - Helpers
 
     private func contact(transaction: Transaction) throws -> ContactsManager.Model? {
-        let hex = try transaction.address.byteVector.hex
-        return contact(hex: hex)
+        contact(uniqueIdentifier: try transaction.address.components.uniqueIdentifier)
     }
 }

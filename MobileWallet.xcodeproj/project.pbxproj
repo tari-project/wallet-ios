@@ -376,6 +376,7 @@
 		542585C82A334697009D12CD /* RotaryMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C72A334697009D12CD /* RotaryMenuView.swift */; };
 		542585CA2A3346C0009D12CD /* RotaryMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C92A3346C0009D12CD /* RotaryMenuButton.swift */; };
 		542725662AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */; };
+		542967062C46A43100FA6584 /* ContactsManager+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542967052C46A43100FA6584 /* ContactsManager+Utils.swift */; };
 		542F22B72C33F69E00F07557 /* PopUpAddressDetailsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542F22B62C33F69E00F07557 /* PopUpAddressDetailsContentView.swift */; };
 		542F22B92C33F73200F07557 /* PopUpAddressDetailsContentSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542F22B82C33F73200F07557 /* PopUpAddressDetailsContentSectionView.swift */; };
 		542F22BB2C33F78400F07557 /* PopUpAddressViewDoubleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542F22BA2C33F78400F07557 /* PopUpAddressViewDoubleLabel.swift */; };
@@ -972,6 +973,7 @@
 		542585C72A334697009D12CD /* RotaryMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuView.swift; sourceTree = "<group>"; };
 		542585C92A3346C0009D12CD /* RotaryMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuButton.swift; sourceTree = "<group>"; };
 		542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libminotari_wallet_ffi_ios.xcframework; path = MobileWallet/Libraries/TariLib/libminotari_wallet_ffi_ios.xcframework; sourceTree = "<group>"; };
+		542967052C46A43100FA6584 /* ContactsManager+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactsManager+Utils.swift"; sourceTree = "<group>"; };
 		542F22B62C33F69E00F07557 /* PopUpAddressDetailsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpAddressDetailsContentView.swift; sourceTree = "<group>"; };
 		542F22B82C33F73200F07557 /* PopUpAddressDetailsContentSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpAddressDetailsContentSectionView.swift; sourceTree = "<group>"; };
 		542F22BA2C33F78400F07557 /* PopUpAddressViewDoubleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpAddressViewDoubleLabel.swift; sourceTree = "<group>"; };
@@ -1233,6 +1235,7 @@
 				541029052A406E4E0095F7CB /* CGFloat+Utils.swift */,
 				541029072A406E810095F7CB /* CGPoint+Utils.swift */,
 				3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */,
+				542967052C46A43100FA6584 /* ContactsManager+Utils.swift */,
 				54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */,
 				00BBD808237D80C800EBF5E6 /* Date.swift */,
 				3A685425290AD04600032963 /* DateFormatter+Formats.swift */,
@@ -1250,8 +1253,10 @@
 				3A8826C427F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift */,
 				3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */,
 				37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */,
+				5453E43B2AC9D5CA00C7F40D /* UIImage+Utils.swift */,
 				37ABB68F24781CE800F08163 /* UILabel.swift */,
 				54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */,
+				54624FEE2C3565BF00637930 /* UInt8+Utils.swift */,
 				54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */,
 				37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */,
 				5488068629D4230500C2A0F9 /* UIStackView+Common.swift */,
@@ -1263,8 +1268,6 @@
 				54A6E9F3297F260800A60853 /* UIViewController+Common.swift */,
 				004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */,
 				54621F8629E00E04000E9659 /* URL+Tools.swift */,
-				5453E43B2AC9D5CA00C7F40D /* UIImage+Utils.swift */,
-				54624FEE2C3565BF00637930 /* UInt8+Utils.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3845,6 +3848,7 @@
 				3A8005C628EAF0A50022A38A /* TransactionSendResult.swift in Sources */,
 				3A3E8BF32924FB4C00490E57 /* MigrationManager.swift in Sources */,
 				3A84CDD22846087D005F2F8D /* UTXOsWalletViewController.swift in Sources */,
+				542967062C46A43100FA6584 /* ContactsManager+Utils.swift in Sources */,
 				3A42059D279804F300A8D49C /* AmountNumberFormatter.swift in Sources */,
 				3A7DAB8F28FDAF9A002CC013 /* LogsListViewController.swift in Sources */,
 				3A5A3D55290152E300B689C6 /* BackupManager.swift in Sources */,

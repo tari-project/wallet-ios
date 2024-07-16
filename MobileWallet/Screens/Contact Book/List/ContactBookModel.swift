@@ -157,7 +157,8 @@ final class ContactBookModel {
         Task {
             do {
                 try await contactsManager.fetchModels()
-                contactModels = [contactsManager.tariContactModels, contactsManager.externalModels]
+                let tariContactModels = contactsManager.tariContactModels.filter { $0.internalModel?.addressComponents.isUnknownAddress == false }
+                contactModels = [tariContactModels, contactsManager.externalModels]
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
@@ -200,7 +201,7 @@ final class ContactBookModel {
 
     func unlink(contact: ContactsManager.Model) {
 
-        guard let emojiID = contact.internalModel?.emojiID.obfuscatedText, let name = contact.externalModel?.fullname else { return }
+        guard let emojiID = contact.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = contact.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: contact)
@@ -333,7 +334,7 @@ final class ContactBookModel {
         let list = selectedIDs
             .compactMap { selectedID in allModels.first { $0.id == selectedID }}
             .compactMap { $0.internalModel }
-            .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", hex: $0.hex ) }
+            .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", hex: $0.addressComponents.fullRaw ) } // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet
 
         let model = ContactListDeeplink(list: list)
 
@@ -348,8 +349,8 @@ final class ContactBookModel {
             $0.filter {
                 guard $0.name.range(of: searchText, options: .caseInsensitive) == nil else { return true }
                 guard let internalModel = $0.internalModel else { return false }
-                guard internalModel.emojiID.range(of: searchText, options: .caseInsensitive) == nil else { return true }
-                return internalModel.hex.range(of: searchText, options: .caseInsensitive) != nil
+                guard internalModel.addressComponents.fullEmoji.range(of: searchText, options: .caseInsensitive) == nil else { return true }
+                return internalModel.addressComponents.fullRaw.range(of: searchText, options: .caseInsensitive) != nil
             }
         }
     }
@@ -363,12 +364,9 @@ final class ContactBookModel {
                 guard !data.element.isEmpty else { return }
 
                 let items: [ContactBookCell.ViewModel] = data.element.map {
-                    let name = (!$0.name.isEmpty ? $0.name : $0.internalModel?.emojiID.obfuscatedText) ?? ""
-                    return ContactBookCell.ViewModel(
+                    ContactBookCell.ViewModel(
                         id: $0.id,
-                        name: name,
-                        avatarText: $0.avatar,
-                        avatarImage: $0.avatarImage,
+                        addressViewModel: $0.contactBookCellAddressViewModel,
                         isFavorite: $0.isFavorite,
                         contactTypeImage: $0.type.image,
                         isSelectable: section?.isSelectable ?? false

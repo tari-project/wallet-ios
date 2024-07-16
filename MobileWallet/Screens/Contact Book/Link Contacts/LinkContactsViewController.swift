@@ -82,7 +82,7 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
             .store(in: &cancellables)
 
         model.$models
-            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, contactTypeImage: nil, isSelectable: false) }}
+            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, addressViewModel: $0.contactBookCellAddressViewModel, isFavorite: false, contactTypeImage: nil, isSelectable: false) }}
             .sink { [weak self] in self?.mainView.viewModels = $0 }
             .store(in: &cancellables)
 

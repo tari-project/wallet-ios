@@ -330,7 +330,7 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
     }
 
     private func showUnlinkConfirmationDialog(model: ContactsManager.Model) {
-        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
+        guard let emojiID = model.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = model.externalModel?.fullname else { return }
         PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name, confirmationCallback: { [weak self] in self?.model.unlink(contact: model) })
     }
 
