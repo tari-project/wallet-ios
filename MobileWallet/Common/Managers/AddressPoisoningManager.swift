@@ -38,6 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+// FIXME: AddressPoisoningManager doesn't support TariAddressComponents yet
 final class AddressPoisoningManager {
 
     struct SimilarAddressData {
@@ -83,14 +84,14 @@ final class AddressPoisoningManager {
         try (contactsManager.tariContactModels + contactsManager.externalModels)
             .filter {
                 guard let internalModel = $0.internalModel else { return false }
-                return emojiID.isSimilar(to: internalModel.emojiID, minSameCharacters: minSameCharacters, usedPrefixSuffixCharacters: usedPrefixSuffixCharacters)
+                return emojiID.isSimilar(to: internalModel.addressComponents.fullEmoji, minSameCharacters: minSameCharacters, usedPrefixSuffixCharacters: usedPrefixSuffixCharacters)
             }
             .compactMap { try data(contact: $0) }
     }
 
     private func inputAddressData(address: TariAddress) throws -> SimilarAddressData {
-        let emojiID = try address.emojis
-        guard let existingContact = (contactsManager.tariContactModels + contactsManager.externalModels).first(where: { $0.internalModel?.emojiID == emojiID }) else {
+        let emojiID = try address.components.fullEmoji
+        guard let existingContact = (contactsManager.tariContactModels + contactsManager.externalModels).first(where: { $0.internalModel?.addressComponents.fullEmoji == emojiID }) else {
             return try data(hex: address.byteVector.hex, emojiID: emojiID)
         }
         return try data(contact: existingContact) ?? data(hex: address.byteVector.hex, emojiID: emojiID)
@@ -102,14 +103,14 @@ final class AddressPoisoningManager {
 
     private func data(contact: ContactsManager.Model) throws -> SimilarAddressData? {
         guard let internalModel = contact.internalModel else { return nil }
-        let transactions = try transactions(forHex: internalModel.hex)
+        let transactions = try transactions(forUniqueIdentifier: internalModel.addressComponents.uniqueIdentifier)
         let lastTransaction = try formattedLastTransaction(transactions: transactions)
-        return SimilarAddressData(address: internalModel.hex, emojiID: internalModel.emojiID, alias: contact.name, transactionsCount: transactions.count, lastTransaction: lastTransaction)
+        return SimilarAddressData(address: internalModel.addressComponents.fullRaw, emojiID: internalModel.addressComponents.fullEmoji, alias: contact.name, transactionsCount: transactions.count, lastTransaction: lastTransaction)
     }
 
-    private func transactions(forHex hex: String) throws -> [Transaction] {
+    private func transactions(forUniqueIdentifier uniqueIdentifier: String) throws -> [Transaction] {
         try Tari.shared.transactions.all
-            .filter { try $0.address.byteVector.hex == hex }
+            .filter { try $0.address.components.uniqueIdentifier == uniqueIdentifier }
             .sorted { try $0.timestamp > $1.timestamp }
     }
 
