@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Combine
 import TariCommon
 
 final class AddContactView: BaseNavigationContentView {
@@ -82,7 +81,6 @@ final class AddContactView: BaseNavigationContentView {
 
     var onDoneButtonTap: (() -> Void)?
     var onQRCodeButtonTap: (() -> Void)?
-    var onSearchTextFieldFocusState: ((_ isFocused: Bool) -> Void)?
 
     // MARK: - Initialisers
 
@@ -133,12 +131,9 @@ final class AddContactView: BaseNavigationContentView {
     }
 
     private func setupCallbacks() {
-
         searchView.qrButton.onTap = { [weak self] in
             self?.onQRCodeButtonTap?()
         }
-
-        searchView.textField.delegate = self
     }
 
     // MARK: - Updates
@@ -153,16 +148,5 @@ final class AddContactView: BaseNavigationContentView {
 
         guard let placeholderColor = theme.text.lightText else { return }
         nameTextField.attributedPlaceholder = NSAttributedString(string: localized("contact_book.add_contact.text_field.name.placeholder"), attributes: [.foregroundColor: placeholderColor])
-    }
-}
-
-extension AddContactView: UITextFieldDelegate {
-
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        onSearchTextFieldFocusState?(true)
-    }
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        onSearchTextFieldFocusState?(false)
     }
 }

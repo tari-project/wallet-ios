@@ -168,7 +168,7 @@ final class AddRecipientModel {
 
     // MARK: - View Model Actions
 
-    func handle(qrCodeData: QRCodeData) { // FIXME: QR Codes are now use the "Old" Tari Address hex. The RFC and code need to be need to be updated. All `handleAddressSelection` calls need to check afterwards.
+    func handle(qrCodeData: QRCodeData) {
 
         guard case let .deeplink(deeplink) = qrCodeData else { return }
 
@@ -177,11 +177,11 @@ final class AddRecipientModel {
             if let rawAmount = deeplink.amount {
                 amount = MicroTari(rawAmount)
             }
-            // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet.
-//            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
+            guard let addressComponents = try? TariAddress(base58: deeplink.receiverAddress).components else { return }
+            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
         } else if let deeplink = deeplink as? UserProfileDeeplink {
-            // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet.
-//            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.tariAddress, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+            guard let addressComponents = try? TariAddress(base58: deeplink.tariAddress).components else { return }
+            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
         }
     }
 
@@ -222,8 +222,9 @@ final class AddRecipientModel {
         }
 
         self.incomingUserProfile = nil
-        // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet.
-//        handleAddressSelection(paymentInfo: PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+
+        guard let addressComponents = try? TariAddress(base58: incomingUserProfile.tariAddress).components else { return }
+        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
     }
 
     func cancelIncomingTransaction() {
