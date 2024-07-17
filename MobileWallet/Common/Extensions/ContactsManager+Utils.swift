@@ -41,7 +41,7 @@
 extension ContactsManager.Model {
 
     var contactBookCellAddressViewModel: AddressView.ViewModel {
-        if let alias {
+        if let alias, !alias.isEmpty {
             return AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false)
         } else if let addressComponents = internalModel?.addressComponents {
             return AddressView.ViewModel(

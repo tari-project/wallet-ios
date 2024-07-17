@@ -100,10 +100,6 @@ final class AddContactViewController: SecureViewController<AddContactView> {
         mainView.searchView.textField.bind(withSubject: model.emojiIDSubject, storeIn: &cancellables)
         mainView.nameTextField.bind(withSubject: model.nameSubject, storeIn: &cancellables)
 
-        mainView.onSearchTextFieldFocusState = { [weak self] in
-            self?.model.isSearchTextFormatted = !$0
-        }
-
         mainView.onQRCodeButtonTap = { [weak self] in
             self?.showQRScanner()
         }

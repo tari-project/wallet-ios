@@ -63,7 +63,6 @@ final class AddContactModel {
     let emojiIDSubject: CurrentValueSubject<String, Never> = CurrentValueSubject("")
     let nameSubject: CurrentValueSubject<String, Never> = CurrentValueSubject("")
 
-    @Published var isSearchTextFormatted: Bool = true
     @Published private(set) var isDataValid: Bool = false
     @Published private(set) var action: Action?
     @Published private(set) var errorText: String?
@@ -71,7 +70,6 @@ final class AddContactModel {
 
     // MARK: - Properties
 
-    private var rawSearchText: String = ""
     private var address: TariAddress?
     @Published private var errors = Set<DataValidationError>([.noEmojiID])
 
@@ -88,9 +86,10 @@ final class AddContactModel {
 
     private func setupCallbacks() {
 
-        Publishers.CombineLatest(emojiIDSubject.removeDuplicates(), $isSearchTextFormatted.removeDuplicates())
+        emojiIDSubject
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(searchText: $0, isSearchTextFormatted: $1) }
+            .sink { [weak self] in self?.handle(searchText: $0) }
             .store(in: &cancellables)
 
         nameSubject
@@ -129,15 +128,13 @@ final class AddContactModel {
 
         switch deeplink {
         case let deeplink as UserProfileDeeplink:
-            let address = TariAddressFactory.address(text: deeplink.tariAddress)
+            let address = try? TariAddress.makeTariAddress(input: deeplink.tariAddress)
             guard let emojis = try? address?.emojis else { return }
-            rawSearchText = emojis
             emojiIDSubject.send(emojis)
             nameSubject.send(deeplink.alias)
         case let deeplink as TransactionsSendDeeplink:
-            let address = TariAddressFactory.address(text: deeplink.receiverAddress)
+            let address = try? TariAddress.makeTariAddress(input: deeplink.receiverAddress)
             guard let emojis = try? address?.emojis else { return }
-            rawSearchText = emojis
             emojiIDSubject.send(emojis)
         default:
             break
@@ -145,21 +142,6 @@ final class AddContactModel {
     }
 
     // MARK: - Handlers
-
-    private func handle(searchText: String, isSearchTextFormatted: Bool) {
-
-        if !isSearchTextFormatted {
-            rawSearchText = searchText
-        }
-
-        handle(searchText: rawSearchText)
-
-        if isSearchTextFormatted, address != nil {
-            emojiIDSubject.send(rawSearchText.insertSeparator(" | ", atEvery: 3))
-        } else {
-            emojiIDSubject.send(rawSearchText)
-        }
-    }
 
     private func handle(searchText: String) {
 
@@ -172,7 +154,7 @@ final class AddContactModel {
 
         errors.remove(.noEmojiID)
 
-        guard let address = TariAddressFactory.address(text: searchText) else {
+        guard let address = try? TariAddress.makeTariAddress(input: searchText) else {
             address = nil
             errors.insert(.invalidEmojiID)
             return
@@ -204,17 +186,5 @@ final class AddContactModel {
         case .noName:
             return localized("contact_book.add_contact.validation_error.no_name")
         }
-    }
-}
-
-enum TariAddressFactory {
-
-    static func address(text: String) -> TariAddress? {
-
-        if let address = try? TariAddress(emojiID: text) {
-            return address
-        }
-
-        return try? TariAddress(base58: text)
     }
 }

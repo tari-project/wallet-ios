@@ -257,7 +257,7 @@ final class ContactBookModel {
         let list = selectedIDs
             .compactMap { selectedID in allModels.first { $0.id == selectedID }}
             .compactMap { $0.internalModel }
-            .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", hex: $0.addressComponents.fullRaw ) } // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet
+            .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", tariAddress: $0.addressComponents.fullRaw ) }
 
         let model = ContactListDeeplink(list: list)
 
