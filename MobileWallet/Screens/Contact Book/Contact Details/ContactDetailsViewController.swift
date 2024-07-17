@@ -99,12 +99,14 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
                     self?.mainView.avatar = .text($0.avatarText)
                 }
 
-                let addressComponents = $0.addressComponents
-                self?.mainView.addressModel = AddressView.ViewModel(
-                    prefix: addressComponents.networkAndFeatures,
-                    text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
-                    isDetailsButtonVisible: true
-                )
+                if let addressComponents = $0.addressComponents {
+                    self?.mainView.addressModel = AddressView.ViewModel(
+                        prefix: addressComponents.networkAndFeatures,
+                        text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                        isDetailsButtonVisible: true
+                    )
+                }
+
                 self?.mainView.updateFooter(image: $0.contactType.image, text: $0.contactType.text)
             }
             .store(in: &cancellables)

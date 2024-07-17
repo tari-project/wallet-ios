@@ -74,7 +74,7 @@ final class ContactDetailsModel {
     struct ViewModel {
         let avatarText: String?
         let avatarImage: UIImage?
-        let addressComponents: TariAddressComponents
+        let addressComponents: TariAddressComponents?
         let contactType: ContactsManager.ContactType
     }
 
@@ -218,11 +218,9 @@ final class ContactDetailsModel {
         let avatarImage = model.avatarImage
         let avatarText = avatarImage == nil ? model.avatar : nil
 
-        if let addressComponents = model.internalModel?.addressComponents {
-            self.addressComponents = addressComponents
-            viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, addressComponents: addressComponents, contactType: model.type)
-        }
+        addressComponents = model.internalModel?.addressComponents
 
+        viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, addressComponents: addressComponents, contactType: model.type)
         var mainMenuItems: [MenuItem] = model.menuItems
             .compactMap {
                 switch $0 {
