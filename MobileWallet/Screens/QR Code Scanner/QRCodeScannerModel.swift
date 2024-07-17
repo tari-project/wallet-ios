@@ -48,7 +48,7 @@ enum QRCodeData {
 final class QRCodeScannerModel {
 
     struct ActionModel {
-        let title: String?
+        let title: String
         let isValid: Bool
     }
 
@@ -180,9 +180,13 @@ final class QRCodeScannerModel {
 
     private func handle(unexpectedDeeplink: DeepLinkable, scanResult: VideoCaptureManager.ScanResult) {
         Task {
-            let actionTitle = try? await actionTitle(deeplink: unexpectedDeeplink)
-            actionModel = ActionModel(title: actionTitle, isValid: true)
-            self.scannedData = scanResult
+            do {
+                let actionTitle = try await actionTitle(deeplink: unexpectedDeeplink)
+                actionModel = ActionModel(title: actionTitle, isValid: true)
+                self.scannedData = scanResult
+            } catch {
+                handleInvalidData()
+            }
         }
     }
 
@@ -193,8 +197,8 @@ final class QRCodeScannerModel {
         case .transactionSend:
             guard let deeplink = deeplink as? TransactionsSendDeeplink else { return "" }
             try await transactionFormatter.updateContactsData()
-            // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet
-            let contactName = try transactionFormatter.contact(uniqueIdentifier: deeplink.receiverAddress)?.name ?? TariAddress(base58: deeplink.receiverAddress).emojis.obfuscatedText
+            let address = try TariAddress(base58: deeplink.receiverAddress)
+            let contactName = try transactionFormatter.contact(uniqueIdentifier: address.components.uniqueIdentifier)?.name ?? address.components.fullEmoji.obfuscatedText
             return localized("qr_code_scanner.labels.actions.transaction_send", arguments: contactName)
         case .baseNodesAdd:
             return localized("qr_code_scanner.labels.actions.base_node_add")

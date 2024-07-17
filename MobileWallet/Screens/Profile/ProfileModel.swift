@@ -200,8 +200,8 @@ final class ProfileModel {
 
     private func makeDeeplink() throws -> URL? {
         guard let alias = name else { return nil }
-        let hex = try Tari.shared.walletAddress.byteVector.hex
-        let deeplinkModel = UserProfileDeeplink(alias: alias, tariAddress: hex)
+        let rawAddress = try Tari.shared.walletAddress.components.fullRaw
+        let deeplinkModel = UserProfileDeeplink(alias: alias, tariAddress: rawAddress)
         return try DeepLinkFormatter.deeplink(model: deeplinkModel)
     }
 

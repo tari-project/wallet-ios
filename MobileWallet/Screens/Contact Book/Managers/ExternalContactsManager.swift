@@ -143,7 +143,8 @@ final class ExternalContactsManager {
 
         guard let contact = try fetchContact(uuid: contactID) else { return }
 
-        let urlString = "tari://\(NetworkManager.shared.selectedNetwork.name)/transactions/send?publicKey=\(base58)" // FIXME: Deeplinks doesn't support base58 and TariAddressComponents yet
+        let deeplink = TransactionsSendDeeplink(receiverAddress: base58, amount: nil, note: nil)
+        guard let urlString = try DeepLinkFormatter.deeplink(model: deeplink)?.absoluteString else { return }
 
         var socialProfiles = contact.socialProfiles.filter { $0.value.service != Self.auroraServiceName }
         socialProfiles.append(CNLabeledValue<CNSocialProfile>(label: nil, value: CNSocialProfile(urlString: urlString, username: emojiAddress, userIdentifier: nil, service: Self.auroraServiceName)))
