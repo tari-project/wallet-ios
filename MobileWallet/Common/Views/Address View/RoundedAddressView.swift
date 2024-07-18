@@ -1,10 +1,10 @@
-//  SettingsProfileCell.swift
+//  RoundedAddressView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 15/03/2023
+	Created by Adrian Truszczyński on 18/07/2024
 	Using Swift 5.0
-	Running on macOS 13.0
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,31 +38,26 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class SettingsProfileCell: DynamicThemeCell {
+final class RoundedAddressView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var nameLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.medium.withSize(16.0)
-        return view
-    }()
-
     @View private var addressView = AddressView()
 
-    @View private var arrowView: UIImageView = {
-        let view = UIImageView()
-        view.image = .Icons.General.cellArrow
-        return view
-    }()
+    // MARK: - Properties
+
+    var onViewDetailsButtonTap: (() -> Void)? {
+        get { addressView.onViewDetailsButtonTap }
+        set { addressView.onViewDetailsButtonTap = newValue }
+    }
 
     // MARK: - Initialisers
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init() {
+        super.init()
+        setupViews()
         setupConstraints()
     }
 
@@ -72,34 +67,32 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     // MARK: - Setups
 
+    private func setupViews() {
+        layer.cornerRadius = 10.0
+    }
+
     private func setupConstraints() {
 
-        [nameLabel, addressView, arrowView].forEach(contentView.addSubview)
+        addSubview(addressView)
 
         let constraints = [
-            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 30.0),
-            nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
-            addressView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5.0),
-            addressView.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            addressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30.0),
-            arrowView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
-            arrowView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            addressView.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
+            addressView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.0),
+            addressView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
+            addressView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
 
-    // MARK: Update
+    // MARK: - Updates
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
-        nameLabel.textColor = theme.text.heading
-        arrowView.tintColor = theme.text.heading
     }
 
-    func update(name: String?, addressViewModel: AddressView.ViewModel) {
-        nameLabel.text = name
-        addressView.update(viewModel: addressViewModel)
+    func update(viewModel: AddressView.ViewModel) {
+        addressView.update(viewModel: viewModel)
     }
 }

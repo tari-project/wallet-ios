@@ -375,6 +375,7 @@
 		542585C52A332F32009D12CD /* RotaryMenuOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C42A332F32009D12CD /* RotaryMenuOverlayView.swift */; };
 		542585C82A334697009D12CD /* RotaryMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C72A334697009D12CD /* RotaryMenuView.swift */; };
 		542585CA2A3346C0009D12CD /* RotaryMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C92A3346C0009D12CD /* RotaryMenuButton.swift */; };
+		5425EBC72C4953CA0074B76D /* RoundedAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5425EBC62C4953CA0074B76D /* RoundedAddressView.swift */; };
 		542725662AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */; };
 		542967062C46A43100FA6584 /* ContactsManager+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542967052C46A43100FA6584 /* ContactsManager+Utils.swift */; };
 		542F22B72C33F69E00F07557 /* PopUpAddressDetailsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542F22B62C33F69E00F07557 /* PopUpAddressDetailsContentView.swift */; };
@@ -972,6 +973,7 @@
 		542585C42A332F32009D12CD /* RotaryMenuOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuOverlayView.swift; sourceTree = "<group>"; };
 		542585C72A334697009D12CD /* RotaryMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuView.swift; sourceTree = "<group>"; };
 		542585C92A3346C0009D12CD /* RotaryMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuButton.swift; sourceTree = "<group>"; };
+		5425EBC62C4953CA0074B76D /* RoundedAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedAddressView.swift; sourceTree = "<group>"; };
 		542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libminotari_wallet_ffi_ios.xcframework; path = MobileWallet/Libraries/TariLib/libminotari_wallet_ffi_ios.xcframework; sourceTree = "<group>"; };
 		542967052C46A43100FA6584 /* ContactsManager+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactsManager+Utils.swift"; sourceTree = "<group>"; };
 		542F22B62C33F69E00F07557 /* PopUpAddressDetailsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpAddressDetailsContentView.swift; sourceTree = "<group>"; };
@@ -1838,8 +1840,8 @@
 		3A35413426A738C8002AB5A8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5425EBC52C4953B30074B76D /* Address View */,
 				549B033A2B84DA790059983C /* Secure View */,
-				543537AC2C2E97190005B2B1 /* AddressView.swift */,
 				54DF83C22A4C59380040E3F4 /* AmountBadge.swift */,
 				3AF79D5F2727206200613C24 /* ContactSearchView.swift */,
 				3A35413926A738F5002AB5A8 /* ContentScrollView.swift */,
@@ -2643,6 +2645,15 @@
 				541029032A402D930095F7CB /* RotaryMenuOuterCircleView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		5425EBC52C4953B30074B76D /* Address View */ = {
+			isa = PBXGroup;
+			children = (
+				543537AC2C2E97190005B2B1 /* AddressView.swift */,
+				5425EBC62C4953CA0074B76D /* RoundedAddressView.swift */,
+			);
+			path = "Address View";
 			sourceTree = "<group>";
 		};
 		542F22B52C33F69300F07557 /* PopUpAddressDetailsContentView */ = {
@@ -3651,6 +3662,7 @@
 				3A8473C828EC55F50015E63A /* TariValidationService.swift in Sources */,
 				3AE8850C28378BF20070D1AC /* TariSegmentedControl.swift in Sources */,
 				54D419B72995094100D496B4 /* ContactBookView.swift in Sources */,
+				5425EBC72C4953CA0074B76D /* RoundedAddressView.swift in Sources */,
 				3A87C3B527A94086007A553F /* CoreError.swift in Sources */,
 				542585C82A334697009D12CD /* RotaryMenuView.swift in Sources */,
 				54DF83C32A4C59380040E3F4 /* AmountBadge.swift in Sources */,

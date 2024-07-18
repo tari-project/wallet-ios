@@ -72,8 +72,6 @@ final class ContactDetailsModel {
     }
 
     struct ViewModel {
-        let avatarText: String?
-        let avatarImage: UIImage?
         let addressComponents: TariAddressComponents?
         let contactType: ContactsManager.ContactType
     }
@@ -215,12 +213,9 @@ final class ContactDetailsModel {
 
     private func updateData(model: ContactsManager.Model) {
 
-        let avatarImage = model.avatarImage
-        let avatarText = avatarImage == nil ? model.avatar : nil
-
         addressComponents = model.internalModel?.addressComponents
+        viewModel = ViewModel(addressComponents: addressComponents, contactType: model.type)
 
-        viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, addressComponents: addressComponents, contactType: model.type)
         var mainMenuItems: [MenuItem] = model.menuItems
             .compactMap {
                 switch $0 {

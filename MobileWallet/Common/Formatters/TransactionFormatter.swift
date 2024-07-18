@@ -42,7 +42,6 @@ final class TransactionFormatter {
 
     struct Model: Identifiable {
         var id: UInt64
-        let avatar: RoundedAvatarView.Avatar
         let titleComponents: [StylizedLabel.StylizedText]
         let timestamp: TimeInterval
         let amountModel: AmountBadge.ViewModel
@@ -73,7 +72,6 @@ final class TransactionFormatter {
 
         return try Model(
             id: transaction.identifier,
-            avatar: avatar(transaction: transaction),
             titleComponents: transactionTitleComponents(transaction: transaction, name: contactName),
             timestamp: TimeInterval(transaction.timestamp),
             amountModel: amountViewModel(transaction: transaction),
@@ -85,22 +83,6 @@ final class TransactionFormatter {
 
     func contact(uniqueIdentifier: String) -> ContactsManager.Model? {
         contactsManager.tariContactModels.first { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }
-    }
-
-    private func avatar(transaction: Transaction) throws -> RoundedAvatarView.Avatar {
-
-        guard try !transaction.isOneSidedPayment else {
-            return .text(localized("transaction.one_sided_payment.avatar"))
-        }
-
-        let contact = try contact(transaction: transaction)
-
-        if let image = contact?.avatarImage {
-            return .image(image)
-        }
-
-        let avatar = try contact?.avatar ?? transaction.address.emojis.firstOrEmpty
-        return .text(avatar)
     }
 
     private func contactName(transaction: Transaction) throws -> String {
