@@ -74,7 +74,6 @@
 /* Transaction Data */
 
 "transaction.one_sided_payment.inbound_user_placeholder" = "Someone";
-"transaction.one_sided_payment.avatar" = "➡️";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
 "transaction.coinbase.user_placeholder" = "🪙 Coinbase";

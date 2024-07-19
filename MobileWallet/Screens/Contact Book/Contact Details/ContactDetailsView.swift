@@ -53,8 +53,6 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var avatarView = RoundedAvatarView()
-
     @View private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(17.0)
@@ -62,8 +60,8 @@ final class ContactDetailsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var addressView: AddressView = {
-        let view = AddressView()
+    @View private var addressView: RoundedAddressView = {
+        let view = RoundedAddressView()
         view.isHidden = true
         return view
     }()
@@ -89,11 +87,6 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     var editButtonName: String? {
         didSet { updateEditButton() }
-    }
-
-    var avatar: RoundedAvatarView.Avatar {
-        get { avatarView.avatar }
-        set { avatarView.avatar = newValue }
     }
 
     var name: String? {
@@ -151,14 +144,10 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [avatarView, nameLabel, addressView, yatLabel, yatButton, tableView].forEach(addSubview)
+        [nameLabel, addressView, yatLabel, yatButton, tableView].forEach(addSubview)
 
         let constraints = [
-            avatarView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 21.0),
-            avatarView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: 90.0),
-            avatarView.heightAnchor.constraint(equalToConstant: 90.0),
-            nameLabel.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: 10.0),
+            nameLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 20.0),
             nameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             nameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
             addressView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10.0),

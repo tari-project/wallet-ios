@@ -44,7 +44,6 @@ import TariCommon
 
 final class TxTableViewCell: DynamicThemeCell {
     private let labelsContainer = UIView()
-    @View private var avatarView = RoundedAvatarView()
     private let titleLabel = UILabel()
     private let timeLabel = UILabel()
     private let statusLabel = UILabel()
@@ -88,12 +87,6 @@ final class TxTableViewCell: DynamicThemeCell {
 
         setStatus(model.status)
         self.model = model
-
-        if let avatarImage = model.avatarImage {
-            avatarView.avatar = .image(avatarImage)
-        } else {
-            avatarView.avatar = .text(model.avatarText)
-        }
 
         noteLabel.text = model.message
         titleLabel.attributedText = model.title
@@ -241,23 +234,7 @@ final class TxTableViewCell: DynamicThemeCell {
 extension TxTableViewCell {
     private func viewSetup() {
         selectionStyle = .none
-
-        setupAvatar()
         setupLabels()
-    }
-
-    private func setupAvatar() {
-
-        contentView.addSubview(avatarView)
-
-        let constraints = [
-            avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding),
-            avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding),
-            avatarView.widthAnchor.constraint(equalToConstant: 42.0),
-            avatarView.heightAnchor.constraint(equalToConstant: 42.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupLabels() {
@@ -279,7 +256,7 @@ extension TxTableViewCell {
 
         labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
         labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TxTableViewCell.topCellPadding).isActive = true
-        labelsContainer.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        labelsContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         labelsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
         // MARK: - Value

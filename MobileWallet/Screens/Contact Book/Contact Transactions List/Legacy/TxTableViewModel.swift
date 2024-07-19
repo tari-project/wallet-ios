@@ -52,8 +52,6 @@ class TxTableViewModel: NSObject {
     let id: UInt64
     private(set) var transaction: Transaction
     private(set) var title = NSAttributedString()
-    private(set) var avatarText: String = ""
-    private(set) var avatarImage: UIImage?
     private(set) var message: String
     private(set) var value: Value
 
@@ -127,14 +125,10 @@ class TxTableViewModel: NSObject {
     private func updateTitleAndAvatar() throws {
 
         guard try !transaction.isOneSidedPayment else {
-            avatarText = localized("transaction.one_sided_payment.avatar")
             let alias = localized("transaction.one_sided_payment.inbound_user_placeholder")
             title = attributed(title: localized("tx_list.inbound_pending_title", arguments: alias), withAlias: alias)
             return
         }
-
-        avatarText = contact?.avatar ?? ""
-        avatarImage = contact?.avatarImage
 
         var titleText = ""
         let alias = contact?.name ?? ""
