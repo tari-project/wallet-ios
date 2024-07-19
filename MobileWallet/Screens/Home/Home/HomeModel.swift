@@ -161,13 +161,13 @@ final class HomeModel {
 
     private func updateAvatar() {
 
-        guard let emojis = try? Tari.shared.walletAddress.emojis else {
+        guard let addressComponents = try? Tari.shared.walletAddress.components else {
             avatar = ""
             username = ""
             return
         }
 
-        avatar = emojis.firstOrEmpty
-        username = emojis.obfuscatedText
+        avatar = addressComponents.spendKey.firstOrEmpty
+        username = addressComponents.fullEmoji.obfuscatedText
     }
 }

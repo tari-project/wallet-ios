@@ -92,13 +92,6 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-
-                if let avatarImage = $0.avatarImage {
-                    self?.mainView.avatar = .image(avatarImage)
-                } else {
-                    self?.mainView.avatar = .text($0.avatarText)
-                }
-
                 if let addressComponents = $0.addressComponents {
                     self?.mainView.addressModel = AddressView.ViewModel(
                         prefix: addressComponents.networkAndFeatures,

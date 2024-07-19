@@ -331,6 +331,7 @@
 		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
 		515299BD56554003EF2BD2FD /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0A04F26CF08C60019DAC177 /* Pods_MobileWallet.framework */; };
+		540C3A1F2C748CAE00B0CC97 /* RoundedAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540C3A1E2C748CAE00B0CC97 /* RoundedAddressView.swift */; };
 		540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */; };
 		540CB6F129C1DDCC003FACEF /* AddContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F029C1DDCC003FACEF /* AddContactModel.swift */; };
 		540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F229C1DE26003FACEF /* AddContactViewController.swift */; };
@@ -916,6 +917,7 @@
 		4C2C95C6237962CB005058AB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4CD20A352407967B007B64D8 /* TransportConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportConfig.swift; sourceTree = "<group>"; };
 		4CDEC322273A5E3500999DCB /* Balance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
+		540C3A1E2C748CAE00B0CC97 /* RoundedAddressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedAddressView.swift; sourceTree = "<group>"; };
 		540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsProfileCell.swift; sourceTree = "<group>"; };
 		540CB6F029C1DDCC003FACEF /* AddContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactModel.swift; sourceTree = "<group>"; };
 		540CB6F229C1DE26003FACEF /* AddContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactViewController.swift; sourceTree = "<group>"; };
@@ -1811,8 +1813,8 @@
 		3A35413426A738C8002AB5A8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5425EBC52C4953B30074B76D /* Address View */,
 				549B033A2B84DA790059983C /* Secure View */,
-				543537AC2C2E97190005B2B1 /* AddressView.swift */,
 				54DF83C22A4C59380040E3F4 /* AmountBadge.swift */,
 				3AF79D5F2727206200613C24 /* ContactSearchView.swift */,
 				3A35413926A738F5002AB5A8 /* ContentScrollView.swift */,
@@ -2592,6 +2594,15 @@
 				543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */,
 			);
 			path = "Screen Recoding Settings";
+			sourceTree = "<group>";
+		};
+		5425EBC52C4953B30074B76D /* Address View */ = {
+			isa = PBXGroup;
+			children = (
+				540C3A1E2C748CAE00B0CC97 /* RoundedAddressView.swift */,
+				543537AC2C2E97190005B2B1 /* AddressView.swift */,
+			);
+			path = "Address View";
 			sourceTree = "<group>";
 		};
 		542F22B52C33F69300F07557 /* PopUpAddressDetailsContentView */ = {
@@ -3446,6 +3457,7 @@
 				3A4949A5283FD603002768AE /* AboutViewController.swift in Sources */,
 				5444C80C29F17DB700BF3875 /* BluetoothSettingsConstructor.swift in Sources */,
 				3A983A6027C67C0500F0AB61 /* VerifySeedWordsConstructor.swift in Sources */,
+				540C3A1F2C748CAE00B0CC97 /* RoundedAddressView.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				3A70434128E21D7A00207D6F /* PendingInboundTransaction.swift in Sources */,
 				5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */,

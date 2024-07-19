@@ -60,12 +60,6 @@ final class AddressView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var barBackgroundView: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 10.0
-        return view
-    }()
-
     @View private var stackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 8.0
@@ -128,7 +122,6 @@ final class AddressView: DynamicThemeView {
 
     override init() {
         super.init()
-        setupViews()
         setupConstraints()
     }
 
@@ -138,29 +131,20 @@ final class AddressView: DynamicThemeView {
 
     // MARK: - Setups
 
-    private func setupViews() {
-        layer.cornerRadius = 10.0
-    }
-
     private func setupConstraints() {
 
-        addSubview(barBackgroundView)
-        barBackgroundView.addSubview(stackView)
+        addSubview(stackView)
         [prefixLabel, firstSeparator, addressPrefixLabel, dotsView, addressSuffixLabel, singleLabel, secondSeparator, viewDetailsButton].forEach(stackView.addArrangedSubview)
 
         let constraints = [
-            barBackgroundView.topAnchor.constraint(equalTo: topAnchor),
-            barBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            barBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: barBackgroundView.topAnchor, constant: 10.0),
-            stackView.leadingAnchor.constraint(equalTo: barBackgroundView.leadingAnchor, constant: 10.0),
-            stackView.trailingAnchor.constraint(equalTo: barBackgroundView.trailingAnchor, constant: -10.0),
-            stackView.bottomAnchor.constraint(equalTo: barBackgroundView.bottomAnchor, constant: -10.0),
+            stackView.topAnchor.constraint(equalTo: topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             firstSeparator.widthAnchor.constraint(equalToConstant: 1.0),
             firstSeparator.heightAnchor.constraint(equalToConstant: 14.0),
             secondSeparator.widthAnchor.constraint(equalToConstant: 1.0),
             secondSeparator.heightAnchor.constraint(equalToConstant: 14.0),
-            barBackgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
             viewDetailsButton.heightAnchor.constraint(equalToConstant: 18.0),
             viewDetailsButton.widthAnchor.constraint(equalToConstant: 18.0)
         ]
@@ -172,7 +156,6 @@ final class AddressView: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        barBackgroundView.backgroundColor = theme.backgrounds.primary
         viewDetailsButton.tintColor = theme.icons.active
         firstSeparator.backgroundColor = theme.text.lightText
         secondSeparator.backgroundColor = theme.text.lightText

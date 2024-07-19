@@ -67,7 +67,13 @@ final class ContactBookCell: DynamicThemeCell {
 
     @View private var separatorView = UIView()
     @View private var contectSectionView = UIView()
-    @View private var stackView = UIStackView()
+
+    @View private var stackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 8.0
+        return view
+    }()
+
     @View private var addressView = AddressView()
 
     @View private var favoriteView: UIImageView = {
@@ -144,10 +150,9 @@ final class ContactBookCell: DynamicThemeCell {
             separatorView.centerYAnchor.constraint(equalTo: contectSectionView.centerYAnchor),
             separatorView.widthAnchor.constraint(equalToConstant: 1.0),
             separatorView.heightAnchor.constraint(equalToConstant: 14.0),
-
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24.0),
             stackView.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24.0),
             favoriteView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
             favoriteView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ]

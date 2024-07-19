@@ -322,8 +322,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
             do {
                 let name = UserSettingsManager.name
-                let address = try Tari.shared.walletAddress.emojis.obfuscatedText
-                cell.update(avatar: address.firstOrEmpty, name: name, address: address)
+                let addressComponents = try Tari.shared.walletAddress.components
+                let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix), isDetailsButtonVisible: false)
+                cell.update(name: name, addressViewModel: addressViewModel)
             } catch {
                 let message = ErrorMessageManager.errorModel(forError: error)
                 PopUpPresenter.show(message: message)

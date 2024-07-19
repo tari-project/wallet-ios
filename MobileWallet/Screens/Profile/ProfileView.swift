@@ -52,7 +52,7 @@ final class ProfileView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var addressView = AddressView()
+    @View private var addressView = RoundedAddressView()
     @View var yatButton: BaseButton = BaseButton()
 
     @View private var yatSpinnerView: AnimationView = {

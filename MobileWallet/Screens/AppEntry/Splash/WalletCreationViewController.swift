@@ -69,7 +69,7 @@ final class WalletCreationViewController: DynamicThemeViewController {
     private var animationViewHeightConstraint: NSLayoutConstraint?
     private var animationViewWidthConstraint: NSLayoutConstraint?
 
-    private let addressView = AddressView()
+    private let addressView = RoundedAddressView()
     private let tapToSeeButton = UIButton()
     private let tapToSeeArrow = UIImageView()
     private let tapToSeeButtonContainer = UIView()

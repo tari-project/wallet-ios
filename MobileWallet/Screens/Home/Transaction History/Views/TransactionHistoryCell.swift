@@ -47,7 +47,6 @@ final class TransactionHistoryCell: DynamicThemeCell {
     struct ViewModel: Hashable, Identifiable {
 
         let id: UInt64
-        let avatar: RoundedAvatarView.Avatar
         let title: [StylizedLabel.StylizedText]
         let timestamp: TimeInterval
         let info: String?
@@ -65,8 +64,6 @@ final class TransactionHistoryCell: DynamicThemeCell {
     }
 
     // MARK: - Subviews
-
-    @View private var avatarView = RoundedAvatarView()
 
     @View private var stackView: UIStackView = {
         let view = UIStackView()
@@ -137,15 +134,11 @@ final class TransactionHistoryCell: DynamicThemeCell {
     private func setupConstraints() {
 
         [titleLabel, timestampLabel, infoLabel, noteLabel, loadingGifButton].forEach(stackView.addArrangedSubview)
-        [avatarView, stackView, amountView].forEach(contentView.addSubview)
+        [stackView, amountView].forEach(contentView.addSubview)
 
         let constraints = [
-            avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
-            avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
-            avatarView.widthAnchor.constraint(equalToConstant: 42.0),
-            avatarView.heightAnchor.constraint(equalToConstant: 42.0),
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
-            stackView.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 24.0),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20.0),
             amountView.topAnchor.constraint(equalTo: stackView.topAnchor),
@@ -173,7 +166,7 @@ final class TransactionHistoryCell: DynamicThemeCell {
     }
 
     func update(viewModel: ViewModel) {
-        avatarView.avatar = viewModel.avatar
+
         titleLabel.textComponents = viewModel.title
         infoLabel.text = viewModel.info
         noteLabel.text = viewModel.note
