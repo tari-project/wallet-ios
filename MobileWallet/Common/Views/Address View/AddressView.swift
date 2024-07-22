@@ -98,7 +98,7 @@ final class AddressView: DynamicThemeView {
 
     @View private var viewDetailsButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(.Icons.General.open, for: .normal)
+        view.setImage(.Icons.General.info, for: .normal)
         view.showsMenuAsPrimaryAction = true
         return view
     }()
@@ -145,8 +145,8 @@ final class AddressView: DynamicThemeView {
             firstSeparator.heightAnchor.constraint(equalToConstant: 14.0),
             secondSeparator.widthAnchor.constraint(equalToConstant: 1.0),
             secondSeparator.heightAnchor.constraint(equalToConstant: 14.0),
-            viewDetailsButton.heightAnchor.constraint(equalToConstant: 18.0),
-            viewDetailsButton.widthAnchor.constraint(equalToConstant: 18.0)
+            viewDetailsButton.heightAnchor.constraint(equalToConstant: 22.0),
+            viewDetailsButton.widthAnchor.constraint(equalToConstant: 22.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
