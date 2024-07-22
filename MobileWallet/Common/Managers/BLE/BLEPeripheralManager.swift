@@ -255,7 +255,7 @@ final class BLEPeripheralManager: NSObject {
     // MARK: - Helpers
 
     private func makeUserProfileDeeplinkChunks() -> [Data] {
-        guard let alias = UserSettingsManager.name, let address = try? Tari.shared.walletAddress.byteVector.hex else { return [] }
+        guard let alias = UserSettingsManager.name, let address = try? Tari.shared.walletAddress.components.fullRaw else { return [] }
         let model = UserProfileDeeplink(alias: alias, tariAddress: address)
         guard let url = try? DeepLinkFormatter.deeplink(model: model) else { return [] }
         return url.absoluteString.data(using: .utf8)?.bleDataChunks ?? []

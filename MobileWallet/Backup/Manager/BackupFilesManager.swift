@@ -81,7 +81,7 @@ enum BackupFilesManager {
             .all
             .map { try $0.json }
 
-        let model = PartialBackupModel(source: try Tari.shared.walletAddress.byteVector.hex, utxos: rawUTXOs)
+        let model = PartialBackupModel(source: try Tari.shared.walletAddress.components.fullRaw, utxos: rawUTXOs)
         let data = try jsonEncoder.encode(model)
 
         let fileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
