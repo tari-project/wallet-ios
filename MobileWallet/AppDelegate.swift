@@ -99,7 +99,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let hexString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        Logger.log(message: "Registed for push notifications with token \(hexString).", domain: .general, level: .info)
+        Logger.log(message: "Registered for push notifications with token \(hexString).", domain: .general, level: .info)
         NotificationManager.shared.registerDeviceToken(deviceToken)
     }
 
