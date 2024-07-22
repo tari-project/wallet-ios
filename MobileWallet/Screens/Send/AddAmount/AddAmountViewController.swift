@@ -125,15 +125,6 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @View private var sliderBar: SlideView = {
-        let view = SlideView()
-        view.showSliderText = true
-        view.labelText = localized("add_note.slide_to_send")
-        view.variation = .slide
-        view.alpha = 0.0
-        return view
-    }()
-
     var rawInput = ""
     private var txFeeIsVisible = false
 
@@ -168,7 +159,6 @@ final class AddAmountViewController: DynamicThemeViewController {
         }
 
         setupOneSidedPaymentElements()
-        setupSliderBar()
         setupCallbacks()
     }
 
@@ -495,19 +485,6 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func updateNextStepElements(isEnabled: Bool) {
         continueButton.isEnabled = isEnabled
-        sliderBar.isEnabled = isEnabled
-    }
-
-    private func showTransactionProgress() {
-        guard let paymentInfo = updatedPaymentInfo() else { return }
-        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
-    }
-
-    @objc private func onOneSidedPaymentSwitchAction() {
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState]) {
-            self.continueButton.alpha = self.oneSidedPaymentSwitch.isOn ? 0.0 : 1.0
-            self.sliderBar.alpha = self.oneSidedPaymentSwitch.isOn ? 1.0 : 0.0
-        }
     }
 
     private func updateFeeButtonText(fee: MicroTari?) {
@@ -717,21 +694,6 @@ extension AddAmountViewController {
         oneSidedPaymentHelpButton.onTap = {
             PopUpPresenter.show(message: MessageModel(title: localized("add_amount.pop_up.one_sided_payment.title"), message: localized("add_amount.pop_up.one_sided_payment.description"), type: .normal))
         }
-
-        oneSidedPaymentSwitch.addTarget(self, action: #selector(onOneSidedPaymentSwitchAction), for: .valueChanged)
-    }
-
-    private func setupSliderBar() {
-
-        mainView.addSubview(sliderBar)
-
-        let constraints = [
-            sliderBar.topAnchor.constraint(equalTo: continueButton.topAnchor),
-            sliderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25.0),
-            sliderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupCallbacks() {
@@ -742,10 +704,6 @@ extension AddAmountViewController {
 
         modifyFeeButton.onTap = { [weak self] in
             self?.showModifyFeeDialog()
-        }
-
-        sliderBar.onSlideToEnd = { [weak self] in
-            self?.showTransactionProgress()
         }
 
         addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: paymentInfo.addressComponents)
