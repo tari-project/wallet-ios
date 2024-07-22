@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// FIXME: AddressPoisoningManager doesn't support TariAddressComponents yet
 final class AddressPoisoningManager {
 
     struct SimilarAddressData {
@@ -69,36 +68,38 @@ final class AddressPoisoningManager {
 
         try await contactsManager.fetchModels()
 
-        let emojiID = try address.emojis
+        let spendKey = try address.components.spendKey
         var result: [SimilarAddressData] = []
 
         if includeInputAddress {
             try result.append(inputAddressData(address: address))
         }
 
-        result += try similarContacts(toEmojiID: emojiID)
+        result += try similarContacts(toSpendKey: spendKey)
         return result
     }
 
-    private func similarContacts(toEmojiID emojiID: String) throws -> [SimilarAddressData] {
+    private func similarContacts(toSpendKey spendKey: String) throws -> [SimilarAddressData] {
         try (contactsManager.tariContactModels + contactsManager.externalModels)
             .filter {
                 guard let internalModel = $0.internalModel else { return false }
-                return emojiID.isSimilar(to: internalModel.addressComponents.fullEmoji, minSameCharacters: minSameCharacters, usedPrefixSuffixCharacters: usedPrefixSuffixCharacters)
+                return spendKey.isSimilar(to: internalModel.addressComponents.spendKey, minSameCharacters: minSameCharacters, usedPrefixSuffixCharacters: usedPrefixSuffixCharacters)
             }
             .compactMap { try data(contact: $0) }
     }
 
     private func inputAddressData(address: TariAddress) throws -> SimilarAddressData {
-        let emojiID = try address.components.fullEmoji
-        guard let existingContact = (contactsManager.tariContactModels + contactsManager.externalModels).first(where: { $0.internalModel?.addressComponents.fullEmoji == emojiID }) else {
-            return try data(hex: address.byteVector.hex, emojiID: emojiID)
+        let addressComponents = try address.components
+        let emojiID = addressComponents.fullEmoji
+        let uniqueIdentifier = addressComponents.uniqueIdentifier
+        guard let existingContact = (contactsManager.tariContactModels + contactsManager.externalModels).first(where: { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }) else {
+            return data(address: addressComponents.fullRaw, emojiID: emojiID)
         }
-        return try data(contact: existingContact) ?? data(hex: address.byteVector.hex, emojiID: emojiID)
+        return try data(contact: existingContact) ?? data(address: addressComponents.fullRaw, emojiID: emojiID)
     }
 
-    private func data(hex: String, emojiID: String) -> SimilarAddressData {
-        SimilarAddressData(address: hex, emojiID: emojiID, alias: nil, transactionsCount: 0, lastTransaction: nil)
+    private func data(address: String, emojiID: String) -> SimilarAddressData {
+        SimilarAddressData(address: address, emojiID: emojiID, alias: nil, transactionsCount: 0, lastTransaction: nil)
     }
 
     private func data(contact: ContactsManager.Model) throws -> SimilarAddressData? {
