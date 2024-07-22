@@ -126,7 +126,7 @@ final class WalletTransactionsManager {
                 result(.success)
                 return
             }
-            try startListeningForWalletEvents(transactionID: transactionID, publicKey: tariAddress.publicKey, result: result)
+            try startListeningForWalletEvents(transactionID: transactionID, publicKey: tariAddress.spendKey.byteVector.hex, result: result)
         } catch {
             result(.failure(.transactionError(error: error)))
         }
