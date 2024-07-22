@@ -117,8 +117,9 @@ final class WalletTransactionsManager {
                 toAddress: tariAddress,
                 amount: amount.rawValue,
                 feePerGram: feePerGram.rawValue,
-                message: message,
-                isOneSidedPayment: isOneSidedPayment
+                message: isOneSidedPayment ? "" : message,
+                isOneSidedPayment: isOneSidedPayment,
+                paymentID: isOneSidedPayment ? message : ""
             )
 
             guard !isOneSidedPayment else {
