@@ -214,7 +214,7 @@ final class TokenCollectionView: DynamicThemeView {
         var snapshot = NSDiffableDataSourceSnapshot<Int, SeedWordModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(seedWords)
-        dataSource?.apply(delayedSnapshot: snapshot, animatingDifferences: true) { [weak self] in
+        dataSource?.apply(delayedSnapshot: snapshot, animatingDifferences: false) { [weak self] in
             guard let self = self else { return }
             self.collectionView.scrollToBottom(animated: true)
             self.heightConstraint?.constant = self.collectionView.contentSize.height
