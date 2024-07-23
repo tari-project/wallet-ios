@@ -48,6 +48,11 @@ final class RoundedAddressView: DynamicThemeView {
 
     // MARK: - Properties
 
+    var isCompact: Bool {
+        get { addressView.isCompact }
+        set { addressView.isCompact = newValue }
+    }
+
     var onViewDetailsButtonTap: (() -> Void)? {
         get { addressView.onViewDetailsButtonTap }
         set { addressView.onViewDetailsButtonTap = newValue }
@@ -77,9 +82,10 @@ final class RoundedAddressView: DynamicThemeView {
 
         let constraints = [
             addressView.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
-            addressView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.0),
-            addressView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
-            addressView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
+            addressView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 10.0),
+            addressView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -10.0),
+            addressView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0),
+            addressView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)

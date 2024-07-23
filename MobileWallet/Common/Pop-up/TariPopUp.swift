@@ -75,14 +75,19 @@ final class TariPopUp: DynamicThemeView {
 
     private func setupConstraints(headerSection: UIView?, contentSection: UIView?, buttonsSection: UIView?) {
 
-        addSubview(secureContentView)
+        @View var spacingView = UIView()
+
+        [spacingView, secureContentView].forEach(addSubview)
         secureContentView.view.addSubview(backgroundView)
 
-        let backgroundViewTopConstraint = backgroundView.topAnchor.constraint(equalTo: secureContentView.view.topAnchor)
+        let backgroundViewTopConstraint = backgroundView.topAnchor.constraint(equalTo: spacingView.bottomAnchor)
         self.backgroundViewTopConstraint = backgroundViewTopConstraint
 
         var constraints = [
-            secureContentView.topAnchor.constraint(equalTo: topAnchor),
+            spacingView.topAnchor.constraint(equalTo: topAnchor),
+            spacingView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            spacingView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            secureContentView.topAnchor.constraint(equalTo: spacingView.bottomAnchor),
             secureContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             secureContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             secureContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -130,7 +135,7 @@ final class TariPopUp: DynamicThemeView {
     // MARK: - Helpers
 
     private func makeConstraints(forView view: UIView, viewOnTop: UIView?) -> [NSLayoutConstraint] {
-        let anchor = viewOnTop?.bottomAnchor ?? topAnchor
+        let anchor = viewOnTop?.bottomAnchor ?? secureContentView.view.topAnchor
         var constraints = [
             view.topAnchor.constraint(equalTo: anchor, constant: 22.0),
             view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
