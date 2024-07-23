@@ -494,7 +494,7 @@ extension WalletCreationViewController {
     }
 
     private func setupUserEmojiContainer() {
-        addressView.isCompact = true
+        addressView.isCompact = UIScreen.isSmallScreen
         addressView.alpha = 0.0
         addressView.isHidden = true
         stackView.addArrangedSubview(addressView)

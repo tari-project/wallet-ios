@@ -54,7 +54,7 @@ final class ProfileView: BaseNavigationContentView {
 
     @View private var addressView: RoundedAddressView = {
         let view = RoundedAddressView()
-        view.isCompact = true
+        view.isCompact = UIScreen.isSmallScreen
         return view
     }()
 
