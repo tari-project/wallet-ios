@@ -62,38 +62,22 @@ final class AddressView: DynamicThemeView {
 
     @View private var stackView: UIStackView = {
         let view = UIStackView()
-        view.spacing = 8.0
         view.alignment = .center
         return view
     }()
 
-    @View private var prefixLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.medium.withSize(17.0)
-        return view
-    }()
-
+    @View private var prefixLabel = UILabel()
     @View private var firstSeparator = UIView()
 
-    @View private var addressPrefixLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.medium.withSize(17.0)
-        return view
-    }()
+    @View private var addressPrefixLabel = UILabel()
 
     @View private var dotsView: UILabel = {
         let view = UILabel()
         view.text = "•••"
-        view.font = .Avenir.medium.withSize(17.0)
         return view
     }()
 
-    @View private var addressSuffixLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.medium.withSize(17.0)
-        return view
-    }()
-
+    @View private var addressSuffixLabel = UILabel()
     @View private var secondSeparator = UIView()
 
     @View private var viewDetailsButton: BaseButton = {
@@ -103,15 +87,11 @@ final class AddressView: DynamicThemeView {
         return view
     }()
 
-    @View private var singleLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.medium.withSize(17.0)
-        view.textAlignment = .center
-        view.isHidden = true
-        return view
-    }()
-
     // MARK: - Properties
+
+    var isCompact: Bool = false {
+        didSet { updateViews() }
+    }
 
     var onViewDetailsButtonTap: (() -> Void)? {
         get { viewDetailsButton.onTap }
@@ -123,6 +103,7 @@ final class AddressView: DynamicThemeView {
     override init() {
         super.init()
         setupConstraints()
+        updateViews()
     }
 
     required init?(coder: NSCoder) {
@@ -134,7 +115,7 @@ final class AddressView: DynamicThemeView {
     private func setupConstraints() {
 
         addSubview(stackView)
-        [prefixLabel, firstSeparator, addressPrefixLabel, dotsView, addressSuffixLabel, singleLabel, secondSeparator, viewDetailsButton].forEach(stackView.addArrangedSubview)
+        [prefixLabel, firstSeparator, addressPrefixLabel, dotsView, addressSuffixLabel, secondSeparator, viewDetailsButton].forEach(stackView.addArrangedSubview)
 
         let constraints = [
             stackView.topAnchor.constraint(equalTo: topAnchor),
@@ -177,16 +158,25 @@ final class AddressView: DynamicThemeView {
             addressPrefixLabel.isHidden = false
             dotsView.isHidden = false
             addressSuffixLabel.isHidden = false
-            singleLabel.isHidden = true
         case let .single(text):
-            singleLabel.text = text
             addressPrefixLabel.isHidden = true
             dotsView.isHidden = true
             addressSuffixLabel.isHidden = true
-            singleLabel.isHidden = false
         }
 
         viewDetailsButton.isHidden = !viewModel.isDetailsButtonVisible
         secondSeparator.isHidden = !viewModel.isDetailsButtonVisible
+    }
+
+    private func updateViews() {
+
+        let fontSize = isCompact ? 13.0 : 17.0
+
+        prefixLabel.font = .Avenir.medium.withSize(fontSize)
+        addressPrefixLabel.font = .Avenir.medium.withSize(fontSize)
+        dotsView.font = .Avenir.medium.withSize(fontSize)
+        addressSuffixLabel.font = .Avenir.medium.withSize(fontSize)
+
+        stackView.spacing = isCompact ? 4.0 : 8.0
     }
 }

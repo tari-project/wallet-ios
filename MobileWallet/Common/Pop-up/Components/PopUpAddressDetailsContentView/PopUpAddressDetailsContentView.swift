@@ -54,6 +54,12 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
+    @View private var scrollView: ContentScrollView = {
+        let view = ContentScrollView()
+        view.alwaysBounceVertical = false
+        return view
+    }()
+
     @View private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
@@ -142,15 +148,23 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
 
     private func setupConstraints() {
 
-        addSubview(stackView)
-        [networkSection, featuresSection, viewKeySection, coreAddressSection, checksumSection, buttonsSectionStackView].forEach(stackView.addArrangedSubview)
+        [scrollView, buttonsSectionStackView].forEach(addSubview)
+        scrollView.contentView.addSubview(stackView)
+        [networkSection, featuresSection, viewKeySection, coreAddressSection, checksumSection].forEach(stackView.addArrangedSubview)
         [copyRawAddressButton, copyEmojiAddressButton].forEach(buttonsSectionStackView.addArrangedSubview)
 
         let constraints = [
-            stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            buttonsSectionStackView.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 20.0),
+            buttonsSectionStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            buttonsSectionStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            buttonsSectionStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            stackView.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: scrollView.contentView.bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
