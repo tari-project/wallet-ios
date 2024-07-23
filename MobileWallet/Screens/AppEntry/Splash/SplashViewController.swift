@@ -87,7 +87,7 @@ final class SplashViewController: UIViewController {
         model.$status
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(status: $0) }
+            .sink { [weak self] in self?.handle(statusModel: $0) }
             .store(in: &cancellables)
 
         model.$networkName
@@ -179,6 +179,20 @@ final class SplashViewController: UIViewController {
     }
 
     // MARK: - Helpers
+
+    private func handle(statusModel: SplashViewModel.StatusModel) {
+        if #available(iOS 16.0, *) {
+            handle(status: statusModel)
+        } else {
+            handleLegacy(status: statusModel)
+        }
+    }
+
+    private func handleLegacy(status: SplashViewModel.StatusModel) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.handle(status: status)
+        }
+    }
 
     private func handle(status: SplashViewModel.StatusModel) {
 

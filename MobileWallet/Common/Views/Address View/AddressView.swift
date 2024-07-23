@@ -87,6 +87,14 @@ final class AddressView: DynamicThemeView {
         return view
     }()
 
+    @View private var singleLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(17.0)
+        view.textAlignment = .center
+        view.isHidden = true
+        return view
+    }()
+
     // MARK: - Properties
 
     var isCompact: Bool = false {
@@ -115,7 +123,7 @@ final class AddressView: DynamicThemeView {
     private func setupConstraints() {
 
         addSubview(stackView)
-        [prefixLabel, firstSeparator, addressPrefixLabel, dotsView, addressSuffixLabel, secondSeparator, viewDetailsButton].forEach(stackView.addArrangedSubview)
+        [prefixLabel, firstSeparator, addressPrefixLabel, dotsView, addressSuffixLabel, singleLabel, secondSeparator, viewDetailsButton].forEach(stackView.addArrangedSubview)
 
         let constraints = [
             stackView.topAnchor.constraint(equalTo: topAnchor),
@@ -158,10 +166,13 @@ final class AddressView: DynamicThemeView {
             addressPrefixLabel.isHidden = false
             dotsView.isHidden = false
             addressSuffixLabel.isHidden = false
+            singleLabel.isHidden = true
         case let .single(text):
+            singleLabel.text = text
             addressPrefixLabel.isHidden = true
             dotsView.isHidden = true
             addressSuffixLabel.isHidden = true
+            singleLabel.isHidden = false
         }
 
         viewDetailsButton.isHidden = !viewModel.isDetailsButtonVisible
@@ -176,6 +187,7 @@ final class AddressView: DynamicThemeView {
         addressPrefixLabel.font = .Avenir.medium.withSize(fontSize)
         dotsView.font = .Avenir.medium.withSize(fontSize)
         addressSuffixLabel.font = .Avenir.medium.withSize(fontSize)
+        singleLabel.font = .Avenir.medium.withSize(fontSize)
 
         stackView.spacing = isCompact ? 4.0 : 8.0
     }
