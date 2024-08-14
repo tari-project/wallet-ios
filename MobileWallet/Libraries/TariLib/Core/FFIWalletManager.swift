@@ -55,6 +55,8 @@ final class FFIWalletManager {
     // MARK: - Properties
 
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
+    @Published private(set) var scannedHeight: UInt64 = 0
+
     @Published private(set) var isWalletConnected: Bool = false {
         didSet { Logger.log(message: "isWalletConnected: \(isWalletConnected)", domain: .general, level: .info) }
     }
@@ -81,8 +83,13 @@ final class FFIWalletManager {
     // MARK: - Setups
 
     private func setupCallbacks() {
+
         WalletCallbacksManager.shared.baseNodeConnectionStatus
             .assign(to: \.baseNodeConnectionStatus, on: self)
+            .store(in: &cancelables)
+
+        WalletCallbacksManager.shared.walletScannedHeight
+            .assign(to: \.scannedHeight, on: self)
             .store(in: &cancelables)
     }
 

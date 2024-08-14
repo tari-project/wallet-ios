@@ -119,6 +119,10 @@ final class Wallet {
             WalletCallbacksManager.shared.post(name: .baseNodeConnectionStatusUpdate, object: status)
         }
 
+        let walletScannedHeightCallback: (@convention(c) (UInt64) -> Void) = {
+            WalletCallbacksManager.shared.post(name: .walletScannedHeight, object: $0)
+        }
+
         let baseNodeStateCallback: (@convention(c) (OpaquePointer?) -> Void) = { pointer in
             WalletCallbacksManager.shared.post(name: .baseNodeStateUpdate, object: pointer)
         }
@@ -158,6 +162,7 @@ final class Wallet {
             trasactionValidationCompleteCallback,
             storedMessagesReceivedCallback,
             connectivityStatusCallback,
+            walletScannedHeightCallback,
             baseNodeStateCallback,
             isRecoveryInProgressPointer,
             errorCodePointer

@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class PopUpNetworkStatusContentView: UIView {
+final class PopUpNetworkStatusContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -91,10 +91,19 @@ final class PopUpNetworkStatusContentView: UIView {
         return view
     }()
 
+    @View private var chainTipLabel: StylizedLabel = {
+        let view = StylizedLabel()
+        view.normalFont = .Avenir.medium.withSize(14.0)
+        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.separator = " "
+        view.textAlignment = .center
+        return view
+    }()
+
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
 
@@ -106,7 +115,7 @@ final class PopUpNetworkStatusContentView: UIView {
 
     private func setupConstraints() {
 
-        addSubview(columnStackView)
+        [columnStackView, chainTipLabel].forEach(addSubview)
         [topRowStackView, bottomRowStackView].forEach(columnStackView.addArrangedSubview)
         [networkStatusView, torStatusView].forEach(topRowStackView.addArrangedSubview)
         [baseNodeConnectionStatusView, baseNodeSyncStatusView].forEach(bottomRowStackView.addArrangedSubview)
@@ -115,14 +124,22 @@ final class PopUpNetworkStatusContentView: UIView {
             columnStackView.topAnchor.constraint(equalTo: topAnchor),
             columnStackView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
             columnStackView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
-            columnStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            columnStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
+            columnStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            chainTipLabel.topAnchor.constraint(equalTo: columnStackView.bottomAnchor, constant: 20.0),
+            chainTipLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            chainTipLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            chainTipLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
 
     // MARK: - Updates
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        chainTipLabel.textColor = theme.text.body
+    }
 
     func updateNetworkStatus(text: String, status: StatusView.Status) {
         networkStatusView.update(text: text, status: status)
@@ -138,6 +155,13 @@ final class PopUpNetworkStatusContentView: UIView {
 
     func updateBaseNodeSyncStatus(text: String, status: StatusView.Status) {
         baseNodeSyncStatusView.update(text: text, status: status)
+    }
+
+    func update(chainTipSuffix: String) {
+        chainTipLabel.textComponents = [
+            StylizedLabel.StylizedText(text: localized("connection_status.popUp.label.chain_tip.prefix"), style: .bold),
+            StylizedLabel.StylizedText(text: chainTipSuffix, style: .normal)
+        ]
     }
 }
 
