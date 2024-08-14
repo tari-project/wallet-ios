@@ -50,6 +50,8 @@ final class ConnectionMonitor {
     @Published private(set) var torBootstrapProgress: Int = 0
     @Published private(set) var isTorBootstrapCompleted: Bool = false
     @Published private(set) var baseNodeConnection: BaseNodeConnectivityStatus = .offline
+    @Published private(set) var walletScannedHeight: UInt64 = 0
+    @Published private(set) var chainTip: UInt64 = 0
     @Published private(set) var syncStatus: TariValidationService.SyncStatus = .idle
 
     private let networkMonitor = NetworkMonitor()
@@ -57,8 +59,8 @@ final class ConnectionMonitor {
 
     // MARK: - Setups
 
-    func setupPublishers(torConnectionStatus: AnyPublisher<TorConnectionStatus, Never>, torBootstrapProgress: AnyPublisher<Int, Never>,
-                         baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never>, baseNodeSyncStatus: AnyPublisher<TariValidationService.SyncStatus, Never>) {
+    func setupPublishers(torConnectionStatus: AnyPublisher<TorConnectionStatus, Never>, torBootstrapProgress: AnyPublisher<Int, Never>, baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never>,
+                         scannedHeight: AnyPublisher<UInt64, Never>, blockHeight: AnyPublisher<UInt64, Never>, baseNodeSyncStatus: AnyPublisher<TariValidationService.SyncStatus, Never>) {
 
         networkMonitor.$status
             .assign(to: \.networkConnection, on: self)
@@ -79,6 +81,14 @@ final class ConnectionMonitor {
 
         baseNodeConnectionStatus
             .assign(to: \.baseNodeConnection, on: self)
+            .store(in: &cancellables)
+
+        scannedHeight
+            .assign(to: \.walletScannedHeight, on: self)
+            .store(in: &cancellables)
+
+        blockHeight
+            .assign(to: \.chainTip, on: self)
             .store(in: &cancellables)
 
         baseNodeSyncStatus
@@ -212,6 +222,15 @@ extension ConnectionMonitor {
         $baseNodeConnection
             .receive(on: DispatchQueue.main)
             .sink { [weak contentSection] in contentSection?.updateBaseNodeConnectionStatus(text: $0.statusName, status: $0.status) }
+            .store(in: &cancellables)
+
+        Publishers.CombineLatest3($walletScannedHeight, $chainTip, $baseNodeConnection)
+            .receive(on: DispatchQueue.main)
+            .map {
+                guard $2 == .online, $0 > 0, $1 > 0 else { return localized("connection_status.popUp.label.chain_tip.waiting_for_connection") }
+                return localized("connection_status.popUp.label.chain_tip.values", arguments: $0, $1)
+            }
+            .sink { [weak contentSection] in contentSection?.update(chainTipSuffix: $0) }
             .store(in: &cancellables)
 
         $syncStatus
