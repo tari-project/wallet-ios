@@ -133,6 +133,8 @@ final class Tari: MainServiceable {
             torConnectionStatus: torManager.$connectionStatus.eraseToAnyPublisher(),
             torBootstrapProgress: torManager.$bootstrapProgress.eraseToAnyPublisher(),
             baseNodeConnectionStatus: walletManager.$baseNodeConnectionStatus.eraseToAnyPublisher(),
+            scannedHeight: walletManager.$scannedHeight.eraseToAnyPublisher(),
+            blockHeight: $blockHeight.eraseToAnyPublisher(),
             baseNodeSyncStatus: validation.$status.eraseToAnyPublisher()
         )
         setupCallbacks()

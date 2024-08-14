@@ -570,6 +570,9 @@
 "connection_status.popUp.label.base_node_sync.pending" = "Syncing with Base Node";
 "connection_status.popUp.label.base_node_sync.success" = "Synced with Base Node";
 "connection_status.popUp.label.base_node_sync.failure" = "Failed sync with Base Node";
+"connection_status.popUp.label.chain_tip.prefix" = "Chain Tip:";
+"connection_status.popUp.label.chain_tip.values" = "#%d (%d)";
+"connection_status.popUp.label.chain_tip.waiting_for_connection" = "Waiting for connection...";
 
 /* Select Network View */
 "select_network.title" = "Select Network";
