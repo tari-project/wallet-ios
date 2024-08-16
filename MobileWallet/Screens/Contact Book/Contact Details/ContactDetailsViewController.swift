@@ -151,10 +151,10 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
             moveToSendTokensScreen(paymentInfo: paymentInfo)
         case let .moveToLinkContactScreen(model):
             moveToLinkContactScreen(model: model)
-        case let .showUnlinkConfirmationDialog(emojiID, name):
-            showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
-        case let .showUnlinkSuccessDialog(emojiID, name):
-            showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+        case let .showUnlinkConfirmationDialog(address, name):
+            showUnlinkConfirmationDialog(address: address, name: name)
+        case let .showUnlinkSuccessDialog(address, name):
+            showUnlinkSuccessDialog(address: address, name: name)
         case let .moveToTransactionsList(model):
             moveToTransactionsList(model: model)
         case .removeContactConfirmation:
@@ -218,14 +218,14 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
         PopUpPresenter.showPopUp(model: model)
     }
 
-    private func showUnlinkConfirmationDialog(emojiID: String, name: String) {
-        PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name) { [weak self] in
+    private func showUnlinkConfirmationDialog(address: String, name: String) {
+        PopUpPresenter.showUnlinkConfirmationDialog(address: address, name: name) { [weak self] in
             self?.model.unlinkContact()
         }
     }
 
-    private func showUnlinkSuccessDialog(emojiID: String, name: String) {
-        PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+    private func showUnlinkSuccessDialog(address: String, name: String) {
+        PopUpPresenter.showUnlinkSuccessDialog(address: address, name: name)
     }
 
     private func endFlow() {

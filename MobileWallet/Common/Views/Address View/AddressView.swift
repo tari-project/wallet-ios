@@ -73,7 +73,7 @@ final class AddressView: DynamicThemeView {
 
     @View private var dotsView: UILabel = {
         let view = UILabel()
-        view.text = "•••"
+        view.text = .dots
         return view
     }()
 

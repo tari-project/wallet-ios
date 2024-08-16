@@ -73,7 +73,7 @@ final class ContactBookModel {
         case sendTokens(paymentInfo: PaymentInfo)
         case link(model: ContactsManager.Model)
         case unlink(model: ContactsManager.Model)
-        case showUnlinkSuccess(emojiID: String, name: String)
+        case showUnlinkSuccess(address: String, name: String)
         case showDetails(model: ContactsManager.Model)
         case showQRDialog
         case shareQR(image: UIImage)
@@ -201,12 +201,12 @@ final class ContactBookModel {
 
     func unlink(contact: ContactsManager.Model) {
 
-        guard let emojiID = contact.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = contact.externalModel?.fullname else { return }
+        guard let address = contact.internalModel?.addressComponents.formattedShortAddress, let name = contact.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: contact)
             fetchContacts()
-            action = .showUnlinkSuccess(emojiID: emojiID, name: name)
+            action = .showUnlinkSuccess(address: address, name: name)
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }

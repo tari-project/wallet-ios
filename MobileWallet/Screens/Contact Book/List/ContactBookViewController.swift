@@ -257,8 +257,8 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
             moveToLinkContactsScreen(model: model)
         case let .unlink(model: model):
             showUnlinkConfirmationDialog(model: model)
-        case let .showUnlinkSuccess(emojiID, name):
-            showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+        case let .showUnlinkSuccess(address, name):
+            showUnlinkSuccessDialog(address: address, name: name)
         case let .showDetails(model):
             moveToContactDetails(model: model)
         case .showQRDialog:
@@ -330,12 +330,12 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
     }
 
     private func showUnlinkConfirmationDialog(model: ContactsManager.Model) {
-        guard let emojiID = model.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = model.externalModel?.fullname else { return }
-        PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name, confirmationCallback: { [weak self] in self?.model.unlink(contact: model) })
+        guard let address = model.internalModel?.addressComponents.formattedShortAddress, let name = model.externalModel?.fullname else { return }
+        PopUpPresenter.showUnlinkConfirmationDialog(address: address, name: name, confirmationCallback: { [weak self] in self?.model.unlink(contact: model) })
     }
 
-    private func showUnlinkSuccessDialog(emojiID: String, name: String) {
-        PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+    private func showUnlinkSuccessDialog(address: String, name: String) {
+        PopUpPresenter.showUnlinkSuccessDialog(address: address, name: name)
     }
 
     private func openAppSettings() {

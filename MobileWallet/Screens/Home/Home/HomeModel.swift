@@ -168,6 +168,6 @@ final class HomeModel {
         }
 
         avatar = addressComponents.spendKey.firstOrEmpty
-        username = addressComponents.fullEmoji.obfuscatedText
+        username = addressComponents.formattedShortAddress
     }
 }

@@ -64,8 +64,8 @@ final class ContactDetailsModel {
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
         case moveToLinkContactScreen(model: ContactsManager.Model)
-        case showUnlinkConfirmationDialog(emojiID: String, name: String)
-        case showUnlinkSuccessDialog(emojiID: String, name: String)
+        case showUnlinkConfirmationDialog(address: String, name: String)
+        case showUnlinkSuccessDialog(address: String, name: String)
         case moveToTransactionsList(model: ContactsManager.Model)
         case removeContactConfirmation
         case endFlow
@@ -178,11 +178,11 @@ final class ContactDetailsModel {
 
     func unlinkContact() {
 
-        guard let emojiID = model.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedShortAddress, let name = model.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: model)
-            action = .showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+            action = .showUnlinkSuccessDialog(address: address, name: name)
             updateData()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
@@ -255,8 +255,8 @@ final class ContactDetailsModel {
     }
 
     private func prepareForUnkinkAction() {
-        guard let emojiID = model.internalModel?.addressComponents.fullEmoji.obfuscatedText, let name = model.externalModel?.fullname else { return }
-        action = .showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
+        guard let address = model.internalModel?.addressComponents.formattedShortAddress, let name = model.externalModel?.fullname else { return }
+        action = .showUnlinkConfirmationDialog(address: address, name: name)
     }
 
     private func openAddress(type: YatRecordTag) {
