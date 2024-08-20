@@ -43,15 +43,6 @@ import Combine
 
 final class ContactBookModel {
 
-    enum MenuItem: UInt {
-        case send
-        case addToFavorites
-        case removeFromFavorites
-        case link
-        case unlink
-        case details
-    }
-
     enum ContentMode {
         case normal
         case shareContacts
@@ -70,16 +61,11 @@ final class ContactBookModel {
     }
 
     enum Action {
-        case sendTokens(paymentInfo: PaymentInfo)
-        case link(model: ContactsManager.Model)
-        case unlink(model: ContactsManager.Model)
-        case showUnlinkSuccess(emojiID: String, name: String)
         case showDetails(model: ContactsManager.Model)
         case showQRDialog
         case shareQR(image: UIImage)
         case shareLink(link: URL)
         case show(dialog: DialogType)
-        case showMenu(model: ContactsManager.Model)
     }
 
     fileprivate enum SectionType: Int {
@@ -166,26 +152,6 @@ final class ContactBookModel {
         }
     }
 
-    func performAction(contactID: UUID, menuItemID: UInt) {
-
-        guard let model = contact(contactID: contactID), let menuItem = MenuItem(rawValue: menuItemID) else { return }
-
-        switch menuItem {
-        case .send:
-            performSendAction(model: model)
-        case .addToFavorites:
-            update(isFavorite: true, contact: model)
-        case .removeFromFavorites:
-            update(isFavorite: false, contact: model)
-        case .link:
-            performLinkAction(model: model)
-        case .unlink:
-            performUnlinkAction(model: model)
-        case .details:
-            performShowDetailsAction(model: model)
-        }
-    }
-
     func toggleSelection(contactID: UUID) {
 
         guard let model = contact(contactID: contactID), model.hasIntrenalModel else { return }
@@ -196,19 +162,6 @@ final class ContactBookModel {
         }
 
         selectedIDs.remove(contactID)
-    }
-
-    func unlink(contact: ContactsManager.Model) {
-
-        guard let emojiID = contact.internalModel?.emojiID.obfuscatedText, let name = contact.externalModel?.fullname else { return }
-
-        do {
-            try contactsManager.unlink(contact: contact)
-            fetchContacts()
-            action = .showUnlinkSuccess(emojiID: emojiID, name: name)
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
     }
 
     func shareSelectedContacts(shareType: ShareType) {
@@ -241,19 +194,10 @@ final class ContactBookModel {
 
     func selectContact(contactID: UUID) {
         guard let model = contact(contactID: contactID) else { return }
-        action = .showMenu(model: model)
+        action = .showDetails(model: model)
     }
 
     // MARK: - Actions
-
-    private func update(isFavorite: Bool, contact: ContactsManager.Model) {
-        do {
-            try contactsManager.update(nameComponents: contact.nameComponents, isFavorite: isFavorite, yat: contact.externalModel?.yat ?? "", contact: contact)
-            fetchContacts()
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
-    }
 
     private func shareQR(deeplink: URL) {
 
@@ -287,27 +231,6 @@ final class ContactBookModel {
                 handle(bleError: error)
             }
         }
-    }
-
-    private func performSendAction(model: ContactsManager.Model) {
-        do {
-            guard let paymentInfo = try model.paymentInfo else { return }
-            action = .sendTokens(paymentInfo: paymentInfo)
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
-    }
-
-    private func performLinkAction(model: ContactsManager.Model) {
-        action = .link(model: model)
-    }
-
-    private func performShowDetailsAction(model: ContactsManager.Model) {
-        action = .showDetails(model: model)
-    }
-
-    private func performUnlinkAction(model: ContactsManager.Model) {
-        action = .unlink(model: model)
     }
 
     // MARK: - Handlers

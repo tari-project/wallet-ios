@@ -67,15 +67,6 @@ enum UserSettingsManager {
         }
     }
 
-    static var rotaryMenuPosition: UserSettings.RotaryMenuPosition {
-        get { userSettings.rotaryMenuPosition }
-        set {
-            var userSettings = userSettings
-            userSettings.rotaryMenuPosition = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
-    }
-
     private static var userSettings: UserSettings {
 
         guard let settings = GroupUserDefaults.userSettings else {
