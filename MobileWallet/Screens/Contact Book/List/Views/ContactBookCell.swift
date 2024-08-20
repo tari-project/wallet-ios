@@ -77,7 +77,7 @@ final class ContactBookCell: DynamicThemeCell {
 
     @View private var favoriteView: UIImageView = {
         let view = UIImageView()
-        view.image = .Icons.Star.filled
+        view.image = .Icons.General.star
         view.contentMode = .scaleAspectFit
         return view
     }()

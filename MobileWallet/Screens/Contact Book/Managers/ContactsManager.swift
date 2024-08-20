@@ -220,29 +220,6 @@ final class ContactsManager {
 
 extension ContactsManager.Model {
 
-    var menuItems: [ContactBookModel.MenuItem] {
-
-        var items: [ContactBookModel.MenuItem] = []
-
-        if hasIntrenalModel {
-            items.append(.send)
-        }
-
-        if isFFIContact, let internalModel {
-            items.append(internalModel.isFavorite ? .removeFromFavorites : .addToFavorites)
-        }
-
-        if hasIntrenalModel, hasExternalModel {
-            items.append(.unlink)
-        } else {
-            items.append(.link)
-        }
-
-        items.append(.details)
-
-        return items
-    }
-
     var paymentInfo: PaymentInfo? {
         get throws {
             guard let internalModel else { return nil }

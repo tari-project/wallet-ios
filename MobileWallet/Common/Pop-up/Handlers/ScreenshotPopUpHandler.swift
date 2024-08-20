@@ -1,5 +1,5 @@
 //  ScreenshotPopUpHandler.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczyński on 24/06/2024

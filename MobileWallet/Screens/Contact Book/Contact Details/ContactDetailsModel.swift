@@ -220,23 +220,21 @@ final class ContactDetailsModel {
 
         viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex, contactType: model.type)
 
-        var mainMenuItems: [MenuItem] = model.menuItems
-            .compactMap {
-                switch $0 {
-                case .send:
-                    return .send
-                case .addToFavorites:
-                     return .addToFavorites
-                case .removeFromFavorites:
-                    return .removeFromFavorites
-                case .link:
-                    return .linkContact
-                case .unlink:
-                    return .unlinkContact
-                case .details:
-                    return nil
-                }
-            }
+        var mainMenuItems: [MenuItem] = []
+
+        if model.hasIntrenalModel {
+            mainMenuItems.append(.send)
+        }
+
+        if model.isFFIContact, let internalModel = model.internalModel {
+            mainMenuItems.append(internalModel.isFavorite ? .removeFromFavorites : .addToFavorites)
+        }
+
+        if model.type == .linked {
+            mainMenuItems.append(.unlinkContact)
+        } else {
+            mainMenuItems.append(.linkContact)
+        }
 
         if model.hasIntrenalModel {
             mainMenuItems.append(.transactionsList)
