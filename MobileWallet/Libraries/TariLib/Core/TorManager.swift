@@ -438,7 +438,7 @@ final class TorManager {
         let configuration = TorConfiguration()
         configuration.cookieAuthentication = true
         configuration.dataDirectory = workingDirectory
-        configuration.arguments = arguments
+        configuration.arguments = NSMutableArray(array: arguments)
 
         return configuration
     }
