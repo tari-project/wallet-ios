@@ -61,6 +61,7 @@ extension TariAddressComponents {
     var spendKeyPrefix: String { String(spendKey.prefix(3)) }
     var spendKeySuffix: String { String(spendKey.suffix(3)) }
     var uniqueIdentifier: String { network + spendKey }
+    var formattedShortAddress: String { networkAndFeatures + " | " + spendKeyPrefix + .dots + spendKeySuffix }
 
     init(address: TariAddress) throws {
 

@@ -100,7 +100,7 @@ final class ContactsManager {
                     .joined()
             } else {
                 alias = internalModel?.alias ?? internalModel?.defaultAlias
-                name = alias ?? internalModel?.addressComponents.fullEmoji.obfuscatedText ?? ""
+                name = alias ?? internalModel?.addressComponents.formattedShortAddress ?? ""
                 nameComponents = [name]
                 avatar = internalModel?.addressComponents.spendKey.firstOrEmpty ?? ""
             }

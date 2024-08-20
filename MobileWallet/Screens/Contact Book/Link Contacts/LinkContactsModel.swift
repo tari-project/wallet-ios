@@ -43,8 +43,8 @@ import Combine
 final class LinkContactsModel {
 
     enum Action {
-        case showConfirmation(emojiID: String, name: String)
-        case showSuccess(emojiID: String, name: String)
+        case showConfirmation(address: String, name: String)
+        case showSuccess(address: String, name: String)
         case moveToAddContact
         case moveToPhoneBook
         case moveToPermissionSettings
@@ -100,7 +100,7 @@ final class LinkContactsModel {
             }
         }
 
-        name = contactModel.internalModel?.addressComponents.fullEmoji.obfuscatedText ?? contactModel.externalModel?.fullname
+        name = contactModel.internalModel?.addressComponents.formattedShortAddress ?? contactModel.externalModel?.fullname
     }
 
     private func updateModels() {
@@ -156,7 +156,7 @@ final class LinkContactsModel {
         unconfirmedInternalModel = internalContact
         unconfirmedExternalModel = externalContact
 
-        action = .showConfirmation(emojiID: internalContact.addressComponents.fullEmoji.obfuscatedText, name: externalContact.fullname)
+        action = .showConfirmation(address: internalContact.addressComponents.formattedShortAddress, name: externalContact.fullname)
     }
 
     func linkContacts() {
@@ -168,7 +168,7 @@ final class LinkContactsModel {
 
         do {
             try contactsManager.link(internalContact: unconfirmedInternalModel, externalContact: unconfirmedExternalModel)
-            action = .showSuccess(emojiID: unconfirmedInternalModel.addressComponents.fullEmoji.obfuscatedText, name: unconfirmedExternalModel.fullname)
+            action = .showSuccess(address: unconfirmedInternalModel.addressComponents.formattedShortAddress, name: unconfirmedExternalModel.fullname)
             cancelLinkContacts()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)

@@ -855,13 +855,13 @@
 "contact_book.link_contacts.placeholder.buttons.add_contact" = "Add a contact";
 "contact_book.link_contacts.placeholder.buttons.permission_settings" = "Go to permission settings";
 "contact_book.link_contacts.popup.confirmation.title" = "Link Contact";
-"contact_book.link_contacts.popup.confirmation.message.part1" = "Click “confirm” below to link %@ to";
+"contact_book.link_contacts.popup.confirmation.message.part1" = "Click “confirm” below to link\n%@\nto";
 "contact_book.link_contacts.popup.success.title" = "Success!";
-"contact_book.link_contacts.popup.success.message.part1" = "You have successfully linked %@ to";
+"contact_book.link_contacts.popup.success.message.part1" = "You have successfully linked\n%@\nto";
 "contact_book.unlink_contact.popup.confirmation.title" = "Unlink Contact";
-"contact_book.unlink_contact.popup.confirmation.message.part1" = "Click “confirm” to unlink %@ from";
+"contact_book.unlink_contact.popup.confirmation.message.part1" = "Click “confirm” to unlink\n%@\nfrom";
 "contact_book.unlink_contact.popup.success.title" = "Success!";
-"contact_book.unlink_contact.popup.success.message.part1" = "You have successfully unlinked %@ from";
+"contact_book.unlink_contact.popup.success.message.part1" = "You have successfully unlinked\n%@\nfrom";
 "contact_book.contact_type.internal" = "Tari Contact";
 "contact_book.contact_type.external" = "External Contact";
 "contact_book.contact_type.linked" = "Linked Contact";

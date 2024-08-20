@@ -118,10 +118,10 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
     private func handle(action: LinkContactsModel.Action) {
 
         switch action {
-        case let .showConfirmation(emojiID, name):
-            showConfirmationDialog(emojiID: emojiID, name: name)
-        case let .showSuccess(emojiID, name):
-            showSuccessDialog(emojiID: emojiID, name: name)
+        case let .showConfirmation(address, name):
+            showConfirmationDialog(address: address, name: name)
+        case let .showSuccess(address, name):
+            showSuccessDialog(address: address, name: name)
         case .moveToAddContact:
             moveToAddContact()
         case .moveToPhoneBook:
@@ -157,14 +157,14 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
 
     // MARK: - Actions
 
-    private func showConfirmationDialog(emojiID: String, name: String) {
+    private func showConfirmationDialog(address: String, name: String) {
 
         let model = PopUpDialogModel(
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.confirmation.title"), style: .normal)
             ],
             messageComponents: [
-                StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.confirmation.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.confirmation.message.part1", arguments: address), style: .normal),
                 StylizedLabel.StylizedText(text: name, style: .bold)
             ],
             buttons: [
@@ -177,14 +177,14 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
         PopUpPresenter.showPopUp(model: model)
     }
 
-    private func showSuccessDialog(emojiID: String, name: String) {
+    private func showSuccessDialog(address: String, name: String) {
 
         let model = PopUpDialogModel(
             titleComponents: [StylizedLabel.StylizedText(
                 text: localized("contact_book.link_contacts.popup.success.title"), style: .normal)
             ],
             messageComponents: [
-                StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.success.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.success.message.part1", arguments: address), style: .normal),
                 StylizedLabel.StylizedText(text: name, style: .bold)
             ],
             buttons: [
