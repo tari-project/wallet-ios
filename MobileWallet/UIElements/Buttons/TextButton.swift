@@ -125,6 +125,9 @@ final class TextButton: DynamicThemeBaseButton {
     }
 
     private func update(state: UIButton.State) {
+
+        guard self.state != state else { return }
+
         if state == .highlighted {
             Task { await animateIn() }
         } else {
