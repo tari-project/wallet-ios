@@ -39,7 +39,6 @@
 */
 
 import LocalAuthentication
-import YatLib
 import Combine
 import TariCommon
 
@@ -259,26 +258,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func onConnectYatAction() {
-
-        let address: String
-
-        do {
-            address = try Tari.shared.walletAddress.byteVector.hex
-        } catch {
-            showNoConnectionError()
-            return
-        }
-
-        Yat.integration.showOnboarding(onViewController: self, records: [
-            YatRecordInput(tag: .XTRAddress, value: address)
-        ])
-    }
-
-    private func showNoConnectionError() {
-        PopUpPresenter.show(message: MessageModel(title: localized("common.error"), message: localized("settings.error.connect_yats_no_connection"), type: .error))
-    }
-
     private func updateItems(syncStatus: BackupManager.BackupSyncState) {
 
         backUpWalletItem.percent = 0.0
@@ -389,8 +368,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 onProfileAction()
-            case 1:
-                onConnectYatAction()
             default:
                 break
             }

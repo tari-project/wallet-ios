@@ -231,8 +231,6 @@
 "settings.item.block_explorer" = "Block Explorer";
 "settings.item.about" = "About";
 
-"settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
-
 /* Splash view */
 "splash.disclaimer.with_params" = "By creating a wallet, you agree to the terms of the %1$@ and %2$@";
 "splash.disclaimer.param.privacy_policy" = "Privacy Policy";
