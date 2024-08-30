@@ -107,7 +107,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         model.$yatAddress
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.showYatOnboardingFlow(publicKey: $0) }
+            .sink { [weak self] in self?.showYatOnboardingFlow(rawAddress: $0) }
             .store(in: &cancellables)
 
         model.$action
@@ -181,9 +181,9 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         PopUpPresenter.show(message: error)
     }
 
-    private func showYatOnboardingFlow(publicKey: String) {
+    private func showYatOnboardingFlow(rawAddress: String) {
         Yat.integration.showOnboarding(onViewController: self, records: [
-            YatRecordInput(tag: .XTRAddress, value: publicKey)
+            YatRecordInput(tag: .XTMAddress, value: rawAddress)
         ])
     }
 

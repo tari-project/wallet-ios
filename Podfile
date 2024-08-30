@@ -15,7 +15,7 @@ target 'MobileWallet' do
   pod 'Zip', '2.1.2'
   pod 'SwiftyDropbox', '8.2.1'
   pod 'Base58Swift', '2.1.10'
-  pod 'YatLib', '0.3.3'
+  pod 'YatLib', '0.4.1'
   pod 'TariCommon', '0.2.0'
 end
 

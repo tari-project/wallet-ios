@@ -67,7 +67,8 @@ final class AddRecipientModel {
 
     @Published private(set) var listSections: [AddRecipientView.Section] = []
     @Published private(set) var action: Action?
-    @Published private(set) var yatID: String?
+    @Published private(set) var isYatFound: Bool = false
+    @Published private(set) var isAddressPreviewAvaiable: Bool = false
     @Published private(set) var walletAddressPreview: String?
     @Published private(set) var canMoveToNextStep: Bool = false
     @Published private(set) var errorMessage: String?
@@ -79,6 +80,7 @@ final class AddRecipientModel {
     private let contactsManager = ContactsManager()
 
     @Published private var address: TariAddress?
+    @Published private var yatID: String?
     @Published private var contactModels: [ContactsManager.Model] = []
 
     private weak var bleTask: BLECentralTask?
@@ -120,6 +122,14 @@ final class AddRecipientModel {
         $address
             .map { $0 != nil }
             .assign(to: \.canMoveToNextStep, on: self)
+            .store(in: &cancellables)
+
+        $yatID
+            .sink { [weak self] in self?.isYatFound = $0 != nil }
+            .store(in: &cancellables)
+
+        Publishers.CombineLatest($yatID, $address)
+            .sink { [weak self] in self?.isAddressPreviewAvaiable = $0 != nil && $1 != nil }
             .store(in: &cancellables)
     }
 
@@ -233,7 +243,7 @@ final class AddRecipientModel {
 
     func toogleYatPreview() {
         let isAddressVisible = walletAddressPreview != nil
-        walletAddressPreview = isAddressVisible ? nil : try? address?.byteVector.hex
+        walletAddressPreview = isAddressVisible ? nil : try? address?.components.fullRaw
     }
 
     func requestContinue() {
@@ -272,7 +282,7 @@ final class AddRecipientModel {
         self.yatID = nil
         guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
 
-        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: yatID, tags: YatRecordTag.XTRAddress.rawValue)
+        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: yatID, tags: YatRecordTag.XTMAddress.rawValue)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] in self?.handle(apiResponse: $0, yatID: yatID) }
@@ -281,7 +291,7 @@ final class AddRecipientModel {
     }
 
     private func handle(apiResponse: PaymentAddressResponse, yatID: String) {
-        guard let walletAddress = apiResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else { return }
+        guard let walletAddress = apiResponse.result?[YatRecordTag.XTMAddress.rawValue]?.address else { return }
         generateAddress(text: walletAddress)
         self.yatID = yatID
     }
@@ -331,19 +341,20 @@ final class AddRecipientModel {
     // MARK: - Helpers
 
     private func generateAddress(text: String) {
-        guard let address = try? makeAddress(text: text), verify(address: address) else {
+
+        guard let address = try? makeAddress(text: text) else {
             address = nil
+            errorMessage = nil
             return
         }
-        self.address = address
+
+        let isValid = verify(address: address)
+        self.address = isValid ? address : nil
     }
 
     private func makeAddress(text: String) throws -> TariAddress {
-
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        do { return try TariAddress(emojiID: trimmedText) } catch {}
-        return try TariAddress(base58: trimmedText)
+        return try TariAddress.makeTariAddress(input: trimmedText)
     }
 
     private func verify(address: TariAddress) -> Bool {

@@ -118,7 +118,7 @@ final class ProfileModel {
     }
 
     func reconnectYat() {
-        yatAddress = try? walletAddress?.byteVector.hex
+        yatAddress = try? walletAddress?.components.fullRaw
     }
 
     private func updateData() {
@@ -141,7 +141,7 @@ final class ProfileModel {
 
         yatButtonState = .loading
 
-        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: connectedYat, tags: YatRecordTag.XTRAddress.rawValue)
+        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: connectedYat, tags: YatRecordTag.XTMAddress.rawValue)
             .sink(
                 receiveCompletion: { [weak self] in self?.handle(completion: $0) },
                 receiveValue: { [weak self] in self?.handle(paymentAddressResponse: $0, yat: connectedYat) }
@@ -217,12 +217,12 @@ final class ProfileModel {
         self.yat = yat
         yatButtonState = .off
 
-        guard let walletAddress = paymentAddressResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else {
+        guard let walletAddress = paymentAddressResponse.result?[YatRecordTag.XTMAddress.rawValue]?.address else {
             isYatOutOfSync = true
             return
         }
 
-        isYatOutOfSync = walletAddress != (try? self.walletAddress?.byteVector.hex)
+        isYatOutOfSync = walletAddress != (try? self.walletAddress?.components.fullRaw)
     }
 
     private func handle(completion: Subscribers.Completion<APIError>) {

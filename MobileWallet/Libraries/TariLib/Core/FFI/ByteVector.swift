@@ -92,7 +92,6 @@ final class ByteVector {
 
 extension ByteVector {
 
-    @available(*, deprecated, message: "Obsolette, use TariAddress.base58 instead")
     var hex: String {
         get throws {
             try bytes
