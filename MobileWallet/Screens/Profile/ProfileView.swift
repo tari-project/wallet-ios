@@ -58,6 +58,12 @@ final class ProfileView: BaseNavigationContentView {
         return view
     }()
 
+    @View private var yatView: RoundedAddressView = {
+        let view = RoundedAddressView()
+        view.isCompact = UIScreen.isSmallScreen
+        return view
+    }()
+
     @View var yatButton: BaseButton = BaseButton()
 
     @View private var yatSpinnerView: AnimationView = {
@@ -219,7 +225,8 @@ final class ProfileView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [usernameLabel, addressView, yatButton, yatSpinnerView, yatOutOfSyncLabel, shareSectionSeparator, shareSectionTitleLabel, shareSectionDescriptionLabel, auroraButtonsStackView, shareButtonsStackView].forEach(addSubview)
+        [usernameLabel, addressView, yatView, yatButton, yatSpinnerView, yatOutOfSyncLabel, shareSectionSeparator, shareSectionTitleLabel, shareSectionDescriptionLabel, auroraButtonsStackView, shareButtonsStackView]
+            .forEach(addSubview)
         [walletButton, connectYatButton].forEach(auroraButtonsStackView.addArrangedSubview)
         [qrCodeButton, linkCodeButton, bleCodeButton].forEach(shareButtonsStackView.addArrangedSubview)
 
@@ -232,8 +239,11 @@ final class ProfileView: BaseNavigationContentView {
             usernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             usernameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
             addressView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 20.0),
-            addressView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 45.0),
-            addressView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -45.0),
+            addressView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            yatView.topAnchor.constraint(equalTo: addressView.topAnchor),
+            yatView.leadingAnchor.constraint(equalTo: addressView.leadingAnchor),
+            yatView.trailingAnchor.constraint(equalTo: addressView.trailingAnchor),
+            yatView.bottomAnchor.constraint(equalTo: addressView.bottomAnchor),
             yatButton.leadingAnchor.constraint(equalTo: addressView.trailingAnchor, constant: 4.0),
             yatButton.centerYAnchor.constraint(equalTo: addressView.centerYAnchor),
             yatButton.heightAnchor.constraint(equalToConstant: 32.0),
@@ -324,8 +334,16 @@ final class ProfileView: BaseNavigationContentView {
         }
     }
 
-    func update(addressViewModel: AddressView.ViewModel) {
-        addressView.update(viewModel: addressViewModel)
+    func update(addressViewModel: AddressView.ViewModel, isTariAddress: Bool) {
+        if isTariAddress {
+            addressView.update(viewModel: addressViewModel)
+            addressView.isHidden = false
+            yatView.isHidden = true
+        } else {
+            yatView.update(viewModel: addressViewModel)
+            addressView.isHidden = true
+            yatView.isHidden = false
+        }
     }
 
     private func updateYatButton(isOn: Bool) {
