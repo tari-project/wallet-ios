@@ -53,8 +53,6 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var avatarView = RoundedAvatarView()
-
     @View private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(17.0)
@@ -62,8 +60,8 @@ final class ContactDetailsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var emojiIdView: EmojiIdView = {
-        let view = EmojiIdView()
+    @View private var addressView: RoundedAddressView = {
+        let view = RoundedAddressView()
         view.isHidden = true
         return view
     }()
@@ -91,18 +89,13 @@ final class ContactDetailsView: BaseNavigationContentView {
         didSet { updateEditButton() }
     }
 
-    var avatar: RoundedAvatarView.Avatar {
-        get { avatarView.avatar }
-        set { avatarView.avatar = newValue }
-    }
-
     var name: String? {
         get { nameLabel.text }
         set { nameLabel.text = newValue }
     }
 
-    var emojiModel: EmojiIdView.ViewModel? {
-        didSet { updateEmojiView() }
+    var addressModel: AddressView.ViewModel? {
+        didSet { updateAddressView() }
     }
 
     var yat: String? {
@@ -116,6 +109,11 @@ final class ContactDetailsView: BaseNavigationContentView {
     var onSelectRow: ((UInt) -> Void)? {
         get { tableView.onSelectRow }
         set { tableView.onSelectRow = newValue }
+    }
+
+    var onViewAddressDetailsButtonTap: (() -> Void)? {
+        get { addressView.onViewDetailsButtonTap }
+        set { addressView.onViewDetailsButtonTap = newValue }
     }
 
     var onEditButtonTap: (() -> Void)?
@@ -146,28 +144,22 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [avatarView, nameLabel, emojiIdView, yatLabel, yatButton, tableView].forEach(addSubview)
+        [nameLabel, addressView, yatLabel, yatButton, tableView].forEach(addSubview)
 
         let constraints = [
-            avatarView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 21.0),
-            avatarView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: 90.0),
-            avatarView.heightAnchor.constraint(equalToConstant: 90.0),
-            nameLabel.topAnchor.constraint(equalTo: avatarView.bottomAnchor, constant: 10.0),
+            nameLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 20.0),
             nameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             nameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            emojiIdView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10.0),
-            emojiIdView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            emojiIdView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            emojiIdView.heightAnchor.constraint(equalToConstant: 38.0),
-            yatLabel.leadingAnchor.constraint(equalTo: emojiIdView.leadingAnchor),
-            yatLabel.trailingAnchor.constraint(equalTo: emojiIdView.trailingAnchor),
-            yatLabel.centerYAnchor.constraint(equalTo: emojiIdView.centerYAnchor),
+            addressView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 10.0),
+            addressView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            yatLabel.leadingAnchor.constraint(equalTo: addressView.leadingAnchor),
+            yatLabel.trailingAnchor.constraint(equalTo: addressView.trailingAnchor),
+            yatLabel.centerYAnchor.constraint(equalTo: addressView.centerYAnchor),
             yatButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            yatButton.centerYAnchor.constraint(equalTo: emojiIdView.centerYAnchor),
+            yatButton.centerYAnchor.constraint(equalTo: addressView.centerYAnchor),
             yatButton.widthAnchor.constraint(equalToConstant: 24.0),
             yatButton.heightAnchor.constraint(equalToConstant: 24.0),
-            tableView.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20.0),
+            tableView.topAnchor.constraint(equalTo: addressView.bottomAnchor, constant: 20.0),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
@@ -204,10 +196,10 @@ final class ContactDetailsView: BaseNavigationContentView {
         navigationBar.update(rightButton: NavigationBar.ButtonModel(title: editButtonName, callback: { [weak self] in self?.onEditButtonTap?() }))
     }
 
-    private func updateEmojiView() {
+    private func updateAddressView() {
         updateIDElementsState()
-        guard let emojiModel else { return }
-        emojiIdView.update(viewModel: emojiModel)
+        guard let addressModel else { return }
+        addressView.update(viewModel: addressModel)
     }
 
     private func updateYatView() {
@@ -216,10 +208,12 @@ final class ContactDetailsView: BaseNavigationContentView {
     }
 
     private func updateIDElementsState() {
-        let isEmojiIdAAvailable = emojiModel?.emojiID != nil && emojiModel?.emojiID.isEmpty == false
+
+        let isAddressAvailable = addressModel != nil
+
         let isYatAvailable = yat != nil && yat?.isEmpty == false
 
-        switch (isEmojiIdAAvailable, isYatAvailable) {
+        switch (isAddressAvailable, isYatAvailable) {
         case (true, true):
             idElementsState = .yatHidden
         case (true, false):
@@ -237,26 +231,26 @@ final class ContactDetailsView: BaseNavigationContentView {
 
         switch idElementsState {
         case .allHidden:
-            emojiIdView.isHidden = true
+            addressView.isHidden = true
             yatLabel.isHidden = true
             yatButton.isHidden = true
         case .emojiOnly:
-            emojiIdView.isHidden = false
+            addressView.isHidden = false
             yatLabel.isHidden = true
             yatButton.isHidden = true
         case .yatOnly:
-            emojiIdView.isHidden = true
+            addressView.isHidden = true
             yatLabel.isHidden = false
             yatButton.isHidden = false
             yatButton.isEnabled = false
         case .yatHidden:
-            emojiIdView.isHidden = false
+            addressView.isHidden = false
             yatLabel.isHidden = true
             yatButton.isHidden = false
             yatButton.isEnabled = true
             yatButton.setImage(.Icons.Yat.buttonOn, for: .normal)
         case .yatVisible:
-            emojiIdView.isHidden = true
+            addressView.isHidden = true
             yatLabel.isHidden = false
             yatButton.isHidden = false
             yatButton.isEnabled = true

@@ -52,7 +52,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
     @View private var navigationBar = NavigationBar()
-    @View private var emojiIdView = EmojiIdView()
+    @View private var addressView = AddressView()
     fileprivate let scrollView = UIScrollView()
     fileprivate let stackView = UIStackView()
     fileprivate let sendButton = SlideView()
@@ -145,21 +145,22 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         var alias: String?
 
         do {
-            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias
+            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias
         } catch {
         }
 
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
-            do {
-                let tariAddress = try TariAddress(hex: paymentInfo.address)
-                emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
-            } catch {
-                PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
-            }
+            let addressComponents = paymentInfo.addressComponents
+            addressView.update(
+                viewModel: AddressView.ViewModel(
+                    prefix: addressComponents.networkAndFeatures,
+                    text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                    isDetailsButtonVisible: true)
+            )
             return
         }
 
-        navigationBar.title = alias
+        addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))
     }
 
     func updateTitleColorAndSetSendButtonState() {
@@ -270,7 +271,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             message += " \(embedUrl)"
         }
 
-        let paymentInfo = PaymentInfo(address: paymentInfo.address, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: message)
+        let paymentInfo = PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: message)
         TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: isOneSidedPayment)
     }
 
@@ -297,7 +298,7 @@ extension AddNoteViewController {
     private func setupNavigationBar() {
 
         mainView.addSubview(navigationBar)
-        navigationBar.addSubview(emojiIdView)
+        navigationBar.addSubview(addressView)
 
         navigationBar.isSeparatorVisible = false
 
@@ -305,11 +306,13 @@ extension AddNoteViewController {
             navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emojiIdView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor),
-            emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor)
+            addressView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor),
+            addressView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
+
+        addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: paymentInfo.addressComponents)
     }
 
     fileprivate func setupNoteTitle() {

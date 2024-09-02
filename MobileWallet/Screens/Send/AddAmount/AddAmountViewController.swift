@@ -47,7 +47,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     private let paymentInfo: PaymentInfo
 
     private let navigationBar = NavigationBar()
-    @View private var emojiIdView = EmojiIdView()
+    @View private var addressView = AddressView()
     private let continueButton = ActionButton()
     private let amountLabel = AnimatedBalanceLabel()
     private let warningView = UIView()
@@ -125,15 +125,6 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @View private var sliderBar: SlideView = {
-        let view = SlideView()
-        view.showSliderText = true
-        view.labelText = localized("add_note.slide_to_send")
-        view.variation = .slide
-        view.alpha = 0.0
-        return view
-    }()
-
     var rawInput = ""
     private var txFeeIsVisible = false
 
@@ -168,7 +159,6 @@ final class AddAmountViewController: DynamicThemeViewController {
         }
 
         setupOneSidedPaymentElements()
-        setupSliderBar()
         setupCallbacks()
     }
 
@@ -180,13 +170,12 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-
-            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias else {
-                let tariAddress = try TariAddress(hex: paymentInfo.address)
-                emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
+            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias else {
+                let addressComponents = paymentInfo.addressComponents
+                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix), isDetailsButtonVisible: true))
                 return
             }
-            navigationBar.title = alias
+            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
         }
@@ -491,24 +480,11 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func updatedPaymentInfo() -> PaymentInfo? {
         guard let amount = calculateAmount(), let feePerGram = feePerGram else { return nil }
-        return PaymentInfo(address: paymentInfo.address, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
+        return PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
     }
 
     private func updateNextStepElements(isEnabled: Bool) {
         continueButton.isEnabled = isEnabled
-        sliderBar.isEnabled = isEnabled
-    }
-
-    private func showTransactionProgress() {
-        guard let paymentInfo = updatedPaymentInfo() else { return }
-        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
-    }
-
-    @objc private func onOneSidedPaymentSwitchAction() {
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState]) {
-            self.continueButton.alpha = self.oneSidedPaymentSwitch.isOn ? 0.0 : 1.0
-            self.sliderBar.alpha = self.oneSidedPaymentSwitch.isOn ? 1.0 : 0.0
-        }
     }
 
     private func updateFeeButtonText(fee: MicroTari?) {
@@ -535,10 +511,10 @@ extension AddAmountViewController {
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
-        navigationBar.addSubview(emojiIdView)
-
-        emojiIdView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor).isActive = true
-        emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor).isActive = true
+        navigationBar.addSubview(addressView)
+        
+        addressView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor).isActive = true
+        addressView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor).isActive = true
 
         // contiue button
         mainView.addSubview(continueButton)
@@ -718,21 +694,6 @@ extension AddAmountViewController {
         oneSidedPaymentHelpButton.onTap = {
             PopUpPresenter.show(message: MessageModel(title: localized("add_amount.pop_up.one_sided_payment.title"), message: localized("add_amount.pop_up.one_sided_payment.description"), type: .normal))
         }
-
-        oneSidedPaymentSwitch.addTarget(self, action: #selector(onOneSidedPaymentSwitchAction), for: .valueChanged)
-    }
-
-    private func setupSliderBar() {
-
-        mainView.addSubview(sliderBar)
-
-        let constraints = [
-            sliderBar.topAnchor.constraint(equalTo: continueButton.topAnchor),
-            sliderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25.0),
-            sliderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupCallbacks() {
@@ -745,9 +706,7 @@ extension AddAmountViewController {
             self?.showModifyFeeDialog()
         }
 
-        sliderBar.onSlideToEnd = { [weak self] in
-            self?.showTransactionProgress()
-        }
+        addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: paymentInfo.addressComponents)
 
         $fee
             .receive(on: DispatchQueue.main)

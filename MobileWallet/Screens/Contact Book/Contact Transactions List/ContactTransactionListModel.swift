@@ -68,11 +68,7 @@ final class ContactTransactionListModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
-        let transactions = Publishers.CombineLatest4(Tari.shared.transactions.$pendingInbound, Tari.shared.transactions.$pendingOutbound, Tari.shared.transactions.$completed, Tari.shared.transactions.$cancelled)
-            .map { $0 as [Transaction] + $1 + $2 + $3 }
-
-        transactions
+        Tari.shared.transactions.$all
             .compactMap { $0.filter { [weak self] in self?.isContactTransaction(transaction: $0) == true }}
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [Transaction]())
@@ -105,10 +101,10 @@ final class ContactTransactionListModel {
 
     private func isContactTransaction(transaction: Transaction) -> Bool {
 
-        guard let contactHex = contactModel.internalModel?.hex else { return false }
+        guard let contactHex = contactModel.internalModel?.addressComponents.uniqueIdentifier else { return false }
 
         do {
-            let transactionHex = try transaction.address.byteVector.hex
+            let transactionHex = try transaction.address.components.uniqueIdentifier
             return transactionHex == contactHex
         } catch {
             return false

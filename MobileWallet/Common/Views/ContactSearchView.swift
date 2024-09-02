@@ -82,6 +82,10 @@ final class ContactSearchView: DynamicThemeView {
         didSet { updateViews() }
     }
 
+    var isYatLogoVisible: Bool = false {
+        didSet { updateViews() }
+    }
+
     var isPreviewButtonVisible: Bool = false {
         didSet { updateViews() }
     }
@@ -146,7 +150,7 @@ final class ContactSearchView: DynamicThemeView {
     private func updateViews() {
         qrButton.isHidden = !isQrButtonVisible
         yatPreviewButton.isHidden = !isPreviewButtonVisible
-        yatIconView.isHidden = !isPreviewButtonVisible
+        yatIconView.isHidden = !isYatLogoVisible
     }
 
     private func updatePreview() {

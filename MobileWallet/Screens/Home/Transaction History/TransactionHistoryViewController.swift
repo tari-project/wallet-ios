@@ -101,7 +101,6 @@ final class TransactionHistoryViewController: SecureViewController<TransactionHi
                 items: $0.transactions.map {
                     TransactionHistoryCell.ViewModel(
                         id: $0.id,
-                        avatar: $0.avatar,
                         title: $0.titleComponents,
                         timestamp: $0.timestamp,
                         info: $0.status,

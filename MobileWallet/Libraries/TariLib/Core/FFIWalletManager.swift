@@ -55,6 +55,8 @@ final class FFIWalletManager {
     // MARK: - Properties
 
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
+    @Published private(set) var scannedHeight: UInt64 = 0
+
     @Published private(set) var isWalletConnected: Bool = false {
         didSet { Logger.log(message: "isWalletConnected: \(isWalletConnected)", domain: .general, level: .info) }
     }
@@ -81,8 +83,13 @@ final class FFIWalletManager {
     // MARK: - Setups
 
     private func setupCallbacks() {
+
         WalletCallbacksManager.shared.baseNodeConnectionStatus
             .assign(to: \.baseNodeConnectionStatus, on: self)
+            .store(in: &cancelables)
+
+        WalletCallbacksManager.shared.walletScannedHeight
+            .assign(to: \.scannedHeight, on: self)
             .store(in: &cancelables)
     }
 
@@ -363,13 +370,13 @@ final class FFIWalletManager {
         return result.pointee
     }
 
-    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool) throws -> UInt64 {
+    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool, paymentID: String) throws -> UInt64 {
 
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, message, isOneSidedPayment, errorCodePointer)
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, message, isOneSidedPayment, paymentID, errorCodePointer)
 
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result

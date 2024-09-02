@@ -49,7 +49,7 @@ final class NetworkManager {
     // MARK: - Properties
 
     static let shared = NetworkManager()
-    private static var defaultNetwork: TariNetwork { .nextnet }
+    private static var defaultNetwork: TariNetwork { .esmeralda }
 
     @Published var selectedNetwork: TariNetwork
 

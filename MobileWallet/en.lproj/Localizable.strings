@@ -74,7 +74,6 @@
 /* Transaction Data */
 
 "transaction.one_sided_payment.inbound_user_placeholder" = "Someone";
-"transaction.one_sided_payment.avatar" = "➡️";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
 "transaction.coinbase.user_placeholder" = "🪙 Coinbase";
@@ -232,8 +231,6 @@
 "settings.item.block_explorer" = "Block Explorer";
 "settings.item.about" = "About";
 
-"settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
-
 /* Splash view */
 "splash.disclaimer.with_params" = "By creating a wallet, you agree to the terms of the %1$@ and %2$@";
 "splash.disclaimer.param.privacy_policy" = "Privacy Policy";
@@ -343,13 +340,6 @@
 "verify_phrase.container_description" = "Tap on the words below in the correct order";
 "verify_phrase.header" = "Select the words in the correct order.";
 "verify_phrase.title" = "Verify Seed Phrase";
-
-/* Emoji view */
-"emoji.copied" = "COPIED";
-"emoji.copy" = "Copy Emoji ID";
-"emoji.yat.copy" = "Copy Yat";
-"emoji.paste" = "Paste copied Emoji ID";
-"emoji.hex_tip" = "ℹ️ You can long-press the Copy Emoji ID button to copy the address in hexadecimal format.";
 
 /* Add recipient view */
 "add_recipient.inputbox.placeholder" = "Enter Emoji ID or Contact Name";
@@ -578,6 +568,9 @@
 "connection_status.popUp.label.base_node_sync.pending" = "Syncing with Base Node";
 "connection_status.popUp.label.base_node_sync.success" = "Synced with Base Node";
 "connection_status.popUp.label.base_node_sync.failure" = "Failed sync with Base Node";
+"connection_status.popUp.label.chain_tip.prefix" = "Chain Tip:";
+"connection_status.popUp.label.chain_tip.values" = "#%d (%d)";
+"connection_status.popUp.label.chain_tip.waiting_for_connection" = "Waiting for connection...";
 
 /* Select Network View */
 "select_network.title" = "Select Network";
@@ -860,13 +853,13 @@
 "contact_book.link_contacts.placeholder.buttons.add_contact" = "Add a contact";
 "contact_book.link_contacts.placeholder.buttons.permission_settings" = "Go to permission settings";
 "contact_book.link_contacts.popup.confirmation.title" = "Link Contact";
-"contact_book.link_contacts.popup.confirmation.message.part1" = "Click “confirm” below to link %@ to";
+"contact_book.link_contacts.popup.confirmation.message.part1" = "Click “confirm” below to link\n%@\nto";
 "contact_book.link_contacts.popup.success.title" = "Success!";
-"contact_book.link_contacts.popup.success.message.part1" = "You have successfully linked %@ to";
+"contact_book.link_contacts.popup.success.message.part1" = "You have successfully linked\n%@\nto";
 "contact_book.unlink_contact.popup.confirmation.title" = "Unlink Contact";
-"contact_book.unlink_contact.popup.confirmation.message.part1" = "Click “confirm” to unlink %@ from";
+"contact_book.unlink_contact.popup.confirmation.message.part1" = "Click “confirm” to unlink\n%@\nfrom";
 "contact_book.unlink_contact.popup.success.title" = "Success!";
-"contact_book.unlink_contact.popup.success.message.part1" = "You have successfully unlinked %@ from";
+"contact_book.unlink_contact.popup.success.message.part1" = "You have successfully unlinked\n%@\nfrom";
 "contact_book.contact_type.internal" = "Tari Contact";
 "contact_book.contact_type.external" = "External Contact";
 "contact_book.contact_type.linked" = "Linked Contact";
@@ -919,3 +912,19 @@
 "screen_recording.pop_up.message" = "Oops! Screenshots are disabled in this app to keep your information safe. Thanks for keeping things secure!";
 "screen_recording.pop_up.button.ok" = "No problem, mate!";
 "screen_recording.pop_up.button.enable" = "Enable screenshots";
+
+/* Address View */
+
+"address_view.details.label.title" = "Address Details";
+"address_view.details.label.network.title" = "Network:";
+"address_view.details.label.features.title" = "Features:";
+"address_view.details.label.view_key.title" = "View Key:";
+"address_view.details.label.address.title" = "Core Address:";
+"address_view.details.label.checksum.title" = "Checksum:";
+"address_view.details.button.copy.base58" = "Copy Base58";
+"address_view.details.button.copy.emojis" = "Copy Emojis";
+
+/* Tari Address Featutres */
+
+"address_features.one_sided" = "One Sided Payments";
+"address_features.interactive" = "Interactive Payments";

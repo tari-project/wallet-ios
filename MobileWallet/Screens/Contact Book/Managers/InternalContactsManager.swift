@@ -44,16 +44,15 @@ final class InternalContactsManager {
 
         let alias: String?
         let defaultAlias: String?
-        let emojiID: String
-        let hex: String
+        let addressComponents: TariAddressComponents
         let isFavorite: Bool
 
         static func == (lhs: InternalContactsManager.ContactModel, rhs: InternalContactsManager.ContactModel) -> Bool {
-            lhs.hex == rhs.hex
+            lhs.addressComponents.uniqueIdentifier == rhs.addressComponents.uniqueIdentifier
         }
 
         func hash(into hasher: inout Hasher) {
-            hasher.combine(hex)
+            hasher.combine(addressComponents.uniqueIdentifier)
         }
     }
 
@@ -61,15 +60,15 @@ final class InternalContactsManager {
 
         var models: [ContactModel] = []
 
-        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, defaultAlias: nil, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex, isFavorite: $0.isFavorite) }
+        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, defaultAlias: nil, addressComponents: $0.address.components, isFavorite: $0.isFavorite) }
         models += try fetchTariAddresses().map {
-            let placeholder = try $0.isUnknownUser ? localized("transaction.unknown_source") : nil
-            return try ContactModel(alias: nil, defaultAlias: placeholder, emojiID: $0.emojis, hex: $0.byteVector.hex, isFavorite: false)
+            let placeholder = try $0.components.isUnknownAddress ? localized("transaction.unknown_source") : nil
+            return try ContactModel(alias: nil, defaultAlias: placeholder, addressComponents: $0.components, isFavorite: false)
         }
 
         return models
             .reduce(into: [ContactModel]()) { collection, model in
-                guard collection.first(where: {$0.emojiID == model.emojiID }) == nil else { return }
+                guard collection.first(where: {$0.addressComponents.uniqueIdentifier == model.addressComponents.uniqueIdentifier }) == nil else { return }
                 collection.append(model)
             }
             .sorted {
@@ -89,24 +88,24 @@ final class InternalContactsManager {
                     return false
                 }
 
-                return $0.emojiID < $1.emojiID
+                return $0.addressComponents.fullEmoji < $1.addressComponents.fullEmoji
             }
     }
 
     func create(name: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
-        return try ContactModel(alias: name, defaultAlias: nil, emojiID: address.emojis, hex: address.byteVector.hex, isFavorite: isFavorite)
+        return try ContactModel(alias: name, defaultAlias: nil, addressComponents: address.components, isFavorite: isFavorite)
     }
 
-    func update(name: String, isFavorite: Bool, hex: String) throws {
-        let address = try TariAddress(hex: hex)
+    func update(name: String, isFavorite: Bool, base58: String) throws {
+        let address = try TariAddress(base58: base58)
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
     }
 
-    func remove(hex: String) throws {
-        guard let contact = try Tari.shared.contacts.findContact(hex: hex) else { return }
+    func remove(uniqueIdentifier: String) throws {
+        guard let contact = try Tari.shared.contacts.findContact(uniqueIdentifier: uniqueIdentifier) else { return }
         try Tari.shared.contacts.remove(contact: contact)
     }
 

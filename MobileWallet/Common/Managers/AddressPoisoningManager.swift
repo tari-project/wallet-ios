@@ -68,48 +68,50 @@ final class AddressPoisoningManager {
 
         try await contactsManager.fetchModels()
 
-        let emojiID = try address.emojis
+        let spendKey = try address.components.spendKey
         var result: [SimilarAddressData] = []
 
         if includeInputAddress {
             try result.append(inputAddressData(address: address))
         }
 
-        result += try similarContacts(toEmojiID: emojiID)
+        result += try similarContacts(toSpendKey: spendKey)
         return result
     }
 
-    private func similarContacts(toEmojiID emojiID: String) throws -> [SimilarAddressData] {
+    private func similarContacts(toSpendKey spendKey: String) throws -> [SimilarAddressData] {
         try (contactsManager.tariContactModels + contactsManager.externalModels)
             .filter {
                 guard let internalModel = $0.internalModel else { return false }
-                return emojiID.isSimilar(to: internalModel.emojiID, minSameCharacters: minSameCharacters, usedPrefixSuffixCharacters: usedPrefixSuffixCharacters)
+                return spendKey.isSimilar(to: internalModel.addressComponents.spendKey, minSameCharacters: minSameCharacters, usedPrefixSuffixCharacters: usedPrefixSuffixCharacters)
             }
             .compactMap { try data(contact: $0) }
     }
 
     private func inputAddressData(address: TariAddress) throws -> SimilarAddressData {
-        let emojiID = try address.emojis
-        guard let existingContact = (contactsManager.tariContactModels + contactsManager.externalModels).first(where: { $0.internalModel?.emojiID == emojiID }) else {
-            return try data(hex: address.byteVector.hex, emojiID: emojiID)
+        let addressComponents = try address.components
+        let emojiID = addressComponents.fullEmoji
+        let uniqueIdentifier = addressComponents.uniqueIdentifier
+        guard let existingContact = (contactsManager.tariContactModels + contactsManager.externalModels).first(where: { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }) else {
+            return data(address: addressComponents.fullRaw, emojiID: emojiID)
         }
-        return try data(contact: existingContact) ?? data(hex: address.byteVector.hex, emojiID: emojiID)
+        return try data(contact: existingContact) ?? data(address: addressComponents.fullRaw, emojiID: emojiID)
     }
 
-    private func data(hex: String, emojiID: String) -> SimilarAddressData {
-        SimilarAddressData(address: hex, emojiID: emojiID, alias: nil, transactionsCount: 0, lastTransaction: nil)
+    private func data(address: String, emojiID: String) -> SimilarAddressData {
+        SimilarAddressData(address: address, emojiID: emojiID, alias: nil, transactionsCount: 0, lastTransaction: nil)
     }
 
     private func data(contact: ContactsManager.Model) throws -> SimilarAddressData? {
         guard let internalModel = contact.internalModel else { return nil }
-        let transactions = try transactions(forHex: internalModel.hex)
+        let transactions = try transactions(forUniqueIdentifier: internalModel.addressComponents.uniqueIdentifier)
         let lastTransaction = try formattedLastTransaction(transactions: transactions)
-        return SimilarAddressData(address: internalModel.hex, emojiID: internalModel.emojiID, alias: contact.name, transactionsCount: transactions.count, lastTransaction: lastTransaction)
+        return SimilarAddressData(address: internalModel.addressComponents.fullRaw, emojiID: internalModel.addressComponents.fullEmoji, alias: contact.name, transactionsCount: transactions.count, lastTransaction: lastTransaction)
     }
 
-    private func transactions(forHex hex: String) throws -> [Transaction] {
+    private func transactions(forUniqueIdentifier uniqueIdentifier: String) throws -> [Transaction] {
         try Tari.shared.transactions.all
-            .filter { try $0.address.byteVector.hex == hex }
+            .filter { try $0.address.components.uniqueIdentifier == uniqueIdentifier }
             .sorted { try $0.timestamp > $1.timestamp }
     }
 

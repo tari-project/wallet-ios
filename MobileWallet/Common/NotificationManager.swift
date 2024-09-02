@@ -227,7 +227,7 @@ final class NotificationManager {
     }
 
     private func sign(message: String) throws -> (hex: String, metadata: MessageMetadata) {
-        let hex = try Tari.shared.walletAddress.publicKey
+        let hex = try Tari.shared.walletAddress.spendKey.byteVector.hex
         guard let apiKey = TariSettings.shared.pushServerApiKey else { throw PushNotificationServerError.missingApiKey }
         let metadata = try Tari.shared.messageSign.sign(message: "\(apiKey)\(hex)\(message)")
         return (hex: hex, metadata: metadata)

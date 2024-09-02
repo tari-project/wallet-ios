@@ -42,7 +42,7 @@ struct ContactListDeeplink {
 
     struct Contact: Codable {
         let alias: String
-        let hex: String
+        let tariAddress: String
     }
 
     let list: [Contact]

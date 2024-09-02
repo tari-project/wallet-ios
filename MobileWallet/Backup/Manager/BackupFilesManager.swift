@@ -81,7 +81,7 @@ enum BackupFilesManager {
             .all
             .map { try $0.json }
 
-        let model = PartialBackupModel(source: try Tari.shared.walletAddress.byteVector.hex, utxos: rawUTXOs)
+        let model = PartialBackupModel(source: try Tari.shared.walletAddress.components.fullRaw, utxos: rawUTXOs)
         let data = try jsonEncoder.encode(model)
 
         let fileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
@@ -142,7 +142,7 @@ enum BackupFilesManager {
 
         try await Tari.shared.startWallet()
 
-        let sourceAddress = try TariAddress(hex: model.source)
+        let sourceAddress = try TariAddress(base58: model.source)
 
         try model.utxos
             .map { try UnblindedOutput(json: $0) }

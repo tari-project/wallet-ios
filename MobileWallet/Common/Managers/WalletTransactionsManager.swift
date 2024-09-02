@@ -112,20 +112,21 @@ final class WalletTransactionsManager {
     private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
         do {
-            let tariAddress = try TariAddress(hex: address)
+            let tariAddress = try TariAddress(base58: address)
             let transactionID = try Tari.shared.transactions.send(
                 toAddress: tariAddress,
                 amount: amount.rawValue,
                 feePerGram: feePerGram.rawValue,
-                message: message,
-                isOneSidedPayment: isOneSidedPayment
+                message: isOneSidedPayment ? "" : message,
+                isOneSidedPayment: isOneSidedPayment,
+                paymentID: isOneSidedPayment ? message : ""
             )
 
             guard !isOneSidedPayment else {
                 result(.success)
                 return
             }
-            try startListeningForWalletEvents(transactionID: transactionID, publicKey: tariAddress.publicKey, result: result)
+            try startListeningForWalletEvents(transactionID: transactionID, publicKey: tariAddress.spendKey.byteVector.hex, result: result)
         } catch {
             result(.failure(.transactionError(error: error)))
         }

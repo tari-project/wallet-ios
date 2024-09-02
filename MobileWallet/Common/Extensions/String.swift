@@ -42,14 +42,11 @@ import UIKit
 
 extension String {
 
+    static var dots: Self { "•••" }
+
     var firstOrEmpty: String {
         guard let first else { return "" }
         return String(first)
-    }
-
-    var obfuscatedText: String {
-        guard count >= 9 else { return self }
-        return "\(prefix(3))•••\(suffix(3))"
     }
 
     func insertSeparator(_ separatorString: String, atEvery n: Int) -> String {
