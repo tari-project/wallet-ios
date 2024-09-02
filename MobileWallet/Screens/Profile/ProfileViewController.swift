@@ -224,7 +224,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         ]
 
         FormOverlayPresenter.showForm(title: localized("profile_view.form.title"), textFieldModels: models, presenter: self, onClose: { [weak self] in
-            self?.model.name = name
+            self?.model.update(name: name)
         })
     }
 
