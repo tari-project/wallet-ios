@@ -57,6 +57,8 @@ enum ErrorMessageManager {
             return model(internalWalletError: error)
         case let error as SeedWords.InternalError:
             return model(seedWordsError: error)
+        case let error as ContactsManager.InternalError:
+            return model(contactManagerError: error)
         default:
             return genericErrorModel
         }
@@ -106,6 +108,18 @@ enum ErrorMessageManager {
         }
 
         return MessageModel(title: genericErrorModel.title, message: message, type: .error)
+    }
+
+    private static func model(contactManagerError: ContactsManager.InternalError) -> MessageModel {
+        switch contactManagerError {
+        case .emptyContactName:
+            return MessageModel(
+                title: localized("error.contact_book.no_name.title"),
+                message: localized("error.contact_book.no_name.description"),
+                closeButtonTitle: localized("error.contact_book.no_name.close_button"),
+                type: .error
+            )
+        }
     }
 }
 

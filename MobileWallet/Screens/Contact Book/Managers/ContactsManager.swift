@@ -49,6 +49,10 @@ final class ContactsManager {
         case empty
     }
 
+    enum InternalError: Error {
+        case emptyContactName
+    }
+
     struct Model: Identifiable {
 
         let id: UUID = UUID()
@@ -175,11 +179,14 @@ final class ContactsManager {
 
     func update(nameComponents: [String], isFavorite: Bool, yat: String, contact: Model) throws {
 
+        let name = nameComponents.joined(separator: " ")
+        guard !name.isEmpty else { throw InternalError.emptyContactName }
+
         let internalContact = contact.internalModel
         let externalContact = contact.externalModel
 
         if let internalContact {
-            try internalContactsManager.update(name: nameComponents.joined(separator: " "), isFavorite: isFavorite, base58: internalContact.addressComponents.fullRaw)
+            try internalContactsManager.update(name: name, isFavorite: isFavorite, base58: internalContact.addressComponents.fullRaw)
         }
 
         if let externalContact, nameComponents.count == 2 {

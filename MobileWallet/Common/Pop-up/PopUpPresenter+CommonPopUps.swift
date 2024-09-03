@@ -101,7 +101,15 @@ struct MessageModel {
 
     let title: String
     let message: String?
+    let closeButtonTitle: String?
     let type: MessageType
+
+    init(title: String, message: String?, closeButtonTitle: String? = nil, type: MessageType) {
+        self.title = title
+        self.message = message
+        self.closeButtonTitle = closeButtonTitle
+        self.type = type
+    }
 }
 
 extension PopUpPresenter {
@@ -115,7 +123,14 @@ extension PopUpPresenter {
     }
 
     @MainActor static func show(message: MessageModel) {
-        let model = PopUpDialogModel(title: message.title, message: message.message, buttons: [], hapticType: makeHapticType(model: message))
+
+        var buttons = [PopUpDialogButtonModel]()
+
+        if let closeButtonTitle = message.closeButtonTitle {
+            buttons.append(PopUpDialogButtonModel(title: closeButtonTitle, type: .text))
+        }
+
+        let model = PopUpDialogModel(title: message.title, message: message.message, buttons: buttons, hapticType: makeHapticType(model: message))
         showPopUp(model: model)
         log(message: message)
     }

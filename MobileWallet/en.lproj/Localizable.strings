@@ -373,6 +373,9 @@
 "profile_view.title" = "My Profile";
 "profile_view.error.qr_code.title" = "Failed to generate QR";
 "profile_view.error.qr_code.description.with_param" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
+"profile_view.error.no_name.title" = "Name can’t be empty";
+"profile_view.error.no_name.description" = "You can’t delete your name. Give it a quick update instead!";
+"profile_view.error.no_name.button" = "Okay, got it!";
 "profile_view.button.wallet" = "Wallet";
 "profile_view.button.connect_yat" = "Connect Yats";
 "profile_view.button.share.qr_code" = "QR Code";
@@ -738,6 +741,10 @@
 "error.tx_rejection.5" = "This transaction was cancelled due to the funds not having reached their time-lock period yet.";
 "error.tx_rejection.6" = "The transaction failed to the invalid input data. This situation shouldn't happen. Please send a bug report or contact us directly.";
 "error.tx_rejection.7" = "The coinbase was abandoned.";
+
+"error.contact_book.no_name.title" = "Name can’t be empty";
+"error.contact_book.no_name.description" = "A contact without a name? That won’t work. Please add one to keep things running smoothly.";
+"error.contact_book.no_name.close_button" = "Will do!";
 
 /* Dropbox Backup Error */
 

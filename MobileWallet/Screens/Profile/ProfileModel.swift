@@ -67,7 +67,7 @@ final class ProfileModel {
 
     // MARK: - View Model
 
-    @Published var name: String?
+    @Published private(set) var name: String?
     @Published private(set) var addressType: AddressType?
     @Published private(set) var isYatOutOfSync: Bool = false
     @Published private(set) var errorMessage: MessageModel?
@@ -119,6 +119,19 @@ final class ProfileModel {
 
     func reconnectYat() {
         yatAddress = try? walletAddress?.components.fullRaw
+    }
+
+    func update(name: String?) {
+        guard let name, !name.isEmpty else {
+            errorMessage = MessageModel(
+                title: localized("profile_view.error.no_name.title"),
+                message: localized("profile_view.error.no_name.description"),
+                closeButtonTitle: localized("profile_view.error.no_name.button"),
+                type: .normal
+            )
+            return
+        }
+        self.name = name
     }
 
     private func updateData() {
