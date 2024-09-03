@@ -42,7 +42,7 @@ enum MigrationManager {
 
     // MARK: - Properties
 
-    private static let minValidVersion = "1.1.0-pre.2"
+    private static let minValidVersion = "1.3.0-pre.0"
 
     // MARK: - Actions
 
