@@ -65,7 +65,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupBindings()
+        setupCallbacks()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -75,7 +75,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
 
     // MARK: - Setups
 
-    private func setupBindings() {
+    private func setupCallbacks() {
 
         model.$name
             .receive(on: DispatchQueue.main)
@@ -146,22 +146,23 @@ final class ProfileViewController: SecureViewController<ProfileView> {
 
         guard let addressComponents = model.addressComponents else { return }
         mainView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
+
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in self?.model.updateYatIdData() }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
     private func handle(addressType: ProfileModel.AddressType) {
-
-        let viewModel: AddressView.ViewModel
-
         switch addressType {
         case let .address(components):
-            viewModel = AddressView.ViewModel(prefix: components.networkAndFeatures, text: .truncated(prefix: components.spendKeyPrefix, suffix: components.spendKeySuffix), isDetailsButtonVisible: true)
+            let viewModel = AddressView.ViewModel(prefix: components.networkAndFeatures, text: .truncated(prefix: components.spendKeyPrefix, suffix: components.spendKeySuffix), isDetailsButtonVisible: true)
+            mainView.update(addressViewModel: viewModel, isTariAddress: true)
         case let .yat(yat):
-            viewModel = AddressView.ViewModel(prefix: nil, text: .single(yat), isDetailsButtonVisible: false)
+            let viewModel = AddressView.ViewModel(prefix: nil, text: .single(yat), isDetailsButtonVisible: false)
+            mainView.update(addressViewModel: viewModel, isTariAddress: false)
         }
-
-        mainView.update(addressViewModel: viewModel)
     }
 
     private func handle(yatButtonState: ProfileModel.YatButtonState) {
