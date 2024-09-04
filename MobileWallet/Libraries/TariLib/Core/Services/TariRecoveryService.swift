@@ -49,7 +49,14 @@ final class TariRecoveryService: CoreTariService {
     // MARK: - Actions
 
     func startRecovery(recoveredOutputMessage: String) throws -> Bool {
-        guard let selectedBaseNode = NetworkManager.shared.selectedBaseNode else { return false }
+
+        var selectedBaseNode = NetworkManager.shared.selectedBaseNode
+
+        if selectedBaseNode == nil {
+            selectedBaseNode = try services.connection.defaultBaseNodePeers().randomElement()
+        }
+
+        guard let selectedBaseNode else { return false }
         return try walletManager.startRecovery(baseNodePublicKey: selectedBaseNode.makePublicKey(), recoveredOutputMessage: recoveredOutputMessage)
     }
 

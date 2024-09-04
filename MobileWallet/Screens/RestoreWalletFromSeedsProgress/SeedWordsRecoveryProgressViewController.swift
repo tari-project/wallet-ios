@@ -46,6 +46,7 @@ final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWo
     // MARK: - Properties
 
     var onSuccess: (() -> Void)?
+    var onFailure: (() -> Void)?
 
     private let model = SeedWordsRecoveryProgressModel()
     private var cancelables: Set<AnyCancellable> = []
@@ -86,6 +87,7 @@ final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWo
         PopUpPresenter.showMessageWithCloseButton(message: errorModel) { [weak self] in
             self?.dismiss(animated: true)
         }
+        onFailure?()
     }
 
     private func handle(isWalletRestored: Bool) {
