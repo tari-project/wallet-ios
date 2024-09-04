@@ -40,8 +40,8 @@
 
 enum ScreenRecordingSettingsConstructor {
 
-    static func buildScene() -> ScreenRecordingSettingsViewController {
+    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> ScreenRecordingSettingsViewController {
         let model = ScreenRecordingSettingsModel()
-        return ScreenRecordingSettingsViewController(model: model)
+        return ScreenRecordingSettingsViewController(model: model, backButtonType: backButtonType)
     }
 }
