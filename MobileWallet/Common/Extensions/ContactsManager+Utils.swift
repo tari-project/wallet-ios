@@ -46,7 +46,7 @@ extension ContactsManager.Model {
         } else if let addressComponents = internalModel?.addressComponents {
             return AddressView.ViewModel(
                 prefix: addressComponents.networkAndFeatures,
-                text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
                 isDetailsButtonVisible: false
             )
         } else {

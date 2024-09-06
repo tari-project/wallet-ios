@@ -104,7 +104,7 @@ final class ContactsManager {
                     .joined()
             } else {
                 alias = internalModel?.alias ?? internalModel?.defaultAlias
-                name = alias ?? internalModel?.addressComponents.formattedShortAddress ?? ""
+                name = alias ?? internalModel?.addressComponents.formattedCoreAddress ?? ""
                 nameComponents = [name]
                 avatar = internalModel?.addressComponents.spendKey.firstOrEmpty ?? ""
             }

@@ -172,7 +172,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         do {
             guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias else {
                 let addressComponents = paymentInfo.addressComponents
-                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix), isDetailsButtonVisible: true))
+                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: true))
                 return
             }
             addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))

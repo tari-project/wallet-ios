@@ -59,7 +59,7 @@ final class DataFlowManager {
     }
 
     private func updateUserName() {
-        guard UserSettingsManager.name == nil, let address = try? Tari.shared.walletAddress.components.spendKey.prefix(3) else { return }
+        guard UserSettingsManager.name == nil, let address = try? Tari.shared.walletAddress.components.coreAddressPrefix else { return }
         UserSettingsManager.name = [localized("common.user"), String(address)].joined(separator: " ")
     }
 }

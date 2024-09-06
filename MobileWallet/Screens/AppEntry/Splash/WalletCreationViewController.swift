@@ -405,7 +405,7 @@ extension WalletCreationViewController {
         addressView.update(
             viewModel: AddressView.ViewModel(
                 prefix: addressComponents.networkAndFeatures,
-                text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
                 isDetailsButtonVisible: true)
         )
         addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
