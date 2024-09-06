@@ -100,7 +100,7 @@ final class LinkContactsModel {
             }
         }
 
-        name = contactModel.internalModel?.addressComponents.formattedShortAddress ?? contactModel.externalModel?.fullname
+        name = contactModel.internalModel?.addressComponents.formattedCoreAddress ?? contactModel.externalModel?.fullname
     }
 
     private func updateModels() {
@@ -156,7 +156,7 @@ final class LinkContactsModel {
         unconfirmedInternalModel = internalContact
         unconfirmedExternalModel = externalContact
 
-        action = .showConfirmation(address: internalContact.addressComponents.formattedShortAddress, name: externalContact.fullname)
+        action = .showConfirmation(address: internalContact.addressComponents.formattedCoreAddress, name: externalContact.fullname)
     }
 
     func linkContacts() {
@@ -168,7 +168,7 @@ final class LinkContactsModel {
 
         do {
             try contactsManager.link(internalContact: unconfirmedInternalModel, externalContact: unconfirmedExternalModel)
-            action = .showSuccess(address: unconfirmedInternalModel.addressComponents.formattedShortAddress, name: unconfirmedExternalModel.fullname)
+            action = .showSuccess(address: unconfirmedInternalModel.addressComponents.formattedCoreAddress, name: unconfirmedExternalModel.fullname)
             cancelLinkContacts()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)

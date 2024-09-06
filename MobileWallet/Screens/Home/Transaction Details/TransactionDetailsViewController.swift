@@ -105,7 +105,7 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.$addressComponents
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .map { AddressView.ViewModel(prefix: $0.networkAndFeatures, text: .truncated(prefix: $0.spendKeyPrefix, suffix: $0.spendKeySuffix), isDetailsButtonVisible: true) }
+            .map { AddressView.ViewModel(prefix: $0.networkAndFeatures, text: .truncated(prefix: $0.coreAddressPrefix, suffix: $0.coreAddressSuffix), isDetailsButtonVisible: true) }
             .assign(to: \.addressViewModel, on: mainView.contactView.contentView)
             .store(in: &cancellables)
 

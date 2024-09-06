@@ -302,7 +302,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             do {
                 let name = UserSettingsManager.name
                 let addressComponents = try Tari.shared.walletAddress.components
-                let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix), isDetailsButtonVisible: false)
+                let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false)
                 cell.update(name: name, addressViewModel: addressViewModel)
             } catch {
                 let message = ErrorMessageManager.errorModel(forError: error)

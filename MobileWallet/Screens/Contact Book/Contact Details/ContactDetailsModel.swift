@@ -178,7 +178,7 @@ final class ContactDetailsModel {
 
     func unlinkContact() {
 
-        guard let address = model.internalModel?.addressComponents.formattedShortAddress, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: model)
@@ -253,7 +253,7 @@ final class ContactDetailsModel {
     }
 
     private func prepareForUnkinkAction() {
-        guard let address = model.internalModel?.addressComponents.formattedShortAddress, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
         action = .showUnlinkConfirmationDialog(address: address, name: name)
     }
 

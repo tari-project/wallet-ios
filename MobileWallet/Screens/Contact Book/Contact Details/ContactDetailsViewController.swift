@@ -95,7 +95,7 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
                 if let addressComponents = $0.addressComponents {
                     self?.mainView.addressModel = AddressView.ViewModel(
                         prefix: addressComponents.networkAndFeatures,
-                        text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                        text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
                         isDetailsButtonVisible: true
                     )
                 }

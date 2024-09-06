@@ -154,7 +154,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             addressView.update(
                 viewModel: AddressView.ViewModel(
                     prefix: addressComponents.networkAndFeatures,
-                    text: .truncated(prefix: addressComponents.spendKeyPrefix, suffix: addressComponents.spendKeySuffix),
+                    text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
                     isDetailsButtonVisible: true)
             )
             return

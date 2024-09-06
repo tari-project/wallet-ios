@@ -157,7 +157,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
     private func handle(addressType: ProfileModel.AddressType) {
         switch addressType {
         case let .address(components):
-            let viewModel = AddressView.ViewModel(prefix: components.networkAndFeatures, text: .truncated(prefix: components.spendKeyPrefix, suffix: components.spendKeySuffix), isDetailsButtonVisible: true)
+            let viewModel = AddressView.ViewModel(prefix: components.networkAndFeatures, text: .truncated(prefix: components.coreAddressPrefix, suffix: components.coreAddressSuffix), isDetailsButtonVisible: true)
             mainView.update(addressViewModel: viewModel, isTariAddress: true)
         case let .yat(yat):
             let viewModel = AddressView.ViewModel(prefix: nil, text: .single(yat), isDetailsButtonVisible: false)

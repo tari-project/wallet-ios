@@ -58,10 +58,12 @@ struct TariAddressComponents {
 extension TariAddressComponents {
 
     var networkAndFeatures: String { network + features }
-    var spendKeyPrefix: String { String(spendKey.prefix(3)) }
-    var spendKeySuffix: String { String(spendKey.suffix(3)) }
+    var coreAddressPrefix: String { String(coreAddress.prefix(3)) }
+    var coreAddressSuffix: String { String(coreAddress.suffix(3)) }
     var uniqueIdentifier: String { network + spendKey }
-    var formattedShortAddress: String { networkAndFeatures + " | " + spendKeyPrefix + .dots + spendKeySuffix }
+    var formattedCoreAddress: String { networkAndFeatures + " | " + coreAddressPrefix + .dots + coreAddressSuffix }
+
+    private var coreAddress: String { [viewKey, spendKey, checksum].compactMap { $0 }.joined() }
 
     init(address: TariAddress) throws {
 
