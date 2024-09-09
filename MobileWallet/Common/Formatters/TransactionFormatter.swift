@@ -86,12 +86,24 @@ final class TransactionFormatter {
     }
 
     private func contactName(transaction: Transaction) throws -> String {
-        guard try !transaction.isCoinbase else { return localized("transaction.coinbase.user_placeholder") }
         let contact = try contact(transaction: transaction)
         return contact?.name ?? localized("transaction.one_sided_payment.inbound_user_placeholder")
     }
 
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
+
+        guard try !transaction.isCoinbase else {
+
+            guard try transaction.isOutboundTransaction else {
+                return [StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.inbound"), style: .bold)]
+            }
+
+            return [
+                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.1.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.2"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.3.bold"), style: .bold)
+            ]
+        }
 
         if try transaction.isOutboundTransaction {
             return [
