@@ -68,13 +68,18 @@ final class ScreenshotPopUpHandler {
 
     private func showPopUp() {
 
+        var buttons = [
+            PopUpDialogButtonModel(title: localized("screen_recording.pop_up.button.ok"), type: .normal)
+        ]
+
+        if AppRouter.isNavigationReady {
+            buttons.append(PopUpDialogButtonModel(title: localized("screen_recording.pop_up.button.enable"), type: .text, callback: { [weak self] in self?.showScreenShotSettingsScreen() }))
+        }
+
         let model = PopUpDialogModel(
             title: localized("screen_recording.pop_up.title"),
-            message: localized("screen_recording.pop_up.message"),
-            buttons: [
-                PopUpDialogButtonModel(title: localized("screen_recording.pop_up.button.ok"), type: .normal),
-                PopUpDialogButtonModel(title: localized("screen_recording.pop_up.button.enable"), type: .text, callback: { [weak self] in self?.showScreenShotSettingsScreen() })
-            ],
+            message: AppRouter.isNavigationReady ? localized("screen_recording.pop_up.message.normal") : localized("screen_recording.pop_up.message.simple"),
+            buttons: buttons,
             hapticType: .error
         )
 
