@@ -167,7 +167,7 @@ final class HomeModel {
             return
         }
 
-        avatar = addressComponents.spendKey.firstOrEmpty
+        avatar = addressComponents.coreAddressPrefix.firstOrEmpty
         username = addressComponents.formattedCoreAddress
     }
 }
