@@ -76,7 +76,10 @@
 "transaction.one_sided_payment.inbound_user_placeholder" = "Someone";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
-"transaction.coinbase.user_placeholder" = "🪙 Coinbase";
+"transaction.coinbase.title.inbound" = "Mining Reward!";
+"transaction.coinbase.title.outbound.part.1.bold" = "You";
+"transaction.coinbase.title.outbound.part.2" = "paid the";
+"transaction.coinbase.title.outbound.part.3.bold" = "Miner";
 "transaction.normal.title.pending.part.2" = "sent a payment";
 "transaction.normal.title.inbound.part.2" = "paid you";
 "transaction.normal.title.outbound.part.1" = "You paid";

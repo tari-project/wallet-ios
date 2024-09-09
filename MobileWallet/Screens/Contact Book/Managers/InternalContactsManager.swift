@@ -123,6 +123,7 @@ final class InternalContactsManager {
         transactions += Tari.shared.transactions.completed
 
         return try transactions
+            .filter { try !$0.isCoinbase }
             .map { try $0.address }
     }
 }
