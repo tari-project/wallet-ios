@@ -42,14 +42,9 @@ enum MigrationManager {
 
     // MARK: - Properties
 
-    private static let minValidVersion = "1.4.0-pre.0"
+    private static let minValidVersion = "1.4.1-rc.0"
 
     // MARK: - Actions
-
-    static func performPeerDBMigration() async -> Bool {
-        guard let version = await fetchDBVersion() else { return false }
-        return performPeerDBMigration(dbVersion: version)
-    }
 
     static func validateWalletVersion(completion: @escaping (Bool) -> Void) {
 
@@ -105,13 +100,5 @@ enum MigrationManager {
 
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         PopUpPresenter.show(popUp: popUp)
-    }
-
-    // FIXME: Temporary migration mechanism. It should be removed when minValidVersion is greater than 1.0.0-rc.8
-    private static func performPeerDBMigration(dbVersion: String) -> Bool {
-        guard !VersionValidator.compare(dbVersion, isHigherOrEqualTo: "1.0.0-rc.8") else { return false }
-        let peerDBPath = Tari.shared.connectedDatabaseDirectory.appendingPathComponent("data.mdb")
-        try? FileManager.default.removeItem(at: peerDBPath)
-        return true
     }
 }
