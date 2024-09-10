@@ -42,9 +42,7 @@ final class WalletSettingsManager {
 
     private var settings: WalletSettings {
 
-        guard let networkName = GroupUserDefaults.selectedNetworkName else {
-            return makeWalletSettings(networkName: "")
-        }
+        let networkName = NetworkManager.shared.selectedNetwork.name
 
         guard let existingSettings = GroupUserDefaults.walletSettings?.first(where: { $0.networkName == networkName }) else {
             var settings = GroupUserDefaults.walletSettings ?? []
