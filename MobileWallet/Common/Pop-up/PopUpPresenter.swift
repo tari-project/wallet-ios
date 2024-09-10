@@ -88,7 +88,10 @@ enum PopUpPresenter {
             attributes.hapticFeedbackType = makeHapticFeedbackType(configuration: configuration)
         }
 
-        SwiftEntryKit.display(entry: popUp, using: attributes)
+        DispatchQueue.main.async {
+            SwiftEntryKit.display(entry: popUp, using: attributes)
+        }
+
         UIApplication.shared.hideKeyboard()
     }
 
