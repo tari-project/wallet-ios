@@ -40,99 +40,131 @@
 
 import UIKit
 
-enum TextButtonVariation {
-    case primary
-    case secondary
-    case warning
-}
-
 final class TextButton: DynamicThemeBaseButton {
 
-    private static let imageHorizontalSpaceing: CGFloat = 2.0
-    var spacing: CGFloat = imageHorizontalSpaceing
+    enum Style {
+        case primary
+        case secondary
+        case warning
+    }
 
-    private var variation: TextButtonVariation = .primary {
+    // MARK: - Properties
+
+    var font: UIFont = .Avenir.medium.withSize(14.0) {
+        didSet { setNeedsUpdateConfiguration() }
+    }
+
+    var style: Style = .primary {
         didSet { updateTextColor(theme: theme) }
     }
 
+    var image: UIImage? {
+        didSet { configuration?.image = image }
+    }
+
+    var imageSpacing: CGFloat = 4.0 {
+        didSet { updateImageSpacing() }
+    }
+
+    // MARK: - Initialisers
+
     override init() {
         super.init()
-        commonSetup()
+        setupConfiguration()
+        updateImageSpacing()
+        updateTextColor(theme: theme)
+        setupCallbacks()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-        if let image = image(for: .normal) {
-            setRightImage(image)
+    // MARK: - Setups
+
+    private func setupConfiguration() {
+
+        configuration = .plain()
+        configuration?.imagePlacement = .trailing
+
+        configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { [weak self] in
+            var attributes = $0
+            attributes.font = self?.font
+            return attributes
+        }
+
+        configurationUpdateHandler = { [weak self] in
+            self?.update(state: $0.state)
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonSetup()
+    private func setupCallbacks() {
+        addTarget(self, action: #selector(onTapCallback), for: .touchUpInside)
     }
 
-    private func commonSetup() {
-        if let label = titleLabel {
-            label.heightAnchor.constraint(equalToConstant: label.font.pointSize * 1.2).isActive = true
-        }
-        setVariation(variation)
-    }
+    // MARK: - Updates
 
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.alpha = 0.6
-            if let imageView = self.imageView {
-                imageView.alpha = 0.6
-            }
-        })
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.alpha = 1
-            if let imageView = self.imageView {
-                imageView.alpha = 1
-            }
-        })
-    }
-
-    func setVariation(_ variation: TextButtonVariation, font: UIFont? = Theme.shared.fonts.textButton) {
-        self.variation = variation
-        titleLabel?.font = font
-    }
-
-    func setRightImage(_ image: UIImage?) {
-
-        guard let image = image else { return }
-
-        if let color = titleColor(for: .normal) {
-            setImage(image.withTintColor(color, renderingMode: .alwaysOriginal), for: .normal)
-        } else {
-            setImage(image, for: .normal)
-        }
-
-        imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: spacing)
-        titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing, bottom: 0, right: 0)
-
-        transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
-        titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
-        imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        updateTextColor(theme: theme)
     }
 
     private func updateTextColor(theme: ColorTheme) {
-        switch variation {
+        switch style {
         case .primary:
-            setTitleColor(theme.text.body, for: .normal)
+            configuration?.baseForegroundColor = theme.text.body
         case .secondary:
-            setTitleColor(theme.text.links, for: .normal)
+            configuration?.baseForegroundColor = theme.text.links
         case .warning:
-            setTitleColor(theme.system.red, for: .normal)
+            configuration?.baseForegroundColor = theme.system.red
+        }
+    }
+
+    private func updateImageSpacing() {
+        configuration?.imagePadding = imageSpacing
+    }
+
+    private func update(state: UIButton.State) {
+
+        guard self.state != state else { return }
+
+        if state == .highlighted {
+            Task { await animateIn() }
+        } else {
+            animateOut()
+        }
+    }
+
+    // MARK: - Callbacks
+
+    @objc private func onTapCallback() {
+        Task {
+            await animateIn()
+            animateOut()
+        }
+    }
+
+    // MARK: - Animations
+
+    private func animateIn() async {
+        await withCheckedContinuation { continuation in
+            UIView.animate(
+                withDuration: 0.1,
+                delay: 0.0,
+                options: [.curveEaseInOut, .beginFromCurrentState],
+                animations: {
+                    self.alpha = 0.9
+                    self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+                },
+                completion: { _ in continuation.resume() }
+            )
+        }
+    }
+
+    private func animateOut() {
+        UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.alpha = 1.0
+            self.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         }
     }
 }

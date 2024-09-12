@@ -43,15 +43,6 @@ import Combine
 
 final class ContactBookModel {
 
-    enum MenuItem: UInt {
-        case send
-        case addToFavorites
-        case removeFromFavorites
-        case link
-        case unlink
-        case details
-    }
-
     enum ContentMode {
         case normal
         case shareContacts
@@ -70,16 +61,11 @@ final class ContactBookModel {
     }
 
     enum Action {
-        case sendTokens(paymentInfo: PaymentInfo)
-        case link(model: ContactsManager.Model)
-        case unlink(model: ContactsManager.Model)
-        case showUnlinkSuccess(emojiID: String, name: String)
         case showDetails(model: ContactsManager.Model)
         case showQRDialog
         case shareQR(image: UIImage)
         case shareLink(link: URL)
         case show(dialog: DialogType)
-        case showMenu(model: ContactsManager.Model)
     }
 
     fileprivate enum SectionType: Int {
@@ -157,32 +143,13 @@ final class ContactBookModel {
         Task {
             do {
                 try await contactsManager.fetchModels()
-                contactModels = [contactsManager.tariContactModels, contactsManager.externalModels]
+                let tariContactModels = contactsManager.tariContactModels.filter { $0.internalModel?.addressComponents.isUnknownAddress == false }
+                contactModels = [tariContactModels, contactsManager.externalModels]
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
 
             isPermissionGranted = contactsManager.isPermissionGranted
-        }
-    }
-
-    func performAction(contactID: UUID, menuItemID: UInt) {
-
-        guard let model = contact(contactID: contactID), let menuItem = MenuItem(rawValue: menuItemID) else { return }
-
-        switch menuItem {
-        case .send:
-            performSendAction(model: model)
-        case .addToFavorites:
-            update(isFavorite: true, contact: model)
-        case .removeFromFavorites:
-            update(isFavorite: false, contact: model)
-        case .link:
-            performLinkAction(model: model)
-        case .unlink:
-            performUnlinkAction(model: model)
-        case .details:
-            performShowDetailsAction(model: model)
         }
     }
 
@@ -196,19 +163,6 @@ final class ContactBookModel {
         }
 
         selectedIDs.remove(contactID)
-    }
-
-    func unlink(contact: ContactsManager.Model) {
-
-        guard let emojiID = contact.internalModel?.emojiID.obfuscatedText, let name = contact.externalModel?.fullname else { return }
-
-        do {
-            try contactsManager.unlink(contact: contact)
-            fetchContacts()
-            action = .showUnlinkSuccess(emojiID: emojiID, name: name)
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
     }
 
     func shareSelectedContacts(shareType: ShareType) {
@@ -241,19 +195,10 @@ final class ContactBookModel {
 
     func selectContact(contactID: UUID) {
         guard let model = contact(contactID: contactID) else { return }
-        action = .showMenu(model: model)
+        action = .showDetails(model: model)
     }
 
     // MARK: - Actions
-
-    private func update(isFavorite: Bool, contact: ContactsManager.Model) {
-        do {
-            try contactsManager.update(nameComponents: contact.nameComponents, isFavorite: isFavorite, yat: contact.externalModel?.yat ?? "", contact: contact)
-            fetchContacts()
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
-    }
 
     private func shareQR(deeplink: URL) {
 
@@ -289,27 +234,6 @@ final class ContactBookModel {
         }
     }
 
-    private func performSendAction(model: ContactsManager.Model) {
-        do {
-            guard let paymentInfo = try model.paymentInfo else { return }
-            action = .sendTokens(paymentInfo: paymentInfo)
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
-    }
-
-    private func performLinkAction(model: ContactsManager.Model) {
-        action = .link(model: model)
-    }
-
-    private func performShowDetailsAction(model: ContactsManager.Model) {
-        action = .showDetails(model: model)
-    }
-
-    private func performUnlinkAction(model: ContactsManager.Model) {
-        action = .unlink(model: model)
-    }
-
     // MARK: - Handlers
 
     private func handle(bleError error: Error) {
@@ -333,7 +257,7 @@ final class ContactBookModel {
         let list = selectedIDs
             .compactMap { selectedID in allModels.first { $0.id == selectedID }}
             .compactMap { $0.internalModel }
-            .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", hex: $0.hex ) }
+            .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", tariAddress: $0.addressComponents.fullRaw ) }
 
         let model = ContactListDeeplink(list: list)
 
@@ -348,8 +272,8 @@ final class ContactBookModel {
             $0.filter {
                 guard $0.name.range(of: searchText, options: .caseInsensitive) == nil else { return true }
                 guard let internalModel = $0.internalModel else { return false }
-                guard internalModel.emojiID.range(of: searchText, options: .caseInsensitive) == nil else { return true }
-                return internalModel.hex.range(of: searchText, options: .caseInsensitive) != nil
+                guard internalModel.addressComponents.fullEmoji.range(of: searchText, options: .caseInsensitive) == nil else { return true }
+                return internalModel.addressComponents.fullRaw.range(of: searchText, options: .caseInsensitive) != nil
             }
         }
     }
@@ -363,12 +287,9 @@ final class ContactBookModel {
                 guard !data.element.isEmpty else { return }
 
                 let items: [ContactBookCell.ViewModel] = data.element.map {
-                    let name = (!$0.name.isEmpty ? $0.name : $0.internalModel?.emojiID.obfuscatedText) ?? ""
-                    return ContactBookCell.ViewModel(
+                    ContactBookCell.ViewModel(
                         id: $0.id,
-                        name: name,
-                        avatarText: $0.avatar,
-                        avatarImage: $0.avatarImage,
+                        addressViewModel: $0.contactBookCellAddressViewModel,
                         isFavorite: $0.isFavorite,
                         contactTypeImage: $0.type.image,
                         isSelectable: section?.isSelectable ?? false

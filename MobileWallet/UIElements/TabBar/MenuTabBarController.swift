@@ -134,10 +134,10 @@ private class Transition: NSObject, UIViewControllerAnimatedTransitioning {
         guard
             let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
             let fromView = fromVC.view,
-            let fromIndex = getIndex(forViewController: fromVC),
+            let fromIndex = index(ofViewController: fromVC),
             let toVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to),
             let toView = toVC.view,
-            let toIndex = getIndex(forViewController: toVC)
+            let toIndex = index(ofViewController: toVC)
             else {
                 transitionContext.completeTransition(false)
                 return
@@ -162,11 +162,8 @@ private class Transition: NSObject, UIViewControllerAnimatedTransitioning {
         }
     }
 
-    func getIndex(forViewController vc: UIViewController) -> Int? {
-        viewControllers?
-            .enumerated()
-            .first { $0.element == vc }
-            .map { $0.offset }
+    private func index(ofViewController viewController: UIViewController) -> Int? {
+        viewControllers?.firstIndex(of: viewController)
     }
 }
 

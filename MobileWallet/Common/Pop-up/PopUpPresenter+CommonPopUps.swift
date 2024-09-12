@@ -82,13 +82,11 @@ struct PopUpDialogButtonModel {
     }
 
     let title: String
-    let icon: UIImage?
     let type: ButtonType
     let callback: (() -> Void)?
 
-    init(title: String, icon: UIImage? = nil, type: ButtonType, callback: (() -> Void)? = nil) {
+    init(title: String, type: ButtonType, callback: (() -> Void)? = nil) {
         self.title = title
-        self.icon = icon
         self.type = type
         self.callback = callback
     }
@@ -103,7 +101,15 @@ struct MessageModel {
 
     let title: String
     let message: String?
+    let closeButtonTitle: String?
     let type: MessageType
+
+    init(title: String, message: String?, closeButtonTitle: String? = nil, type: MessageType) {
+        self.title = title
+        self.message = message
+        self.closeButtonTitle = closeButtonTitle
+        self.type = type
+    }
 }
 
 extension PopUpPresenter {
@@ -117,7 +123,14 @@ extension PopUpPresenter {
     }
 
     @MainActor static func show(message: MessageModel) {
-        let model = PopUpDialogModel(title: message.title, message: message.message, buttons: [], hapticType: makeHapticType(model: message))
+
+        var buttons = [PopUpDialogButtonModel]()
+
+        if let closeButtonTitle = message.closeButtonTitle {
+            buttons.append(PopUpDialogButtonModel(title: closeButtonTitle, type: .text))
+        }
+
+        let model = PopUpDialogModel(title: message.title, message: message.message, buttons: buttons, hapticType: makeHapticType(model: message))
         showPopUp(model: model)
         log(message: message)
     }
@@ -135,14 +148,19 @@ extension PopUpPresenter {
         log(message: message)
     }
 
-    @MainActor static func showQRCodeDialog(title: String) -> PopUpQRContentView {
+    @MainActor static func showQRCodeDialog(title: String? = nil, verticalPadding: CGFloat = 24.0, additionalButtons: [PopUpDialogButtonModel] = []) -> PopUpQRContentView {
 
-        let headerView = PopUpHeaderView()
-        let contentView = PopUpQRContentView()
+        var headerView: PopUpHeaderView?
+        let contentView = PopUpQRContentView(verticalPadding: verticalPadding)
         let buttonsView = PopUpButtonsView()
 
-        headerView.label.text = title
-        buttonsView.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), icon: nil, type: .text, callback: { PopUpPresenter.dismissPopup() }))
+        if let title {
+            headerView = PopUpHeaderView()
+            headerView?.label.text = title
+        }
+
+        additionalButtons.forEach(buttonsView.addButton(model:))
+        buttonsView.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
 
         let popUp = TariPopUp(headerSection: headerView, contentSection: contentView, buttonsSection: buttonsView)
         PopUpPresenter.show(popUp: popUp)

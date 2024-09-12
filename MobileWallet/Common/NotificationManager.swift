@@ -227,7 +227,7 @@ final class NotificationManager {
     }
 
     private func sign(message: String) throws -> (hex: String, metadata: MessageMetadata) {
-        let hex = try Tari.shared.walletAddress.publicKey
+        let hex = try Tari.shared.walletAddress.spendKey.byteVector.hex
         guard let apiKey = TariSettings.shared.pushServerApiKey else { throw PushNotificationServerError.missingApiKey }
         let metadata = try Tari.shared.messageSign.sign(message: "\(apiKey)\(hex)\(message)")
         return (hex: hex, metadata: metadata)
@@ -254,13 +254,13 @@ final class NotificationManager {
             }
 
             var responseDict: [String: Any]?
-            if let responseString = String(data: data, encoding: .utf8) {
-                if let data = responseString.data(using: .utf8) {
-                    do {
-                        responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    } catch {
-                        return onError(error)
-                    }
+            let responseString = data.string
+
+            if let data = responseString.data(using: .utf8) {
+                do {
+                    responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                } catch {
+                    return onError(error)
                 }
             }
 

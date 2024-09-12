@@ -52,6 +52,12 @@ final class RoundedLabeledButton: DynamicThemeView {
         return view
     }()
 
+    @View private var iconView: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
@@ -68,7 +74,7 @@ final class RoundedLabeledButton: DynamicThemeView {
     }
 
     var padding: CGFloat = 0.0 {
-        didSet { roundedView.imageEdgeInsets = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding) }
+        didSet { updateIconSize() }
     }
 
     var isSelected: Bool = false {
@@ -76,6 +82,7 @@ final class RoundedLabeledButton: DynamicThemeView {
     }
 
     private var roundedViewHeightConstraints: NSLayoutConstraint?
+    private var iconConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initliasers
 
@@ -93,10 +100,15 @@ final class RoundedLabeledButton: DynamicThemeView {
 
     private func setupConstraints() {
 
-        [roundedView, label].forEach(addSubview)
+        [roundedView, iconView, label].forEach(addSubview)
 
         let roundedViewHeightConstraints = roundedView.heightAnchor.constraint(equalToConstant: 0.0)
         self.roundedViewHeightConstraints = roundedViewHeightConstraints
+
+        iconConstraints = [
+            iconView.widthAnchor.constraint(equalTo: roundedView.widthAnchor),
+            iconView.heightAnchor.constraint(equalTo: roundedView.heightAnchor)
+        ]
 
         let constraints = [
             roundedView.topAnchor.constraint(equalTo: topAnchor),
@@ -105,13 +117,15 @@ final class RoundedLabeledButton: DynamicThemeView {
             roundedView.centerXAnchor.constraint(equalTo: centerXAnchor),
             roundedView.heightAnchor.constraint(equalTo: roundedView.widthAnchor),
             roundedViewHeightConstraints,
+            iconView.centerXAnchor.constraint(equalTo: roundedView.centerXAnchor),
+            iconView.centerYAnchor.constraint(equalTo: roundedView.centerYAnchor),
             label.topAnchor.constraint(equalTo: roundedView.bottomAnchor, constant: 5.0),
             label.leadingAnchor.constraint(equalTo: leadingAnchor),
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
             label.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
-        NSLayoutConstraint.activate(constraints)
+        NSLayoutConstraint.activate(constraints + iconConstraints)
     }
 
     private func setupCallbacks() {
@@ -128,14 +142,18 @@ final class RoundedLabeledButton: DynamicThemeView {
         updateColors(theme: theme)
     }
 
+    func update(image: UIImage?, text: String?) {
+        iconView.image = image
+        label.text = text
+    }
+
     private func updateColors(theme: ColorTheme) {
         roundedView.backgroundColor = isSelected ? theme.brand.purple : theme.backgrounds.primary
-        roundedView.tintColor = isSelected ? theme.backgrounds.primary : theme.icons.default
+        iconView.tintColor = isSelected ? theme.backgrounds.primary : theme.icons.default
         label.textColor = isSelected ? theme.text.heading : theme.text.body
     }
 
-    func update(image: UIImage?, text: String?) {
-        roundedView.setImage(image, for: .normal)
-        label.text = text
+    private func updateIconSize() {
+        iconConstraints.forEach { $0.constant = -2.0 * padding }
     }
 }

@@ -45,6 +45,8 @@ extension Data {
         case last
     }
 
+    var string: String { String(decoding: self, as: UTF8.self) }
+
     var isBLEChunk: Bool { bleChunkType != nil }
 
     var bleChunkType: BLEChunkType? {
@@ -92,14 +94,11 @@ extension Data {
 
 extension Array where Element == Data {
 
+    var stringFromBLEChunks: String? { dataFromBLEChunks?.string }
+
     var dataFromBLEChunks: Data? {
         guard first(where: { !$0.isBLEChunk }) == nil else { return nil }
         return map { $0.dropLast() }
             .reduce(into: Data()) { $0.append($1) }
-    }
-
-    var stringFromBLEChunks: String? {
-        guard let dataFromBLEChunks else { return nil }
-        return String(data: dataFromBLEChunks, encoding: .utf8)
     }
 }

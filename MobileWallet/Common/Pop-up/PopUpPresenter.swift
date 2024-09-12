@@ -64,12 +64,13 @@ enum PopUpPresenter {
         attributes.entryBackground = .clear
         attributes.screenBackground = .color(color: EKColor(.Static.popupOverlay))
         attributes.positionConstraints.size.width = .offset(value: sideOffset)
-        attributes.positionConstraints.maxSize.height = .ratio(value: hasNotch ? 0.85 : 0.9)
+        attributes.positionConstraints.maxSize.height = hasNotch ? .offset(value: 48.0) : .ratio(value: 0.95)
         attributes.positionConstraints.safeArea = .empty(fillSafeArea: false)
         attributes.screenInteraction = .absorbTouches
         attributes.entryInteraction = .forward
         attributes.displayDuration = .infinity
         attributes.precedence = .enqueue(priority: .normal)
+        attributes.positionConstraints.size.height = .fill
         return attributes
     }()
 
@@ -87,7 +88,10 @@ enum PopUpPresenter {
             attributes.hapticFeedbackType = makeHapticFeedbackType(configuration: configuration)
         }
 
-        SwiftEntryKit.display(entry: popUp, using: attributes)
+        DispatchQueue.main.async {
+            SwiftEntryKit.display(entry: popUp, using: attributes)
+        }
+
         UIApplication.shared.hideKeyboard()
     }
 

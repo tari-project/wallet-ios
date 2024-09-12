@@ -1,10 +1,10 @@
-//  TransactionHistoryHeaderView.swift
+//  RoundedAddressView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/08/2021
+	Created by Adrian Truszczyński on 18/07/2024
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -40,27 +40,29 @@
 
 import TariCommon
 
-final class TransactionHistoryHeaderView: DynamicThemeHeaderFooterView {
+final class RoundedAddressView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
-        let view = UILabel()
-        view.font = Theme.shared.fonts.txSectionTitleLabel
-        return view
-    }()
+    @View private var addressView = AddressView()
 
     // MARK: - Properties
 
-    var title: String? {
-        get { titleLabel.text }
-        set { titleLabel.text = newValue }
+    var isCompact: Bool {
+        get { addressView.isCompact }
+        set { addressView.isCompact = newValue }
     }
 
-    // MARK: - Initializers
+    var onViewDetailsButtonTap: (() -> Void)? {
+        get { addressView.onViewDetailsButtonTap }
+        set { addressView.onViewDetailsButtonTap = newValue }
+    }
 
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupViews()
         setupConstraints()
     }
 
@@ -70,15 +72,20 @@ final class TransactionHistoryHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Setups
 
+    private func setupViews() {
+        layer.cornerRadius = 10.0
+    }
+
     private func setupConstraints() {
 
-        contentView.addSubview(titleLabel)
+        addSubview(addressView)
 
         let constraints = [
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20.0)
+            addressView.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
+            addressView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 10.0),
+            addressView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -10.0),
+            addressView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0),
+            addressView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -88,7 +95,10 @@ final class TransactionHistoryHeaderView: DynamicThemeHeaderFooterView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        tintColor = theme.backgrounds.primary
-        titleLabel.textColor = theme.text.heading
+        backgroundColor = theme.backgrounds.primary
+    }
+
+    func update(viewModel: AddressView.ViewModel) {
+        addressView.update(viewModel: viewModel)
     }
 }

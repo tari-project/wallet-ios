@@ -133,6 +133,8 @@ final class Tari: MainServiceable {
             torConnectionStatus: torManager.$connectionStatus.eraseToAnyPublisher(),
             torBootstrapProgress: torManager.$bootstrapProgress.eraseToAnyPublisher(),
             baseNodeConnectionStatus: walletManager.$baseNodeConnectionStatus.eraseToAnyPublisher(),
+            scannedHeight: walletManager.$scannedHeight.eraseToAnyPublisher(),
+            blockHeight: $blockHeight.eraseToAnyPublisher(),
             baseNodeSyncStatus: validation.$status.eraseToAnyPublisher()
         )
         setupCallbacks()
@@ -201,7 +203,8 @@ final class Tari: MainServiceable {
         await waitForTor()
         guard await UIApplication.shared.applicationState != .background else { return }
         try startWallet(seedWords: nil)
-        try connection.selectCurrentNode()
+        guard try !connection.selectCurrentNode() else { return }
+        try switchBaseNode()
     }
 
     func restoreWallet(seedWords: [String]) throws {

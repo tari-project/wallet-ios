@@ -166,7 +166,15 @@ final class RestoreWalletFromSeedsModel {
         }
     }
 
+    func deleteWallet() {
+        Tari.shared.deleteWallet()
+        Tari.shared.canAutomaticalyReconnectWallet = false
+    }
+
     private func restoreWallet(seedWords: [String]) {
+
+        deleteWallet()
+
         do {
             try Tari.shared.restoreWallet(seedWords: seedWords)
             try selectCustomBaseNode()

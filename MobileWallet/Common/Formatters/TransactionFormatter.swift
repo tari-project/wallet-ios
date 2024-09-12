@@ -42,7 +42,6 @@ final class TransactionFormatter {
 
     struct Model: Identifiable {
         var id: UInt64
-        let avatar: RoundedAvatarView.Avatar
         let titleComponents: [StylizedLabel.StylizedText]
         let timestamp: TimeInterval
         let amountModel: AmountBadge.ViewModel
@@ -66,14 +65,13 @@ final class TransactionFormatter {
         let contactName = try contactName(transaction: transaction)
 
         if !filter.isEmpty {
-            guard try transaction.address.emojis.range(of: filter) != nil || transaction.address.byteVector.hex.range(of: filter) != nil || contactName.range(of: filter) != nil else { return nil }
+            guard try transaction.address.components.fullEmoji.range(of: filter) != nil || transaction.address.components.fullRaw.range(of: filter) != nil || contactName.range(of: filter) != nil else { return nil }
         }
 
         let messageComponents = try messageComponents(transaction: transaction)
 
         return try Model(
             id: transaction.identifier,
-            avatar: avatar(transaction: transaction),
             titleComponents: transactionTitleComponents(transaction: transaction, name: contactName),
             timestamp: TimeInterval(transaction.timestamp),
             amountModel: amountViewModel(transaction: transaction),
@@ -83,33 +81,29 @@ final class TransactionFormatter {
         )
     }
 
-    func contact(hex: String) -> ContactsManager.Model? {
-        contactsManager.tariContactModels.first { $0.internalModel?.hex == hex }
-    }
-
-    private func avatar(transaction: Transaction) throws -> RoundedAvatarView.Avatar {
-
-        guard try !transaction.isOneSidedPayment else {
-            return .text(localized("transaction.one_sided_payment.avatar"))
-        }
-
-        let contact = try contact(transaction: transaction)
-
-        if let image = contact?.avatarImage {
-            return .image(image)
-        }
-
-        let avatar = try contact?.avatar ?? transaction.address.emojis.firstOrEmpty
-        return .text(avatar)
+    func contact(uniqueIdentifier: String) -> ContactsManager.Model? {
+        contactsManager.tariContactModels.first { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }
     }
 
     private func contactName(transaction: Transaction) throws -> String {
-        guard try !transaction.isCoinbase else { return localized("transaction.coinbase.user_placeholder") }
         let contact = try contact(transaction: transaction)
         return contact?.name ?? localized("transaction.one_sided_payment.inbound_user_placeholder")
     }
 
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
+
+        guard try !transaction.isCoinbase else {
+
+            guard try transaction.isOutboundTransaction else {
+                return [StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.inbound"), style: .bold)]
+            }
+
+            return [
+                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.1.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.2"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.3.bold"), style: .bold)
+            ]
+        }
 
         if try transaction.isOutboundTransaction {
             return [
@@ -195,7 +189,6 @@ final class TransactionFormatter {
     // MARK: - Helpers
 
     private func contact(transaction: Transaction) throws -> ContactsManager.Model? {
-        let hex = try transaction.address.byteVector.hex
-        return contact(hex: hex)
+        contact(uniqueIdentifier: try transaction.address.components.uniqueIdentifier)
     }
 }

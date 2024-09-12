@@ -44,11 +44,9 @@ import YatLib
 
 final class ProfileModel {
 
-    struct EmojiData {
-        let emojiID: String
-        let hex: String?
-        let copyText: String
-        let tooltipText: String?
+    enum AddressType {
+        case address(components: TariAddressComponents)
+        case yat(String)
     }
 
     enum YatButtonState {
@@ -69,8 +67,8 @@ final class ProfileModel {
 
     // MARK: - View Model
 
-    @Published var name: String?
-    @Published private(set) var emojiData: EmojiData?
+    @Published private(set) var name: String?
+    @Published private(set) var addressType: AddressType?
     @Published private(set) var isYatOutOfSync: Bool = false
     @Published private(set) var errorMessage: MessageModel?
     @Published private(set) var yatButtonState: YatButtonState = .hidden
@@ -79,11 +77,12 @@ final class ProfileModel {
 
     // MARK: - Properties
 
-    private var cancellables = Set<AnyCancellable>()
+    private(set) var addressComponents: TariAddressComponents?
 
     private var walletAddress: TariAddress?
     private var yat: String?
     private var bleTask: BLECentralTask?
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
@@ -101,7 +100,7 @@ final class ProfileModel {
             .store(in: &cancellables)
 
         $yatButtonState
-            .sink { [weak self] in try? self?.updatePresentedData(yatButtonState: $0) }
+            .sink { [weak self] in self?.update(yatButtonState: $0) }
             .store(in: &cancellables)
     }
 
@@ -119,7 +118,20 @@ final class ProfileModel {
     }
 
     func reconnectYat() {
-        yatAddress = try? walletAddress?.byteVector.hex
+        yatAddress = try? walletAddress?.components.fullRaw
+    }
+
+    func update(name: String?) {
+        guard let name, !name.isEmpty else {
+            errorMessage = MessageModel(
+                title: localized("profile_view.error.no_name.title"),
+                message: localized("profile_view.error.no_name.description"),
+                closeButtonTitle: localized("profile_view.error.no_name.button"),
+                type: .normal
+            )
+            return
+        }
+        self.name = name
     }
 
     private func updateData() {
@@ -127,9 +139,11 @@ final class ProfileModel {
         name = UserSettingsManager.name
 
         do {
-            self.walletAddress = try Tari.shared.walletAddress
+            walletAddress = try Tari.shared.walletAddress
+            guard let walletAddress else { return }
+            addressComponents = try walletAddress.components
         } catch {
-            emojiData = nil
+            addressComponents = nil
             errorMessage = MessageModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"), type: .error)
         }
     }
@@ -140,12 +154,23 @@ final class ProfileModel {
 
         yatButtonState = .loading
 
-        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: connectedYat, tags: YatRecordTag.XTRAddress.rawValue)
+        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: connectedYat, tags: YatRecordTag.XTMAddress.rawValue)
             .sink(
                 receiveCompletion: { [weak self] in self?.handle(completion: $0) },
                 receiveValue: { [weak self] in self?.handle(paymentAddressResponse: $0, yat: connectedYat) }
             )
             .store(in: &cancellables)
+    }
+
+    private func update(yatButtonState: YatButtonState) {
+        switch yatButtonState {
+        case .on:
+            guard let yat else { return }
+            addressType = .yat(yat)
+        case .off, .loading, .hidden:
+            guard let addressComponents else { return }
+            addressType = .address(components: addressComponents)
+        }
     }
 
     func generateQrCode() {
@@ -188,25 +213,14 @@ final class ProfileModel {
 
     private func makeDeeplink() throws -> URL? {
         guard let alias = name else { return nil }
-        let hex = try Tari.shared.walletAddress.byteVector.hex
-        let deeplinkModel = UserProfileDeeplink(alias: alias, tariAddress: hex)
+        let rawAddress = try Tari.shared.walletAddress.components.fullRaw
+        let deeplinkModel = UserProfileDeeplink(alias: alias, tariAddress: rawAddress)
         return try DeepLinkFormatter.deeplink(model: deeplinkModel)
     }
 
     private func show(error: Error?) {
         yatButtonState = .hidden
         self.errorMessage = ErrorMessageManager.errorModel(forError: error)
-    }
-
-    private func updatePresentedData(yatButtonState: YatButtonState) throws {
-        switch yatButtonState {
-        case .hidden, .loading, .off:
-            guard let walletAddress = walletAddress else { return }
-            emojiData = EmojiData(emojiID: try walletAddress.emojis, hex: try walletAddress.byteVector.hex, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
-        case .on:
-            guard let yat = self.yat else { return }
-            emojiData = EmojiData(emojiID: yat, hex: nil, copyText: localized("emoji.yat.copy"), tooltipText: nil)
-        }
     }
 
     // MARK: - Handlers
@@ -216,12 +230,12 @@ final class ProfileModel {
         self.yat = yat
         yatButtonState = .off
 
-        guard let walletAddress = paymentAddressResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else {
+        guard let walletAddress = paymentAddressResponse.result?[YatRecordTag.XTMAddress.rawValue]?.address else {
             isYatOutOfSync = true
             return
         }
 
-        isYatOutOfSync = walletAddress != (try? self.walletAddress?.byteVector.hex)
+        isYatOutOfSync = walletAddress != (try? self.walletAddress?.components.fullRaw)
     }
 
     private func handle(completion: Subscribers.Completion<APIError>) {

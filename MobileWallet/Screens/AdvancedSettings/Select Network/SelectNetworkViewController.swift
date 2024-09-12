@@ -93,9 +93,7 @@ final class SelectNetworkViewController: SettingsParentTableViewController {
 
         var snapshot = NSDiffableDataSourceSnapshot<Int, SystemMenuTableViewCellItem>()
 
-        let items = models
-            .enumerated()
-            .map { SystemMenuTableViewCellItem(title: $1.networkName, mark: $1.isSelected ? .scheduled : .none, hasArrow: false) }
+        let items = models.map { SystemMenuTableViewCellItem(title: $0.networkName, mark: $0.isSelected ? .scheduled : .none, hasArrow: false) }
 
         snapshot.appendSections([0])
         snapshot.appendItems(items, toSection: 0)

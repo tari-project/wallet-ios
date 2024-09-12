@@ -40,10 +40,6 @@
 
 final class PublicKey {
 
-    enum InternalError: Error {
-        case invalidHex
-    }
-
     // MARK: - Properties
 
     let pointer: OpaquePointer
@@ -57,6 +53,16 @@ final class PublicKey {
         }
     }
 
+    var emojis: String {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = public_key_get_emoji_encoding(pointer, errorCodePointer)
+            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+            return String(cString: result)
+        }
+    }
+
     // MARK: - Initialisers
 
     init(pointer: OpaquePointer) {
@@ -64,8 +70,6 @@ final class PublicKey {
     }
 
     init(hex: String) throws {
-
-        guard hex.count == 64, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)

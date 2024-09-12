@@ -67,7 +67,8 @@ final class AddRecipientModel {
 
     @Published private(set) var listSections: [AddRecipientView.Section] = []
     @Published private(set) var action: Action?
-    @Published private(set) var yatID: String?
+    @Published private(set) var isYatFound: Bool = false
+    @Published private(set) var isAddressPreviewAvaiable: Bool = false
     @Published private(set) var walletAddressPreview: String?
     @Published private(set) var canMoveToNextStep: Bool = false
     @Published private(set) var errorMessage: String?
@@ -79,6 +80,7 @@ final class AddRecipientModel {
     private let contactsManager = ContactsManager()
 
     @Published private var address: TariAddress?
+    @Published private var yatID: String?
     @Published private var contactModels: [ContactsManager.Model] = []
 
     private weak var bleTask: BLECentralTask?
@@ -121,6 +123,14 @@ final class AddRecipientModel {
             .map { $0 != nil }
             .assign(to: \.canMoveToNextStep, on: self)
             .store(in: &cancellables)
+
+        $yatID
+            .sink { [weak self] in self?.isYatFound = $0 != nil }
+            .store(in: &cancellables)
+
+        Publishers.CombineLatest($yatID, $address)
+            .sink { [weak self] in self?.isAddressPreviewAvaiable = $0 != nil && $1 != nil }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -143,10 +153,13 @@ final class AddRecipientModel {
         let addresses = try transactions
             .sorted { try $0.timestamp > $1.timestamp }
             .map { try $0.address }
-            .reduce(into: [TariAddress]()) { result, address in
-                guard !result.contains(address) else { return }
-                result.append(address)
+            .reduce(into: (identifiers: [String](), output: [TariAddress]())) { result, address in
+                let addressComponents = try address.components
+                guard !result.identifiers.contains(addressComponents.uniqueIdentifier), !addressComponents.isUnknownAddress else { return }
+                result.identifiers.append(addressComponents.uniqueIdentifier)
+                result.output.append(address)
             }
+            .output
             .prefix(3)
 
         return Array(addresses)
@@ -157,7 +170,7 @@ final class AddRecipientModel {
         let allContacts = contactsManager.tariContactModels
 
         do {
-            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.hex == address.byteVector.hex }}
+            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents.uniqueIdentifier == address.components.uniqueIdentifier }}
         } catch {
             return []
         }
@@ -174,15 +187,17 @@ final class AddRecipientModel {
             if let rawAmount = deeplink.amount {
                 amount = MicroTari(rawAmount)
             }
-            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
+            guard let addressComponents = try? TariAddress(base58: deeplink.receiverAddress).components else { return }
+            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
         } else if let deeplink = deeplink as? UserProfileDeeplink {
-            handleAddressSelection(paymentInfo: PaymentInfo(address: deeplink.tariAddress, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+            guard let addressComponents = try? TariAddress(base58: deeplink.tariAddress).components else { return }
+            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
         }
     }
 
     func select(elementID: UUID) {
         guard let model = contactDictornary[elementID]?.internalModel else { return }
-        handleAddressSelection(paymentInfo: PaymentInfo(address: model.hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
+        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: model.addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
     func fetchTransactionDataViaBLE() {
@@ -195,7 +210,7 @@ final class AddRecipientModel {
 
         Task {
             do {
-                guard let data = try await bleTask.findAndRead(), let rawDeeplink = String(data: data, encoding: .utf8), let url = URL(string: rawDeeplink) else { return }
+                guard let rawDeeplink = try await bleTask.findAndRead()?.string, let url = URL(string: rawDeeplink) else { return }
                 let deeplink = try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: url)
                 incomingUserProfile = deeplink
                 action = .show(dialog: .bleTransactionConfirmationDialog(receiverName: deeplink.alias))
@@ -217,7 +232,9 @@ final class AddRecipientModel {
         }
 
         self.incomingUserProfile = nil
-        handleAddressSelection(paymentInfo: PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+
+        guard let addressComponents = try? TariAddress(base58: incomingUserProfile.tariAddress).components else { return }
+        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
     }
 
     func cancelIncomingTransaction() {
@@ -226,17 +243,17 @@ final class AddRecipientModel {
 
     func toogleYatPreview() {
         let isAddressVisible = walletAddressPreview != nil
-        walletAddressPreview = isAddressVisible ? nil : try? address?.byteVector.hex
+        walletAddressPreview = isAddressVisible ? nil : try? address?.components.fullRaw
     }
 
     func requestContinue() {
 
-        guard let hex = try? address?.byteVector.hex else {
+        guard let addressComponents = try? address?.components else {
             errorMessage = localized("add_recipient.error.invalid_emoji_id")
             return
         }
 
-        handleAddressSelection(paymentInfo: PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
+        handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
     // MARK: - Handlers
@@ -254,8 +271,8 @@ final class AddRecipientModel {
                 $0.filter {
                     guard $0.name.range(of: searchText, options: .caseInsensitive) == nil else { return true }
                     guard let internalModel = $0.internalModel else { return false }
-                    guard internalModel.emojiID.range(of: searchText, options: .caseInsensitive) == nil else { return true }
-                    return internalModel.hex.range(of: searchText, options: .caseInsensitive) != nil
+                    guard internalModel.addressComponents.fullEmoji.range(of: searchText, options: .caseInsensitive) == nil else { return true }
+                    return internalModel.addressComponents.fullRaw.range(of: searchText, options: .caseInsensitive) != nil
                 }
             }
     }
@@ -265,7 +282,7 @@ final class AddRecipientModel {
         self.yatID = nil
         guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
 
-        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: yatID, tags: YatRecordTag.XTRAddress.rawValue)
+        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: yatID, tags: YatRecordTag.XTMAddress.rawValue)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] in self?.handle(apiResponse: $0, yatID: yatID) }
@@ -274,7 +291,7 @@ final class AddRecipientModel {
     }
 
     private func handle(apiResponse: PaymentAddressResponse, yatID: String) {
-        guard let walletAddress = apiResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else { return }
+        guard let walletAddress = apiResponse.result?[YatRecordTag.XTMAddress.rawValue]?.address else { return }
         generateAddress(text: walletAddress)
         self.yatID = yatID
     }
@@ -292,19 +309,7 @@ final class AddRecipientModel {
                 guard !data.element.isEmpty else { return }
 
                 let items: [AddRecipientView.ItemType] = data.element.map {
-
-                    let model = $0.model
-                    let name = (!model.name.isEmpty ? model.name : model.internalModel?.emojiID.obfuscatedText) ?? ""
-
-                    let viewModel = ContactBookCell.ViewModel(
-                        id: $0.identifier,
-                        name: name,
-                        avatarText: model.avatar,
-                        avatarImage: model.avatarImage,
-                        isFavorite: false,
-                        contactTypeImage: model.type.image,
-                        isSelectable: false
-                    )
+                    let viewModel = ContactBookCell.ViewModel(id: $0.identifier, addressViewModel: $0.model.contactBookCellAddressViewModel, isFavorite: false, contactTypeImage: nil, isSelectable: false)
                     return .contact(model: viewModel)
                 }
 
@@ -336,23 +341,29 @@ final class AddRecipientModel {
     // MARK: - Helpers
 
     private func generateAddress(text: String) {
-        guard let address = try? makeAddress(text: text), verify(address: address) else {
+
+        guard let address = try? makeAddress(text: text) else {
             address = nil
+            errorMessage = nil
             return
         }
-        self.address = address
+
+        let isValid = verify(address: address)
+        self.address = isValid ? address : nil
     }
 
     private func makeAddress(text: String) throws -> TariAddress {
-        do { return try TariAddress(emojiID: text) } catch {}
-        return try TariAddress(hex: text)
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        return try TariAddress.makeTariAddress(input: trimmedText)
     }
 
     private func verify(address: TariAddress) -> Bool {
-        guard let hex = try? address.byteVector.hex, let userHex = try? Tari.shared.walletAddress.byteVector.hex, hex != userHex else {
+
+        guard let uniqueIdentifier = try? address.components.uniqueIdentifier, let userUniqueIdentifier = try? Tari.shared.walletAddress.components.uniqueIdentifier, uniqueIdentifier != userUniqueIdentifier else {
             errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
             return false
         }
+
         errorMessage = nil
         return true
     }

@@ -94,9 +94,13 @@ final class AddRecipientViewController: UIViewController {
             .sink { [weak self] in self?.mainView.isContinueButtonEnabled = $0 }
             .store(in: &cancellables)
 
-        model.$yatID
+        model.$isYatFound
             .receive(on: DispatchQueue.main)
-            .map { $0 != nil }
+            .assign(to: \.isYatLogoVisible, on: mainView)
+            .store(in: &cancellables)
+
+        model.$isAddressPreviewAvaiable
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isPreviewButtonVisible, on: mainView)
             .store(in: &cancellables)
 
@@ -106,7 +110,7 @@ final class AddRecipientViewController: UIViewController {
             .store(in: &cancellables)
 
         model.$errorMessage
-            .compactMap { $0 }
+            .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.errorMessage = $0 }
             .store(in: &cancellables)

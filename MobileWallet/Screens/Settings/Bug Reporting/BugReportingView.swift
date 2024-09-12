@@ -106,7 +106,7 @@ final class BugReportingView: BaseNavigationContentView {
 
     @View private var logsButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
+        view.style = .secondary
         view.setTitle(localized("bug_reporting.button.view_logs"), for: .normal)
         return view
     }()
@@ -212,7 +212,7 @@ final class BugReportingView: BaseNavigationContentView {
     // MARK: - Updates
 
     private func updateSendButton() {
-        sendButton.variation = isProcessing ? .loading : .normal
+        sendButton.style = isProcessing ? .loading : .normal
     }
 
     override func update(theme: ColorTheme) {

@@ -40,8 +40,12 @@
 
 final class TariAddress {
 
-    enum InternalError: Error {
-        case invalidHex
+    struct Network {
+        let value: UInt8
+    }
+
+    struct Features {
+        let value: UInt8
     }
 
     // MARK: - Properties
@@ -68,22 +72,71 @@ final class TariAddress {
         }
     }
 
+    var network: Network {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = tari_address_network_u8(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return Network(value: result)
+        }
+    }
+
+    var features: Features {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = tari_address_features_u8(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return Features(value: result)
+        }
+    }
+
+    var viewKey: PublicKey? {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = tari_address_view_key(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            guard let result else { return nil }
+            return PublicKey(pointer: result)
+        }
+    }
+
+    var spendKey: PublicKey {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = tari_address_spend_key(pointer, errorCodePointer)
+            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+            return PublicKey(pointer: result)
+        }
+    }
+
+    var checksum: UInt8 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = tari_address_checksum_u8(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
+        }
+    }
+
     // MARK: - Initialisers
 
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
 
-    init(hex: String) throws {
-
-        guard hex.count == 66, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
+    init(base58: String) throws {
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = tari_address_from_hex(hex, errorCodePointer)
+        let pointer = tari_address_from_base58(base58, errorCodePointer)
 
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let pointer else { throw WalletError(code: errorCode) }
         self.pointer = pointer
     }
 
@@ -105,18 +158,61 @@ final class TariAddress {
     }
 }
 
-extension TariAddress: Equatable {
+extension TariAddress {
 
-    static func == (lhs: TariAddress, rhs: TariAddress) -> Bool {
-        guard let leftHex = try? lhs.byteVector.hex, let rightHex = try? rhs.byteVector.hex else { return false }
-        return leftHex == rightHex
-    }
-
+    @available(*, deprecated, message: "This getter is obsolete and it will be removed in the future.")
     var publicKey: String {
         get throws { try String(byteVector.hex.dropLast(2)) }
     }
 
-    var isUnknownUser: Bool {
-        get throws { try publicKey.filter { $0 == "0" }.count == 64 }
+    static func makeTariAddress(input: String) throws -> TariAddress {
+        do { return try TariAddress(emojiID: input) } catch {}
+        return try TariAddress(base58: input)
+    }
+
+    var components: TariAddressComponents {
+        get throws { try TariAddressComponents(address: self) }
+    }
+}
+
+extension TariAddress.Network {
+
+    var name: String {
+        switch value {
+        case 0:
+            return "MainNet"
+        case 1:
+            return "StageNet"
+        case 2:
+            return "NextNet"
+        default:
+            return "TestNet"
+        }
+    }
+}
+
+extension TariAddress.Features {
+
+    enum Feature: UInt8, CaseIterable {
+        case oneSided = 0b00000001
+        case interactive = 0b00000010
+    }
+
+    var names: [String] {
+        Feature.allCases
+            .filter { value.flag(bitmask: $0.rawValue) }
+            .map(\.name)
+    }
+}
+
+extension TariAddress.Features.Feature {
+
+    var name: String {
+        switch self {
+        case .oneSided:
+            return localized("address_features.one_sided")
+        case .interactive:
+            return localized("address_features.interactive")
+        }
     }
 }

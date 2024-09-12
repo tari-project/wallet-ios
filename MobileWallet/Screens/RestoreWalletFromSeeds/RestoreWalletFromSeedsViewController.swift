@@ -143,6 +143,10 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
             AppRouter.transitionToSplashScreen(isWalletConnected: true)
         }
 
+        overlay.onFailure = { [weak self] in
+            self?.model.deleteWallet()
+        }
+
         show(overlay: overlay)
     }
 

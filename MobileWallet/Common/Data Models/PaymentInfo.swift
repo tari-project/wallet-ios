@@ -39,7 +39,7 @@
 */
 
 struct PaymentInfo {
-    let address: String
+    let addressComponents: TariAddressComponents
     let alias: String?
     let yatID: String?
     let amount: MicroTari?

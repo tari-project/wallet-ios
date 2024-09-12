@@ -52,7 +52,6 @@ final class DataFlowManager {
     }
 
     private func setupCallbacks() {
-
         Tari.shared.$isWalletConnected
             .filter { $0 }
             .sink { [weak self] _ in self?.updateUserName() }
@@ -60,7 +59,7 @@ final class DataFlowManager {
     }
 
     private func updateUserName() {
-        guard UserSettingsManager.name == nil, let address = try? Tari.shared.walletAddress.emojis.prefix(3) else { return }
+        guard UserSettingsManager.name == nil, let address = try? Tari.shared.walletAddress.components.coreAddressPrefix else { return }
         UserSettingsManager.name = [localized("common.user"), String(address)].joined(separator: " ")
     }
 }

@@ -65,7 +65,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupBindings()
+        setupCallbacks()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -75,17 +75,17 @@ final class ProfileViewController: SecureViewController<ProfileView> {
 
     // MARK: - Setups
 
-    private func setupBindings() {
+    private func setupCallbacks() {
 
         model.$name
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.update(username: $0) }
             .store(in: &cancellables)
 
-        model.$emojiData
+        model.$addressType
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.update(emojiID: $0.emojiID, hex: $0.hex, copyText: $0.copyText, tooltopText: $0.tooltipText) }
+            .sink { [weak self] in self?.handle(addressType: $0) }
             .store(in: &cancellables)
 
         model.$isYatOutOfSync
@@ -107,7 +107,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         model.$yatAddress
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.showYatOnboardingFlow(publicKey: $0) }
+            .sink { [weak self] in self?.showYatOnboardingFlow(rawAddress: $0) }
             .store(in: &cancellables)
 
         model.$action
@@ -143,9 +143,27 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         mainView.onBleButtonTap = { [weak self] in
             self?.model.shareContactUsingBLE()
         }
+
+        guard let addressComponents = model.addressComponents else { return }
+        mainView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
+
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in self?.model.updateYatIdData() }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
+
+    private func handle(addressType: ProfileModel.AddressType) {
+        switch addressType {
+        case let .address(components):
+            let viewModel = AddressView.ViewModel(prefix: components.networkAndFeatures, text: .truncated(prefix: components.coreAddressPrefix, suffix: components.coreAddressSuffix), isDetailsButtonVisible: true)
+            mainView.update(addressViewModel: viewModel, isTariAddress: true)
+        case let .yat(yat):
+            let viewModel = AddressView.ViewModel(prefix: nil, text: .single(yat), isDetailsButtonVisible: false)
+            mainView.update(addressViewModel: viewModel, isTariAddress: false)
+        }
+    }
 
     private func handle(yatButtonState: ProfileModel.YatButtonState) {
         switch yatButtonState {
@@ -164,9 +182,9 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         PopUpPresenter.show(message: error)
     }
 
-    private func showYatOnboardingFlow(publicKey: String) {
+    private func showYatOnboardingFlow(rawAddress: String) {
         Yat.integration.showOnboarding(onViewController: self, records: [
-            YatRecordInput(tag: .XTRAddress, value: publicKey)
+            YatRecordInput(tag: .XTMAddress, value: rawAddress)
         ])
     }
 
@@ -207,7 +225,7 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         ]
 
         FormOverlayPresenter.showForm(title: localized("profile_view.form.title"), textFieldModels: models, presenter: self, onClose: { [weak self] in
-            self?.model.name = name
+            self?.model.update(name: name)
         })
     }
 

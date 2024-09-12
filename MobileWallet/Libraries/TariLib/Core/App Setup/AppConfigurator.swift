@@ -85,6 +85,7 @@ final class AppConfigurator {
         StatusLoggerManager.shared.configure()
         DataFlowManager.shared.configure()
         LocalNotificationsManager.shared.configure()
+        ScreenshotPopUpHandler.shared.configure()
     }
 
     private func configureCallbacks() {

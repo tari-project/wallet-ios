@@ -51,7 +51,7 @@ final class TransactionDetailsModel {
     @Published private(set) var amount: String?
     @Published private(set) var fee: String?
     @Published private(set) var transactionDirection: String?
-    @Published private(set) var emojiIdViewModel: EmojiIdView.ViewModel?
+    @Published private(set) var addressComponents: TariAddressComponents?
     @Published private(set) var userAlias: String?
     @Published private(set) var isContactSectionVisible: Bool = true
     @Published private(set) var isAddContactButtonVisible: Bool = true
@@ -121,7 +121,7 @@ final class TransactionDetailsModel {
             title = try fetchTitle()
             transactionState = try fetchTransactionState()
             transactionDirection = try fetchTransactionDirection()
-            emojiIdViewModel = try fetchEmojiIdViewModel()
+            addressComponents = try fetchAddressComponents()
             isContactSectionVisible = try !transaction.isOneSidedPayment && !transaction.isCoinbase
             subtitle = try fetchSubtitle()
             amount = try fetchAmount()
@@ -270,16 +270,13 @@ final class TransactionDetailsModel {
         return MicroTari(fee).formattedWithOperator
     }
 
-    private func fetchEmojiIdViewModel() throws -> EmojiIdView.ViewModel {
-        let address = try transaction.address
-        let emojiID = try address.emojis
-        let hex = try address.byteVector.hex
-        return EmojiIdView.ViewModel(emojiID: emojiID, hex: hex)
+    private func fetchAddressComponents() throws -> TariAddressComponents {
+        try TariAddressComponents(address: transaction.address)
     }
 
     private func fetchContactModel() async throws -> ContactsManager.Model? {
         try await contactsManager.fetchModels()
-        return try contactsManager.tariContactModels.first { try $0.internalModel?.hex == transaction.address.byteVector.hex }
+        return try contactsManager.tariContactModels.first { try $0.internalModel?.addressComponents.uniqueIdentifier == transaction.address.components.uniqueIdentifier }
     }
 
     private func fetchLinkToOpen() -> URL? {

@@ -237,29 +237,29 @@ final class DeepLinkFormatterTests: XCTestCase {
 
     func testValidContactListAddDeeplinkDecoding() {
 
-        let inputDeeplink = URL(string: "tari://test_network/contacts?list[0][alias]=MrWhite&list[0][hex]=FirstHex&list[1][alias]=MrOrange&list[1][hex]=SecondHex")!
+        let inputDeeplink = URL(string: "tari://test_network/contacts?list[0][alias]=MrWhite&list[0][tariAddress]=FirstHex&list[1][alias]=MrOrange&list[1][tariAddress]=SecondHex")!
         let expectedResult = ContactListDeeplink(list: [
-            ContactListDeeplink.Contact(alias: "MrWhite", hex: "FirstHex"),
-            ContactListDeeplink.Contact(alias: "MrOrange", hex: "SecondHex")
+            ContactListDeeplink.Contact(alias: "MrWhite", tariAddress: "FirstHex"),
+            ContactListDeeplink.Contact(alias: "MrOrange", tariAddress: "SecondHex")
         ])
 
         let result = try! DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: inputDeeplink)
 
         XCTAssertEqual(result.list.count, expectedResult.list.count)
         XCTAssertEqual(result.list[0].alias, expectedResult.list[0].alias)
-        XCTAssertEqual(result.list[0].hex, expectedResult.list[0].hex)
+        XCTAssertEqual(result.list[0].tariAddress, expectedResult.list[0].tariAddress)
         XCTAssertEqual(result.list[1].alias, expectedResult.list[1].alias)
-        XCTAssertEqual(result.list[1].hex, expectedResult.list[1].hex)
+        XCTAssertEqual(result.list[1].tariAddress, expectedResult.list[1].tariAddress)
     }
 
     func testValidContactListAddDeeplinkEncoding() {
 
         let inputModel = ContactListDeeplink(list: [
-            ContactListDeeplink.Contact(alias: "MrWhite", hex: "FirstHex"),
-            ContactListDeeplink.Contact(alias: "MrOrange", hex: "SecondHex")
+            ContactListDeeplink.Contact(alias: "MrWhite", tariAddress: "FirstHex"),
+            ContactListDeeplink.Contact(alias: "MrOrange", tariAddress: "SecondHex")
         ])
 
-        let expectedResult = URL(string: "tari://test_network/contacts?list[0][alias]=MrWhite&list[0][hex]=FirstHex&list[1][alias]=MrOrange&list[1][hex]=SecondHex")!
+        let expectedResult = URL(string: "tari://test_network/contacts?list[0][alias]=MrWhite&list[0][tariAddress]=FirstHex&list[1][alias]=MrOrange&list[1][tariAddress]=SecondHex")!
         let result = try! DeepLinkFormatter.deeplink(model: inputModel)
 
         XCTAssertEqual(result, expectedResult)
@@ -267,7 +267,7 @@ final class DeepLinkFormatterTests: XCTestCase {
 
     func testContactListAddDeeplinkWithInvalidKey() {
 
-        let inputDeeplink = URL(string: "tari://test_network/contacts?notlist[0][alias]=MrWhite&list[0][hex]=FirstHex&list[1][alias]=MrOrange&list[1][hex]=SecondHex")!
+        let inputDeeplink = URL(string: "tari://test_network/contacts?notlist[0][alias]=MrWhite&list[0][tariAddress]=FirstHex&list[1][alias]=MrOrange&list[1][tariAddress]=SecondHex")!
         let invalidKey = "alias"
 
         var result: ContactListDeeplink?

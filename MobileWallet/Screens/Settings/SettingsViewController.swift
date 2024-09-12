@@ -39,7 +39,6 @@
 */
 
 import LocalAuthentication
-import YatLib
 import Combine
 import TariCommon
 
@@ -220,7 +219,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onScreenRecordingSettingsAction() {
-        let controller = ScreenRecordingSettingsConstructor.buildScene()
+        let controller = ScreenRecordingSettingsConstructor.buildScene(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -257,26 +256,6 @@ final class SettingsViewController: SettingsParentTableViewController {
     private func onProfileAction() {
         let controller = ProfileViewController(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
-    }
-
-    private func onConnectYatAction() {
-
-        let address: String
-
-        do {
-            address = try Tari.shared.walletAddress.byteVector.hex
-        } catch {
-            showNoConnectionError()
-            return
-        }
-
-        Yat.integration.showOnboarding(onViewController: self, records: [
-            YatRecordInput(tag: .XTRAddress, value: address)
-        ])
-    }
-
-    private func showNoConnectionError() {
-        PopUpPresenter.show(message: MessageModel(title: localized("common.error"), message: localized("settings.error.connect_yats_no_connection"), type: .error))
     }
 
     private func updateItems(syncStatus: BackupManager.BackupSyncState) {
@@ -322,8 +301,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
             do {
                 let name = UserSettingsManager.name
-                let address = try Tari.shared.walletAddress.emojis.obfuscatedText
-                cell.update(avatar: address.firstOrEmpty, name: name, address: address)
+                let addressComponents = try Tari.shared.walletAddress.components
+                let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false)
+                cell.update(name: name, addressViewModel: addressViewModel)
             } catch {
                 let message = ErrorMessageManager.errorModel(forError: error)
                 PopUpPresenter.show(message: message)
@@ -388,8 +368,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 onProfileAction()
-            case 1:
-                onConnectYatAction()
             default:
                 break
             }

@@ -92,7 +92,7 @@ final class SecureBackupViewController: SettingsParentViewController {
         guard let password = enterPasswordField.password else { return }
 
         view.endEditing(true)
-        continueButton.variation = .disabled
+        continueButton.isEnabled = false
         BackupManager.shared.password = password
 
         pendingView.showPendingView { [weak self] in
@@ -266,7 +266,7 @@ extension SecureBackupViewController {
     private func setupContinueButton() {
         continueButton.setTitle(localized("secure_backup.secure_your_backup"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
-        continueButton.variation = .disabled
+        continueButton.isEnabled = false
 
         mainView.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
@@ -292,10 +292,10 @@ extension SecureBackupViewController: PasswordFieldDelegate {
     func passwordFieldDidChange(_ passwordField: PasswordField) {
         guard let password = passwordField.password else { return }
         if confirmPasswordField.isWarning || enterPasswordField.isWarning {
-            continueButton.variation = .disabled
+            continueButton.isEnabled = false
             return
         }
-        continueButton.variation = (confirmPasswordField.password == enterPasswordField.password && !password.isEmpty) ? .normal : .disabled
+        continueButton.isEnabled = confirmPasswordField.password == enterPasswordField.password && !password.isEmpty
     }
 }
 

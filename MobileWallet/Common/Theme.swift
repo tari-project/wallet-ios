@@ -65,7 +65,6 @@ struct Images {
     let forwardArrow = UIImage(named: "ForwardArrow")
     let close = UIImage(named: "Close")
     let share = UIImage(named: "share")
-    let txFee = UIImage(named: "TxFee")
     let handWave = UIImage(named: "HandWave")
     let attentionIcon = UIImage(named: "AttentionIcon")
     let scheduledIcon = UIImage(named: "ScheduledIcon")
@@ -77,7 +76,6 @@ struct Images {
 
     // Amount
     let delete = UIImage(named: "numpad-delete")
-//    let helpButton = UIImage(named: "QuestionMark")
 }
 
 struct Fonts {
@@ -115,7 +113,6 @@ struct Fonts {
     let txScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
     let txScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
     let txFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
-    let txFeeButton = UIFont.Avenir.roman.withSize(13.0)
     let txSectionTitleLabel = UIFont.Avenir.medium.withSize(16.0)
 
     // Sending tari screen
@@ -130,9 +127,7 @@ struct Fonts {
     let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
 
     // Simple text button
-    let textButton = UIFont.Avenir.medium.withSize(14.0)
     let copyButton = UIFont.Avenir.heavy.withSize(14.0)
-    let textButtonCancel = UIFont.Avenir.medium.withSize(12.0)
 
     // Add recipient view
     let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
@@ -145,14 +140,12 @@ struct Fonts {
     // Add note screen
     let addNoteTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
     let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
-    let searchGiphyButtonTitle = UIFont.Avenir.black.withSize(9.0)
 
     // Refresh view
     let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
 
     // App table view
     let systemTableViewCellMarkDescription = UIFont.Avenir.medium.withSize(14.0)
-    let tableViewSection = UIFont.Avenir.medium.withSize(14.0)
 
     // Restore pending view
     let restorePendingViewTitle = UIFont.Avenir.light.withSize(18.0)
@@ -174,9 +167,6 @@ struct Fonts {
     let settingsPasswordTitle = UIFont.Avenir.medium.withSize(13.0)
     let settingsPasswordPlaceholder = UIFont.Avenir.roman.withSize(14.0)
     let settingsPasswordWarning = UIFont.Avenir.heavy.withSize(13.0)
-
-    // Text Field
-    let textField = UIFont.Avenir.light.withSize(14.0)
 
     // Restore Wallet From Seed Words
     let restoreFromSeedWordsToken = UIFont.Avenir.heavy.withSize(14.0)

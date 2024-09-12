@@ -45,26 +45,17 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var avatarView = RoundedAvatarView()
-
     @View private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(16.0)
         return view
     }()
 
-    @View private var addressLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.medium.withSize(17.0)
-        return view
-    }()
+    @View private var addressView = AddressView()
 
-    @View private var centralContentView = UIView()
-
-    @View private var scanImage: UIImageView = {
+    @View private var arrowView: UIImageView = {
         let view = UIImageView()
-        view.image = .Icons.General.QR
-        view.contentMode = .scaleAspectFit
+        view.image = .Icons.General.cellArrow
         return view
     }()
 
@@ -83,29 +74,16 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [avatarView, centralContentView, scanImage].forEach(contentView.addSubview)
-        [nameLabel, addressLabel].forEach(centralContentView.addSubview)
+        [nameLabel, addressView, arrowView].forEach(contentView.addSubview)
 
         let constraints = [
-            avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 30.0),
-            avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0),
-            avatarView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30.0),
-            avatarView.heightAnchor.constraint(equalToConstant: 65.0),
-            avatarView.widthAnchor.constraint(equalToConstant: 65.0),
-            centralContentView.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 10.0),
-            centralContentView.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor),
-            nameLabel.topAnchor.constraint(equalTo: centralContentView.topAnchor),
-            nameLabel.leadingAnchor.constraint(equalTo: centralContentView.leadingAnchor),
-            nameLabel.trailingAnchor.constraint(equalTo: centralContentView.trailingAnchor),
-            addressLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5.0),
-            addressLabel.leadingAnchor.constraint(equalTo: centralContentView.leadingAnchor),
-            addressLabel.trailingAnchor.constraint(equalTo: centralContentView.trailingAnchor),
-            addressLabel.bottomAnchor.constraint(equalTo: centralContentView.bottomAnchor),
-            scanImage.leadingAnchor.constraint(equalTo: centralContentView.trailingAnchor, constant: 10.0),
-            scanImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
-            scanImage.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor),
-            scanImage.heightAnchor.constraint(equalToConstant: 30.0),
-            scanImage.widthAnchor.constraint(equalToConstant: 30.0)
+            nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 30.0),
+            nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
+            addressView.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5.0),
+            addressView.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            addressView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30.0),
+            arrowView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
+            arrowView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -116,14 +94,12 @@ final class SettingsProfileCell: DynamicThemeCell {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
-        scanImage.tintColor = theme.icons.default
         nameLabel.textColor = theme.text.heading
-        addressLabel.textColor = theme.text.heading
+        arrowView.tintColor = theme.text.heading
     }
 
-    func update(avatar: String?, name: String?, address: String?) {
-        avatarView.avatar = .text(avatar)
+    func update(name: String?, addressViewModel: AddressView.ViewModel) {
         nameLabel.text = name
-        addressLabel.text = address
+        addressView.update(viewModel: addressViewModel)
     }
 }

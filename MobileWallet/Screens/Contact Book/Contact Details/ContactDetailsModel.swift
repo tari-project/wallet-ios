@@ -64,18 +64,15 @@ final class ContactDetailsModel {
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
         case moveToLinkContactScreen(model: ContactsManager.Model)
-        case showUnlinkConfirmationDialog(emojiID: String, name: String)
-        case showUnlinkSuccessDialog(emojiID: String, name: String)
+        case showUnlinkConfirmationDialog(address: String, name: String)
+        case showUnlinkSuccessDialog(address: String, name: String)
         case moveToTransactionsList(model: ContactsManager.Model)
         case removeContactConfirmation
         case endFlow
     }
 
     struct ViewModel {
-        let avatarText: String?
-        let avatarImage: UIImage?
-        let emojiID: String
-        let hex: String?
+        let addressComponents: TariAddressComponents?
         let contactType: ContactsManager.ContactType
     }
 
@@ -88,6 +85,7 @@ final class ContactDetailsModel {
     @Published private(set) var menuSections: [MenuSection] = []
     @Published private(set) var action: Action?
     @Published private(set) var errorModel: MessageModel?
+    @Published private(set) var addressComponents: TariAddressComponents?
 
     var hasSplittedName: Bool { model.hasExternalModel }
     var nameComponents: [String] { model.nameComponents }
@@ -180,11 +178,11 @@ final class ContactDetailsModel {
 
     func unlinkContact() {
 
-        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: model)
-            action = .showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+            action = .showUnlinkSuccessDialog(address: address, name: name)
             updateData()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
@@ -215,28 +213,24 @@ final class ContactDetailsModel {
 
     private func updateData(model: ContactsManager.Model) {
 
-        let avatarImage = model.avatarImage
-        let avatarText = avatarImage == nil ? model.avatar : nil
+        addressComponents = model.internalModel?.addressComponents
+        viewModel = ViewModel(addressComponents: addressComponents, contactType: model.type)
 
-        viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex, contactType: model.type)
+        var mainMenuItems: [MenuItem] = []
 
-        var mainMenuItems: [MenuItem] = model.menuItems
-            .compactMap {
-                switch $0 {
-                case .send:
-                    return .send
-                case .addToFavorites:
-                     return .addToFavorites
-                case .removeFromFavorites:
-                    return .removeFromFavorites
-                case .link:
-                    return .linkContact
-                case .unlink:
-                    return .unlinkContact
-                case .details:
-                    return nil
-                }
-            }
+        if model.hasIntrenalModel {
+            mainMenuItems.append(.send)
+        }
+
+        if model.isFFIContact, let internalModel = model.internalModel {
+            mainMenuItems.append(internalModel.isFavorite ? .removeFromFavorites : .addToFavorites)
+        }
+
+        if model.type == .linked {
+            mainMenuItems.append(.unlinkContact)
+        } else {
+            mainMenuItems.append(.linkContact)
+        }
 
         if model.hasIntrenalModel {
             mainMenuItems.append(.transactionsList)
@@ -259,8 +253,8 @@ final class ContactDetailsModel {
     }
 
     private func prepareForUnkinkAction() {
-        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
-        action = .showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
+        action = .showUnlinkConfirmationDialog(address: address, name: name)
     }
 
     private func openAddress(type: YatRecordTag) {

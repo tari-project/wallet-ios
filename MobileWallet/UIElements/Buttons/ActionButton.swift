@@ -38,190 +38,200 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import TariCommon
 import Lottie
 
-enum ActionButtonVariation {
-    case normal
-    case destructive
-    case loading
-    case disabled
-}
-
 final class ActionButton: DynamicThemeBaseButton {
-    static let RADIUS_POINTS: CGFloat = 4.0
-    static let HEIGHT: CGFloat = 53.0
 
-    private let gradientLayer = CAGradientLayer()
-    private let pendingAnimationView = AnimationView()
-
-    var variation: ActionButtonVariation = .normal {
-        didSet { updateStyle(theme: theme) }
+    enum Style {
+        case normal
+        case destructive
+        case loading
     }
+
+    // MARK: - Subviews
+
+    @View private var gradientView: GradientView = {
+        let view = GradientView()
+        view.orientation = .diagonal
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+
+    @View private var pendingAnimationView: AnimationView = {
+        let view = AnimationView()
+        view.animation = .named(.pendingCircleAnimation)
+        view.backgroundBehavior = .pauseAndRestore
+        view.loopMode = .loop
+        return view
+    }()
+
+    // MARK: - Properties
+
+    var isAnimated: Bool = true
+
+    var style: Style = .normal {
+        didSet { update(style: style, theme: theme) }
+    }
+
+    // MARK: - Initialisers
 
     override init() {
         super.init()
-        commonSetup()
+        setupViews()
+        setupConstraints()
+        setupCallbacks()
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonSetup()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    private func commonSetup() {
-        bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: ActionButton.HEIGHT)
-        layer.cornerRadius = ActionButton.RADIUS_POINTS
-        heightAnchor.constraint(equalToConstant: ActionButton.HEIGHT).isActive = true
-        titleLabel?.font = Theme.shared.fonts.actionButton
+    // MARK: - Setups
+
+    private func setupViews() {
+
+        layer.cornerRadius = 4.0
         titleLabel?.adjustsFontSizeToFitWidth = true
-        contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 8.0, bottom: 0.0, right: 8.0)
         clipsToBounds = true
 
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
+        configuration = .filled()
+        configuration?.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0)
+        configuration?.titleLineBreakMode = .byTruncatingTail
 
-        gradientLayer.locations = [0.0, 1.0]
-        layer.insertSublayer(gradientLayer, at: 0)
-    }
-
-    override func setImage(_ image: UIImage?, for state: UIControl.State) {
-        if let color = titleColor(for: .normal), let newImage = image {
-            super.setImage(newImage.withTintColor(color), for: state)
-        } else {
-            super.setImage(image, for: state)
+        configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer {
+            var attributes = $0
+            attributes.font = .Avenir.heavy.withSize(16.0)
+            return attributes
         }
 
-        imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 7)
-        titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 0)
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientLayer.frame = bounds
-        updateStyle(theme: theme)
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: { [weak self] in
-            guard let self = self else { return }
-            self.alpha = 0.94
-            self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-        })
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: { [weak self] in
-            guard let self = self else { return }
-            self.alpha = 1
-            self.transform = CGAffineTransform(scaleX: 1, y: 1)
-        })
-
-        isUserInteractionEnabled = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            self?.isUserInteractionEnabled = true
+        configurationUpdateHandler = { [weak self] in
+            self?.update(state: $0.state)
         }
     }
 
-    private func removeStyle() {
-        gradientLayer.removeFromSuperlayer()
-        pendingAnimationView.removeFromSuperview()
-        titleLabel?.isHidden = false
+    private func setupConstraints() {
+
+        [gradientView, pendingAnimationView].forEach(addSubview)
+
+        let constraints = [
+            gradientView.topAnchor.constraint(equalTo: topAnchor),
+            gradientView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            gradientView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            gradientView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            pendingAnimationView.widthAnchor.constraint(equalToConstant: 45.0),
+            pendingAnimationView.heightAnchor.constraint(equalToConstant: 45.0),
+            pendingAnimationView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            heightAnchor.constraint(equalToConstant: 53.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 
-    private func updateStyle(theme: ColorTheme) {
-        removeStyle()
-
-        switch variation {
-        case .normal:
-            isEnabled = true
-            layer.insertSublayer(gradientLayer, at: 0)
-            imageView?.tintColor = theme.buttons.primaryText
-        case .destructive:
-            isEnabled = true
-            backgroundColor = theme.system.red
-            imageView?.tintColor = theme.buttons.primaryText
-        case .loading:
-            isEnabled = false
-            layer.insertSublayer(gradientLayer, at: 0)
-            titleLabel?.isHidden = true
-            imageView?.tintColor = .clear
-            setupPendingAnimation()
-        case .disabled:
-            isEnabled = false
-            backgroundColor = theme.buttons.disabled
-            imageView?.tintColor = theme.buttons.disabledText
-        }
-
-        gradientLayer.colors = [theme.buttons.primaryStart, theme.buttons.primaryEnd].compactMap { $0?.cgColor }
+    private func setupCallbacks() {
+        addTarget(self, action: #selector(onTapCallback), for: .touchUpInside)
     }
 
-    func animateIn() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: { [weak self] in
-            guard let self = self else { return }
-            self.isHidden = false
-            UIView.animate(
-                withDuration: 0.2,
-                delay: 0,
-                options: .curveEaseOut,
-                animations: { [weak self] in
-                    guard let self = self else { return }
-                    self.transform = CGAffineTransform(scaleX: 1, y: 1)
-                }
-            )
-        })
-    }
-
-    func animateOut() {
-        // Wait till after pulse affect
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-            UIView.animate(
-                withDuration: 0.2,
-                delay: 0,
-                options: .curveEaseOut,
-                animations: { [weak self] in
-                    guard let self = self else { return }
-                    self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-                }, completion: { [weak self] (_) in
-                    guard let self = self else { return }
-                    self.isHidden = true
-            })
-        })
-    }
-
-    func hideButtonWithAlpha(comletion: (() -> Void)? = nil) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-            UIView.animate(withDuration: 0.5, animations: { [weak self] in
-                self?.alpha = 0.0
-                self?.layoutIfNeeded()
-            }) { _ in
-                comletion?()
-            }
-        })
-    }
-
-    private func setupPendingAnimation() {
-        pendingAnimationView.backgroundBehavior = .pauseAndRestore
-        pendingAnimationView.animation = Animation.named(.pendingCircleAnimation)
-
-        addSubview(pendingAnimationView)
-        pendingAnimationView.translatesAutoresizingMaskIntoConstraints = false
-        pendingAnimationView.widthAnchor.constraint(equalToConstant: 45).isActive = true
-        pendingAnimationView.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        pendingAnimationView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-
-        pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
-    }
+    // MARK: - Updates
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        setTitleColor(theme.buttons.primaryText, for: .normal)
+        updateGradent(theme: theme)
+        updateDisabledState(theme: theme)
+    }
+
+    private func updateGradent(theme: ColorTheme) {
+        gradientView.locations = [
+            GradientLocationData(color: theme.buttons.primaryStart, location: 0.0),
+            GradientLocationData(color: theme.buttons.primaryEnd, location: 1.0)
+        ]
+    }
+
+    private func updateDisabledState(theme: ColorTheme) {
         setTitleColor(theme.buttons.disabledText, for: .disabled)
-        updateStyle(theme: theme)
+    }
+
+    private func update(state: UIButton.State) {
+
+        switch state {
+        case .normal:
+            update(style: style, theme: theme)
+        case .disabled:
+            gradientView.isHidden = true
+            configuration?.background.backgroundColor = theme.buttons.disabled
+        default:
+            break
+        }
+
+        guard isAnimated else { return }
+
+        if state == .highlighted {
+            Task { await animateIn() }
+        } else {
+            animateOut()
+        }
+    }
+
+    private func update(style: Style, theme: ColorTheme) {
+
+        guard isEnabled else { return }
+
+        switch style {
+        case .normal:
+            titleLabel?.isHidden = false
+            gradientView.isHidden = false
+            pendingAnimationView.isHidden = true
+            pendingAnimationView.stop()
+            configuration?.baseForegroundColor = theme.buttons.primaryText
+        case .destructive:
+            titleLabel?.isHidden = false
+            gradientView.isHidden = true
+            pendingAnimationView.isHidden = true
+            pendingAnimationView.stop()
+            configuration?.baseForegroundColor = theme.buttons.primaryText
+            configuration?.background.backgroundColor = theme.system.red
+        case .loading:
+            titleLabel?.isHidden = true
+            gradientView.isHidden = false
+            pendingAnimationView.isHidden = false
+            pendingAnimationView.play()
+        }
+    }
+
+    // MARK: - Callbacks
+
+    @objc private func onTapCallback() {
+
+        guard isAnimated else { return }
+
+        Task {
+            await animateIn()
+            animateOut()
+        }
+    }
+
+    // MARK: - Animations
+
+    private func animateIn() async {
+        await withCheckedContinuation { continuation in
+            UIView.animate(
+                withDuration: 0.1,
+                delay: 0.0,
+                options: [.curveEaseInOut, .beginFromCurrentState],
+                animations: {
+                    self.alpha = 0.9
+                    self.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+                },
+                completion: { _ in continuation.resume() }
+            )
+        }
+    }
+
+    private func animateOut() {
+        UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.alpha = 1.0
+            self.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+        }
     }
 }

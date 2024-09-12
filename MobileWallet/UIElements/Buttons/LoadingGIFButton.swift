@@ -71,7 +71,7 @@ class LoadingGIFButton: DynamicThemeBaseButton {
         let retryTitle = localized("loading_gif_button.title.retry")
         setTitle(loadingTitile, for: .disabled)
         setTitle(retryTitle, for: .normal)
-        bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: ActionButton.HEIGHT)
+        bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: 53.0)
         heightAnchor.constraint(equalToConstant: LoadingGIFButton.HEIGHT).isActive = true
         backgroundColor = .clear
         contentHorizontalAlignment = .left

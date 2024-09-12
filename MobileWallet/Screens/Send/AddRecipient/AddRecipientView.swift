@@ -102,12 +102,18 @@ final class AddRecipientView: DynamicThemeView {
         didSet { update(sections: viewModels) }
     }
 
-    var isPreviewButtonVisible: Bool = false {
-        didSet { updateSearchFieldState() }
+    var isYatLogoVisible: Bool {
+        get { searchView.isYatLogoVisible }
+        set { searchView.isYatLogoVisible = newValue }
+    }
+
+    var isPreviewButtonVisible: Bool {
+        get { searchView.isPreviewButtonVisible }
+        set { searchView.isPreviewButtonVisible = newValue }
     }
 
     var isContinueButtonEnabled: Bool = false {
-        didSet { continueButton.variation = isContinueButtonEnabled ? .normal : .disabled }
+        didSet { continueButton.isEnabled = isContinueButtonEnabled }
     }
 
     var errorMessage: String? {
@@ -219,10 +225,6 @@ final class AddRecipientView: DynamicThemeView {
         dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
-    private func updateSearchFieldState() {
-        searchView.isPreviewButtonVisible = isPreviewButtonVisible
-    }
-
     private func updateToolbarsAlpha(scrollView: UIScrollView) {
         let maxAlpha = 0.9
         updateSearchViewToolbarAlpha(scrollView: scrollView, maxAlpha: maxAlpha)
@@ -249,7 +251,6 @@ final class AddRecipientView: DynamicThemeView {
             Task {
                 await UIView.animate(duration: 0.3) {
                     self.errorMessageView.isHidden = false
-                    self.topStackView.layoutIfNeeded()
                 }
                 UIView.animate(withDuration: 0.3) {
                     self.errorMessageView.alpha = 1.0
@@ -260,10 +261,8 @@ final class AddRecipientView: DynamicThemeView {
                 await UIView.animate(duration: 0.3) {
                     self.errorMessageView.alpha = 0.0
                 }
-
                 UIView.animate(withDuration: 0.3) {
                     self.errorMessageView.isHidden = true
-                    self.topStackView.layoutIfNeeded()
                 }
             }
         }

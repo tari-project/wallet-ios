@@ -45,19 +45,24 @@ final class TransactionDetailsEmojiView: UIView {
 
     // MARK: - Subviews
 
-    @View private var emojiIdView = EmojiIdView()
+    @View private var addressView = AddressView()
 
     @View private(set) var addContactButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.add_contact_name"), for: .normal)
-        view.setVariation(.secondary)
+        view.style = .secondary
         return view
     }()
 
     // MARK: - Properties
 
-    var emojiIdViewModel: EmojiIdView.ViewModel? {
+    var addressViewModel: AddressView.ViewModel? {
         didSet { updateEmojiIdView() }
+    }
+
+    var onViewDetailsButtonTap: (() -> Void)? {
+        get { addressView.onViewDetailsButtonTap }
+        set { addressView.onViewDetailsButtonTap = newValue }
     }
 
     // MARK: - Initialisers
@@ -75,15 +80,15 @@ final class TransactionDetailsEmojiView: UIView {
 
     private func setupConstraints() {
 
-        [emojiIdView, addContactButton].forEach(addSubview)
+        [addressView, addContactButton].forEach(addSubview)
 
         let constraints = [
             heightAnchor.constraint(equalToConstant: 85.0),
-            emojiIdView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            emojiIdView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            emojiIdView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            addContactButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            addContactButton.centerYAnchor.constraint(equalTo: centerYAnchor)
+            addressView.topAnchor.constraint(equalTo: topAnchor),
+            addressView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
+            addContactButton.topAnchor.constraint(equalTo: addressView.bottomAnchor, constant: 10.0),
+            addContactButton.leadingAnchor.constraint(equalTo: addressView.leadingAnchor),
+            addContactButton.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -92,7 +97,7 @@ final class TransactionDetailsEmojiView: UIView {
     // MARK: - Actions
 
     private func updateEmojiIdView() {
-        guard let emojiIdViewModel = emojiIdViewModel else { return }
-        emojiIdView.update(viewModel: emojiIdViewModel, textCentered: false)
+        guard let addressViewModel else { return }
+        addressView.update(viewModel: addressViewModel)
     }
 }

@@ -58,6 +58,7 @@ final class ContactBookContactListView: DynamicThemeView {
         view.register(headerFooterType: MenuTableHeaderView.self)
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
         view.allowsSelectionDuringEditing = true
+        view.sectionHeaderTopPadding = 0.0
         return view
     }()
 
@@ -255,7 +256,7 @@ private class ContactBookContactListFooter: UIView {
 
     @View private var button: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
+        view.style = .secondary
         view.setTitle(localized("contact_book.section.list.placeholder.button"), for: .normal)
         return view
     }()

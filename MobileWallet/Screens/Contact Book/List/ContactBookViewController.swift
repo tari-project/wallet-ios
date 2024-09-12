@@ -251,14 +251,6 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
 
     private func handle(action: ContactBookModel.Action) {
         switch action {
-        case let .sendTokens(paymentInfo):
-            moveToSendTokensScreen(paymentInfo: paymentInfo)
-        case let .link(model):
-            moveToLinkContactsScreen(model: model)
-        case let .unlink(model: model):
-            showUnlinkConfirmationDialog(model: model)
-        case let .showUnlinkSuccess(emojiID, name):
-            showUnlinkSuccessDialog(emojiID: emojiID, name: name)
         case let .showDetails(model):
             moveToContactDetails(model: model)
         case .showQRDialog:
@@ -269,8 +261,6 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
             showLinkShareDialog(link: link)
         case let .show(dialog):
             handle(dialog: dialog)
-        case let .showMenu(model):
-            showMenu(model: model)
         }
     }
 
@@ -313,29 +303,9 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func moveToSendTokensScreen(paymentInfo: PaymentInfo) {
-        Task { @MainActor in
-            AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
-        }
-    }
-
-    private func moveToLinkContactsScreen(model: ContactsManager.Model) {
-        let controller = LinkContactsConstructor.buildScene(contactModel: model)
-        navigationController?.pushViewController(controller, animated: true)
-    }
-
     private func moveToContactDetails(model: ContactsManager.Model) {
         let controller = ContactDetailsConstructor.buildScene(model: model)
         navigationController?.pushViewController(controller, animated: true)
-    }
-
-    private func showUnlinkConfirmationDialog(model: ContactsManager.Model) {
-        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
-        PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name, confirmationCallback: { [weak self] in self?.model.unlink(contact: model) })
-    }
-
-    private func showUnlinkSuccessDialog(emojiID: String, name: String) {
-        PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
     }
 
     private func openAppSettings() {
@@ -358,17 +328,5 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
 
     private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
         PopUpPresenter.showBLEDialog(type: type)
-    }
-
-    private func showMenu(model: ContactsManager.Model) {
-
-        let overlay = RotaryMenuOverlay(model: model)
-
-        overlay.onMenuButtonTap = { [weak self] in
-            self?.dismiss(animated: true)
-            self?.model.performAction(contactID: $0, menuItemID: $1)
-        }
-
-        show(overlay: overlay)
     }
 }

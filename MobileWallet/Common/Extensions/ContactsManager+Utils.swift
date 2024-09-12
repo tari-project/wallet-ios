@@ -1,10 +1,10 @@
-//  QRCodePresenterController.swift
+//  ContactsManager+Utils.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 18/01/2022
+	Created by Adrian Truszczyński on 16/07/2024
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,56 +38,19 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+extension ContactsManager.Model {
 
-@available(*, deprecated, message: "This class is deprecated and will be removed later. Please user PopUpPresenter.showQRCodeDialog() instead.")
-final class QRCodePresentationController: SecureViewController<QRCodePresentationView> {
-
-    // MARK: - Properties
-
-    var onShareButtonTap: (() -> Void)?
-
-    // MARK: - Initialisers
-
-    init(image: UIImage) {
-        super.init(nibName: nil, bundle: nil)
-        modalTransitionStyle = .crossDissolve
-        modalPresentationStyle = .overFullScreen
-
-        mainView.qrCodeView.state = .image(image)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - View Lifecycle
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupBindings()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        mainView.showContent()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        mainView.hideContent()
-    }
-
-    // MARK: - Setups
-
-    private func setupBindings() {
-
-        mainView.shareButton.onTap = { [weak self] in
-            self?.onShareButtonTap?()
-        }
-
-        mainView.closeButton.onTap = { [weak self] in
-            self?.dismiss(animated: true)
+    var contactBookCellAddressViewModel: AddressView.ViewModel {
+        if let alias, !alias.isEmpty {
+            return AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false)
+        } else if let addressComponents = internalModel?.addressComponents {
+            return AddressView.ViewModel(
+                prefix: addressComponents.networkAndFeatures,
+                text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
+                isDetailsButtonVisible: false
+            )
+        } else {
+            return AddressView.ViewModel(prefix: nil, text: .single(""), isDetailsButtonVisible: false)
         }
     }
 }

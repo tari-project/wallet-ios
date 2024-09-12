@@ -49,9 +49,10 @@ final class ScreenRecordingSettingsViewController: SecureViewController<ScreenRe
 
     // MARK: - Initialisers
 
-    init(model: ScreenRecordingSettingsModel) {
+    init(model: ScreenRecordingSettingsModel, backButtonType: NavigationBar.BackButtonType) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
+        mainView.navigationBar.backButtonType = backButtonType
     }
 
     required init?(coder: NSCoder) {

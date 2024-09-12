@@ -72,10 +72,11 @@ final class SlideView: DynamicThemeView {
         return label
     }()
     let thumbnailImageView: UIImageView = {
-        let view = SlideViewRoundImageView()
+        let view = UIImageView()
         view.isUserInteractionEnabled = true
         view.contentMode = .center
         view.image = Theme.shared.images.forwardArrow
+        view.layer.cornerRadius = 4.0
         return view
     }()
     let sliderHolderView: UIView = {
@@ -373,12 +374,5 @@ final class SlideView: DynamicThemeView {
     private func updateIsEnabledStyle() {
         gradientBackgroundView.isHidden = !isEnabled
         updateSliderState(theme: theme)
-    }
-}
-
-class SlideViewRoundImageView: UIImageView {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.layer.cornerRadius = ActionButton.RADIUS_POINTS
     }
 }

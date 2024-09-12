@@ -1,10 +1,10 @@
-//  RoundedInputField.swift
+//  PopUpAddressViewDoubleLabel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 20/07/2021
+	Created by Adrian Truszczyński on 02/07/2024
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,15 +38,38 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import TariCommon
 
-final class RoundedInputField: DynamicThemeTextField {
+final class PopUpAddressViewDoubleLabel: DynamicThemeView {
 
-    // MARK: - Initializers
+    // MARK: - Subviews
+
+    @View private var stackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 10.0
+        view.alignment = .top
+        return view
+    }()
+
+    @View private var leadingLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(14.0)
+        return view
+    }()
+
+    @View private var trailingLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(14.0)
+        view.numberOfLines = 0
+        view.setContentCompressionResistancePriority(.required, for: .vertical)
+        return view
+    }()
+
+    // MARK: - Initialisers
 
     override init() {
         super.init()
-        setupView()
+        setupConstraints()
     }
 
     required init?(coder: NSCoder) {
@@ -55,19 +78,31 @@ final class RoundedInputField: DynamicThemeTextField {
 
     // MARK: - Setups
 
-    private func setupView() {
-        layer.cornerRadius = 10.0
+    private func setupConstraints() {
+
+        addSubview(stackView)
+        [leadingLabel, trailingLabel, UIView()].forEach(stackView.addArrangedSubview)
+
+        let constraints = [
+            stackView.topAnchor.constraint(equalTo: topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     // MARK: - Updates
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
+        leadingLabel.textColor = theme.text.body
+        trailingLabel.textColor = theme.text.body
     }
 
-    // MARK: - Layout
-
-    override func textRect(forBounds bounds: CGRect) -> CGRect { bounds.insetBy(dx: 12.0, dy: 12.0) }
-    override func editingRect(forBounds bounds: CGRect) -> CGRect { textRect(forBounds: bounds) }
+    func update(leadingText: String?, trailingText: String?) {
+        leadingLabel.text = leadingText
+        trailingLabel.text = trailingText
+    }
 }

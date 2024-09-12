@@ -73,6 +73,17 @@ extension TariNetwork {
         )
     }
 
+    static var esmeralda: Self {
+        makeNetwork(
+            name: "esmeralda",
+            presentedName: "Esmeralda",
+            isMainNet: false,
+            isRecommended: true,
+            dnsPeer: "seeds.esmeralda.tari.com",
+            blockExplorerURL: nil
+        )
+    }
+
     var fullPresentedName: String {
         guard isRecommended else { return presentedName }
         return "\(presentedName) (\(localized("common.recommended")))"

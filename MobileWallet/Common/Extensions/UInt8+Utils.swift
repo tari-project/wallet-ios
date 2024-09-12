@@ -1,10 +1,10 @@
-//  CustomBridgesHandable.swift
+//  UInt8+Utils.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 02/10/2022
+	Created by Adrian Truszczyński on 03/07/2024
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 14.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,41 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import Combine
+extension UInt8 {
 
-protocol CustomBridgesHandable: UIViewController {
-    var navigationBar: NavigationBar { get }
-    var tableView: BaseMenuTableView { get }
-}
-
-extension CustomBridgesHandable {
-
-    func setupCustomBridgeProgressHandler() -> AnyCancellable {
-        Tari.shared.connectionMonitor.$torBootstrapProgress
-            .map { Float($0) / 100.0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.navigationBar.progress = $0 }
-    }
-
-    func onCustomBridgeSuccessAction() {
-
-        navigationBar.progress = 1.0
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.navigationBar.progress = nil
-            self.view.isUserInteractionEnabled = true
-            self.tableView.reloadData()
+    var tariEmoji: String {
+        get throws {
+            try TariEmojis().all[Int(self)]
         }
     }
 
-    func onCustomBridgeFailureAction(error: Error) {
-        navigationBar.progress = nil
-        view.isUserInteractionEnabled = true
-        let errorMessage = ErrorMessageManager.errorModel(forError: error)
-
-        Task { @MainActor in
-            PopUpPresenter.show(message: errorMessage)
-        }
-    }
+    func flag(bitmask: UInt8) -> Bool { self & bitmask == bitmask }
 }

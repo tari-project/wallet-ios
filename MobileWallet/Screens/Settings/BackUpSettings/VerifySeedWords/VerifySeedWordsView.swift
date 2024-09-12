@@ -45,8 +45,7 @@ final class VerifySeedWordsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var scrollView = UIScrollView()
-    @View private var contentView = UIView()
+    @View private var scrollView = ContentScrollView()
 
     @View private var headerLabel: UILabel = {
         let view = UILabel()
@@ -126,55 +125,51 @@ final class VerifySeedWordsView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
+        @View var spacerView = UIView()
+
         addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        [headerLabel, tokensView, tokensViewInfoLabel, successImageView, errorLabel, selectableTokensView, continueButton].forEach(contentView.addSubview)
+        [headerLabel, tokensView, tokensViewInfoLabel, successImageView, errorLabel, spacerView, selectableTokensView, continueButton].forEach(scrollView.contentView.addSubview)
 
         let scrollViewConstants = [
             scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor)
+            scrollView.contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor)
         ]
 
         let constraints = [
-            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
-            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
-            tokensView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 20.0),
-            tokensView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            tokensView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            headerLabel.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor, constant: 16.0),
+            headerLabel.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 20.0),
+            headerLabel.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -20.0),
+            tokensView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 16.0),
+            tokensView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 20.0),
+            tokensView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -20.0),
             tokensView.heightAnchor.constraint(equalToConstant: 272.0),
             tokensViewInfoLabel.leadingAnchor.constraint(equalTo: tokensView.leadingAnchor, constant: 20.0),
             tokensViewInfoLabel.trailingAnchor.constraint(equalTo: tokensView.trailingAnchor, constant: -20.0),
             tokensViewInfoLabel.centerYAnchor.constraint(equalTo: tokensView.centerYAnchor),
             successImageView.topAnchor.constraint(equalTo: selectableTokensView.topAnchor),
-            successImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            successImageView.centerXAnchor.constraint(equalTo: scrollView.contentView.centerXAnchor),
             successImageView.widthAnchor.constraint(equalToConstant: 29.0),
             successImageView.heightAnchor.constraint(equalToConstant: 29.0),
             errorLabel.topAnchor.constraint(equalTo: selectableTokensView.topAnchor),
-            errorLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            errorLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            errorLabel.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 20.0),
+            errorLabel.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -20.0),
             errorLabel.heightAnchor.constraint(equalToConstant: 37.0),
-            selectableTokensView.topAnchor.constraint(equalTo: tokensView.bottomAnchor, constant: 25.0),
-            selectableTokensView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            selectableTokensView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
-            selectableTokensView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -20.0),
-            continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
-            continueButton.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -20.0)
+            selectableTokensView.topAnchor.constraint(equalTo: tokensView.bottomAnchor, constant: 16.0),
+            selectableTokensView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 20.0),
+            selectableTokensView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -20.0),
+            spacerView.topAnchor.constraint(equalTo: selectableTokensView.bottomAnchor),
+            spacerView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor),
+            spacerView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor),
+            continueButton.topAnchor.constraint(equalTo: spacerView.bottomAnchor, constant: 16.0),
+            continueButton.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 16.0),
+            continueButton.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -20.0),
+            continueButton.bottomAnchor.constraint(equalTo: scrollView.contentView.safeAreaLayoutGuide.bottomAnchor, constant: -16.0)
         ]
 
         NSLayoutConstraint.activate(scrollViewConstants + constraints)
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        scrollView.contentSize.height = contentView.bounds.height
     }
 
     // MARK: - Updates

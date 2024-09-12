@@ -77,7 +77,8 @@ enum DeepLinkDefaultActionsHandler {
             amount = MicroTari(rawAmount)
         }
 
-        let paymentInfo = PaymentInfo(address: transactionSendDeepLink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeepLink.note)
+        guard let addressComponents = try? TariAddress(base58: transactionSendDeepLink.receiverAddress).components else { return }
+        let paymentInfo = PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeepLink.note)
 
         Task { @MainActor in
             AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
@@ -165,7 +166,7 @@ enum DeepLinkDefaultActionsHandler {
     // MARK: - Actions
 
     private static func contactData(deeplink: ContactListDeeplink) -> [ContactData] {
-        deeplink.list.map { ContactData(name: $0.alias, address: $0.hex) }
+        deeplink.list.map { ContactData(name: $0.alias, address: $0.tariAddress) }
     }
 
     private static func contactData(deeplink: UserProfileDeeplink) -> [ContactData] {
@@ -178,7 +179,7 @@ enum DeepLinkDefaultActionsHandler {
 
         try contacts.forEach {
 
-            let address = try TariAddress(hex: $0.address)
+            let address = try TariAddress(base58: $0.address)
 
             if Tari.shared.isWalletConnected {
                 _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)

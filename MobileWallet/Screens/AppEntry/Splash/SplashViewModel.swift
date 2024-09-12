@@ -146,8 +146,6 @@ final class SplashViewModel {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
 
-                let isMigrationPerformed = await MigrationManager.performPeerDBMigration()
-
                 guard await validateWallet() else {
                     self.deleteWallet()
                     return
@@ -158,7 +156,6 @@ final class SplashViewModel {
 
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
 
-                guard isMigrationPerformed else { return }
                 let randomBaseNode = try NetworkManager.shared.randomBaseNode()
                 try Tari.shared.connection.select(baseNode: randomBaseNode)
             } catch {

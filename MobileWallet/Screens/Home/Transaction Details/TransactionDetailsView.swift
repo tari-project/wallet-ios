@@ -67,7 +67,8 @@ final class TransactionDetailsView: DynamicThemeView {
     @View private(set) var cancelButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.tx_cancellation.cancel"), for: .normal)
-        view.setVariation(.warning, font: Theme.shared.fonts.textButtonCancel)
+        view.style = .warning
+        view.font = .Avenir.medium.withSize(12.0)
         return view
     }()
 

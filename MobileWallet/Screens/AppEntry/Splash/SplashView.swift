@@ -71,7 +71,7 @@ final class SplashView: UIView {
         return view
     }()
 
-    @View private var createWalletButton: ActionButton = ActionButton()
+    @View private var createWalletButton = ActionButton()
     @View private var selectNetworkButton = ActionButton()
 
     @View private var restoreWalletButton: TextButton = {
@@ -111,7 +111,7 @@ final class SplashView: UIView {
     }
 
     var isCreateWalletButtonSpinnerVisible: Bool = false {
-        didSet { createWalletButton.variation = isCreateWalletButtonSpinnerVisible ? .loading : .normal }
+        didSet { createWalletButton.style = isCreateWalletButtonSpinnerVisible ? .loading : .normal }
     }
 
     var selectNetworkButtonTitle: String? {
@@ -259,7 +259,10 @@ final class SplashView: UIView {
             walletCreatedLogoConstraint?.isActive = true
         }
 
-        let alpha = showInterface ? 3.0 : 0.0
+        let alpha = showInterface ? 1.0 : 0.0
+
+        createWalletButton.isAnimated = showInterface
+        selectNetworkButton.isAnimated = showInterface
 
         let transition = {
             self.layoutIfNeeded()

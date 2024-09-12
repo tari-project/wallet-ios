@@ -92,14 +92,14 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-
-                if let avatarImage = $0.avatarImage {
-                    self?.mainView.avatar = .image(avatarImage)
-                } else {
-                    self?.mainView.avatar = .text($0.avatarText)
+                if let addressComponents = $0.addressComponents {
+                    self?.mainView.addressModel = AddressView.ViewModel(
+                        prefix: addressComponents.networkAndFeatures,
+                        text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
+                        isDetailsButtonVisible: true
+                    )
                 }
 
-                self?.mainView.emojiModel = EmojiIdView.ViewModel(emojiID: $0.emojiID, hex: $0.hex)
                 self?.mainView.updateFooter(image: $0.contactType.image, text: $0.contactType.text)
             }
             .store(in: &cancellables)
@@ -128,6 +128,12 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
+        model.$addressComponents
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.onViewAddressDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: $0) }
+            .store(in: &cancellables)
+
         mainView.onSelectRow = { [weak self] in
             self?.model.perform(actionID: $0)
         }
@@ -145,10 +151,10 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
             moveToSendTokensScreen(paymentInfo: paymentInfo)
         case let .moveToLinkContactScreen(model):
             moveToLinkContactScreen(model: model)
-        case let .showUnlinkConfirmationDialog(emojiID, name):
-            showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
-        case let .showUnlinkSuccessDialog(emojiID, name):
-            showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+        case let .showUnlinkConfirmationDialog(address, name):
+            showUnlinkConfirmationDialog(address: address, name: name)
+        case let .showUnlinkSuccessDialog(address, name):
+            showUnlinkSuccessDialog(address: address, name: name)
         case let .moveToTransactionsList(model):
             moveToTransactionsList(model: model)
         case .removeContactConfirmation:
@@ -212,14 +218,14 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
         PopUpPresenter.showPopUp(model: model)
     }
 
-    private func showUnlinkConfirmationDialog(emojiID: String, name: String) {
-        PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name) { [weak self] in
+    private func showUnlinkConfirmationDialog(address: String, name: String) {
+        PopUpPresenter.showUnlinkConfirmationDialog(address: address, name: name) { [weak self] in
             self?.model.unlinkContact()
         }
     }
 
-    private func showUnlinkSuccessDialog(emojiID: String, name: String) {
-        PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+    private func showUnlinkSuccessDialog(address: String, name: String) {
+        PopUpPresenter.showUnlinkSuccessDialog(address: address, name: name)
     }
 
     private func endFlow() {

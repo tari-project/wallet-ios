@@ -43,19 +43,15 @@ import TariCommon
 
 final class ContactBookCell: DynamicThemeCell {
 
-    struct ViewModel: Identifiable, Hashable {
+    struct ViewModel: Identifiable {
         let id: UUID
-        let name: String
-        let avatarText: String
-        let avatarImage: UIImage?
+        let addressViewModel: AddressView.ViewModel
         let isFavorite: Bool
         let contactTypeImage: UIImage?
         let isSelectable: Bool
     }
 
     // MARK: - Subviews
-
-    @View private var avatarView = RoundedAvatarView()
 
     @View private var contactTypeBackgroundView: UIView = {
         let view = UIView()
@@ -69,15 +65,20 @@ final class ContactBookCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var nameLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.heavy.withSize(15.0)
+    @View private var separatorView = UIView()
+    @View private var contectSectionView = UIView()
+
+    @View private var stackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 8.0
         return view
     }()
 
+    @View private var addressView = AddressView()
+
     @View private var favoriteView: UIImageView = {
         let view = UIImageView()
-        view.image = .Icons.Star.filled
+        view.image = .Icons.General.star
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -122,9 +123,11 @@ final class ContactBookCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [nameLabel, favoriteView, avatarView, contactTypeBackgroundView, contactTypeView, tickView].forEach(contentView.addSubview)
+        [contectSectionView, addressView].forEach(stackView.addArrangedSubview)
+        [contactTypeBackgroundView, contactTypeView, separatorView].forEach(contectSectionView.addSubview)
+        [tickView, stackView, favoriteView].forEach(contentView.addSubview)
 
-        let normalModeConstraint = avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
+        let normalModeConstraint = stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.0)
         editModeConstraint = tickView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
 
         self.normalModeConstraint = normalModeConstraint
@@ -133,23 +136,23 @@ final class ContactBookCell: DynamicThemeCell {
             tickView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             tickView.heightAnchor.constraint(equalToConstant: 24.0),
             tickView.widthAnchor.constraint(equalToConstant: 24.0),
-            avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
             normalModeConstraint,
-            avatarView.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0),
-            avatarView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
-            avatarView.widthAnchor.constraint(equalToConstant: 44.0),
-            avatarView.heightAnchor.constraint(equalToConstant: 44.0),
-            contactTypeBackgroundView.trailingAnchor.constraint(equalTo: avatarView.trailingAnchor),
-            contactTypeBackgroundView.bottomAnchor.constraint(equalTo: avatarView.bottomAnchor),
+            contactTypeBackgroundView.leadingAnchor.constraint(equalTo: contectSectionView.leadingAnchor),
+            contactTypeBackgroundView.centerYAnchor.constraint(equalTo: contectSectionView.centerYAnchor),
             contactTypeBackgroundView.widthAnchor.constraint(equalToConstant: 16.0),
             contactTypeBackgroundView.heightAnchor.constraint(equalToConstant: 16.0),
             contactTypeView.topAnchor.constraint(equalTo: contactTypeBackgroundView.topAnchor, constant: 3.0),
             contactTypeView.leadingAnchor.constraint(equalTo: contactTypeBackgroundView.leadingAnchor, constant: 3.0),
             contactTypeView.trailingAnchor.constraint(equalTo: contactTypeBackgroundView.trailingAnchor, constant: -3.0),
             contactTypeView.bottomAnchor.constraint(equalTo: contactTypeBackgroundView.bottomAnchor, constant: -3.0),
-            nameLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 10.0),
-            nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            favoriteView.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 10.0),
+            separatorView.leadingAnchor.constraint(equalTo: contactTypeBackgroundView.trailingAnchor, constant: 8.0),
+            separatorView.trailingAnchor.constraint(equalTo: contectSectionView.trailingAnchor),
+            separatorView.centerYAnchor.constraint(equalTo: contectSectionView.centerYAnchor),
+            separatorView.widthAnchor.constraint(equalToConstant: 1.0),
+            separatorView.heightAnchor.constraint(equalToConstant: 14.0),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 24.0),
+            stackView.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24.0),
             favoriteView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
             favoriteView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ]
@@ -162,27 +165,19 @@ final class ContactBookCell: DynamicThemeCell {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
-        nameLabel.textColor = theme.text.heading
         favoriteView.tintColor = theme.brand.purple
         contactTypeBackgroundView.backgroundColor = theme.brand.purple
         contactTypeView.tintColor = theme.buttons.primaryText
+        separatorView.backgroundColor = theme.text.lightText
     }
 
     func update(viewModel: ViewModel) {
-
         elementID = viewModel.id
         isSelectable = viewModel.isSelectable
-        nameLabel.text = viewModel.name
-
-        if let avatarImage = viewModel.avatarImage {
-            avatarView.avatar = .image(avatarImage)
-        } else {
-            avatarView.avatar = .text(viewModel.avatarText)
-        }
-
+        addressView.update(viewModel: viewModel.addressViewModel)
         favoriteView.isHidden = !viewModel.isFavorite
         contactTypeView.image = viewModel.contactTypeImage
-        contactTypeBackgroundView.isHidden = viewModel.contactTypeImage == nil
+        contectSectionView.isHidden = viewModel.contactTypeImage == nil
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -205,5 +200,16 @@ final class ContactBookCell: DynamicThemeCell {
             self.alpha = isDimmed ? 0.6 : 1.0
             self.layoutIfNeeded()
         }
+    }
+}
+
+extension ContactBookCell.ViewModel: Equatable, Hashable {
+
+    static func == (lhs: ContactBookCell.ViewModel, rhs: ContactBookCell.ViewModel) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

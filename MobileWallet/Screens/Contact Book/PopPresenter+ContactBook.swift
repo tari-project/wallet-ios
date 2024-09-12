@@ -40,14 +40,14 @@
 
 extension PopUpPresenter {
 
-    @MainActor static func showUnlinkConfirmationDialog(emojiID: String, name: String, confirmationCallback: @escaping () -> Void) {
+    @MainActor static func showUnlinkConfirmationDialog(address: String, name: String, confirmationCallback: @escaping () -> Void) {
 
         let model = PopUpDialogModel(
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.confirmation.title"), style: .normal)
             ],
             messageComponents: [
-                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.confirmation.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.confirmation.message.part1", arguments: address), style: .normal),
                 StylizedLabel.StylizedText(text: name, style: .bold)
             ],
             buttons: [
@@ -60,14 +60,14 @@ extension PopUpPresenter {
         showPopUp(model: model)
     }
 
-    @MainActor static func showUnlinkSuccessDialog(emojiID: String, name: String) {
+    @MainActor static func showUnlinkSuccessDialog(address: String, name: String) {
 
         let model = PopUpDialogModel(
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.success.title"), style: .normal)
             ],
             messageComponents: [
-                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.success.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.success.message.part1", arguments: address), style: .normal),
                 StylizedLabel.StylizedText(text: name, style: .bold)
             ],
             buttons: [
