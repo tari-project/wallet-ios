@@ -43,6 +43,7 @@ import Combine
 final class ICloudBackupService {
 
     enum ICloudBackupError: Error {
+
         case noUbiquityContainer
         case unableToCreateBackup(error: Error)
         case unableToCreateFolderStructure(error: Error)
@@ -50,6 +51,25 @@ final class ICloudBackupService {
         case unableToCopyFile(error: Error)
         case unableToDownloadBackup(error: Error)
         case unableToSaveBackup(error: Error)
+
+        var internalError: Error? {
+            switch self {
+            case .noUbiquityContainer:
+                return nil
+            case let .unableToCreateBackup(error):
+                return error
+            case let .unableToCreateFolderStructure(error):
+                return error
+            case let .unableToDeleteFile(error):
+                return error
+            case let .unableToCopyFile(error):
+                return error
+            case let .unableToDownloadBackup(error):
+                return error
+            case let .unableToSaveBackup(error):
+                return error
+            }
+        }
     }
 
     // MARK: - Properties
