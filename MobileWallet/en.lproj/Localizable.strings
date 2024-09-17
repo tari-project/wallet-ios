@@ -735,6 +735,7 @@
 "error.wallet.428" = "Unable to decrypt the wallet. Please try again later or try to restore your wallet.";
 "error.wallet.429" = "Unable to recover your wallet from provided seed words. Please check the list of entered seed words and try again.";
 "error.wallet.430" = "The provided seed words are not compatible with the current wallet version. Please get in touch with support for more details.";
+"error.wallet.702.recovery" = "Looks like your backup isn't compatible with this wallet version. Consider making a new one!";
 
 "error.tx_rejection.0" = "The transaction failed for an unknown reason.";
 "error.tx_rejection.1" = "The transaction was canceled by the sender.";

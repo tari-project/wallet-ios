@@ -143,7 +143,9 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
 
     private func authenticateUserAndRestoreWallet(from service: BackupManager.Service) {
         localAuth.authenticateUser(reason: .userVerification) { [weak self] in
-            self?.restoreWallet(from: service, password: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self?.restoreWallet(from: service, password: nil)
+            }
         }
     }
 
@@ -206,6 +208,17 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
             errorMessage = localized("iCloud_backup.error.no_backup_exists")
         case let error as DropboxBackupError:
             errorMessage = error.message
+        case let error as ICloudBackupService.ICloudBackupError:
+
+            guard let walletError = error.internalError as? WalletError else { break }
+
+            guard walletError == .cantRecover else {
+                errorMessage = ErrorMessageManager.errorMessage(forError: walletError)
+                break
+            }
+
+            errorMessage = localized("error.wallet.702.recovery")
+
         default:
             errorMessage = ErrorMessageManager.errorMessage(forError: error)
         }
