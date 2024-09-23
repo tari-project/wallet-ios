@@ -74,7 +74,7 @@ final class CrashLogger {
 
         GroupUserDefaults.isTrackingEnabled = isEnabled
 
-        if isEnabled == true {
+        if isEnabled == nil || isEnabled == true {
             start()
         } else {
             stop()
