@@ -75,11 +75,6 @@ final class SplashViewController: UIViewController {
         setupCallbacks()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        TrackingConsentManager.handleTrackingConsent()
-    }
-
     // MARK: - Setups
 
     private func setupCallbacks() {
