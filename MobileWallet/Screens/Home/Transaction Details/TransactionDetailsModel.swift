@@ -142,7 +142,7 @@ final class TransactionDetailsModel {
                 errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"), type: .error)
                 return
             }
-            wasTransactionCanceled = try Tari.shared.transactions.cancelPendingTransaction(identifier: transaction.identifier)
+            wasTransactionCanceled = try Tari.shared.wallet(.main).transactions.cancelPendingTransaction(identifier: transaction.identifier)
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: nil, type: .error)
         }
@@ -241,16 +241,18 @@ final class TransactionDetailsModel {
             return nil
         }
 
+        let requiredConfirmationCount = try Tari.shared.wallet(.main).transactions.requiredConfirmationsCount
+
         switch try transaction.status {
         case .pending:
             return try transaction.isOutboundTransaction ? .txWaitingForRecipient : .txWaitingForSender
         case .broadcast, .completed:
-            return .txCompleted(confirmationCount: 1)
+            return .txCompleted(confirmationCount: 1, requiredConfirmationCount: requiredConfirmationCount)
         case .minedUnconfirmed:
             guard let confirmationCount = try (transaction as? CompletedTransaction)?.confirmationCount else {
-                return .txCompleted(confirmationCount: 1)
+                return .txCompleted(confirmationCount: 1, requiredConfirmationCount: requiredConfirmationCount)
             }
-            return .txCompleted(confirmationCount: confirmationCount + 1)
+            return .txCompleted(confirmationCount: confirmationCount + 1, requiredConfirmationCount: requiredConfirmationCount)
         case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbase, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain:
             return nil
         }

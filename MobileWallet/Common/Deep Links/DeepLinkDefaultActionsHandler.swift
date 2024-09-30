@@ -110,7 +110,7 @@ enum DeepLinkDefaultActionsHandler {
         contentSection.update(name: name, peer: peer)
 
         let buttonSection = PopUpComponentsFactory.makeButtonsView(models: [
-            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.connection.addBaseNode(name: name, peer: peer) }),
+            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.wallet(.main).connection.addBaseNode(name: name, peer: peer) }),
             PopUpDialogButtonModel(title: localized("common.close"), type: .text)
         ])
 
@@ -181,7 +181,7 @@ enum DeepLinkDefaultActionsHandler {
 
             let address = try TariAddress(base58: $0.address)
 
-            if Tari.shared.isWalletConnected {
+            if Tari.shared.wallet(.main).isWalletRunning.value {
                 _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)
             } else {
                 try PendingDataManager.shared.storeContact(name: $0.name, isFavorite: false, address: address)

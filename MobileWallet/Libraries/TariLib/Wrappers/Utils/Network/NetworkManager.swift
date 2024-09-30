@@ -53,7 +53,7 @@ final class NetworkManager {
 
     @Published var selectedNetwork: TariNetwork
 
-    var defaultBaseNodes: [BaseNode] { (try? Tari.shared.connection.defaultBaseNodePeers()) ?? [] }
+    var defaultBaseNodes: [BaseNode] { (try? Tari.shared.wallet(.main).connection.defaultBaseNodePeers()) ?? [] }
 
     var selectedBaseNode: BaseNode? {
         get { settings.selectedBaseNode }

@@ -53,7 +53,7 @@ enum ErrorMessageManager {
         switch error {
         case let error as WalletError:
             return model(walletError: error)
-        case let error as FFIWalletManager.GeneralError:
+        case let error as FFIWalletHandler.GeneralError:
             return model(internalWalletError: error)
         case let error as SeedWords.InternalError:
             return model(seedWordsError: error)
@@ -98,7 +98,7 @@ enum ErrorMessageManager {
         return MessageModel(title: localized("restore_from_seed_words.error.title"), message: message.appending(signature: seedWordsError.signature), type: .error)
     }
 
-    private static func model(internalWalletError: FFIWalletManager.GeneralError) -> MessageModel {
+    private static func model(internalWalletError: FFIWalletHandler.GeneralError) -> MessageModel {
 
         let message: String
 

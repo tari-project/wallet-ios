@@ -52,7 +52,7 @@ final class TariConnectionService: CoreTariService {
             let result = try walletManager.set(baseNodePeer: baseNode.makePublicKey(), address: baseNode.address)
             NetworkManager.shared.selectedBaseNode = baseNode
             return result
-        } catch FFIWalletManager.GeneralError.unableToCreateWallet {
+        } catch FFIWalletHandler.GeneralError.unableToCreateWallet {
             NetworkManager.shared.selectedBaseNode = baseNode
             return false
         } catch {

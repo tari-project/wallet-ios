@@ -80,7 +80,7 @@ final class SplashViewModel {
 
     init(isWalletConnected: Bool) {
         self.isWalletConnected = isWalletConnected
-        status = StatusModel(status: .idle, statusRepresentation: Tari.shared.isWalletExist ? .logo : .content)
+        status = StatusModel(status: .idle, statusRepresentation: Tari.shared.wallet(.main).isWalletDBExist ? .logo : .content)
         setupCallbacks()
         setupData()
         StagedWalletSecurityManager.shared.stop()
@@ -97,7 +97,7 @@ final class SplashViewModel {
 
         NetworkManager.shared.$selectedNetwork
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.isWalletExist = Tari.shared.isWalletExist }
+            .sink { [weak self] _ in self?.isWalletExist = Tari.shared.wallet(.main).isWalletDBExist }
             .store(in: &cancellables)
 
         $isWalletExist
@@ -119,7 +119,7 @@ final class SplashViewModel {
     }
 
     func startWallet() {
-        if Tari.shared.isWalletExist {
+        if Tari.shared.wallet(.main).isWalletDBExist {
             openWallet()
         } else {
             createWallet()
@@ -157,7 +157,7 @@ final class SplashViewModel {
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
 
                 let randomBaseNode = try NetworkManager.shared.randomBaseNode()
-                try Tari.shared.connection.select(baseNode: randomBaseNode)
+                try Tari.shared.wallet(.main).connection.select(baseNode: randomBaseNode)
             } catch {
                 self.handle(error: error)
             }
@@ -174,16 +174,16 @@ final class SplashViewModel {
         Tari.shared.deleteWallet()
         Tari.shared.canAutomaticalyReconnectWallet = false
         status = StatusModel(status: .idle, statusRepresentation: .content)
-        isWalletExist = Tari.shared.isWalletExist
+        isWalletExist = Tari.shared.wallet(.main).isWalletDBExist
     }
 
     private func connectToWallet(isWalletConnected: Bool) async throws {
 
         if !isWalletConnected {
-            try await Tari.shared.startWallet()
+            try await Tari.shared.start(wallet: .main)
         }
 
-        try Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
+        try Tari.shared.wallet(.main).keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
         Tari.shared.canAutomaticalyReconnectWallet = true
     }
 

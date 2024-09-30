@@ -95,7 +95,7 @@ final class SelectBaseNodeModel {
     func selectNode(index: Int) {
         let baseNode = avaiableNodes[index]
         do {
-            try Tari.shared.connection.select(baseNode: baseNode)
+            try Tari.shared.wallet(.main).connection.select(baseNode: baseNode)
             selectedNodeIndex = index
             updateViewModelNodes()
         } catch {
@@ -111,7 +111,7 @@ final class SelectBaseNodeModel {
         }
 
         do {
-            try Tari.shared.connection.addBaseNode(name: name, hex: hex, address: address)
+            try Tari.shared.wallet(.main).connection.addBaseNode(name: name, hex: hex, address: address)
             refreshData()
         } catch {
             errorMessaage = MessageModel(title: localized("add_base_node.error.title"), message: localized("add_base_node.error.invalid_peer"), type: .error)

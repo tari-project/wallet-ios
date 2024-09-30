@@ -47,4 +47,12 @@ extension DateFormatter {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }
+
+    static var logTimestamp: Self {
+        let formatter = Self()
+        formatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        formatter.timeZone = .current
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }
 }

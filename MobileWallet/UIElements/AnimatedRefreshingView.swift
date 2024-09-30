@@ -52,7 +52,7 @@ enum AnimatedRefreshingViewState: Equatable {
     // tx view states
     case txWaitingForSender
     case txWaitingForRecipient
-    case txCompleted(confirmationCount: UInt64)
+    case txCompleted(confirmationCount: UInt64, requiredConfirmationCount: UInt64)
 }
 
 private class RefreshingInnerView: DynamicThemeView {
@@ -117,11 +117,7 @@ private class RefreshingInnerView: DynamicThemeView {
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = localized("refresh_view.waiting_for_sender")
-        case .txCompleted(let confirmationCount):
-            guard let requiredConfirmationCount = try? Tari.shared.transactions.requiredConfirmationsCount else {
-                statusLabel.text = localized("refresh_view.final_processing")
-                break
-            }
+        case let .txCompleted(confirmationCount, requiredConfirmationCount):
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = String(
