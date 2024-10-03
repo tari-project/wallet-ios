@@ -121,7 +121,7 @@ final class AddContactViewController: SecureViewController<AddContactView> {
     }
 
     private func showQRScanner() {
-        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.profile), .deeplink(.transactionSend)]) { [weak self] in
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.profile), .deeplink(.transactionSend)], disabledDataTypes: [.deeplink(.paperWallet)]) { [weak self] in
             self?.model.handle(qrCodeData: $0)
         }
     }

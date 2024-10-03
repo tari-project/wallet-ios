@@ -411,6 +411,11 @@
 "restore_wallet.item.iCloud_restore" = "Restore with iCloud";
 "restore_wallet.item.dropbox_restore" = "Restore with Dropbox";
 "restore_wallet.item.phrase_restore" = "Restore with recovery phrase";
+"restore_wallet.item.paper_wallet" = "Restore from paper wallet";
+"restore_wallet.pop_up.paper_wallet.confirmation.title" = "Paper Wallet Detected";
+"restore_wallet.pop_up.paper_wallet.confirmation.message" = "You’ve scanned a paper wallet!\nWhat would you like to do?";
+"restore_wallet.pop_up.paper_wallet.confirmation.buttons.ok" = "Restore the wallet";
+"restore_wallet.pop_up.paper_wallet.confirmation.buttons.cancel" = "Don’t restore right now";
 
 /* PasswordVerification view */
 "password_verification.title" = "Security";

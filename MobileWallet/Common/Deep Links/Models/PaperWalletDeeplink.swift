@@ -1,10 +1,10 @@
-//  QRCodeScannerConstructor.swift
+//  PaperWalletDeeplink.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 11/07/2023
+	Created by Adrian Truszczyński on 01/10/2024
 	Using Swift 5.0
-	Running on macOS 13.4
+	Running on macOS 14.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,12 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum QRCodeScannerConstructor {
+struct PaperWalletDeeplink {
+    let seedWords: [String]
 
-    static func buildScene(expectedDataTypes: [QRCodeScannerModel.DataType], disabledDataTypes: [QRCodeScannerModel.DataType]) throws -> QRCodeScannerViewController {
-        let videoCaptureManager = VideoCaptureManager()
-        try videoCaptureManager.setupSession()
-        let model = QRCodeScannerModel(videoCaptureManager: videoCaptureManager, expectedDataTypes: expectedDataTypes, disabledDataTypes: disabledDataTypes)
-        return QRCodeScannerViewController(model: model, videoSession: videoCaptureManager.captureSession)
+    enum CodingKeys: String, CodingKey {
+        case seedWords = "seed_words"
     }
+}
+
+extension PaperWalletDeeplink: DeepLinkable {
+    static var type: DeeplinkType { .paperWallet }
 }
