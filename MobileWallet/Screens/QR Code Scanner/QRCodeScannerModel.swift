@@ -52,7 +52,7 @@ final class QRCodeScannerModel {
         let isValid: Bool
     }
 
-    enum ExpectedType {
+    enum DataType {
         case deeplink(DeeplinkType)
         case torBridges
     }
@@ -71,7 +71,8 @@ final class QRCodeScannerModel {
 
     private let videoCaptureManager: VideoCaptureManager
     private let transactionFormatter = TransactionFormatter()
-    private let expectedDataTypes: [ExpectedType]
+    private let expectedDataTypes: [DataType]
+    private let disabledDataTypes: [DataType]
 
     private var scannedData: VideoCaptureManager.ScanResult?
     private var cancellables = Set<AnyCancellable>()
@@ -90,11 +91,26 @@ final class QRCodeScannerModel {
         }
     }
 
+    private var disabledDeeplinkTypes: [DeeplinkType] {
+        disabledDataTypes.compactMap {
+            guard case let .deeplink(deeplink) = $0 else { return nil }
+            return deeplink
+        }
+    }
+
+    private var disabledTorBridges: Bool {
+        disabledDataTypes.contains {
+            guard case .torBridges = $0 else { return false }
+            return true
+        }
+    }
+
     // MARK: - Initialisers
 
-    init(videoCaptureManager: VideoCaptureManager, expectedDataTypes: [ExpectedType]) {
+    init(videoCaptureManager: VideoCaptureManager, expectedDataTypes: [DataType], disabledDataTypes: [DataType]) {
         self.videoCaptureManager = videoCaptureManager
         self.expectedDataTypes = expectedDataTypes
+        self.disabledDataTypes = disabledDataTypes
         setupCallbacks()
     }
 
@@ -153,6 +169,8 @@ final class QRCodeScannerModel {
 
     private func handle(validDeeplink: DeepLinkable, scanResult: VideoCaptureManager.ScanResult) {
 
+        guard !disabledDeeplinkTypes.contains(where: { $0 == validDeeplink.type }) else { return }
+
         guard expectedDeeplinkTypes.contains(where: { $0 == validDeeplink.type }) else {
             handle(unexpectedDeeplink: validDeeplink, scanResult: scanResult)
             return
@@ -162,6 +180,8 @@ final class QRCodeScannerModel {
     }
 
     private func handle(torBridges: String, scanResult: VideoCaptureManager.ScanResult) {
+
+        guard !disabledTorBridges else { return }
 
         guard expectTorBridges else {
             actionModel = ActionModel(title: localized("qr_code_scanner.labels.actions.tor_bridges"), isValid: true)
@@ -204,6 +224,8 @@ final class QRCodeScannerModel {
             return localized("qr_code_scanner.labels.actions.base_node_add")
         case .contacts, .profile:
             return localized("qr_code_scanner.labels.actions.contacts")
+        case .paperWallet:
+            return ""
         }
     }
 }

@@ -1,10 +1,10 @@
-//  QRCodeScannerConstructor.swift
+//  RestoreWalletModel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 11/07/2023
+	Created by Adrian Truszczyński on 02/10/2024
 	Using Swift 5.0
-	Running on macOS 13.4
+	Running on macOS 14.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,12 +38,59 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum QRCodeScannerConstructor {
+import Combine
 
-    static func buildScene(expectedDataTypes: [QRCodeScannerModel.DataType], disabledDataTypes: [QRCodeScannerModel.DataType]) throws -> QRCodeScannerViewController {
-        let videoCaptureManager = VideoCaptureManager()
-        try videoCaptureManager.setupSession()
-        let model = QRCodeScannerModel(videoCaptureManager: videoCaptureManager, expectedDataTypes: expectedDataTypes, disabledDataTypes: disabledDataTypes)
-        return QRCodeScannerViewController(model: model, videoSession: videoCaptureManager.captureSession)
+final class RestoreWalletModel {
+
+    enum Action {
+        case showPaperWalletConfirmation
+        case showPaperWalletRecoveryProgress
+    }
+
+    // MARK: - Properties
+
+    @Published private(set) var action: Action?
+    @Published private(set) var error: MessageModel?
+
+    private let recoveryModel = SeedWordsWalletRecoveryManager()
+    private var unconfirmedSeedWords: [String] = []
+    private var cancellable = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    init() {
+        setupCallbacks()
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+
+        recoveryModel.$isEmptyWalletCreated
+            .filter { $0 }
+            .sink { [weak self] _ in self?.action = .showPaperWalletRecoveryProgress }
+            .store(in: &cancellable)
+
+        recoveryModel.$error
+            .assign(to: &$error)
+    }
+
+    // MARK: - Actions
+
+    func requestWalletRecovery(paperWalletDeeplink: PaperWalletDeeplink) {
+        unconfirmedSeedWords = paperWalletDeeplink.seedWords
+        action = .showPaperWalletConfirmation
+    }
+
+    func removeWallet() {
+        recoveryModel.deleteWallet()
+    }
+
+    func confirmWalletRecovery() {
+        recoveryModel.recover(seedWords: unconfirmedSeedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+    }
+
+    func cancelWalletRecovery() {
+        unconfirmedSeedWords.removeAll()
     }
 }

@@ -56,6 +56,8 @@ enum DeeplinkHandler {
             return try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: deeplink)
         case .profile:
             return try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: deeplink)
+        case .paperWallet:
+            return try DeepLinkFormatter.model(type: PaperWalletDeeplink.self, deeplink: deeplink)
         }
     }
 
@@ -88,6 +90,8 @@ enum DeeplinkHandler {
             try handle(userProfileDeepLink: deeplink, actionType: actionType)
         case .transactionSend:
             handle(transactionSendDeepLink: deeplink)
+        case .paperWallet:
+            break
         }
     }
 
