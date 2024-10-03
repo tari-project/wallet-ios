@@ -189,9 +189,9 @@ enum AppRouter {
         }
     }
 
-    @MainActor static func presentQrCodeScanner(expectedDataTypes: [QRCodeScannerModel.ExpectedType], onExpectedDataScan: ((QRCodeData) -> Void)?) {
+    @MainActor static func presentQrCodeScanner(expectedDataTypes: [QRCodeScannerModel.DataType], disabledDataTypes: [QRCodeScannerModel.DataType], onExpectedDataScan: ((QRCodeData) -> Void)?) {
         do {
-            let controller = try QRCodeScannerConstructor.buildScene(expectedDataTypes: expectedDataTypes)
+            let controller = try QRCodeScannerConstructor.buildScene(expectedDataTypes: expectedDataTypes, disabledDataTypes: disabledDataTypes)
             controller.onExpectedDataScan = onExpectedDataScan
             presentOnTop(controller: controller)
         } catch {

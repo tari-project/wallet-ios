@@ -67,6 +67,7 @@ final class RestoreWalletFromSeedsModel {
     let viewModel: ViewModel = ViewModel()
 
     private let editingModel = SeedWordModel(id: UUID(), title: "", state: .editing, visualTrait: .none)
+    private let recoveryManager = SeedWordsWalletRecoveryManager()
 
     private var availableAutocompletionTokens: [TokenViewModel] = [] {
         didSet { viewModel.isAutocompletionAvailable = !availableAutocompletionTokens.isEmpty }
@@ -88,6 +89,12 @@ final class RestoreWalletFromSeedsModel {
             .map { $0.contains { $0.state != .editing } }
             .assign(to: \.isConfimationEnabled, on: viewModel)
             .store(in: &cancelables)
+
+        recoveryManager.$isEmptyWalletCreated
+            .assign(to: &viewModel.$isEmptyWalletCreated)
+
+        recoveryManager.$error
+            .assign(to: &viewModel.$error)
 
         $inputText
             .map { [unowned self] inputText in self.availableAutocompletionTokens.filter { $0.title.lowercased().hasPrefix(inputText.lowercased()) }}
@@ -167,25 +174,11 @@ final class RestoreWalletFromSeedsModel {
     }
 
     func deleteWallet() {
-        Tari.shared.deleteWallet()
-        Tari.shared.canAutomaticalyReconnectWallet = false
+        recoveryManager.deleteWallet()
     }
 
     private func restoreWallet(seedWords: [String]) {
-
-        deleteWallet()
-
-        do {
-            try Tari.shared.restoreWallet(seedWords: seedWords)
-            try selectCustomBaseNode()
-            viewModel.isEmptyWalletCreated = true
-        } catch let error as SeedWords.InternalError {
-            handle(seedWordsError: error)
-        } catch let error as WalletError {
-            handle(walletError: error)
-        } catch {
-            handleUnknownError()
-        }
+        recoveryManager.recover(seedWords: seedWords, customBaseNodeHex: viewModel.customBaseNodeHex, customBaseNodeAddress: viewModel.customBaseNodeAddress)
     }
 
     private func fetchAvailableSeedWords() {
@@ -196,11 +189,6 @@ final class RestoreWalletFromSeedsModel {
     private func appendModelsBeforeEditingModel(models: [SeedWordModel]) {
         let index = viewModel.seedWordModels.count - 1
         viewModel.seedWordModels.insert(contentsOf: models, at: index)
-    }
-
-    private func selectCustomBaseNode() throws {
-        guard let hex = viewModel.customBaseNodeHex, let address = viewModel.customBaseNodeAddress else { return }
-        try Tari.shared.connection.addBaseNode(name: localized("restore_from_seed_words.custom_node_name"), hex: hex, address: address)
     }
 
     // MARK: - Handlers
@@ -216,29 +204,6 @@ final class RestoreWalletFromSeedsModel {
 
         appendModelsBeforeEditingModel(models: models)
         viewModel.updatedInputText = lastToken
-    }
-
-    private func handle(seedWordsError: SeedWords.InternalError) {
-        viewModel.error = ErrorMessageManager.errorModel(forError: seedWordsError)
-    }
-
-    private func handle(walletError: WalletError) {
-
-        let message = ErrorMessageManager.errorMessage(forError: walletError)
-
-        viewModel.error = MessageModel(
-            title: localized("restore_from_seed_words.error.title"),
-            message: message,
-            type: .error
-        )
-    }
-
-    private func handleUnknownError() {
-        viewModel.error = MessageModel(
-            title: localized("restore_from_seed_words.error.title"),
-            message: localized("restore_from_seed_words.error.description.unknown_error"),
-            type: .error
-        )
     }
 
     private func handle(hex: String, address: String) {

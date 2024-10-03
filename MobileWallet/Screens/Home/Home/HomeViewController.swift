@@ -157,7 +157,7 @@ final class HomeViewController: SecureViewController<HomeView> {
     }
 
     private func showQRCodeScanner() {
-        AppRouter.presentQrCodeScanner(expectedDataTypes: [], onExpectedDataScan: nil)
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [], disabledDataTypes: [.deeplink(.paperWallet)], onExpectedDataScan: nil)
     }
 
     private func moveToTransactionList() {
