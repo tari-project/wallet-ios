@@ -42,7 +42,7 @@ import UIKit
 import LocalAuthentication
 import Combine
 
-final class SplashViewController: UIViewController {
+final class SplashViewController: UIViewController, OverlayPresentable {
 
     // MARK: - Properties
 
@@ -75,6 +75,11 @@ final class SplashViewController: UIViewController {
         setupCallbacks()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        model.recoverWalletIfNeeded()
+    }
+
     // MARK: - Setups
 
     private func setupCallbacks() {
@@ -101,6 +106,11 @@ final class SplashViewController: UIViewController {
             .map { $0 ? localized("splash.button.open_wallet") : localized("splash.button.create_wallet") }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.createWalletButtonTitle = $0 }
+            .store(in: &cancellables)
+
+        model.$isRecoveryInProgress
+            .filter { $0 }
+            .sink { [weak self] _ in self?.showRecoveryProgress() }
             .store(in: &cancellables)
 
         model.$errorMessage
@@ -171,6 +181,21 @@ final class SplashViewController: UIViewController {
         authenticationContext.authenticateUser { [weak self] in
             self?.mainView.playLogoAnimation { AppRouter.transitionToHomeScreen() }
         }
+    }
+
+    private func showRecoveryProgress() {
+
+        let overlay = SeedWordsRecoveryProgressViewController()
+
+        overlay.onSuccess = {
+            AppRouter.transitionToSplashScreen(isWalletConnected: true)
+        }
+
+        overlay.onFailure = { [weak self] in
+            self?.model.deleteWallet()
+        }
+
+        show(overlay: overlay)
     }
 
     // MARK: - Helpers

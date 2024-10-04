@@ -199,6 +199,13 @@ final class QRCodeScannerModel {
     }
 
     private func handle(unexpectedDeeplink: DeepLinkable, scanResult: VideoCaptureManager.ScanResult) {
+
+        if unexpectedDeeplink.type == .paperWallet {
+            self.scannedData = scanResult
+            useScannedQRCode()
+            return
+        }
+
         Task {
             do {
                 let actionTitle = try await actionTitle(deeplink: unexpectedDeeplink)

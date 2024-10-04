@@ -945,3 +945,14 @@
 
 "address_features.one_sided" = "One Sided Payments";
 "address_features.interactive" = "Interactive Payments";
+
+/* Paper Wallet */
+
+"paper_wallet.pop_up.main_dialog.title" = "Paper Wallet Detected";
+"paper_wallet.pop_up.main_dialog.message" = "You’ve scanned a paper wallet!\nWhat would you like to do?";
+"paper_wallet.pop_up.main_dialog.button.sweep" = "Sweep the funds";
+"paper_wallet.pop_up.main_dialog.button.replace" = "Replace current wallet";
+"paper_wallet.pop_up.sweep_confirmation.title" = "Remember to back up first!";
+"paper_wallet.pop_up.sweep_confirmation.message" = "Do you want to back up your current wallet before replacing it? If you don’t back it up first, you will lose all the funds in your current wallet!";
+"paper_wallet.pop_up.sweep_confirmation.button.backup_wallet" = "Yes, back it up";
+"paper_wallet.pop_up.sweep_confirmation.button.confirm" = "No, just replace it";

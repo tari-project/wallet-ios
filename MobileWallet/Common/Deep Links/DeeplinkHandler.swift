@@ -91,7 +91,7 @@ enum DeeplinkHandler {
         case .transactionSend:
             handle(transactionSendDeepLink: deeplink)
         case .paperWallet:
-            break
+            handle(paperWalletDeepLink: deeplink)
         }
     }
 
@@ -113,6 +113,11 @@ enum DeeplinkHandler {
     private static func handle(transactionSendDeepLink: DeepLinkable) {
         guard let deeplink = transactionSendDeepLink as? TransactionsSendDeeplink else { return }
         DeepLinkDefaultActionsHandler.handle(transactionSendDeepLink: deeplink)
+    }
+
+    private static func handle(paperWalletDeepLink: DeepLinkable) {
+        guard let deeplink = paperWalletDeepLink as? PaperWalletDeeplink else { return }
+        DeepLinkDefaultActionsHandler.handle(paperWalletDeepLink: deeplink)
     }
 
     private static func retryHandle(deeplink: DeepLinkable) {
