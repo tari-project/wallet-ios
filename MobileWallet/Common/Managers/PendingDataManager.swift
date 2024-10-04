@@ -59,7 +59,7 @@ final class PendingDataManager {
     // MARK: - Setups
 
     private func setupCallbacks() {
-        Tari.shared.$isWalletConnected
+        Tari.shared.wallet(.main).isWalletRunning.$value
             .filter { $0 }
             .sink { [weak self] _ in self?.addPendingContacts() }
             .store(in: &cancellables)
@@ -73,7 +73,7 @@ final class PendingDataManager {
     }
 
     private func addPendingContacts() {
-        pendingContacts.forEach { _ = try? Tari.shared.contacts.upsert(contact: $0) }
+        pendingContacts.forEach { _ = try? Tari.shared.wallet(.main).contacts.upsert(contact: $0) }
         pendingContacts.removeAll()
     }
 }

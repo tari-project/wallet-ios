@@ -148,7 +148,8 @@ final class AddRecipientModel {
 
     private func fetchRecentTariAddresses() throws -> [TariAddress] {
 
-        let transactions: [Transaction] = Tari.shared.transactions.completed + Tari.shared.transactions.pendingInbound + Tari.shared.transactions.pendingOutbound
+        let transactionsService = Tari.shared.wallet(.main).transactions
+        let transactions: [Transaction] = transactionsService.completed + transactionsService.pendingInbound + transactionsService.pendingOutbound
 
         let addresses = try transactions
             .sorted { try $0.timestamp > $1.timestamp }
@@ -359,7 +360,7 @@ final class AddRecipientModel {
 
     private func verify(address: TariAddress) -> Bool {
 
-        guard let uniqueIdentifier = try? address.components.uniqueIdentifier, let userUniqueIdentifier = try? Tari.shared.walletAddress.components.uniqueIdentifier, uniqueIdentifier != userUniqueIdentifier else {
+        guard let uniqueIdentifier = try? address.components.uniqueIdentifier, let userUniqueIdentifier = try? Tari.shared.wallet(.main).address.components.uniqueIdentifier, uniqueIdentifier != userUniqueIdentifier else {
             errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
             return false
         }

@@ -110,7 +110,7 @@ final class AddressPoisoningManager {
     }
 
     private func transactions(forUniqueIdentifier uniqueIdentifier: String) throws -> [Transaction] {
-        try Tari.shared.transactions.all
+        try Tari.shared.wallet(.main).transactions.all
             .filter { try $0.address.components.uniqueIdentifier == uniqueIdentifier }
             .sorted { try $0.timestamp > $1.timestamp }
     }

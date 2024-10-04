@@ -73,7 +73,7 @@ final class StagedWalletSecurityManager {
     // MARK: - Setups
 
     private func setupCallbacks() {
-        Tari.shared.walletBalance.$balance
+        Tari.shared.wallet(.main).walletBalance.$balance
             .sink { [weak self] in self?.handle(balance: $0) }
             .store(in: &cancellables)
     }

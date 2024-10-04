@@ -113,7 +113,7 @@ final class WalletTransactionsManager {
 
         do {
             let tariAddress = try TariAddress(base58: address)
-            let transactionID = try Tari.shared.transactions.send(
+            let transactionID = try Tari.shared.wallet(.main).transactions.send(
                 toAddress: tariAddress,
                 amount: amount.rawValue,
                 feePerGram: feePerGram.rawValue,

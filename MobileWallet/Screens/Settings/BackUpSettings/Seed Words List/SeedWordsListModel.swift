@@ -50,7 +50,7 @@ final class SeedWordsListModel {
     // MARK: - Actions
 
     func fetchSeedWords() {
-        seedWords = (try? Tari.shared.recovery.seedWords) ?? []
+        seedWords = (try? Tari.shared.wallet(.main).recovery.seedWords) ?? []
     }
 
     func update(checkBoxStatus: Bool) {

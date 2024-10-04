@@ -301,7 +301,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
             do {
                 let name = UserSettingsManager.name
-                let addressComponents = try Tari.shared.walletAddress.components
+                let addressComponents = try Tari.shared.wallet(.main).address.components
                 let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false)
                 cell.update(name: name, addressViewModel: addressViewModel)
             } catch {

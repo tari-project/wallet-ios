@@ -67,7 +67,7 @@ final class SeedWordsWalletRecoveryManager {
 
     private func selectCustomBaseNode(hex: String?, address: String?) throws {
         guard let hex, let address else { return }
-        try Tari.shared.connection.addBaseNode(name: localized("restore_from_seed_words.custom_node_name"), hex: hex, address: address)
+        try Tari.shared.wallet(.main).connection.addBaseNode(name: localized("restore_from_seed_words.custom_node_name"), hex: hex, address: address)
     }
 
     private func handle(seedWordsError: SeedWords.InternalError) {

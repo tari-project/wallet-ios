@@ -182,7 +182,7 @@ final class RestoreWalletFromSeedsModel {
     }
 
     private func fetchAvailableSeedWords() {
-        let seedWords = (try? Tari.shared.recovery.allSeedWords(forLanguage: .english)) ?? []
+        let seedWords = (try? Tari.shared.wallet(.main).recovery.allSeedWords(forLanguage: .english)) ?? []
         availableAutocompletionTokens = seedWords.map { TokenViewModel(id: UUID(), title: $0) }
     }
 

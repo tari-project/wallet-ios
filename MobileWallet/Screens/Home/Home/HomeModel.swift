@@ -78,16 +78,16 @@ final class HomeModel {
             .sink { [weak self] in self?.handle(networkConnection: $0, torConnection: $1, baseNodeConnection: $2, syncStatus: $3) }
             .store(in: &cancellables)
 
-        Tari.shared.walletBalance.$balance
+        Tari.shared.wallet(.main).walletBalance.$balance
             .sink { [weak self] in self?.handle(walletBalance: $0) }
             .store(in: &cancellables)
 
-        Tari.shared.$isWalletConnected
+        Tari.shared.wallet(.main).isWalletRunning.$value
             .filter { $0 }
             .sink { [weak self] _ in self?.updateAvatar() }
             .store(in: &cancellables)
 
-        let transactionsPublisher = Tari.shared.transactions.$all
+        let transactionsPublisher = Tari.shared.wallet(.main).transactions.$all
             .map { $0.filterDuplicates() }
             .replaceError(with: [Transaction]())
 
@@ -161,7 +161,7 @@ final class HomeModel {
 
     private func updateAvatar() {
 
-        guard let addressComponents = try? Tari.shared.walletAddress.components else {
+        guard let addressComponents = try? Tari.shared.wallet(.main).address.components else {
             avatar = ""
             username = ""
             return

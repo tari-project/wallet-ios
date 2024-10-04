@@ -1,4 +1,4 @@
-//  FFIWalletManager.swift
+//  FFIWalletHandler.swift
 
 /*
 	Package MobileWallet
@@ -41,7 +41,7 @@
 import Combine
 import UIKit
 
-final class FFIWalletManager {
+final class FFIWalletHandler {
 
     private enum BaseNodeValidationType: String {
         case txo
@@ -57,12 +57,12 @@ final class FFIWalletManager {
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
     @Published private(set) var scannedHeight: UInt64 = 0
 
-    @Published private(set) var isWalletConnected: Bool = false {
-        didSet { Logger.log(message: "isWalletConnected: \(isWalletConnected)", domain: .general, level: .info) }
+    @Published private(set) var isWalletRunning: Bool = false {
+        didSet { Logger.log(message: "isWalletRunning: \(isWalletRunning)", domain: .general, level: .info) }
     }
 
     private var wallet: Wallet? {
-        didSet { isWalletConnected = wallet != nil }
+        didSet { isWalletRunning = wallet != nil }
     }
 
     private var exisingWallet: Wallet {

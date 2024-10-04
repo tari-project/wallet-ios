@@ -152,12 +152,12 @@ final class TransactionFormatter {
         case .pending:
             return try transaction.isOutboundTransaction ? localized("refresh_view.waiting_for_recipient") : localized("refresh_view.waiting_for_sender")
         case .broadcast, .completed:
-            guard let requiredConfirmationCount = try? Tari.shared.transactions.requiredConfirmationsCount else {
+            guard let requiredConfirmationCount = try? Tari.shared.wallet(.main).transactions.requiredConfirmationsCount else {
                 return localized("refresh_view.final_processing")
             }
             return localized("refresh_view.final_processing_with_param", arguments: 1, requiredConfirmationCount + 1)
         case .minedUnconfirmed:
-            guard let confirmationCount = try? (transaction as? CompletedTransaction)?.confirmationCount, let requiredConfirmationCount = try? Tari.shared.transactions.requiredConfirmationsCount else {
+            guard let confirmationCount = try? (transaction as? CompletedTransaction)?.confirmationCount, let requiredConfirmationCount = try? Tari.shared.wallet(.main).transactions.requiredConfirmationsCount else {
                 return localized("refresh_view.final_processing")
             }
             return localized("refresh_view.final_processing_with_param", arguments: confirmationCount + 1, requiredConfirmationCount + 1)
