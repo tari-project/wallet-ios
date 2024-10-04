@@ -69,17 +69,21 @@ final class SplashViewModel {
     @Published private(set) var appVersion: String?
     @Published private(set) var allNetworkNames: [String] = []
     @Published private(set) var isWalletExist: Bool = false
+    @Published private(set) var isRecoveryInProgress: Bool = false
     @Published private(set) var errorMessage: MessageModel?
 
     // MARK: - Properties
 
+    private let recoveryManager = SeedWordsWalletRecoveryManager()
     private var isWalletConnected: Bool
+    private var seedWords: [String]?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(isWalletConnected: Bool) {
+    init(isWalletConnected: Bool, seedWords: [String]?) {
         self.isWalletConnected = isWalletConnected
+        self.seedWords = seedWords
         status = StatusModel(status: .idle, statusRepresentation: Tari.shared.wallet(.main).isWalletDBExist ? .logo : .content)
         setupCallbacks()
         setupData()
@@ -126,6 +130,19 @@ final class SplashViewModel {
         }
     }
 
+    func recoverWalletIfNeeded() {
+        guard let seedWords else { return }
+        recoveryManager.recover(seedWords: seedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        isRecoveryInProgress = true
+    }
+
+    func deleteWallet() {
+        Tari.shared.deleteWallet()
+        Tari.shared.canAutomaticalyReconnectWallet = false
+        status = StatusModel(status: .idle, statusRepresentation: .content)
+        isWalletExist = Tari.shared.wallet(.main).isWalletDBExist
+    }
+
     // MARK: - Actions
 
     private func createWallet() {
@@ -168,13 +185,6 @@ final class SplashViewModel {
         await withCheckedContinuation { continuation in
             MigrationManager.validateWalletVersion { continuation.resume(returning: $0) }
         }
-    }
-
-    private func deleteWallet() {
-        Tari.shared.deleteWallet()
-        Tari.shared.canAutomaticalyReconnectWallet = false
-        status = StatusModel(status: .idle, statusRepresentation: .content)
-        isWalletExist = Tari.shared.wallet(.main).isWalletDBExist
     }
 
     private func connectToWallet(isWalletConnected: Bool) async throws {

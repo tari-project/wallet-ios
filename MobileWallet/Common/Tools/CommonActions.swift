@@ -1,10 +1,10 @@
-//  SplashViewConstructor.swift
+//  CommonActions.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 30/11/2022
+	Created by Adrian Truszczyński on 04/10/2024
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 14.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum SplashViewConstructor {
+enum CommonActions {
 
-    static func buildScene(isWalletConnected: Bool, seedWords: [String]?) -> SplashViewController {
-        let model = SplashViewModel(isWalletConnected: isWalletConnected, seedWords: seedWords)
-        return SplashViewController(model: model)
+    static func deleteWalletAndMoveToSplashScreen(startRecoveryWith seedWords: [String]? = nil) {
+        Tari.shared.deleteWallet()
+        Tari.shared.canAutomaticalyReconnectWallet = false
+        BLEPeripheralManager.shared.isEnabled = false
+        BackupManager.shared.disableBackup()
+        AppRouter.transitionToSplashScreen(seedWords: seedWords)
     }
 }

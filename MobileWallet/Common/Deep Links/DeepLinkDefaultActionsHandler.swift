@@ -85,6 +85,12 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
+    static func handle(paperWalletDeepLink: PaperWalletDeeplink) {
+        Task { @MainActor in
+            showPaperWalletDialog(seedWords: paperWalletDeepLink.seedWords)
+        }
+    }
+
     private static func handle(deeplink: DeepLinkable, contacts: [ContactData], actionType: ActionType) throws {
         switch actionType {
         case .direct:
@@ -156,6 +162,40 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
+    @MainActor private static func showPaperWalletDialog(seedWords: [String]) {
+
+        let model = PopUpDialogModel(
+            title: localized("paper_wallet.pop_up.main_dialog.title"),
+            message: localized("paper_wallet.pop_up.main_dialog.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.main_dialog.button.sweep"), type: .normal),
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.main_dialog.button.replace"), type: .normal, callback: {
+                    Task { await showSwitchWalletConfirmationDialog(seedWords: seedWords) }
+                }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
+            ],
+            hapticType: .none
+        )
+
+        PopUpPresenter.showPopUp(model: model)
+    }
+
+    private static func showSwitchWalletConfirmationDialog(seedWords: [String]) async {
+
+        let model = PopUpDialogModel(
+            title: localized("paper_wallet.pop_up.sweep_confirmation.title"),
+            message: localized("paper_wallet.pop_up.sweep_confirmation.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.sweep_confirmation.button.backup_wallet"), type: .normal, callback: { AppRouter.presentBackupSettings() }),
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.sweep_confirmation.button.confirm"), type: .normal, callback: { recoverPaperWallet(seedWords: seedWords) }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
+            ],
+            hapticType: .none
+        )
+
+        await PopUpPresenter.showPopUp(model: model)
+    }
+
     // MARK: - Notifications
 
     private static func showAddContactsNotification(deeplink: DeepLinkable, isSingleContact: Bool) throws {
@@ -187,5 +227,9 @@ enum DeepLinkDefaultActionsHandler {
                 try PendingDataManager.shared.storeContact(name: $0.name, isFavorite: false, address: address)
             }
         }
+    }
+
+    private static func recoverPaperWallet(seedWords: [String]) {
+        CommonActions.deleteWalletAndMoveToSplashScreen(startRecoveryWith: seedWords)
     }
 }

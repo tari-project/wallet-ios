@@ -106,7 +106,7 @@ final class CustomTorBridgesViewController: SecureViewController<CustomTorBridge
     }
 
     private func showQRCodeScanner() {
-        AppRouter.presentQrCodeScanner(expectedDataTypes: [.torBridges], disabledDataTypes: [.deeplink(.paperWallet)]) { [weak self] data in
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.torBridges], disabledDataTypes: []) { [weak self] data in
             guard case let .bridges(bridges) = data else { return }
             self?.update(torBridges: bridges)
         }
