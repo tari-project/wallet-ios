@@ -1,10 +1,10 @@
-//  CoreTariService.swift
+//  TariConstants.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Adrian Truszczyński on 27/09/2024
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 14.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,19 +38,11 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol MainServiceable: AnyObject {
-    var connection: TariConnectionService { get }
-    var validation: TariValidationService { get }
-    var walletBalance: TariBalanceService { get }
-}
+enum TariConstants {
 
-class CoreTariService {
+    static let defaultFeePerGram: MicroTari = MicroTari(10)
+    static let defaultKernelCount: UInt32 = 1
+    static let defaultOutputCount: UInt32 = 2
 
-    unowned private(set) var walletManager: FFIWalletHandler
-    unowned private(set) var services: MainServiceable
-
-    init(walletManager: FFIWalletHandler, services: MainServiceable) {
-        self.walletManager = walletManager
-        self.services = services
-    }
+    static let torPort: UInt16 = 18101
 }

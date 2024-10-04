@@ -401,7 +401,7 @@ extension WalletCreationViewController {
 
         continueButton.setTitle(localized("common.continue"), for: .normal)
 
-        guard let addressComponents = try? Tari.shared.walletAddress.components else { return }
+        guard let addressComponents = try? Tari.shared.wallet(.main).address.components else { return }
         addressView.update(
             viewModel: AddressView.ViewModel(
                 prefix: addressComponents.networkAndFeatures,

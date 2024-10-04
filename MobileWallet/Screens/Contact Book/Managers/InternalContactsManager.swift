@@ -94,35 +94,27 @@ final class InternalContactsManager {
 
     func create(name: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
-        try Tari.shared.contacts.upsert(contact: contact)
+        try Tari.shared.wallet(.main).contacts.upsert(contact: contact)
         return try ContactModel(alias: name, defaultAlias: nil, addressComponents: address.components, isFavorite: isFavorite)
     }
 
     func update(name: String, isFavorite: Bool, base58: String) throws {
         let address = try TariAddress(base58: base58)
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
-        try Tari.shared.contacts.upsert(contact: contact)
+        try Tari.shared.wallet(.main).contacts.upsert(contact: contact)
     }
 
     func remove(uniqueIdentifier: String) throws {
-        guard let contact = try Tari.shared.contacts.findContact(uniqueIdentifier: uniqueIdentifier) else { return }
-        try Tari.shared.contacts.remove(contact: contact)
+        guard let contact = try Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: uniqueIdentifier) else { return }
+        try Tari.shared.wallet(.main).contacts.remove(contact: contact)
     }
 
     private func fetchWalletContacts() throws -> [Contact] {
-        try Tari.shared.contacts.allContacts
+        try Tari.shared.wallet(.main).contacts.allContacts
     }
 
     private func fetchTariAddresses() throws -> [TariAddress] {
-
-        var transactions: [Transaction] = []
-
-        transactions += Tari.shared.transactions.pendingInbound
-        transactions += Tari.shared.transactions.pendingOutbound
-        transactions += Tari.shared.transactions.cancelled
-        transactions += Tari.shared.transactions.completed
-
-        return try transactions
+        try Tari.shared.wallet(.main).transactions.all
             .filter { try !$0.isCoinbase }
             .map { try $0.address }
     }

@@ -63,7 +63,7 @@ final class TariValidationService: CoreTariService {
 
     // MARK: - Initialiser
 
-    override init(walletManager: FFIWalletManager, services: MainServiceable) {
+    override init(walletManager: FFIWalletHandler, services: MainServiceable) {
         super.init(walletManager: walletManager, services: services)
         setupCallbacks()
     }

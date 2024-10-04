@@ -119,7 +119,7 @@ final class ContactTransactionListView: BaseNavigationContentView {
             model.downloadGif()
             cell.updateCell = {
                 DispatchQueue.main.async {
-                    tableView.reloadRows(at: [indexPath], with: .fade)
+                    tableView.reloadData()
                 }
             }
             return cell

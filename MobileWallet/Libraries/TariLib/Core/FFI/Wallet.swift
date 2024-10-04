@@ -1,4 +1,4 @@
-//  WalletV2.swift
+//  Wallet.swift
 
 /*
 	Package MobileWallet

@@ -95,7 +95,7 @@ final class TariTransactionsService: CoreTariService {
 
     // MARK: - Initialiser
 
-    override init(walletManager: FFIWalletManager, services: MainServiceable) {
+    override init(walletManager: FFIWalletHandler, services: MainServiceable) {
         super.init(walletManager: walletManager, services: services)
         fetchData()
         setupCallbacks()
@@ -172,7 +172,7 @@ final class TariTransactionsService: CoreTariService {
     }
 
     func send(toAddress address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool, paymentID: String,
-              kernelsCount: UInt32 = Tari.defaultKernelCount, outputsCount: UInt32 = Tari.defaultOutputCount) throws -> UInt64 {
+              kernelsCount: UInt32 = TariConstants.defaultKernelCount, outputsCount: UInt32 = TariConstants.defaultOutputCount) throws -> UInt64 {
 
         let estimatedFee = try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
         let total = estimatedFee + amount

@@ -58,8 +58,8 @@ enum BackupFilesManager {
     private static let jsonEncoder = JSONEncoder()
     private static let jsonDecoder = JSONDecoder()
 
-    private static var databaseDirectory: URL { Tari.shared.connectedDatabaseDirectory }
-    private static var databaseURL: URL { Tari.shared.databaseURL }
+    private static var databaseDirectory: URL { Tari.shared.wallet(.main).databaseDirectoryURL }
+    private static var databaseURL: URL { Tari.shared.wallet(.main).databaseURL }
 
     // MARK: - Prepare Backup
 
@@ -76,12 +76,12 @@ enum BackupFilesManager {
 
     private static func preparePartialBackup(workingDirectory: URL) throws -> URL {
 
-        let rawUTXOs = try Tari.shared.unspentOutputsService
+        let rawUTXOs = try Tari.shared.wallet(.main).unspentOutputsService
             .unspentOutputs()
             .all
             .map { try $0.json }
 
-        let model = PartialBackupModel(source: try Tari.shared.walletAddress.components.fullRaw, utxos: rawUTXOs)
+        let model = PartialBackupModel(source: try Tari.shared.wallet(.main).address.components.fullRaw, utxos: rawUTXOs)
         let data = try jsonEncoder.encode(model)
 
         let fileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
@@ -140,13 +140,13 @@ enum BackupFilesManager {
         let jsonData = try Data(contentsOf: backup)
         let model = try jsonDecoder.decode(PartialBackupModel.self, from: jsonData)
 
-        try await Tari.shared.startWallet()
+        try await Tari.shared.start(wallet: .main)
 
         let sourceAddress = try TariAddress(base58: model.source)
 
         try model.utxos
             .map { try UnblindedOutput(json: $0) }
-            .forEach { _ = try Tari.shared.unspentOutputsService.store(unspentOutput: $0, sourceAddress: sourceAddress, message: localized("backup.cloud.partial.recovery_message")) }
+            .forEach { _ = try Tari.shared.wallet(.main).unspentOutputsService.store(unspentOutput: $0, sourceAddress: sourceAddress, message: localized("backup.cloud.partial.recovery_message")) }
     }
 
     private static func recoverFullBackup(backupURL: URL, password: String) async throws {
@@ -164,7 +164,7 @@ enum BackupFilesManager {
         let passphraseURL = workingDirectory.appendingPathComponent(passphraseFileName)
         let passphrase = try String(contentsOf: passphraseURL, encoding: .utf8)
 
-        let databaseFileName = Tari.shared.databaseURL.lastPathComponent
+        let databaseFileName = Tari.shared.wallet(.main).databaseURL.lastPathComponent
 
         let backupURL = try FileManager.default
             .contentsOfDirectory(atURL: workingDirectory, sortedBy: .modified, ascending: false)
@@ -204,14 +204,14 @@ enum BackupFilesManager {
 
     private static func exportDatabase(workingDirectory: URL) throws -> URL {
 
-        let filename = Tari.shared.databaseURL.lastPathComponent
+        let filename = Tari.shared.wallet(.main).databaseURL.lastPathComponent
         let workingFileURL = workingDirectory.appendingPathComponent(filename)
 
         if FileManager.default.fileExists(atPath: workingFileURL.path) {
             try FileManager.default.removeItem(at: workingFileURL)
         }
 
-        try FileManager.default.copyItem(at: Tari.shared.databaseURL, to: workingFileURL)
+        try FileManager.default.copyItem(at: Tari.shared.wallet(.main).databaseURL, to: workingFileURL)
         return workingFileURL
     }
 

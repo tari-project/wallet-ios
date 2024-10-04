@@ -76,7 +76,7 @@ enum DeeplinkHandler {
             actionType = .direct
         }
 
-        if actionType == .popUp, !(Tari.shared.isWalletConnected && AppRouter.isNavigationReady) {
+        if actionType == .popUp, !(Tari.shared.wallet(.main).isWalletRunning.value && AppRouter.isNavigationReady) {
             retryHandle(deeplink: deeplink)
             return
         }

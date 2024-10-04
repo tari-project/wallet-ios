@@ -80,7 +80,7 @@ enum MigrationManager {
         let maxRetryCount = 5
 
         do {
-            return try Tari.shared.walletVersion()
+            return try Tari.shared.wallet(.main).dataVersion
         } catch {
             guard retryCount < maxRetryCount else { return nil }
             Logger.log(message: "Waiting for cookies: Retry Count: \(retryCount)", domain: .general, level: .info)
