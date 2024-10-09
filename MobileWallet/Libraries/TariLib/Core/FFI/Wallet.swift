@@ -54,76 +54,76 @@ final class Wallet {
 
     init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32) throws {
 
-        let receivedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+        let receivedTransactionCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { _, pointer in
             WalletCallbacksManager.shared.post(name: .receivedTransaction, object: pointer)
         }
 
-        let receivedTransactionReplyCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+        let receivedTransactionReplyCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { _, pointer in
             WalletCallbacksManager.shared.post(name: .receivedTransactionReply, object: pointer)
         }
 
-        let receivedFinalizedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+        let receivedFinalizedTransactionCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { _, pointer in
             WalletCallbacksManager.shared.post(name: .receivedFinalizedTransaction, object: pointer)
         }
 
-        let fauxTransactionConfirmedCallback: (@convention(c) (OpaquePointer?) -> Void)? = { pointer in
+        let fauxTransactionConfirmedCallback: (@convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void)? = { _, pointer in
             WalletCallbacksManager.shared.post(name: .fauxTransactionConfirmed, object: pointer)
         }
 
-        let fauxTransactionUncorfirmedCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { pointer, _ in
+        let fauxTransactionUncorfirmedCallback: (@convention(c) (UnsafeMutableRawPointer?, OpaquePointer?, UInt64) -> Void)? = { _, pointer, _ in
             WalletCallbacksManager.shared.post(name: .fauxTransactionUnconfirmed, object: pointer)
         }
 
-        let transactionSendResultCallback: (@convention(c) (UInt64, OpaquePointer?) -> Void) = { identifier, pointer in
+        let transactionSendResultCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64, OpaquePointer?) -> Void) = { _, identifier, pointer in
             guard let pointer, let data = try? TransactionSendResult(identifier: identifier, pointer: pointer) else { return }
             WalletCallbacksManager.shared.post(name: .transactionSendResult, object: data)
         }
 
-        let transactionBroadcastCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+        let transactionBroadcastCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { _, pointer in
             WalletCallbacksManager.shared.post(name: .transactionBroadcast, object: pointer)
         }
 
-        let transactionMinedCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+        let transactionMinedCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { _, pointer in
             WalletCallbacksManager.shared.post(name: .transactionMined, object: pointer)
         }
 
-        let unconfirmedTransactionMinedCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, _ in
+        let unconfirmedTransactionMinedCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?, UInt64) -> Void = { _, pointer, _ in
             WalletCallbacksManager.shared.post(name: .unconfirmedTransactionMined, object: pointer)
         }
 
-        let transactionCancellationCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, _ in
+        let transactionCancellationCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?, UInt64) -> Void = { _, pointer, _ in
             WalletCallbacksManager.shared.post(name: .transactionCancellation, object: pointer)
         }
 
-        let txoValidationCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
+        let txoValidationCallback: @convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void = { _, responseId, status in
             guard let status = TransactionValidationStatus(rawValue: status) else { return }
             WalletCallbacksManager.shared.post(name: .transactionOutputValidation, object: TransactionValidationData(identifier: responseId, status: status))
         }
 
-        let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
+        let contactsLivenessDataUpdatedCallback: (@convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void) = { _, _ in
         }
 
-        let balanceUpdatedCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+        let balanceUpdatedCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { _, pointer in
             WalletCallbacksManager.shared.post(name: .walletBalanceUpdate, object: pointer)
         }
 
-        let trasactionValidationCompleteCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
+        let trasactionValidationCompleteCallback: @convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void = { _, responseId, status in
             guard let status = TransactionValidationStatus(rawValue: status) else { return }
             WalletCallbacksManager.shared.post(name: .transactionValidation, object: TransactionValidationData(identifier: responseId, status: status))
         }
 
-        let storedMessagesReceivedCallback: (@convention(c) () -> Void) = {
+        let storedMessagesReceivedCallback: (@convention(c) (UnsafeMutableRawPointer?) -> Void) = { _ in
         }
 
-        let connectivityStatusCallback: (@convention(c) (UInt64) -> Void) = { status in
+        let connectivityStatusCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = { _, status in
             WalletCallbacksManager.shared.post(name: .baseNodeConnectionStatusUpdate, object: status)
         }
 
-        let walletScannedHeightCallback: (@convention(c) (UInt64) -> Void) = {
-            WalletCallbacksManager.shared.post(name: .walletScannedHeight, object: $0)
+        let walletScannedHeightCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = {
+            WalletCallbacksManager.shared.post(name: .walletScannedHeight, object: $1)
         }
 
-        let baseNodeStateCallback: (@convention(c) (OpaquePointer?) -> Void) = { pointer in
+        let baseNodeStateCallback: (@convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void) = { _, pointer in
             WalletCallbacksManager.shared.post(name: .baseNodeStateUpdate, object: pointer)
         }
 
@@ -136,12 +136,14 @@ final class Wallet {
         Logger.log(message: "Wallet created", domain: .general, level: .info)
 
         let result = wallet_create(
+            nil,
             commsConfig.pointer,
             loggingFilePath,
             logVerbosity,
             Self.numberOfRollingLogFiles,
             Self.logFileSize,
             passphrase,
+            nil,
             seedWords?.pointer,
             networkName,
             dnsPeer,
