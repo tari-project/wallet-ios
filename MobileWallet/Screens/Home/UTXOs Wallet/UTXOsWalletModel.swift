@@ -269,7 +269,7 @@ final class UTXOsWalletModel {
                 heightScale = heightDiff / CGFloat(amountDiff)
             }
 
-            let networkBlockHeight = Tari.shared.blockHeight
+            let networkBlockHeight = Tari.shared.wallet(.main).connectionCallbacks.blockHeight
 
             utxoModels = utxosData.data
                 .sorted {

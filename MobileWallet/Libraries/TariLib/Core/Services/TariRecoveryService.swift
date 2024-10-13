@@ -38,12 +38,33 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Combine
+
 final class TariRecoveryService: CoreTariService {
 
     // MARK: - Properties
 
+    @Published var status: RestoreWalletStatus?
+
     var seedWords: [String] {
         get throws { try walletManager.seedWords().all }
+    }
+
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    override init(walletManager: FFIWalletHandler, walletCallbacks: WalletCallbacks, services: any MainServiceable) {
+        super.init(walletManager: walletManager, walletCallbacks: walletCallbacks, services: services)
+        setupCallbacks()
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+        walletCallbacks.walletRecoveryStatus
+            .sink { [weak self] in self?.status = $0 }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions

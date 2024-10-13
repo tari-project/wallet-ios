@@ -83,11 +83,11 @@ final class RestoreWalletModel {
     }
 
     func removeWallet() {
-        recoveryModel.deleteWallet()
+        recoveryModel.deleteWallet(wallet: .main)
     }
 
     func confirmWalletRecovery() {
-        recoveryModel.recover(seedWords: unconfirmedSeedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        recoveryModel.recover(wallet: .main, seedWords: unconfirmedSeedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
     }
 
     func cancelWalletRecovery() {

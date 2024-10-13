@@ -92,20 +92,13 @@ final class TransactionDetailsModel {
 
     private func setupCallbacks() {
 
-        let events = [
-            WalletCallbacksManager.shared.receivedTransactionReply,
-            WalletCallbacksManager.shared.receivedFinalizedTransaction,
-            WalletCallbacksManager.shared.transactionBroadcast,
-            WalletCallbacksManager.shared.unconfirmedTransactionMined,
-            WalletCallbacksManager.shared.transactionMined
-        ]
+        let service = Tari.shared.wallet(.main).transactions
 
-        events.forEach {
-            $0
-                .filter { [unowned self] in (try? $0.identifier) == (try? self.transaction.identifier) }
-                .sink { [weak self] in self?.handle(transaction: $0) }
-                .store(in: &cancellables)
-        }
+        Publishers.Merge5(service.$receivedTransactionReply, service.$receivedFinalizedTransaction, service.$transactionBroadcast, service.$unconfirmedTransactionMined, service.$transactionMined)
+            .compactMap { $0 }
+            .filter { [unowned self] in (try? $0.identifier) == (try? self.transaction.identifier) }
+            .sink { [weak self] in self?.handle(transaction: $0) }
+            .store(in: &cancellables)
 
         $userAlias
             .map { $0 != nil }

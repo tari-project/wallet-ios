@@ -51,8 +51,6 @@ final class Tari {
 
     static let shared = Tari()
 
-    let connectionMonitor = ConnectionMonitor()
-
     private(set) lazy var logFilePath: String = {
         let timestamp = DateFormatter.logTimestamp.string(from: Date())
         return "\(TariSettings.storageDirectory.path)/\(logFilePrefix)-\(timestamp).txt"
@@ -78,8 +76,10 @@ final class Tari {
     var isUsingCustomBridges: Bool { torManager.isUsingCustomBridges }
     var torBridges: String? { torManager.bridges }
 
+    @Published private(set) var torConnectionStatus: TorConnectionStatus = .disconnected
+    @Published private(set) var torBootstrapProcess: Int = 0
     @Published private(set) var torError: TorError?
-    @Published private(set) var blockHeight: UInt64 = NetworkManager.shared.blockHeight
+    @Published private(set) var containerCreated: String?
 
     var canAutomaticalyReconnectWallet: Bool = false
     @Published var isDisconnectionDisabled: Bool = false
@@ -96,14 +96,6 @@ final class Tari {
     // MARK: - Initialisers
 
     private init() {
-        connectionMonitor.setupPublishers(
-            torConnectionStatus: torManager.$connectionStatus.eraseToAnyPublisher(),
-            torBootstrapProgress: torManager.$bootstrapProgress.eraseToAnyPublisher(),
-            baseNodeConnectionStatus: wallet(.main).connectionCallbacks.$baseNodeConnectionStatus.eraseToAnyPublisher(),
-            scannedHeight: wallet(.main).connectionCallbacks.$scannedHeight.eraseToAnyPublisher(),
-            blockHeight: $blockHeight.eraseToAnyPublisher(),
-            baseNodeSyncStatus: wallet(.main).validation.$status.eraseToAnyPublisher()
-        )
         setupCallbacks()
     }
 
@@ -126,70 +118,72 @@ final class Tari {
             .sink { [weak self] _ in self?.disconnect() }
             .store(in: &cancellables)
 
+        torManager.$connectionStatus
+            .assign(to: &$torConnectionStatus)
+
+        torManager.$bootstrapProgress
+            .assign(to: &$torBootstrapProcess)
+
         torManager.$error
             .assignPublisher(to: \.torError, on: self)
-            .store(in: &cancellables)
-
-        WalletCallbacksManager.shared.baseNodeState
-            .compactMap { try? $0.heightOfTheLongestChain }
-            .removeDuplicates()
-            .sink { [weak self] in
-                NetworkManager.shared.blockHeight = $0
-                self?.blockHeight = $0
-            }
             .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
-    func start(wallet tag: WalletTag) async throws {
+    func start(wallet tag: String) async throws {
         await waitForTor()
         guard await UIApplication.shared.applicationState != .background else { return }
         try start(tag, seedWords: nil)
     }
 
-    func restoreWallet(seedWords: [String]) throws {
-        try start(.main, seedWords: seedWords)
+    func restore(wallet tag: String, seedWords: [String]) throws {
+        try start(tag, seedWords: seedWords)
     }
 
-    func deleteWallet() {
-        removeWallet(tag: .main)
+    func delete(wallet tag: String) {
+        walletContainer(tag).stop()
+        removeWallet(tag: tag)
         try? deleteAllLogs()
-        walletContainer(.main).stop()
         removeSettings()
     }
 
     func select(network: TariNetwork) {
-        walletContainer(.main).stop()
+        wallets.forEach { $0.stop() }
         removeSettings()
         NetworkManager.shared.selectedNetwork = network
     }
 
-    func log(message: String) {
-        try? wallet(.main).log(message: message)
+    func log(wallet tag: String, message: String) {
+        try? wallet(tag).log(message: message)
     }
 
     private func connect() {
         torManager.start()
-        guard canAutomaticalyReconnectWallet, !wallet(.main).isWalletRunning.value else { return }
+        guard canAutomaticalyReconnectWallet else { return }
+        wallets.forEach { connect(tag: $0.tag) }
+    }
+
+    private func connect(tag: String) {
+        guard !wallet(tag).isWalletRunning.value else { return }
         Task {
-            try? await start(wallet: .main)
+            try? await start(wallet: tag)
         }
     }
 
     private func disconnect() {
-        walletContainer(.main).stop()
+        wallets.forEach { $0.stop() }
         torManager.stop()
     }
 
-    private func start(_ tag: WalletTag, seedWords: [String]?) throws {
+    private func start(_ tag: String, seedWords: [String]?) throws {
         try walletContainer(tag).start(seedWords: seedWords, logPath: logFilePath, passphrase: passphrase)
-        resetServices()
+        resetServices(tag)
     }
 
     private func waitForTor() async {
         return await withCheckedContinuation { continuation in
-            Tari.shared.connectionMonitor.$torConnection
+            torManager.$connectionStatus
                 .filter { $0 == .waitingForAuthorization || $0 == .portsOpen || $0 == .connected }
                 .first()
                 .sink { _ in continuation.resume() }
@@ -197,9 +191,9 @@ final class Tari {
         }
     }
 
-    private func resetServices() {
-        Tari.shared.wallet(.main).walletBalance.reset()
-        Tari.shared.wallet(.main).transactions.reset()
+    private func resetServices(_ tag: String) {
+        wallet(tag).walletBalance.reset()
+        wallet(tag).transactions.reset()
     }
 
     private func removeSettings() {
@@ -220,6 +214,7 @@ final class Tari {
         guard let wallet = wallets.first(where: { $0.tag == tag }) else {
             let wallet = WalletContainer(tag: tag, torCookie: torCookie, controlServerAddress: controlServerAddress)
             wallets.append(wallet)
+            containerCreated = tag
             return wallet
         }
 
@@ -240,6 +235,8 @@ final class Tari {
 
 extension Tari {
     func wallet(_ tag: WalletTag) -> WalletInteractable { wallet(tag.rawValue) }
-    private func walletContainer(_ tag: WalletTag) -> WalletContainer { walletContainer(tag.rawValue) }
-    private func removeWallet(tag: WalletTag) { removeWallet(tag: tag.rawValue) }
+    func start(wallet tag: WalletTag) async throws { try await start(wallet: tag.rawValue) }
+    func restore(wallet tag: WalletTag, seedWords: [String]) throws { try restore(wallet: tag.rawValue, seedWords: seedWords) }
+    func delete(wallet tag: WalletTag) { delete(wallet: tag.rawValue) }
+    func log(wallet tag: WalletTag, message: String) { log(wallet: tag.rawValue, message: message) }
 }

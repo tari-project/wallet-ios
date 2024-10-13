@@ -47,10 +47,12 @@ protocol MainServiceable: AnyObject {
 class CoreTariService {
 
     unowned private(set) var walletManager: FFIWalletHandler
+    unowned private(set) var walletCallbacks: WalletCallbacksReadable
     unowned private(set) var services: MainServiceable
 
-    init(walletManager: FFIWalletHandler, services: MainServiceable) {
+    init(walletManager: FFIWalletHandler, walletCallbacks: WalletCallbacks, services: MainServiceable) {
         self.walletManager = walletManager
+        self.walletCallbacks = walletCallbacks
         self.services = services
     }
 }

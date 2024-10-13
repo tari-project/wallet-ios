@@ -1,8 +1,8 @@
-//  CommonActions.swift
+//  AppConnectionHandler.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 04/10/2024
+	Created by Adrian Truszczyński on 08/10/2024
 	Using Swift 5.0
 	Running on macOS 14.6
 
@@ -38,13 +38,40 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum CommonActions {
+import Combine
 
-    static func deleteWalletAndMoveToSplashScreen(startRecoveryWith seedWords: [String]? = nil) {
-        Tari.shared.delete(wallet: .main)
-        Tari.shared.canAutomaticalyReconnectWallet = false
-        BLEPeripheralManager.shared.isEnabled = false
-        BackupManager.shared.disableBackup()
-        AppRouter.transitionToSplashScreen(seedWords: seedWords)
+final class AppConnectionHandler {
+
+    // MARK: - Properties
+
+    static let shared: AppConnectionHandler = AppConnectionHandler()
+    private var cancellables = Set<AnyCancellable>()
+
+    let connectionMonitor = ConnectionMonitor()
+
+    // MARK: - Initialisers
+
+    init() {
+        setupCallbacks()
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+        Tari.shared.$containerCreated
+            .filter { $0 == WalletTag.main.rawValue }
+            .sink { [weak self] _ in self?.updateConfiguration(wallet: Tari.shared.wallet(.main)) }
+            .store(in: &cancellables)
+    }
+
+    private func updateConfiguration(wallet: WalletInteractable) {
+        connectionMonitor.setupPublishers(
+            torConnectionStatus: Tari.shared.$torConnectionStatus.eraseToAnyPublisher(),
+            torBootstrapProgress: Tari.shared.$torBootstrapProcess.eraseToAnyPublisher(),
+            baseNodeConnectionStatus: wallet.connectionCallbacks.$baseNodeConnectionStatus.eraseToAnyPublisher(),
+            scannedHeight: wallet.connectionCallbacks.$scannedHeight.eraseToAnyPublisher(),
+            blockHeight: wallet.connectionCallbacks.$blockHeight.eraseToAnyPublisher(),
+            baseNodeSyncStatus: wallet.validation.$status.eraseToAnyPublisher()
+        )
     }
 }

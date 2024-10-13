@@ -38,24 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Combine
 import UIKit
 
 final class FFIWalletHandler {
-
-    private enum BaseNodeValidationType: String {
-        case txo
-        case tx
-    }
 
     enum GeneralError: Error {
         case unableToCreateWallet
     }
 
     // MARK: - Properties
-
-    @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
-    @Published private(set) var scannedHeight: UInt64 = 0
 
     @Published private(set) var isWalletRunning: Bool = false {
         didSet { Logger.log(message: "isWalletRunning: \(isWalletRunning)", domain: .general, level: .info) }
@@ -72,30 +63,9 @@ final class FFIWalletHandler {
         }
     }
 
-    private var cancelables = Set<AnyCancellable>()
-
-    // MARK: - Initialisers
-
-    init() {
-        setupCallbacks()
-    }
-
-    // MARK: - Setups
-
-    private func setupCallbacks() {
-
-        WalletCallbacksManager.shared.baseNodeConnectionStatus
-            .assign(to: \.baseNodeConnectionStatus, on: self)
-            .store(in: &cancelables)
-
-        WalletCallbacksManager.shared.walletScannedHeight
-            .assign(to: \.scannedHeight, on: self)
-            .store(in: &cancelables)
-    }
-
     // MARK: - Actions
 
-    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32) throws {
+    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32, callbacks: WalletCallbacks) throws {
         do {
             let beforeWalletCreationDate = Date()
             Logger.log(message: "Wallet will be created", domain: .general, level: .info)
@@ -107,7 +77,8 @@ final class FFIWalletHandler {
                 networkName: networkName,
                 dnsPeer: dnsPeer,
                 isDnsSecureOn: isDnsSecureOn,
-                logVerbosity: logVerbosity
+                logVerbosity: logVerbosity,
+                callbacks: callbacks
             )
             Logger.log(message: "Wallet created after \(-beforeWalletCreationDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
         } catch {
@@ -121,7 +92,6 @@ final class FFIWalletHandler {
         let taskID = UIApplication.shared.beginBackgroundTask()
         Logger.log(message: "disconnectWallet Start: \(taskID)", domain: .general, level: .info)
         destroyWallet()
-        baseNodeConnectionStatus = .offline
         DispatchQueue.main.asyncAfter(deadline: .now() + 20.0) {
             Logger.log(message: "disconnectWallet: End: \(taskID)", domain: .general, level: .info)
             UIApplication.shared.endBackgroundTask(taskID)
@@ -386,9 +356,8 @@ final class FFIWalletHandler {
 
         let wallet = try exisingWallet
 
-        let callback: @convention(c) (UnsafeMutableRawPointer?, UInt8, UInt64, UInt64) -> Void = {
-            let status = RestoreWalletStatus(status: $1, firstValue: $2, secondValue: $3)
-            WalletCallbacksManager.shared.post(name: .walletRecoveryStatusUpdate, object: status)
+        let callback: @convention(c) (UnsafeMutableRawPointer?, UInt8, UInt64, UInt64) -> Void = { context, status, firstValue, secondValue in
+            context?.walletCallbacks.walletRecoveryStatusSubject.send(RestoreWalletStatus(status: status, firstValue: firstValue, secondValue: secondValue))
         }
 
         var errorCode: Int32 = -1

@@ -43,12 +43,12 @@ final class SeedWordsWalletRecoveryManager {
     @Published private(set) var isEmptyWalletCreated: Bool = false
     @Published private(set) var error: MessageModel?
 
-    func recover(seedWords: [String], customBaseNodeHex: String?, customBaseNodeAddress: String?) {
+    func recover(wallet: WalletTag, seedWords: [String], customBaseNodeHex: String?, customBaseNodeAddress: String?) {
 
-        deleteWallet()
+        deleteWallet(wallet: wallet)
 
         do {
-            try Tari.shared.restoreWallet(seedWords: seedWords)
+            try Tari.shared.restore(wallet: wallet, seedWords: seedWords)
             try selectCustomBaseNode(hex: customBaseNodeHex, address: customBaseNodeAddress)
             isEmptyWalletCreated = true
         } catch let error as SeedWords.InternalError {
@@ -60,8 +60,8 @@ final class SeedWordsWalletRecoveryManager {
         }
     }
 
-    func deleteWallet() {
-        Tari.shared.deleteWallet()
+    func deleteWallet(wallet: WalletTag) {
+        Tari.shared.delete(wallet: wallet)
         Tari.shared.canAutomaticalyReconnectWallet = false
     }
 

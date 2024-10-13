@@ -130,7 +130,7 @@ enum BackupFilesManager {
             }
             try await recoverFullBackup(backupURL: backup, password: password)
         } catch {
-            Tari.shared.deleteWallet()
+            Tari.shared.delete(wallet: .main)
             throw error
         }
     }

@@ -71,7 +71,8 @@ final class SeedWordsRecoveryProgressModel {
             }
             .store(in: &cancellables)
 
-        WalletCallbacksManager.shared.walletRecoveryStatusUpdate
+        Tari.shared.wallet(.main).recovery.$status
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(restoreStatus: $0) }
             .store(in: &cancellables)

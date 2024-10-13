@@ -132,12 +132,12 @@ final class SplashViewModel {
 
     func recoverWalletIfNeeded() {
         guard let seedWords else { return }
-        recoveryManager.recover(seedWords: seedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        recoveryManager.recover(wallet: .main, seedWords: seedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
         isRecoveryInProgress = true
     }
 
     func deleteWallet() {
-        Tari.shared.deleteWallet()
+        Tari.shared.delete(wallet: .main)
         Tari.shared.canAutomaticalyReconnectWallet = false
         status = StatusModel(status: .idle, statusRepresentation: .content)
         isWalletExist = Tari.shared.wallet(.main).isWalletDBExist

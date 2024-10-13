@@ -45,4 +45,15 @@ enum PointerHandler {
     static func pointer<T>(for value: inout T) -> UnsafeMutablePointer<T> {
         withUnsafeMutablePointer(to: &value) { $0 }
     }
+
+    static func rawPointer<T: AnyObject>(for object: T) -> UnsafeMutableRawPointer {
+        Unmanaged<T>.passUnretained(object).toOpaque()
+    }
+}
+
+extension UnsafeMutableRawPointer {
+
+    func object<T: AnyObject>(type: T.Type) -> T {
+        Unmanaged<T>.fromOpaque(self).takeUnretainedValue()
+    }
 }
