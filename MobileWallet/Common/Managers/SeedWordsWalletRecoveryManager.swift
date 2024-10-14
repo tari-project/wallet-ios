@@ -43,6 +43,17 @@ final class SeedWordsWalletRecoveryManager {
     @Published private(set) var isEmptyWalletCreated: Bool = false
     @Published private(set) var error: MessageModel?
 
+    func recover(wallet: WalletTag, cipher: String, passphrase: String, customBaseNodeHex: String?, customBaseNodeAddress: String?) {
+        do {
+            let seedWords = try SeedWords(cipher: cipher, passphrase: passphrase).all
+            recover(wallet: wallet, seedWords: seedWords, customBaseNodeHex: customBaseNodeHex, customBaseNodeAddress: customBaseNodeAddress)
+        } catch let error as WalletError {
+            handle(walletError: error)
+        } catch {
+            handleUnknownError()
+        }
+    }
+
     func recover(wallet: WalletTag, seedWords: [String], customBaseNodeHex: String?, customBaseNodeAddress: String?) {
 
         deleteWallet(wallet: wallet)

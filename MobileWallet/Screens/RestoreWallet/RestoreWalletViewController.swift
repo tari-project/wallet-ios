@@ -125,6 +125,12 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         show(overlay: overlay)
     }
 
+    private func showPaperWalletPasswordForm() {
+        FormOverlayPresenter.showRecoveryPasswordForm(presenter: self) { [weak self] in
+            self?.model.enter(paperWalletPassword: $0)
+        }
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         items.count
     }
@@ -294,6 +300,8 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
             showRecoveryFromPaperWalletPopUp()
         case .showPaperWalletRecoveryProgress:
             showRecoveryOverlay()
+        case .showPaperWalletPasswordForm:
+            showPaperWalletPasswordForm()
         }
     }
 

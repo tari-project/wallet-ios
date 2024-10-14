@@ -165,4 +165,22 @@ extension FormOverlayPresenter {
             onClose: { onClose?(name, hex, address) }
         )
     }
+
+    static func showRecoveryPasswordForm(presenter: UIViewController, onClose: ((String) -> Void)?) {
+
+        var password = ""
+
+        let models = [
+            ContactBookFormView.TextFieldViewModel(
+                placeholder: localized("paper_wallet.form.password.placeholder"),
+                text: "",
+                isEmojiKeyboardVisible: false,
+                callback: { password = $0 }
+            )
+        ]
+
+        showForm(title: localized("paper_wallet.form.password.title"), textFieldModels: models, presenter: presenter) {
+            onClose?(password)
+        }
+    }
 }

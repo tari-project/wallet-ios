@@ -45,6 +45,7 @@ final class RestoreWalletModel {
     enum Action {
         case showPaperWalletConfirmation
         case showPaperWalletRecoveryProgress
+        case showPaperWalletPasswordForm
     }
 
     // MARK: - Properties
@@ -53,7 +54,7 @@ final class RestoreWalletModel {
     @Published private(set) var error: MessageModel?
 
     private let recoveryModel = SeedWordsWalletRecoveryManager()
-    private var unconfirmedSeedWords: [String] = []
+    private var unconfirmedCipher: String?
     private var cancellable = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -78,7 +79,7 @@ final class RestoreWalletModel {
     // MARK: - Actions
 
     func requestWalletRecovery(paperWalletDeeplink: PaperWalletDeeplink) {
-        unconfirmedSeedWords = paperWalletDeeplink.seedWords
+        unconfirmedCipher = paperWalletDeeplink.privateKey
         action = .showPaperWalletConfirmation
     }
 
@@ -87,10 +88,16 @@ final class RestoreWalletModel {
     }
 
     func confirmWalletRecovery() {
-        recoveryModel.recover(wallet: .main, seedWords: unconfirmedSeedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        action = .showPaperWalletPasswordForm
     }
 
     func cancelWalletRecovery() {
-        unconfirmedSeedWords.removeAll()
+        unconfirmedCipher = nil
+    }
+
+    func enter(paperWalletPassword: String) {
+        guard let unconfirmedCipher else { return }
+        recoveryModel.recover(wallet: .main, cipher: unconfirmedCipher, passphrase: paperWalletPassword, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        self.unconfirmedCipher = nil
     }
 }
