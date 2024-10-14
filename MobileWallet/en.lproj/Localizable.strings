@@ -956,3 +956,5 @@
 "paper_wallet.pop_up.sweep_confirmation.message" = "Do you want to back up your current wallet before replacing it? If you don’t back it up first, you will lose all the funds in your current wallet!";
 "paper_wallet.pop_up.sweep_confirmation.button.backup_wallet" = "Yes, back it up";
 "paper_wallet.pop_up.sweep_confirmation.button.confirm" = "No, just replace it";
+"paper_wallet.form.password.title" = "Enter the paper wallet password";
+"paper_wallet.form.password.placeholder" = "Password";

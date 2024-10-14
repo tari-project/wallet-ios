@@ -39,10 +39,10 @@
 */
 
 struct PaperWalletDeeplink {
-    let seedWords: [String]
+    let privateKey: String
 
     enum CodingKeys: String, CodingKey {
-        case seedWords = "seed_words"
+        case privateKey = "private_key"
     }
 }
 

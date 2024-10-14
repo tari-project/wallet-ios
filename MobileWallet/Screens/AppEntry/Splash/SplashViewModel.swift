@@ -40,6 +40,11 @@
 
 import Combine
 
+struct PaperWalletRecoveryData {
+    let cipher: String
+    let passphrase: String
+}
+
 final class SplashViewModel {
 
     private enum InternalError: Error {
@@ -76,14 +81,14 @@ final class SplashViewModel {
 
     private let recoveryManager = SeedWordsWalletRecoveryManager()
     private var isWalletConnected: Bool
-    private var seedWords: [String]?
+    private var paperWalletRecoveryData: PaperWalletRecoveryData?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(isWalletConnected: Bool, seedWords: [String]?) {
+    init(isWalletConnected: Bool, paperWalletRecoveryData: PaperWalletRecoveryData?) {
         self.isWalletConnected = isWalletConnected
-        self.seedWords = seedWords
+        self.paperWalletRecoveryData = paperWalletRecoveryData
         status = StatusModel(status: .idle, statusRepresentation: Tari.shared.wallet(.main).isWalletDBExist ? .logo : .content)
         setupCallbacks()
         setupData()
@@ -131,8 +136,8 @@ final class SplashViewModel {
     }
 
     func recoverWalletIfNeeded() {
-        guard let seedWords else { return }
-        recoveryManager.recover(wallet: .main, seedWords: seedWords, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        guard let paperWalletRecoveryData else { return }
+        recoveryManager.recover(wallet: .main, cipher: paperWalletRecoveryData.cipher, passphrase: paperWalletRecoveryData.passphrase, customBaseNodeHex: nil, customBaseNodeAddress: nil)
         isRecoveryInProgress = true
     }
 

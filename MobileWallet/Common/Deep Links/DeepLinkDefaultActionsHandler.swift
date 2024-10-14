@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import UIKit
+
 enum DeepLinkDefaultActionsHandler {
 
     enum ActionType {
@@ -87,7 +89,7 @@ enum DeepLinkDefaultActionsHandler {
 
     static func handle(paperWalletDeepLink: PaperWalletDeeplink) {
         Task { @MainActor in
-            showPaperWalletDialog(seedWords: paperWalletDeepLink.seedWords)
+            showPaperWalletDialog(privateKey: paperWalletDeepLink.privateKey)
         }
     }
 
@@ -162,14 +164,14 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
-    @MainActor private static func showPaperWalletDialog(seedWords: [String]) {
+    @MainActor private static func showPaperWalletDialog(privateKey: String) {
 
         let model = PopUpDialogModel(
             title: localized("paper_wallet.pop_up.main_dialog.title"),
             message: localized("paper_wallet.pop_up.main_dialog.message"),
             buttons: [
                 PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.main_dialog.button.replace"), type: .normal, callback: {
-                    Task { await showSwitchWalletConfirmationDialog(seedWords: seedWords) }
+                    Task { await showSwitchWalletConfirmationDialog(privateKey: privateKey) }
                 }),
                 PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
             ],
@@ -179,14 +181,14 @@ enum DeepLinkDefaultActionsHandler {
         PopUpPresenter.showPopUp(model: model)
     }
 
-    private static func showSwitchWalletConfirmationDialog(seedWords: [String]) async {
+    private static func showSwitchWalletConfirmationDialog(privateKey: String) async {
 
         let model = PopUpDialogModel(
             title: localized("paper_wallet.pop_up.sweep_confirmation.title"),
             message: localized("paper_wallet.pop_up.sweep_confirmation.message"),
             buttons: [
                 PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.sweep_confirmation.button.backup_wallet"), type: .normal, callback: { AppRouter.presentBackupSettings() }),
-                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.sweep_confirmation.button.confirm"), type: .normal, callback: { recoverPaperWallet(seedWords: seedWords) }),
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.sweep_confirmation.button.confirm"), type: .normal, callback: { showRecoveryPasswordDialog(privateKey: privateKey) }),
                 PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
             ],
             hapticType: .none
@@ -228,7 +230,14 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
-    private static func recoverPaperWallet(seedWords: [String]) {
-        CommonActions.deleteWalletAndMoveToSplashScreen(startRecoveryWith: seedWords)
+    private static func showRecoveryPasswordDialog(privateKey: String) {
+        guard let topController = UIApplication.shared.topController else { return }
+        FormOverlayPresenter.showRecoveryPasswordForm(presenter: topController) {
+            recoverPaperWallet(paperWalletRecoveryData: PaperWalletRecoveryData(cipher: privateKey, passphrase: $0))
+        }
+    }
+
+    private static func recoverPaperWallet(paperWalletRecoveryData: PaperWalletRecoveryData) {
+        CommonActions.deleteWalletAndMoveToSplashScreen(startRecoveryWith: paperWalletRecoveryData)
     }
 }
