@@ -174,11 +174,11 @@ final class RestoreWalletFromSeedsModel {
     }
 
     func deleteWallet() {
-        recoveryManager.deleteWallet()
+        recoveryManager.deleteWallet(wallet: .main)
     }
 
     private func restoreWallet(seedWords: [String]) {
-        recoveryManager.recover(seedWords: seedWords, customBaseNodeHex: viewModel.customBaseNodeHex, customBaseNodeAddress: viewModel.customBaseNodeAddress)
+        recoveryManager.recover(wallet: .main, seedWords: seedWords, customBaseNodeHex: viewModel.customBaseNodeHex, customBaseNodeAddress: viewModel.customBaseNodeAddress)
     }
 
     private func fetchAvailableSeedWords() {

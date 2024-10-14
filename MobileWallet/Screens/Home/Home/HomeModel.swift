@@ -72,7 +72,7 @@ final class HomeModel {
 
     private func setupCallbacks() {
 
-        let monitor = Tari.shared.connectionMonitor
+        let monitor = AppConnectionHandler.shared.connectionMonitor
 
         Publishers.CombineLatest4(monitor.$networkConnection, monitor.$torConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
             .sink { [weak self] in self?.handle(networkConnection: $0, torConnection: $1, baseNodeConnection: $2, syncStatus: $3) }

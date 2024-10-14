@@ -90,12 +90,12 @@ final class WalletTransactionsManager {
 
     private func waitForConnection(result: @escaping (Result<Void, TransactionError>) -> Void) {
 
-        guard case .connected = Tari.shared.connectionMonitor.networkConnection else {
+        guard case .connected = AppConnectionHandler.shared.connectionMonitor.networkConnection else {
             result(.failure(.noInternetConnection))
             return
         }
 
-        Publishers.CombineLatest(Tari.shared.connectionMonitor.$torConnection, Tari.shared.connectionMonitor.$isTorBootstrapCompleted)
+        Publishers.CombineLatest(AppConnectionHandler.shared.connectionMonitor.$torConnection, AppConnectionHandler.shared.connectionMonitor.$isTorBootstrapCompleted)
             .filter { $0 == .connected && $1 }
             .timeout(connectionTimeout, scheduler: DispatchQueue.global())
             .first()
@@ -134,7 +134,8 @@ final class WalletTransactionsManager {
 
     private func startListeningForWalletEvents(transactionID: UInt64, publicKey: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
-        WalletCallbacksManager.shared.transactionSendResult
+        Tari.shared.wallet(.main).transactions.$transactionSendResult
+            .compactMap { $0 }
             .filter { $0.identifier == transactionID }
             .first()
             .sink { [weak self] in

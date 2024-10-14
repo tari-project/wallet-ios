@@ -55,6 +55,13 @@ final class TariTransactionsService: CoreTariService {
     @Published private(set) var all: [Transaction] = []
     @Published private(set) var error: Error?
 
+    @Published private(set) var receivedTransactionReply: CompletedTransaction?
+    @Published private(set) var receivedFinalizedTransaction: CompletedTransaction?
+    @Published private(set) var transactionBroadcast: CompletedTransaction?
+    @Published private(set) var unconfirmedTransactionMined: CompletedTransaction?
+    @Published private(set) var transactionMined: CompletedTransaction?
+    @Published private(set) var transactionSendResult: TransactionSendResult?
+
     var requiredConfirmationsCount: UInt64 {
         get throws { try walletManager.requiredConfirmationsCount() }
     }
@@ -95,8 +102,8 @@ final class TariTransactionsService: CoreTariService {
 
     // MARK: - Initialiser
 
-    override init(walletManager: FFIWalletHandler, services: MainServiceable) {
-        super.init(walletManager: walletManager, services: services)
+    override init(walletManager: FFIWalletHandler, walletCallbacks: WalletCallbacks, services: MainServiceable) {
+        super.init(walletManager: walletManager, walletCallbacks: walletCallbacks, services: services)
         fetchData()
         setupCallbacks()
     }
@@ -120,43 +127,61 @@ final class TariTransactionsService: CoreTariService {
 
     private func setupCallbacks() {
 
-        WalletCallbacksManager.shared.receivedTransaction
+        walletCallbacks.receivedTransaction
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
 
-        WalletCallbacksManager.shared.receivedTransactionReply
+        walletCallbacks.receivedTransactionReply
+            .sink { [weak self] in
+                self?.fetchData()
+                self?.receivedTransactionReply = $0
+            }
+            .store(in: &cancellables)
+
+        walletCallbacks.receivedFinalizedTransaction
+            .sink { [weak self] in
+                self?.fetchData()
+                self?.receivedFinalizedTransaction = $0
+            }
+            .store(in: &cancellables)
+
+        walletCallbacks.transactionBroadcast
+            .sink { [weak self] in
+                self?.fetchData()
+                self?.transactionBroadcast = $0
+            }
+            .store(in: &cancellables)
+
+        walletCallbacks.transactionMined
+            .sink { [weak self] in
+                self?.fetchData()
+                self?.transactionMined = $0
+            }
+            .store(in: &cancellables)
+
+        walletCallbacks.unconfirmedTransactionMined
+            .sink { [weak self] in
+                self?.fetchData()
+                self?.unconfirmedTransactionMined = $0
+            }
+            .store(in: &cancellables)
+
+        walletCallbacks.fauxTransactionConfirmed
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
 
-        WalletCallbacksManager.shared.receivedFinalizedTransaction
+        walletCallbacks.fauxTransactionUnconfirmed
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
 
-        WalletCallbacksManager.shared.transactionBroadcast
-            .sink { [weak self] _ in self?.fetchData() }
+        walletCallbacks.transactionSendResult
+            .sink { [weak self] in
+                self?.fetchData()
+                self?.transactionSendResult = $0
+            }
             .store(in: &cancellables)
 
-        WalletCallbacksManager.shared.transactionMined
-            .sink { [weak self] _ in self?.fetchData() }
-            .store(in: &cancellables)
-
-        WalletCallbacksManager.shared.unconfirmedTransactionMined
-            .sink { [weak self] _ in self?.fetchData() }
-            .store(in: &cancellables)
-
-        WalletCallbacksManager.shared.fauxTransactionConfirmed
-            .sink { [weak self] _ in self?.fetchData() }
-            .store(in: &cancellables)
-
-        WalletCallbacksManager.shared.fauxTransactionUnconfirmed
-            .sink { [weak self] _ in self?.fetchData() }
-            .store(in: &cancellables)
-
-        WalletCallbacksManager.shared.transactionSendResult
-            .sink { [weak self] _ in self?.fetchData() }
-            .store(in: &cancellables)
-
-        WalletCallbacksManager.shared.transactionCancellation
+        walletCallbacks.transactionCancellation
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
     }

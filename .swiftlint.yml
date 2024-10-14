@@ -8,7 +8,7 @@ type_body_length: # Target: 250/350
 
 function_body_length: # Target: 50/100
   - 90
-  - 100
+  - 110
 
 file_length: # Target: 400/1000
   - 675

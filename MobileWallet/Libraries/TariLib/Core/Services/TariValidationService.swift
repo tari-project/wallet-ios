@@ -63,8 +63,8 @@ final class TariValidationService: CoreTariService {
 
     // MARK: - Initialiser
 
-    override init(walletManager: FFIWalletHandler, services: MainServiceable) {
-        super.init(walletManager: walletManager, services: services)
+    override init(walletManager: FFIWalletHandler, walletCallbacks: WalletCallbacks, services: MainServiceable) {
+        super.init(walletManager: walletManager, walletCallbacks: walletCallbacks, services: services)
         setupCallbacks()
     }
 
@@ -72,13 +72,13 @@ final class TariValidationService: CoreTariService {
 
     private func setupCallbacks() {
 
-        WalletCallbacksManager.shared.transactionOutputValidation
+        walletCallbacks.transactionOutputValidationData
             .filter { $0.status != .alreadyBusy }
             .map { $0.status == .success }
             .sink { [weak self] in self?.handleTransactionValidation(type: .txo, isSuccess: $0) }
             .store(in: &cancellables)
 
-        WalletCallbacksManager.shared.transactionValidation
+        walletCallbacks.trasactionValidationData
             .filter { $0.status != .alreadyBusy }
             .map { $0.status == .success }
             .sink { [weak self] in self?.handleTransactionValidation(type: .tx, isSuccess: $0) }

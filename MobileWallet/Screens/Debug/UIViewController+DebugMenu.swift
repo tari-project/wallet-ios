@@ -103,6 +103,6 @@ extension UIViewController {
     }
 
     private func showConnectionStatus() {
-        Tari.shared.connectionMonitor.showDetailsPopup()
+        AppConnectionHandler.shared.connectionMonitor.showDetailsPopup()
     }
 }

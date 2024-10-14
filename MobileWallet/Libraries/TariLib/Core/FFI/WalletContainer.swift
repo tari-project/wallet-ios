@@ -71,14 +71,20 @@ final class WalletConnectionCallbacks {
 
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
     @Published private(set) var scannedHeight: UInt64 = 0
+    @Published private(set) var blockHeight: UInt64 = 0
 
-    init(baseNodeConnectionStatusPublisher: Published<BaseNodeConnectivityStatus>.Publisher, scannedHeightPublisher: Published<UInt64>.Publisher) {
+    init(baseNodeConnectionStatusPublisher: Published<BaseNodeConnectivityStatus>.Publisher, scannedHeightPublisher: Published<UInt64>.Publisher, blockHeight: Published<UInt64>.Publisher) {
         baseNodeConnectionStatusPublisher.assign(to: &$baseNodeConnectionStatus)
         scannedHeightPublisher.assign(to: &$scannedHeight)
+        blockHeight.assign(to: &$blockHeight)
     }
 }
 
 final class WalletContainer: WalletInteractable, MainServiceable {
+
+    @Published private var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
+    @Published private var scannedHeight: UInt64 = 0
+    @Published private var blockHeight: UInt64 = NetworkManager.shared.blockHeight
 
     // MARK: - WalletInteractable
 
@@ -96,19 +102,19 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     private(set) lazy var isWalletRunning: StaticPublisherWrapper<Bool> = StaticPublisherWrapper(publisher: manager.$isWalletRunning)
     var isWalletDBExist: Bool { (try? databaseDirectoryURL.checkResourceIsReachable()) ?? false }
 
-    private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(baseNodeConnectionStatusPublisher: manager.$baseNodeConnectionStatus, scannedHeightPublisher: manager.$scannedHeight)
+    private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(baseNodeConnectionStatusPublisher: $baseNodeConnectionStatus, scannedHeightPublisher: $scannedHeight, blockHeight: $blockHeight)
 
-    private(set) lazy var connection: TariConnectionService = TariConnectionService(walletManager: manager, services: self)
-    private(set) lazy var contacts = TariContactsService(walletManager: manager, services: self)
-    private(set) lazy var fees = TariFeesService(walletManager: manager, services: self)
-    private(set) lazy var keyValues = TariKeyValueService(walletManager: manager, services: self)
-    private(set) lazy var messageSign = TariMessageSignService(walletManager: manager, services: self)
-    private(set) lazy var recovery = TariRecoveryService(walletManager: manager, services: self)
-    private(set) lazy var transactions = TariTransactionsService(walletManager: manager, services: self)
-    private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: manager, services: self)
-    private(set) lazy var utxos = TariUTXOsService(walletManager: manager, services: self)
-    private(set) lazy var validation: TariValidationService = TariValidationService(walletManager: manager, services: self)
-    private(set) lazy var walletBalance = TariBalanceService(walletManager: manager, services: self)
+    private(set) lazy var connection: TariConnectionService = TariConnectionService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var contacts = TariContactsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var fees = TariFeesService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var keyValues = TariKeyValueService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var messageSign = TariMessageSignService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var recovery = TariRecoveryService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var transactions = TariTransactionsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var utxos = TariUTXOsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var validation: TariValidationService = TariValidationService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
+    private(set) lazy var walletBalance = TariBalanceService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
 
     // MARK: - Constants
 
@@ -120,6 +126,8 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     // MARK: - Properties
 
     let tag: String
+    private let walletCallbacks: WalletCallbacks = WalletCallbacks()
+
     private var torCookie: Data
     private var controlServerAddress: String
 
@@ -127,7 +135,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     var databaseURL: URL { databaseDirectoryURL.appendingPathComponent(fullDatabaseName) }
     private var fullDatabaseName: String { databaseName + ".sqlite3" }
 
-    private let manager = FFIWalletHandler()
+    private lazy var manager = FFIWalletHandler()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -143,14 +151,14 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     private func setupCallbacks() {
 
-        Publishers.CombineLatest(connectionCallbacks.$baseNodeConnectionStatus, validation.$status.removeDuplicates())
+        Publishers.CombineLatest($baseNodeConnectionStatus, validation.$status.removeDuplicates())
             .dropFirst()
             .filter { [weak self] _, _ in self?.isWalletRunning.value == true }
             .filter { $0 == .offline || $1 == .failed }
             .sink { [weak self] _, _ in try? self?.switchBaseNode() }
             .store(in: &cancellables)
 
-        connectionCallbacks.$baseNodeConnectionStatus
+        $baseNodeConnectionStatus
             .sink { [weak self] in
                 switch $0 {
                 case .offline:
@@ -160,6 +168,24 @@ final class WalletContainer: WalletInteractable, MainServiceable {
                 case .online:
                     try? self?.validation.sync()
                 }
+            }
+            .store(in: &cancellables)
+
+        walletCallbacks.connectivityStatus
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$baseNodeConnectionStatus)
+
+        walletCallbacks.scannedHeight
+            .assign(to: &$scannedHeight)
+
+        walletCallbacks.baseNodeState
+            .receive(on: DispatchQueue.main)
+            .compactMap { try? $0.heightOfTheLongestChain }
+            .removeDuplicates()
+            .sink { [weak self] in
+                NetworkManager.shared.blockHeight = $0
+                self?.blockHeight = $0
             }
             .store(in: &cancellables)
     }
@@ -187,12 +213,17 @@ final class WalletContainer: WalletInteractable, MainServiceable {
             networkName: NetworkManager.shared.selectedNetwork.name,
             dnsPeer: NetworkManager.shared.selectedNetwork.dnsPeer,
             isDnsSecureOn: false,
-            logVerbosity: TariSettings.shared.environment == .debug ? 11 : 4
+            logVerbosity: TariSettings.shared.environment == .debug ? 11 : 4,
+            callbacks: walletCallbacks
         )
+
+        guard NetworkManager.shared.selectedBaseNode == nil, let baseNode = try connection.defaultBaseNodePeers().randomElement() else { return }
+        try connection.select(baseNode: baseNode)
     }
 
     func stop() {
         manager.disconnectWallet()
+        baseNodeConnectionStatus = .offline
     }
 
     func log(message: String) throws {

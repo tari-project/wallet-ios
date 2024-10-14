@@ -153,7 +153,7 @@ final class HomeViewController: SecureViewController<HomeView> {
     // MARK: - Actions
 
     private func showConectionStatusPopUp() {
-        Tari.shared.connectionMonitor.showDetailsPopup()
+        AppConnectionHandler.shared.connectionMonitor.showDetailsPopup()
     }
 
     private func showQRCodeScanner() {
