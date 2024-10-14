@@ -65,11 +65,6 @@ final class SelectBaseNodeModel {
 
     // MARK: - Setups
 
-    private func updateSelectedNodeIndex() {
-        let selectedBaseNode = NetworkManager.shared.selectedBaseNode
-        selectedNodeIndex = avaiableNodes.firstIndex { $0.peer == selectedBaseNode?.peer }
-    }
-
     private func updateViewModelNodes() {
         nodes = avaiableNodes
             .enumerated()
@@ -88,7 +83,6 @@ final class SelectBaseNodeModel {
     // MARK: - Actions
 
     func refreshData() {
-        updateSelectedNodeIndex()
         updateViewModelNodes()
     }
 

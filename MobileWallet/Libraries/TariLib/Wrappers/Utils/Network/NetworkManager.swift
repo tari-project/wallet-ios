@@ -55,11 +55,6 @@ final class NetworkManager {
 
     var defaultBaseNodes: [BaseNode] { (try? Tari.shared.wallet(.main).connection.defaultBaseNodePeers()) ?? [] }
 
-    var selectedBaseNode: BaseNode? {
-        get { settings.selectedBaseNode }
-        set { update(settings: settings.update(selectedBaseNode: newValue)) }
-    }
-
     var customBaseNodes: [BaseNode] {
         get { settings.customBaseNodes }
         set { update(settings: settings.update(customBaseNodes: newValue)) }
@@ -76,7 +71,7 @@ final class NetworkManager {
         let allSettings = GroupUserDefaults.networksSettings ?? []
 
         guard let existingSettings = allSettings.first(where: { $0.name == selectedNetwork.name }) else {
-            let newSettings = NetworkSettings(name: selectedNetwork.name, selectedBaseNode: nil, customBaseNodes: [], blockHeight: 0)
+            let newSettings = NetworkSettings(name: selectedNetwork.name, customBaseNodes: [], blockHeight: 0)
             update(settings: newSettings)
             return newSettings
         }

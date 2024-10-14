@@ -151,13 +151,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     private func setupCallbacks() {
 
-        Publishers.CombineLatest($baseNodeConnectionStatus, validation.$status.removeDuplicates())
-            .dropFirst()
-            .filter { [weak self] _, _ in self?.isWalletRunning.value == true }
-            .filter { $0 == .offline || $1 == .failed }
-            .sink { [weak self] _, _ in try? self?.switchBaseNode() }
-            .store(in: &cancellables)
-
         $baseNodeConnectionStatus
             .sink { [weak self] in
                 switch $0 {
@@ -216,9 +209,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
             logVerbosity: TariSettings.shared.environment == .debug ? 11 : 4,
             callbacks: walletCallbacks
         )
-
-        guard NetworkManager.shared.selectedBaseNode == nil, let baseNode = try connection.defaultBaseNodePeers().randomElement() else { return }
-        try connection.select(baseNode: baseNode)
     }
 
     func stop() {
@@ -232,25 +222,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     func deleteWallet() throws {
         try deleteWalletDirectory()
-    }
-
-    private func switchBaseNode() throws {
-
-        guard isWalletRunning.value else { return }
-
-        let selectedBaseNode = NetworkManager.shared.selectedBaseNode
-
-        if let selectedBaseNode, selectedBaseNode.isCustomBaseNode {
-            return
-        }
-
-        var newBaseNode: BaseNode
-
-        repeat {
-            newBaseNode = try NetworkManager.shared.randomBaseNode()
-        } while newBaseNode == selectedBaseNode
-
-        try connection.select(baseNode: newBaseNode)
     }
 
     // MARK: - Helpers
