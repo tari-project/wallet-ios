@@ -59,6 +59,7 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
     @View private(set) var selectBaseNodeButton: TextButton = {
         let view = TextButton()
         view.style = .secondary
+        view.isHidden = !TariSettings.showDisabledFeatures
         return view
     }()
 
