@@ -94,7 +94,8 @@ final class TokenInputView: DynamicThemeCollectionCell {
             textField.topAnchor.constraint(equalTo: topAnchor, constant: 3.0),
             textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0.0),
             textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -3.0),
-            textField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.0)
+            textField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.0),
+            textField.widthAnchor.constraint(greaterThanOrEqualToConstant: 24.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
