@@ -170,11 +170,7 @@ final class SplashViewModel {
 
                 try await connectToWallet(isWalletConnected: isWalletConnected)
                 isWalletConnected = false
-
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
-
-                let randomBaseNode = try NetworkManager.shared.randomBaseNode()
-                try Tari.shared.wallet(.main).connection.select(baseNode: randomBaseNode)
             } catch {
                 self.handle(error: error)
             }

@@ -50,19 +50,12 @@ final class TariConnectionService: CoreTariService {
         services.validation.reset()
         do {
             let result = try walletManager.set(baseNodePeer: baseNode.makePublicKey(), address: baseNode.address)
-            NetworkManager.shared.selectedBaseNode = baseNode
             return result
         } catch FFIWalletHandler.GeneralError.unableToCreateWallet {
-            NetworkManager.shared.selectedBaseNode = baseNode
             return false
         } catch {
             throw error
         }
-    }
-
-    @discardableResult func selectCurrentNode() throws -> Bool {
-        guard let selectedBaseNode = NetworkManager.shared.selectedBaseNode else { return false }
-        return try select(baseNode: selectedBaseNode)
     }
 
     func addBaseNode(name: String, hex: String, address: String?) throws {
