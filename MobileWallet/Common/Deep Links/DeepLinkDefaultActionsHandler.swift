@@ -168,7 +168,6 @@ enum DeepLinkDefaultActionsHandler {
             title: localized("paper_wallet.pop_up.main_dialog.title"),
             message: localized("paper_wallet.pop_up.main_dialog.message"),
             buttons: [
-                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.main_dialog.button.sweep"), type: .normal),
                 PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.main_dialog.button.replace"), type: .normal, callback: {
                     Task { await showSwitchWalletConfirmationDialog(seedWords: seedWords) }
                 }),
