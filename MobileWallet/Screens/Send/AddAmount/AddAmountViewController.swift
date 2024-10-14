@@ -170,7 +170,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias else {
+            guard let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias else {
                 let addressComponents = paymentInfo.addressComponents
                 addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: true))
                 return
@@ -401,7 +401,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func showAvailableBalance() {
 
-        let totalBalance = Tari.shared.walletBalance.balance.total
+        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
 
         walletBalanceStackView.isHidden = false
         warningView.isHidden = false
@@ -448,7 +448,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func calculateAmount() -> MicroTari? {
 
-        let availableBalance = Tari.shared.walletBalance.balance.available
+        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
         var tariAmount: MicroTari?
 
         do {
@@ -461,7 +461,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
         let fee: UInt64
         do {
-            fee = try Tari.shared.fees.estimateFee(amount: amount.rawValue)
+            fee = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount.rawValue)
         } catch {
             return nil
         }
@@ -837,7 +837,7 @@ extension AddAmountViewController {
     }
 
     private func fetchTotalBalance() -> MicroTari? {
-        let totalBalance = Tari.shared.walletBalance.balance.total
+        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
         return MicroTari(totalBalance)
     }
 }

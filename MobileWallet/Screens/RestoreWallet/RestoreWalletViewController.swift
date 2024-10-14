@@ -42,7 +42,7 @@ import UIKit
 import LocalAuthentication
 import Combine
 
-final class RestoreWalletViewController: SettingsParentTableViewController {
+final class RestoreWalletViewController: SettingsParentTableViewController, UITableViewDelegate, UITableViewDataSource, OverlayPresentable {
 
     private enum EndFlowAction {
         case none
@@ -52,12 +52,14 @@ final class RestoreWalletViewController: SettingsParentTableViewController {
 
     private let localAuth = LAContext()
 
+    private let model = RestoreWalletModel()
     private let pendingView = PendingView(title: localized("restore_pending_view.title"),
                                           definition: localized("restore_pending_view.description"))
     private let items: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
-        SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue),
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.paperWalletRestore.rawValue)
     ]
 
     private var cancellables = Set<AnyCancellable>()
@@ -66,18 +68,37 @@ final class RestoreWalletViewController: SettingsParentTableViewController {
         case iCloudRestore
         case dropboxRestore
         case phraseRestore
+        case paperWalletRestore
 
         var rawValue: String {
             switch self {
             case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
             case .dropboxRestore: return localized("restore_wallet.item.dropbox_restore")
             case .phraseRestore: return localized("restore_wallet.item.phrase_restore")
+            case .paperWalletRestore: return localized("restore_wallet.item.paper_wallet")
             }
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupCallbacks()
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+
+        model.$action
+            .compactMap { $0 }
+            .sink { [weak self] in self?.handle(action: $0) }
+            .store(in: &cancellables)
+
+        model.$error
+            .compactMap { $0 }
+            .sink { [weak self] in self?.handle(recoveryErrorMessage: $0) }
+            .store(in: &cancellables)
+
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -88,9 +109,28 @@ final class RestoreWalletViewController: SettingsParentTableViewController {
         let controller = PasswordVerificationViewController(variation: .restore, restoreWalletAction: onCompletion)
         navigationController?.pushViewController(controller, animated: true)
     }
-}
 
-extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSource {
+    private func showRecoveryOverlay() {
+
+        let overlay = SeedWordsRecoveryProgressViewController()
+
+        overlay.onSuccess = {
+            AppRouter.transitionToSplashScreen(isWalletConnected: true)
+        }
+
+        overlay.onFailure = { [weak self] in
+            self?.model.removeWallet()
+        }
+
+        show(overlay: overlay)
+    }
+
+    private func showPaperWalletPasswordForm() {
+        FormOverlayPresenter.showRecoveryPasswordForm(presenter: self) { [weak self] in
+            self?.model.enter(paperWalletPassword: $0)
+        }
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         items.count
     }
@@ -116,6 +156,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         case .iCloudRestore: oniCloudRestoreAction()
         case .dropboxRestore: onDropboxRestoreAction()
         case .phraseRestore: onPhraseRestoreAction()
+        case .paperWalletRestore: onPaperWalletRestoreAction()
         }
     }
 
@@ -139,6 +180,13 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     private func onPhraseRestoreAction() {
         let viewController = RestoreWalletFromSeedsViewController()
         navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    private func onPaperWalletRestoreAction() {
+        let disabledDataTypes: [QRCodeScannerModel.DataType] = [.deeplink(.baseNodesAdd), .deeplink(.contacts), .deeplink(.profile), .deeplink(.transactionSend), .torBridges]
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.paperWallet)], disabledDataTypes: disabledDataTypes) { [weak self] in
+            self?.handle(qrCodeData: $0)
+        }
     }
 
     private func authenticateUserAndRestoreWallet(from service: BackupManager.Service) {
@@ -177,6 +225,21 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                 self?.restoreWallet(from: service, password: password)
             }
         }
+    }
+
+    private func showRecoveryFromPaperWalletPopUp() {
+
+        let model = PopUpDialogModel(
+            title: localized("restore_wallet.pop_up.paper_wallet.confirmation.title"),
+            message: localized("restore_wallet.pop_up.paper_wallet.confirmation.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("restore_wallet.pop_up.paper_wallet.confirmation.buttons.ok"), type: .normal, callback: { [weak self] in self?.model.confirmWalletRecovery() }),
+                PopUpDialogButtonModel(title: localized("restore_wallet.pop_up.paper_wallet.confirmation.buttons.cancel"), type: .text, callback: { [weak self] in self?.model.cancelWalletRecovery() })
+            ],
+            hapticType: .none
+        )
+
+        PopUpPresenter.showPopUp(model: model)
     }
 
     private func endFlow(action: EndFlowAction) {
@@ -229,6 +292,31 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         }
 
         endFlow(action: .none)
+    }
+
+    private func handle(action: RestoreWalletModel.Action) {
+        switch action {
+        case .showPaperWalletConfirmation:
+            showRecoveryFromPaperWalletPopUp()
+        case .showPaperWalletRecoveryProgress:
+            showRecoveryOverlay()
+        case .showPaperWalletPasswordForm:
+            showPaperWalletPasswordForm()
+        }
+    }
+
+    private func handle(recoveryErrorMessage: MessageModel) {
+        PopUpPresenter.show(message: recoveryErrorMessage)
+    }
+
+    private func handle(qrCodeData: QRCodeData) {
+        switch qrCodeData {
+        case let .deeplink(deeplink):
+            guard let deeplink = deeplink as? PaperWalletDeeplink else { return }
+            model.requestWalletRecovery(paperWalletDeeplink: deeplink)
+        case .bridges:
+            break
+        }
     }
 }
 

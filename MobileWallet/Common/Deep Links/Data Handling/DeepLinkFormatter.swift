@@ -43,6 +43,7 @@ enum DeeplinkType: String {
     case baseNodesAdd = "/base_nodes/add"
     case contacts = "/contacts"
     case profile = "/profile"
+    case paperWallet = "/paper_wallet"
 }
 
 protocol DeepLinkable: Codable {

@@ -40,6 +40,11 @@
 
 import Combine
 
+struct PaperWalletRecoveryData {
+    let cipher: String
+    let passphrase: String
+}
+
 final class SplashViewModel {
 
     private enum InternalError: Error {
@@ -69,18 +74,22 @@ final class SplashViewModel {
     @Published private(set) var appVersion: String?
     @Published private(set) var allNetworkNames: [String] = []
     @Published private(set) var isWalletExist: Bool = false
+    @Published private(set) var isRecoveryInProgress: Bool = false
     @Published private(set) var errorMessage: MessageModel?
 
     // MARK: - Properties
 
+    private let recoveryManager = SeedWordsWalletRecoveryManager()
     private var isWalletConnected: Bool
+    private var paperWalletRecoveryData: PaperWalletRecoveryData?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(isWalletConnected: Bool) {
+    init(isWalletConnected: Bool, paperWalletRecoveryData: PaperWalletRecoveryData?) {
         self.isWalletConnected = isWalletConnected
-        status = StatusModel(status: .idle, statusRepresentation: Tari.shared.isWalletExist ? .logo : .content)
+        self.paperWalletRecoveryData = paperWalletRecoveryData
+        status = StatusModel(status: .idle, statusRepresentation: Tari.shared.wallet(.main).isWalletDBExist ? .logo : .content)
         setupCallbacks()
         setupData()
         StagedWalletSecurityManager.shared.stop()
@@ -97,7 +106,7 @@ final class SplashViewModel {
 
         NetworkManager.shared.$selectedNetwork
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.isWalletExist = Tari.shared.isWalletExist }
+            .sink { [weak self] _ in self?.isWalletExist = Tari.shared.wallet(.main).isWalletDBExist }
             .store(in: &cancellables)
 
         $isWalletExist
@@ -119,11 +128,24 @@ final class SplashViewModel {
     }
 
     func startWallet() {
-        if Tari.shared.isWalletExist {
+        if Tari.shared.wallet(.main).isWalletDBExist {
             openWallet()
         } else {
             createWallet()
         }
+    }
+
+    func recoverWalletIfNeeded() {
+        guard let paperWalletRecoveryData else { return }
+        recoveryManager.recover(wallet: .main, cipher: paperWalletRecoveryData.cipher, passphrase: paperWalletRecoveryData.passphrase, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        isRecoveryInProgress = true
+    }
+
+    func deleteWallet() {
+        Tari.shared.delete(wallet: .main)
+        Tari.shared.canAutomaticalyReconnectWallet = false
+        status = StatusModel(status: .idle, statusRepresentation: .content)
+        isWalletExist = Tari.shared.wallet(.main).isWalletDBExist
     }
 
     // MARK: - Actions
@@ -153,11 +175,7 @@ final class SplashViewModel {
 
                 try await connectToWallet(isWalletConnected: isWalletConnected)
                 isWalletConnected = false
-
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
-
-                let randomBaseNode = try NetworkManager.shared.randomBaseNode()
-                try Tari.shared.connection.select(baseNode: randomBaseNode)
             } catch {
                 self.handle(error: error)
             }
@@ -170,20 +188,13 @@ final class SplashViewModel {
         }
     }
 
-    private func deleteWallet() {
-        Tari.shared.deleteWallet()
-        Tari.shared.canAutomaticalyReconnectWallet = false
-        status = StatusModel(status: .idle, statusRepresentation: .content)
-        isWalletExist = Tari.shared.isWalletExist
-    }
-
     private func connectToWallet(isWalletConnected: Bool) async throws {
 
         if !isWalletConnected {
-            try await Tari.shared.startWallet()
+            try await Tari.shared.start(wallet: .main)
         }
 
-        try Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
+        try Tari.shared.wallet(.main).keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
         Tari.shared.canAutomaticalyReconnectWallet = true
     }
 

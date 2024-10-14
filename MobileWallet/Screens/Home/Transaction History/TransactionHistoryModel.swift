@@ -71,12 +71,12 @@ final class TransactionHistoryModel {
 
     private func setupCallbacks() {
 
-        let pendingTransactionsPublisher = Publishers.CombineLatest(Tari.shared.transactions.$pendingInbound, Tari.shared.transactions.$pendingOutbound)
+        let pendingTransactionsPublisher = Publishers.CombineLatest(Tari.shared.wallet(.main).transactions.$pendingInbound, Tari.shared.wallet(.main).transactions.$pendingOutbound)
             .map { $0 as [Transaction] + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [])
 
-        let completedTransactionsPublisher = Publishers.CombineLatest(Tari.shared.transactions.$completed, Tari.shared.transactions.$cancelled)
+        let completedTransactionsPublisher = Publishers.CombineLatest(Tari.shared.wallet(.main).transactions.$completed, Tari.shared.wallet(.main).transactions.$cancelled)
             .map { $0 + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [])

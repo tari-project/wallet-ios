@@ -152,14 +152,14 @@ final class TransactionFeesManager {
 
             _ = dispatchGroup.wait(timeout: .now() + self.timeout)
 
-            let finalResponse = response ?? (.unknown, FeeOptions(slow: Tari.defaultFeePerGram, medium: Tari.defaultFeePerGram, fast: Tari.defaultFeePerGram))
+            let finalResponse = response ?? (.unknown, FeeOptions(slow: TariConstants.defaultFeePerGram, medium: TariConstants.defaultFeePerGram, fast: TariConstants.defaultFeePerGram))
             result(.success(finalResponse))
         }
     }
 
     private func calculateTrafficAndFeesPerGram() throws -> (NetworkTraffic, FeeOptions) {
 
-        let stats = try Tari.shared.fees.feePerGramStats(count: 3)
+        let stats = try Tari.shared.wallet(.main).fees.feePerGramStats(count: 3)
         let blocksCount = try stats.count
         let elementsCount = min(blocksCount, 3)
         let elements = try (0..<elementsCount).map { try stats.element(at: $0) }
@@ -196,13 +196,13 @@ final class TransactionFeesManager {
 
     private func calculateFees(amount: MicroTari, feesPerGram: FeeOptions) throws -> FeeOptions {
 
-        let totalBalance = Tari.shared.walletBalance.balance.total
+        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
         let maxAmountRaw = totalBalance > rawMaxAmountBuffer ? totalBalance - rawMaxAmountBuffer : 0
         let amount = min(amount.rawValue, maxAmountRaw)
 
-        let slowOption = try Tari.shared.fees.estimateFee(amount: amount, feePerGram: feesPerGram.slow.rawValue)
-        let mediumOption = try Tari.shared.fees.estimateFee(amount: amount, feePerGram: feesPerGram.medium.rawValue)
-        let fastOption = try Tari.shared.fees.estimateFee(amount: amount, feePerGram: feesPerGram.fast.rawValue)
+        let slowOption = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount, feePerGram: feesPerGram.slow.rawValue)
+        let mediumOption = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount, feePerGram: feesPerGram.medium.rawValue)
+        let fastOption = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount, feePerGram: feesPerGram.fast.rawValue)
 
         return FeeOptions(slow: MicroTari(slowOption), medium: MicroTari(mediumOption), fast: MicroTari(fastOption))
     }

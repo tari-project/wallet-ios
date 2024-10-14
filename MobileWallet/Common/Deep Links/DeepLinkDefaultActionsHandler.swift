@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import UIKit
+
 enum DeepLinkDefaultActionsHandler {
 
     enum ActionType {
@@ -85,6 +87,12 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
+    static func handle(paperWalletDeepLink: PaperWalletDeeplink) {
+        Task { @MainActor in
+            showPaperWalletDialog(privateKey: paperWalletDeepLink.privateKey)
+        }
+    }
+
     private static func handle(deeplink: DeepLinkable, contacts: [ContactData], actionType: ActionType) throws {
         switch actionType {
         case .direct:
@@ -110,7 +118,7 @@ enum DeepLinkDefaultActionsHandler {
         contentSection.update(name: name, peer: peer)
 
         let buttonSection = PopUpComponentsFactory.makeButtonsView(models: [
-            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.connection.addBaseNode(name: name, peer: peer) }),
+            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.wallet(.main).connection.addBaseNode(name: name, peer: peer) }),
             PopUpDialogButtonModel(title: localized("common.close"), type: .text)
         ])
 
@@ -156,6 +164,39 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
+    @MainActor private static func showPaperWalletDialog(privateKey: String) {
+
+        let model = PopUpDialogModel(
+            title: localized("paper_wallet.pop_up.main_dialog.title"),
+            message: localized("paper_wallet.pop_up.main_dialog.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.main_dialog.button.replace"), type: .normal, callback: {
+                    Task { await showSwitchWalletConfirmationDialog(privateKey: privateKey) }
+                }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
+            ],
+            hapticType: .none
+        )
+
+        PopUpPresenter.showPopUp(model: model)
+    }
+
+    private static func showSwitchWalletConfirmationDialog(privateKey: String) async {
+
+        let model = PopUpDialogModel(
+            title: localized("paper_wallet.pop_up.sweep_confirmation.title"),
+            message: localized("paper_wallet.pop_up.sweep_confirmation.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.sweep_confirmation.button.backup_wallet"), type: .normal, callback: { AppRouter.presentBackupSettings() }),
+                PopUpDialogButtonModel(title: localized("paper_wallet.pop_up.sweep_confirmation.button.confirm"), type: .normal, callback: { showRecoveryPasswordDialog(privateKey: privateKey) }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
+            ],
+            hapticType: .none
+        )
+
+        await PopUpPresenter.showPopUp(model: model)
+    }
+
     // MARK: - Notifications
 
     private static func showAddContactsNotification(deeplink: DeepLinkable, isSingleContact: Bool) throws {
@@ -181,11 +222,22 @@ enum DeepLinkDefaultActionsHandler {
 
             let address = try TariAddress(base58: $0.address)
 
-            if Tari.shared.isWalletConnected {
+            if Tari.shared.wallet(.main).isWalletRunning.value {
                 _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)
             } else {
                 try PendingDataManager.shared.storeContact(name: $0.name, isFavorite: false, address: address)
             }
         }
+    }
+
+    private static func showRecoveryPasswordDialog(privateKey: String) {
+        guard let topController = UIApplication.shared.topController else { return }
+        FormOverlayPresenter.showRecoveryPasswordForm(presenter: topController) {
+            recoverPaperWallet(paperWalletRecoveryData: PaperWalletRecoveryData(cipher: privateKey, passphrase: $0))
+        }
+    }
+
+    private static func recoverPaperWallet(paperWalletRecoveryData: PaperWalletRecoveryData) {
+        CommonActions.deleteWalletAndMoveToSplashScreen(startRecoveryWith: paperWalletRecoveryData)
     }
 }

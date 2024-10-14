@@ -139,7 +139,7 @@ final class ProfileModel {
         name = UserSettingsManager.name
 
         do {
-            walletAddress = try Tari.shared.walletAddress
+            walletAddress = try Tari.shared.wallet(.main).address
             guard let walletAddress else { return }
             addressComponents = try walletAddress.components
         } catch {
@@ -213,7 +213,7 @@ final class ProfileModel {
 
     private func makeDeeplink() throws -> URL? {
         guard let alias = name else { return nil }
-        let rawAddress = try Tari.shared.walletAddress.components.fullRaw
+        let rawAddress = try Tari.shared.wallet(.main).address.components.fullRaw
         let deeplinkModel = UserProfileDeeplink(alias: alias, tariAddress: rawAddress)
         return try DeepLinkFormatter.deeplink(model: deeplinkModel)
     }

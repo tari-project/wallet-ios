@@ -88,7 +88,7 @@ final class BackupManager {
 
     private func setupCallbacks() {
 
-        Publishers.Merge(Tari.shared.walletBalance.$balance.dropFirst().onChangePublisher(), Tari.shared.transactions.onUpdate.dropFirst())
+        Publishers.Merge(Tari.shared.wallet(.main).walletBalance.$balance.dropFirst().onChangePublisher(), Tari.shared.wallet(.main).transactions.onUpdate.dropFirst())
             .throttle(for: 60.0, scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] in self?.performBackup(forced: true) }
             .store(in: &cancellables)
@@ -187,7 +187,7 @@ final class BackupManager {
     }
 
     private func performBackup(forced: Bool) {
-        guard Tari.shared.isWalletConnected else { return }
+        guard Tari.shared.wallet(.main).isWalletRunning.value else { return }
         allServices.forEach { $0.performBackup(forced: forced) }
     }
 

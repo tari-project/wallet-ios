@@ -160,7 +160,7 @@ final class UTXOsWalletModel {
         let commitments = models.map(\.commitment)
 
         do {
-            let result = try Tari.shared.utxos.coinBreakPreview(commitments: commitments, splitsCount: UInt(breakCount))
+            let result = try Tari.shared.wallet(.main).utxos.coinBreakPreview(commitments: commitments, splitsCount: UInt(breakCount))
             let breakAmount = (amount - result.fee) / UInt64(breakCount)
 
             let amountText = MicroTari(amount).formattedPrecise
@@ -192,7 +192,7 @@ final class UTXOsWalletModel {
         let commitments = models.map(\.commitment)
 
         do {
-            try Tari.shared.utxos.breakCoins(commitments: commitments, splitsCount: UInt(breakCount))
+            try Tari.shared.wallet(.main).utxos.breakCoins(commitments: commitments, splitsCount: UInt(breakCount))
             return true
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
@@ -207,7 +207,7 @@ final class UTXOsWalletModel {
             .map(\.commitment)
 
         do {
-            let result = try Tari.shared.utxos.combineCoinsPreview(commitments: commitments)
+            let result = try Tari.shared.wallet(.main).utxos.combineCoinsPreview(commitments: commitments)
             return MicroTari(result.fee).formattedPrecise
         } catch {
             return nil
@@ -221,7 +221,7 @@ final class UTXOsWalletModel {
             .map(\.commitment)
 
         do {
-            try Tari.shared.utxos.combineCoins(commitments: commitments)
+            try Tari.shared.wallet(.main).utxos.combineCoins(commitments: commitments)
             return true
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
@@ -244,7 +244,7 @@ final class UTXOsWalletModel {
         isLoadingData = true
 
         do {
-            let utxosData = try Tari.shared.utxos.allUtxos
+            let utxosData = try Tari.shared.wallet(.main).utxos.allUtxos
                 .reduce(into: UTXOsData()) { result, model in
                     guard let status = FFIUtxoStatus(rawValue: model.status)?.walletUtxoStatus else { return }
 
@@ -269,7 +269,7 @@ final class UTXOsWalletModel {
                 heightScale = heightDiff / CGFloat(amountDiff)
             }
 
-            let networkBlockHeight = Tari.shared.blockHeight
+            let networkBlockHeight = Tari.shared.wallet(.main).connectionCallbacks.blockHeight
 
             utxoModels = utxosData.data
                 .sorted {
