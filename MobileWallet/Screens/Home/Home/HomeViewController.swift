@@ -76,7 +76,6 @@ final class HomeViewController: SecureViewController<HomeView> {
         super.viewDidAppear(animated)
         mainView.startAnimations()
         model.executeQueuedShortcut()
-        showTrackingConsentPopUp()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -186,11 +185,5 @@ final class HomeViewController: SecureViewController<HomeView> {
         )
 
         PopUpPresenter.showPopUp(model: popUpModel)
-    }
-
-    private func showTrackingConsentPopUp() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            TrackingConsentManager.handleTrackingConsent()
-        }
     }
 }

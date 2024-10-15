@@ -177,6 +177,11 @@ final class SettingsViewController: SettingsParentTableViewController {
         tableView.updateFooterFrame()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TrackingConsentManager.handleTrackingConsent()
+    }
+
     private func setupCallbacks() {
 
         BackupManager.shared.$syncState
