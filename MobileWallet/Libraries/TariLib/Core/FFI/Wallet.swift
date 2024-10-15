@@ -161,6 +161,7 @@ final class Wallet {
             seedWords?.pointer,
             networkName,
             dnsPeer,
+            nil,
             isDnsSecureOn,
             receivedTransactionCallback,
             receivedTransactionReplyCallback,
