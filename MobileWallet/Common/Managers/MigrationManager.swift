@@ -45,7 +45,7 @@ enum MigrationManager {
     private static let esmeraldaMinValidVersion = "1.6.0-pre.0"
     private static let nextNetMinValidVersion = "1.4.1-rc.0"
 
-    private static var minValidVersion: String { nextNetMinValidVersion }
+    private static var minValidVersion: String { esmeraldaMinValidVersion }
 
     // MARK: - Actions
 
