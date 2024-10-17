@@ -56,6 +56,8 @@ enum DeeplinkHandler {
             return try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: deeplink)
         case .profile:
             return try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: deeplink)
+        case .paperWallet:
+            return try DeepLinkFormatter.model(type: PaperWalletDeeplink.self, deeplink: deeplink)
         }
     }
 
@@ -74,7 +76,7 @@ enum DeeplinkHandler {
             actionType = .direct
         }
 
-        if actionType == .popUp, !(Tari.shared.isWalletConnected && AppRouter.isNavigationReady) {
+        if actionType == .popUp, !(Tari.shared.wallet(.main).isWalletRunning.value && AppRouter.isNavigationReady) {
             retryHandle(deeplink: deeplink)
             return
         }
@@ -88,6 +90,8 @@ enum DeeplinkHandler {
             try handle(userProfileDeepLink: deeplink, actionType: actionType)
         case .transactionSend:
             handle(transactionSendDeepLink: deeplink)
+        case .paperWallet:
+            handle(paperWalletDeepLink: deeplink)
         }
     }
 
@@ -109,6 +113,11 @@ enum DeeplinkHandler {
     private static func handle(transactionSendDeepLink: DeepLinkable) {
         guard let deeplink = transactionSendDeepLink as? TransactionsSendDeeplink else { return }
         DeepLinkDefaultActionsHandler.handle(transactionSendDeepLink: deeplink)
+    }
+
+    private static func handle(paperWalletDeepLink: DeepLinkable) {
+        guard let deeplink = paperWalletDeepLink as? PaperWalletDeeplink else { return }
+        DeepLinkDefaultActionsHandler.handle(paperWalletDeepLink: deeplink)
     }
 
     private static func retryHandle(deeplink: DeepLinkable) {

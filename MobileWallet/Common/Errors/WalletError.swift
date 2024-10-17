@@ -47,11 +47,12 @@ struct WalletError: CoreError {
         self.code = Int(code)
     }
 
-    static var notEnoughFunds: Self { WalletError(code: 101) }
-    static var fundsPending: Self { WalletError(code: 115) }
-    static var invalidPassphrase: Self { WalletError(code: 428) }
+    static var notEnoughFunds: Self { Self(code: 101) }
+    static var fundsPending: Self { Self(code: 115) }
+    static var invalidPassphrase: Self { Self(code: 428) }
+    static var cantRecover: Self { Self(code: 702) }
 
-    static var unknown: Self { WalletError(code: -1) }
+    static var unknown: Self { Self(code: -1) }
 
     static func ~= (lhs: Self, rhs: Error) -> Bool {
         guard let rhs = rhs as? Self else { return false }

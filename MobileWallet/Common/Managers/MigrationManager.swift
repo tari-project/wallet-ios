@@ -42,7 +42,10 @@ enum MigrationManager {
 
     // MARK: - Properties
 
-    private static let minValidVersion = "1.4.1-rc.0"
+    private static let esmeraldaMinValidVersion = "1.6.0-pre.0"
+    private static let nextNetMinValidVersion = "1.4.1-rc.0"
+
+    private static var minValidVersion: String { nextNetMinValidVersion }
 
     // MARK: - Actions
 
@@ -80,7 +83,7 @@ enum MigrationManager {
         let maxRetryCount = 5
 
         do {
-            return try Tari.shared.walletVersion()
+            return try Tari.shared.wallet(.main).dataVersion
         } catch {
             guard retryCount < maxRetryCount else { return nil }
             Logger.log(message: "Waiting for cookies: Retry Count: \(retryCount)", domain: .general, level: .info)

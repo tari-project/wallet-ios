@@ -71,7 +71,8 @@ final class SeedWordsRecoveryProgressModel {
             }
             .store(in: &cancellables)
 
-        WalletCallbacksManager.shared.walletRecoveryStatusUpdate
+        Tari.shared.wallet(.main).recovery.$status
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(restoreStatus: $0) }
             .store(in: &cancellables)
@@ -81,7 +82,7 @@ final class SeedWordsRecoveryProgressModel {
 
     func startRestoringWallet() {
         do {
-            let isSuccess = try Tari.shared.recovery.startRecovery(recoveredOutputMessage: localized("transaction.one_sided_payment.note.recovered"))
+            let isSuccess = try Tari.shared.wallet(.main).recovery.startRecovery(recoveredOutputMessage: localized("transaction.one_sided_payment.note.recovered"))
             if !isSuccess {
                 handleStartRecoveryFailure()
             }

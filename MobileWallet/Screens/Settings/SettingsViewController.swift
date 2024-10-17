@@ -129,7 +129,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         SystemMenuTableViewCellItem(icon: .Icons.Settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.bridgeConfig, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.network, title: SettingsItemTitle.selectNetwork.rawValue),
-        SystemMenuTableViewCellItem(icon: .Icons.Settings.baseNode, title: SettingsItemTitle.selectBaseNode.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
     ]
 
@@ -176,6 +175,11 @@ final class SettingsViewController: SettingsParentTableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterFrame()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        TrackingConsentManager.handleTrackingConsent()
     }
 
     private func setupCallbacks() {
@@ -301,7 +305,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
             do {
                 let name = UserSettingsManager.name
-                let addressComponents = try Tari.shared.walletAddress.components
+                let addressComponents = try Tari.shared.wallet(.main).address.components
                 let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false)
                 cell.update(name: name, addressViewModel: addressViewModel)
             } catch {
@@ -402,8 +406,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 4:
                 onSelectNetworkAction()
             case 5:
-                onSelectBaseNodeAction()
-            case 6:
                 onDeleteWalletAction()
             default:
                 break

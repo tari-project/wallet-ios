@@ -63,6 +63,7 @@ extension AppEnvironment {
 struct TariSettings {
 
     static let shared = TariSettings()
+    static var showDisabledFeatures = false
 
     let walletSettings = WalletSettingsManager()
 

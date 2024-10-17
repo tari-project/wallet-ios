@@ -72,8 +72,7 @@ final class FormOverlay: UIViewController {
 
         mainView.onCloseAction = { [weak self] in
             self?.view.endEditing(true)
-            self?.dismiss(animated: true)
-            self?.onClose?()
+            self?.dismiss(animated: true, completion: { [weak self] in self?.onClose?() })
         }
     }
 

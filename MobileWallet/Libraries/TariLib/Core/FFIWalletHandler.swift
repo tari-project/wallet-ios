@@ -1,4 +1,4 @@
-//  FFIWalletManager.swift
+//  FFIWalletHandler.swift
 
 /*
 	Package MobileWallet
@@ -38,15 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Combine
 import UIKit
 
-final class FFIWalletManager {
-
-    private enum BaseNodeValidationType: String {
-        case txo
-        case tx
-    }
+final class FFIWalletHandler {
 
     enum GeneralError: Error {
         case unableToCreateWallet
@@ -54,15 +48,12 @@ final class FFIWalletManager {
 
     // MARK: - Properties
 
-    @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
-    @Published private(set) var scannedHeight: UInt64 = 0
-
-    @Published private(set) var isWalletConnected: Bool = false {
-        didSet { Logger.log(message: "isWalletConnected: \(isWalletConnected)", domain: .general, level: .info) }
+    @Published private(set) var isWalletRunning: Bool = false {
+        didSet { Logger.log(message: "isWalletRunning: \(isWalletRunning)", domain: .general, level: .info) }
     }
 
     private var wallet: Wallet? {
-        didSet { isWalletConnected = wallet != nil }
+        didSet { isWalletRunning = wallet != nil }
     }
 
     private var exisingWallet: Wallet {
@@ -72,30 +63,9 @@ final class FFIWalletManager {
         }
     }
 
-    private var cancelables = Set<AnyCancellable>()
-
-    // MARK: - Initialisers
-
-    init() {
-        setupCallbacks()
-    }
-
-    // MARK: - Setups
-
-    private func setupCallbacks() {
-
-        WalletCallbacksManager.shared.baseNodeConnectionStatus
-            .assign(to: \.baseNodeConnectionStatus, on: self)
-            .store(in: &cancelables)
-
-        WalletCallbacksManager.shared.walletScannedHeight
-            .assign(to: \.scannedHeight, on: self)
-            .store(in: &cancelables)
-    }
-
     // MARK: - Actions
 
-    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32) throws {
+    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32, callbacks: WalletCallbacks) throws {
         do {
             let beforeWalletCreationDate = Date()
             Logger.log(message: "Wallet will be created", domain: .general, level: .info)
@@ -107,7 +77,8 @@ final class FFIWalletManager {
                 networkName: networkName,
                 dnsPeer: dnsPeer,
                 isDnsSecureOn: isDnsSecureOn,
-                logVerbosity: logVerbosity
+                logVerbosity: logVerbosity,
+                callbacks: callbacks
             )
             Logger.log(message: "Wallet created after \(-beforeWalletCreationDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
         } catch {
@@ -121,7 +92,6 @@ final class FFIWalletManager {
         let taskID = UIApplication.shared.beginBackgroundTask()
         Logger.log(message: "disconnectWallet Start: \(taskID)", domain: .general, level: .info)
         destroyWallet()
-        baseNodeConnectionStatus = .offline
         DispatchQueue.main.asyncAfter(deadline: .now() + 20.0) {
             Logger.log(message: "disconnectWallet: End: \(taskID)", domain: .general, level: .info)
             UIApplication.shared.endBackgroundTask(taskID)
@@ -143,7 +113,7 @@ final class FFIWalletManager {
         let wallet = try exisingWallet
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_tari_address(wallet.pointer, errorCodePointer)
+        let result = wallet_get_tari_interactive_address(wallet.pointer, errorCodePointer)
         guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return TariAddress(pointer: result)
     }
@@ -386,9 +356,8 @@ final class FFIWalletManager {
 
         let wallet = try exisingWallet
 
-        let callback: @convention(c) (UInt8, UInt64, UInt64) -> Void = {
-            let status = RestoreWalletStatus(status: $0, firstValue: $1, secondValue: $2)
-            WalletCallbacksManager.shared.post(name: .walletRecoveryStatusUpdate, object: status)
+        let callback: @convention(c) (UnsafeMutableRawPointer?, UInt8, UInt64, UInt64) -> Void = { context, status, firstValue, secondValue in
+            context?.walletCallbacks.walletRecoveryStatusSubject.send(RestoreWalletStatus(status: status, firstValue: firstValue, secondValue: secondValue))
         }
 
         var errorCode: Int32 = -1

@@ -411,6 +411,11 @@
 "restore_wallet.item.iCloud_restore" = "Restore with iCloud";
 "restore_wallet.item.dropbox_restore" = "Restore with Dropbox";
 "restore_wallet.item.phrase_restore" = "Restore with recovery phrase";
+"restore_wallet.item.paper_wallet" = "Restore from paper wallet";
+"restore_wallet.pop_up.paper_wallet.confirmation.title" = "Paper Wallet Detected";
+"restore_wallet.pop_up.paper_wallet.confirmation.message" = "You’ve scanned a paper wallet!\nWhat would you like to do?";
+"restore_wallet.pop_up.paper_wallet.confirmation.buttons.ok" = "Restore the wallet";
+"restore_wallet.pop_up.paper_wallet.confirmation.buttons.cancel" = "Don’t restore right now";
 
 /* PasswordVerification view */
 "password_verification.title" = "Security";
@@ -735,6 +740,7 @@
 "error.wallet.428" = "Unable to decrypt the wallet. Please try again later or try to restore your wallet.";
 "error.wallet.429" = "Unable to recover your wallet from provided seed words. Please check the list of entered seed words and try again.";
 "error.wallet.430" = "The provided seed words are not compatible with the current wallet version. Please get in touch with support for more details.";
+"error.wallet.702.recovery" = "Looks like your backup isn't compatible with this wallet version. Consider making a new one!";
 
 "error.tx_rejection.0" = "The transaction failed for an unknown reason.";
 "error.tx_rejection.1" = "The transaction was canceled by the sender.";
@@ -939,3 +945,16 @@
 
 "address_features.one_sided" = "One Sided Payments";
 "address_features.interactive" = "Interactive Payments";
+
+/* Paper Wallet */
+
+"paper_wallet.pop_up.main_dialog.title" = "Paper Wallet Detected";
+"paper_wallet.pop_up.main_dialog.message" = "You’ve scanned a paper wallet!\nWhat would you like to do?";
+"paper_wallet.pop_up.main_dialog.button.sweep" = "Sweep the funds";
+"paper_wallet.pop_up.main_dialog.button.replace" = "Replace current wallet";
+"paper_wallet.pop_up.sweep_confirmation.title" = "Remember to back up first!";
+"paper_wallet.pop_up.sweep_confirmation.message" = "Do you want to back up your current wallet before replacing it? If you don’t back it up first, you will lose all the funds in your current wallet!";
+"paper_wallet.pop_up.sweep_confirmation.button.backup_wallet" = "Yes, back it up";
+"paper_wallet.pop_up.sweep_confirmation.button.confirm" = "No, just replace it";
+"paper_wallet.form.password.title" = "Enter the paper wallet password";
+"paper_wallet.form.password.placeholder" = "Password";

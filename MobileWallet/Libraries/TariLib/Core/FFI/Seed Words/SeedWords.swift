@@ -84,6 +84,16 @@ final class SeedWords {
         pointer = result
     }
 
+    init(cipher: String, passphrase: String) throws {
+
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = seed_words_create_from_cipher(cipher, passphrase, errorCodePointer)
+
+        guard errorCode <= 0, let result else { throw WalletError(code: errorCode) }
+        pointer = result
+    }
+
     init() {
         pointer = seed_words_create()
     }
@@ -94,7 +104,7 @@ final class SeedWords {
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = seed_words_push_word(pointer, word, errorCodePointer)
+        let result = seed_words_push_word(pointer, word, nil, errorCodePointer)
 
         guard errorCode == 0, let pushResult = PushWordResult(rawValue: result) else { throw WalletError(code: errorCode) }
         return pushResult

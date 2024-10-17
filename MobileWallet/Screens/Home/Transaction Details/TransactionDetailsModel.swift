@@ -92,20 +92,13 @@ final class TransactionDetailsModel {
 
     private func setupCallbacks() {
 
-        let events = [
-            WalletCallbacksManager.shared.receivedTransactionReply,
-            WalletCallbacksManager.shared.receivedFinalizedTransaction,
-            WalletCallbacksManager.shared.transactionBroadcast,
-            WalletCallbacksManager.shared.unconfirmedTransactionMined,
-            WalletCallbacksManager.shared.transactionMined
-        ]
+        let service = Tari.shared.wallet(.main).transactions
 
-        events.forEach {
-            $0
-                .filter { [unowned self] in (try? $0.identifier) == (try? self.transaction.identifier) }
-                .sink { [weak self] in self?.handle(transaction: $0) }
-                .store(in: &cancellables)
-        }
+        Publishers.Merge5(service.$receivedTransactionReply, service.$receivedFinalizedTransaction, service.$transactionBroadcast, service.$unconfirmedTransactionMined, service.$transactionMined)
+            .compactMap { $0 }
+            .filter { [unowned self] in (try? $0.identifier) == (try? self.transaction.identifier) }
+            .sink { [weak self] in self?.handle(transaction: $0) }
+            .store(in: &cancellables)
 
         $userAlias
             .map { $0 != nil }
@@ -142,7 +135,7 @@ final class TransactionDetailsModel {
                 errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"), type: .error)
                 return
             }
-            wasTransactionCanceled = try Tari.shared.transactions.cancelPendingTransaction(identifier: transaction.identifier)
+            wasTransactionCanceled = try Tari.shared.wallet(.main).transactions.cancelPendingTransaction(identifier: transaction.identifier)
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: nil, type: .error)
         }
@@ -241,16 +234,18 @@ final class TransactionDetailsModel {
             return nil
         }
 
+        let requiredConfirmationCount = try Tari.shared.wallet(.main).transactions.requiredConfirmationsCount
+
         switch try transaction.status {
         case .pending:
             return try transaction.isOutboundTransaction ? .txWaitingForRecipient : .txWaitingForSender
         case .broadcast, .completed:
-            return .txCompleted(confirmationCount: 1)
+            return .txCompleted(confirmationCount: 1, requiredConfirmationCount: requiredConfirmationCount)
         case .minedUnconfirmed:
             guard let confirmationCount = try (transaction as? CompletedTransaction)?.confirmationCount else {
-                return .txCompleted(confirmationCount: 1)
+                return .txCompleted(confirmationCount: 1, requiredConfirmationCount: requiredConfirmationCount)
             }
-            return .txCompleted(confirmationCount: confirmationCount + 1)
+            return .txCompleted(confirmationCount: confirmationCount + 1, requiredConfirmationCount: requiredConfirmationCount)
         case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbase, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain:
             return nil
         }

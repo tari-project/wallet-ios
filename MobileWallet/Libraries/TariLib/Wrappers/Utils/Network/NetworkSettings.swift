@@ -41,7 +41,6 @@
 struct NetworkSettings: Codable, Equatable {
 
     let name: String
-    let selectedBaseNode: BaseNode?
     let customBaseNodes: [BaseNode]
     let blockHeight: UInt64
 
@@ -49,7 +48,6 @@ struct NetworkSettings: Codable, Equatable {
 }
 
 extension NetworkSettings {
-    func update(selectedBaseNode: BaseNode?) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(blockHeight: UInt64) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
+    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
+    func update(blockHeight: UInt64) -> Self { Self(name: name, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
 }

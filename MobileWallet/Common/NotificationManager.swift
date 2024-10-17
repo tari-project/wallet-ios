@@ -92,7 +92,7 @@ final class NotificationManager {
 
     func setupWalletStateHandler() {
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
-            .filter { _ in Tari.shared.isWalletExist }
+            .filter { _ in Tari.shared.wallet(.main).isWalletDBExist }
             .sink { [weak self] _ in self?.requestAuthorization() }
             .store(in: &cancellables)
     }
@@ -227,9 +227,9 @@ final class NotificationManager {
     }
 
     private func sign(message: String) throws -> (hex: String, metadata: MessageMetadata) {
-        let hex = try Tari.shared.walletAddress.spendKey.byteVector.hex
+        let hex = try Tari.shared.wallet(.main).address.spendKey.byteVector.hex
         guard let apiKey = TariSettings.shared.pushServerApiKey else { throw PushNotificationServerError.missingApiKey }
-        let metadata = try Tari.shared.messageSign.sign(message: "\(apiKey)\(hex)\(message)")
+        let metadata = try Tari.shared.wallet(.main).messageSign.sign(message: "\(apiKey)\(hex)\(message)")
         return (hex: hex, metadata: metadata)
     }
 

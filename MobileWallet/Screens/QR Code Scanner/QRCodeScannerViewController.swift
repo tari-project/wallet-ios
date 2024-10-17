@@ -124,8 +124,7 @@ final class QRCodeScannerViewController: SecureViewController<QRCodeScannerView>
         case let .unexpectedData(action):
             dismissScene(onCompletion: action)
         case let .expectedData(data):
-            onExpectedDataScan?(data)
-            dismissScene(onCompletion: nil)
+            dismissScene(onCompletion: { [weak self] in self?.onExpectedDataScan?(data) })
         }
     }
 

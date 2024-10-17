@@ -68,7 +68,7 @@ final class ContactTransactionListModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-        Tari.shared.transactions.$all
+        Tari.shared.wallet(.main).transactions.$all
             .compactMap { $0.filter { [weak self] in self?.isContactTransaction(transaction: $0) == true }}
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [Transaction]())

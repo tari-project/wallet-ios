@@ -51,8 +51,8 @@ final class TariBalanceService: CoreTariService {
 
     // MARK: - Initialiser
 
-    override init(walletManager: FFIWalletManager, services: MainServiceable) {
-        super.init(walletManager: walletManager, services: services)
+    override init(walletManager: FFIWalletHandler, walletCallbacks: WalletCallbacks, services: MainServiceable) {
+        super.init(walletManager: walletManager, walletCallbacks: walletCallbacks, services: services)
         setupCallbacks()
         fetchData()
     }
@@ -61,7 +61,7 @@ final class TariBalanceService: CoreTariService {
 
     private func setupCallbacks() {
 
-        WalletCallbacksManager.shared.walletBalanceUpdatePublisher
+        walletCallbacks.balanceUpdate
             .sink { [weak self] in self?.ffiBalance = $0 }
             .store(in: &cancellables)
 
