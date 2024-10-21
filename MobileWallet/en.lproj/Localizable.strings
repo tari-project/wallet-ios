@@ -375,21 +375,22 @@
 /* Profile view */
 "profile_view.title" = "My Profile";
 "profile_view.error.qr_code.title" = "Failed to generate QR";
-"profile_view.error.qr_code.description.with_param" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
 "profile_view.error.no_name.title" = "Name can’t be empty";
 "profile_view.error.no_name.description" = "You can’t delete your name. Give it a quick update instead!";
 "profile_view.error.no_name.button" = "Okay, got it!";
 "profile_view.button.wallet" = "Wallet";
 "profile_view.button.connect_yat" = "Connect Yats";
-"profile_view.button.share.qr_code" = "QR Code";
 "profile_view.button.share.link" = "Link";
 "profile_view.button.share.ble" = "BLE";
+"profile_view.button.share" = "Share my address";
 "profile_view.form.title" = "Edit Name";
 "profile_view.form.text_field.name.placeholder" = "Name";
 "profile_view.label.out_of_sync.part.1" = "Your previously connected Yat has lost sync with the app. Click";
 "profile_view.label.out_of_sync.part.2.bold" = "Connect Yats";
 "profile_view.label.out_of_sync.part.3" = "below if you’d like to reconnect it.";
-"profile_view.label.title.share" = "Share Profile";
+"profile_view.label.share.description" = "Transacting in person? Others can scan this QR code from the Tari Aurora App to send you %@.";
+"profile_view.pop_up.share.title" = "Share Address";
+"profile_view.pop_up.share.message" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
 
 /* Navigation bar */
 "navigation_bar.error.show_emoji.title" = "Public key error";
