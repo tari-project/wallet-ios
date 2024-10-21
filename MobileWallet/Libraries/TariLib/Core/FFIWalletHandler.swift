@@ -352,7 +352,7 @@ final class FFIWalletHandler {
         return result
     }
 
-    func startRecovery(baseNodePublicKey: PublicKey, recoveredOutputMessage: String) throws -> Bool {
+    func startRecovery(recoveredOutputMessage: String) throws -> Bool {
 
         let wallet = try exisingWallet
 
@@ -363,7 +363,7 @@ final class FFIWalletHandler {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = wallet_start_recovery(wallet.pointer, baseNodePublicKey.pointer, callback, recoveredOutputMessage, errorCodePointer)
+        let result = wallet_start_recovery(wallet.pointer, nil, callback, recoveredOutputMessage, errorCodePointer)
 
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
