@@ -45,6 +45,8 @@ final class ProfileView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
+    @View private var scrollView = ContentScrollView()
+
     @View private var usernameLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.heavy.withSize(16.0)
@@ -114,51 +116,22 @@ final class ProfileView: BaseNavigationContentView {
 
     @View private var shareSectionSeparator = UIView()
 
-    @View private var shareSectionTitleLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.heavy.withSize(16.0)
-        view.textAlignment = .center
-        view.text = localized("profile_view.label.title.share")
-        return view
-    }()
-
     @View private var shareSectionDescriptionLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.profileMiddleLabel
         view.textAlignment = .center
         view.numberOfLines = 2
         view.adjustsFontSizeToFitWidth = true
-        view.text = localized("profile_view.error.qr_code.description.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
+        view.text = localized("profile_view.label.share.description", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
         return view
     }()
 
-    @View private var shareButtonsStackView: UIStackView = {
-        let view = UIStackView()
-        view.spacing = 40.0
-        return view
-    }()
+    @View private var qrCodeView = QRCodeView()
 
-    @View private var qrCodeButton: RoundedLabeledButton = {
-        let view = RoundedLabeledButton()
-        view.buttonSize = 46.0
-        view.padding = 12.0
-        view.update(image: .Icons.General.QR, text: localized("contact_book.share_bar.buttons.qr"))
-        return view
-    }()
-
-    @View private var linkCodeButton: RoundedLabeledButton = {
-        let view = RoundedLabeledButton()
-        view.update(image: .Icons.General.link, text: localized("contact_book.share_bar.buttons.link"))
-        view.buttonSize = 46.0
-        view.padding = 12.0
-        return view
-    }()
-
-    @View private var bleCodeButton: RoundedLabeledButton = {
-        let view = RoundedLabeledButton()
-        view.update(image: .Icons.General.bluetooth, text: localized("contact_book.share_bar.buttons.ble"))
-        view.buttonSize = 46.0
-        view.padding = 12.0
+    @View private var shareButton: TextButton = {
+        let view = TextButton()
+        view.style = .secondary
+        view.setTitle(localized("profile_view.button.share"), for: .normal)
         return view
     }()
 
@@ -185,12 +158,18 @@ final class ProfileView: BaseNavigationContentView {
         set { addressView.onViewDetailsButtonTap = newValue }
     }
 
+    var onShareButtonTap: (() -> Void)? {
+        get { shareButton.onTap }
+        set { shareButton.onTap = newValue }
+    }
+
+    var qrCodeImage: UIImage? {
+        didSet { update(qrCode: qrCodeImage) }
+    }
+
     var onEditButtonTap: (() -> Void)?
     var onWalletButtonTap: (() -> Void)?
     var onConnectYatButtonTap: (() -> Void)?
-    var onQrCodeButtonTap: (() -> Void)?
-    var onLinkButtonTap: (() -> Void)?
-    var onBleButtonTap: (() -> Void)?
 
     private var yatButtonOnTintColor: UIColor?
     private var yatButtonOffTintColor: UIColor?
@@ -225,21 +204,26 @@ final class ProfileView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [usernameLabel, addressView, yatView, yatButton, yatSpinnerView, yatOutOfSyncLabel, shareSectionSeparator, shareSectionTitleLabel, shareSectionDescriptionLabel, auroraButtonsStackView, shareButtonsStackView]
-            .forEach(addSubview)
+        addSubview(scrollView)
+
+        [usernameLabel, addressView, yatView, yatButton, yatSpinnerView, yatOutOfSyncLabel, auroraButtonsStackView, shareSectionSeparator, shareSectionDescriptionLabel, qrCodeView, shareButton]
+            .forEach(scrollView.contentView.addSubview)
         [walletButton, connectYatButton].forEach(auroraButtonsStackView.addArrangedSubview)
-        [qrCodeButton, linkCodeButton, bleCodeButton].forEach(shareButtonsStackView.addArrangedSubview)
 
         let auroraButtonsTopConstraintOnYatLabelHidden = auroraButtonsStackView.topAnchor.constraint(equalTo: addressView.bottomAnchor, constant: 20.0)
         self.auroraButtonsTopConstraintOnYatLabelHidden = auroraButtonsTopConstraintOnYatLabelHidden
         auroraButtonsTopConstraintOnYatLabelShown = auroraButtonsStackView.topAnchor.constraint(equalTo: yatOutOfSyncLabel.bottomAnchor, constant: 20.0)
 
         let constraints = [
-            usernameLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 50.0),
-            usernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            usernameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor),
+            usernameLabel.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor, constant: 50.0),
+            usernameLabel.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 25.0),
+            usernameLabel.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -25.0),
             addressView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 20.0),
-            addressView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            addressView.centerXAnchor.constraint(equalTo: scrollView.contentView.centerXAnchor),
             yatView.topAnchor.constraint(equalTo: addressView.topAnchor),
             yatView.leadingAnchor.constraint(equalTo: addressView.leadingAnchor),
             yatView.trailingAnchor.constraint(equalTo: addressView.trailingAnchor),
@@ -253,22 +237,24 @@ final class ProfileView: BaseNavigationContentView {
             yatSpinnerView.heightAnchor.constraint(equalToConstant: 28.0),
             yatSpinnerView.widthAnchor.constraint(equalToConstant: 28.0),
             yatOutOfSyncLabel.topAnchor.constraint(equalTo: addressView.bottomAnchor, constant: 20.0),
-            yatOutOfSyncLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            yatOutOfSyncLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            yatOutOfSyncLabel.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 25.0),
+            yatOutOfSyncLabel.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -25.0),
             auroraButtonsTopConstraintOnYatLabelHidden,
-            auroraButtonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            auroraButtonsStackView.centerXAnchor.constraint(equalTo: scrollView.contentView.centerXAnchor),
             shareSectionSeparator.topAnchor.constraint(equalTo: auroraButtonsStackView.bottomAnchor, constant: 20.0),
-            shareSectionSeparator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            shareSectionSeparator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            shareSectionSeparator.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 25.0),
+            shareSectionSeparator.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -25.0),
             shareSectionSeparator.heightAnchor.constraint(equalToConstant: 1.0),
-            shareSectionTitleLabel.topAnchor.constraint(equalTo: shareSectionSeparator.bottomAnchor, constant: 20.0),
-            shareSectionTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            shareSectionTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            shareSectionDescriptionLabel.topAnchor.constraint(equalTo: shareSectionTitleLabel.bottomAnchor, constant: 20.0),
-            shareSectionDescriptionLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 25.0),
-            shareSectionDescriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -25.0),
-            shareButtonsStackView.topAnchor.constraint(equalTo: shareSectionDescriptionLabel.bottomAnchor, constant: 20.0),
-            shareButtonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
+            shareSectionDescriptionLabel.topAnchor.constraint(equalTo: shareSectionSeparator.bottomAnchor, constant: 20.0),
+            shareSectionDescriptionLabel.leadingAnchor.constraint(equalTo: scrollView.contentView.safeAreaLayoutGuide.leadingAnchor, constant: 25.0),
+            shareSectionDescriptionLabel.trailingAnchor.constraint(equalTo: scrollView.contentView.safeAreaLayoutGuide.trailingAnchor, constant: -25.0),
+            qrCodeView.topAnchor.constraint(equalTo: shareSectionDescriptionLabel.bottomAnchor, constant: 20.0),
+            qrCodeView.centerXAnchor.constraint(equalTo: scrollView.contentView.centerXAnchor),
+            qrCodeView.widthAnchor.constraint(equalToConstant: 230.0),
+            qrCodeView.heightAnchor.constraint(equalToConstant: 230.0),
+            shareButton.topAnchor.constraint(equalTo: qrCodeView.bottomAnchor, constant: 20.0),
+            shareButton.centerXAnchor.constraint(equalTo: scrollView.contentView.centerXAnchor),
+            shareButton.bottomAnchor.constraint(equalTo: scrollView.contentView.bottomAnchor, constant: -20.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -283,18 +269,6 @@ final class ProfileView: BaseNavigationContentView {
         connectYatButton.onTap = { [weak self] in
             self?.onConnectYatButtonTap?()
         }
-
-        qrCodeButton.onTap = { [weak self] in
-            self?.onQrCodeButtonTap?()
-        }
-
-        linkCodeButton.onTap = { [weak self] in
-            self?.onLinkButtonTap?()
-        }
-
-        bleCodeButton.onTap = { [weak self] in
-            self?.onBleButtonTap?()
-        }
     }
 
     // MARK: - Updates
@@ -306,7 +280,6 @@ final class ProfileView: BaseNavigationContentView {
         usernameLabel.textColor = theme.text.heading
         yatOutOfSyncLabel.textColor = theme.text.body
         shareSectionSeparator.backgroundColor = theme.neutral.tertiary
-        shareSectionTitleLabel.textColor = theme.text.heading
         shareSectionDescriptionLabel.textColor = theme.text.body
         yatButtonOnTintColor = theme.icons.active
         yatButtonOffTintColor = theme.icons.inactive
@@ -353,6 +326,16 @@ final class ProfileView: BaseNavigationContentView {
         yatButton.tintColor = isOn ? yatButtonOnTintColor : yatButtonOffTintColor
         yatSpinnerView.isHidden = true
         yatSpinnerView.stop()
+    }
+
+    private func update(qrCode: UIImage?) {
+
+        guard let qrCode else {
+            qrCodeView.state = .loading
+            return
+        }
+
+        qrCodeView.state = .image(qrCode)
     }
 
     func showYatButtonSpinner() {

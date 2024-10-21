@@ -47,7 +47,6 @@ final class ProfileViewController: SecureViewController<ProfileView> {
     // MARK: - Properties
 
     private let model = ProfileModel()
-    private weak var qrCodePopUpContentView: PopUpQRContentView?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -110,6 +109,11 @@ final class ProfileViewController: SecureViewController<ProfileView> {
             .sink { [weak self] in self?.showYatOnboardingFlow(rawAddress: $0) }
             .store(in: &cancellables)
 
+        model.$qrCode
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.showQrCode(qrCode: $0) }
+            .store(in: &cancellables)
+
         model.$action
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -132,16 +136,8 @@ final class ProfileViewController: SecureViewController<ProfileView> {
             self?.model.reconnectYat()
         }
 
-        mainView.onQrCodeButtonTap = { [weak self] in
-            self?.model.generateQrCode()
-        }
-
-        mainView.onLinkButtonTap = { [weak self] in
-            self?.model.generateLink()
-        }
-
-        mainView.onBleButtonTap = { [weak self] in
-            self?.model.shareContactUsingBLE()
+        mainView.onShareButtonTap = { [weak self] in
+            self?.showShareDialog()
         }
 
         guard let addressComponents = model.addressComponents else { return }
@@ -196,10 +192,6 @@ final class ProfileViewController: SecureViewController<ProfileView> {
     private func handle(action: ProfileModel.Action) {
 
         switch action {
-        case .showQRPopUp:
-            showQrCodeDialog()
-        case let .shareQR(image):
-            showQrCodeInDialog(qrCode: image)
         case let .shareLink(url):
             showLinkShareDialog(link: url)
         case .showBLEWaitingForReceiverDialog:
@@ -229,12 +221,32 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         })
     }
 
-    private func showQrCodeDialog() {
-        qrCodePopUpContentView = PopUpPresenter.showQRCodeDialog(title: localized("contact_book.pop_ups.qr.title"))
+    private func showQrCode(qrCode: UIImage?) {
+        mainView.qrCodeImage = qrCode
     }
 
-    private func showQrCodeInDialog(qrCode: UIImage) {
-        qrCodePopUpContentView?.qrCode = qrCode
+    private func showShareDialog() {
+
+        let headerSection = PopUpHeaderView()
+        headerSection.label.text = localized("profile_view.pop_up.share.title")
+
+        let contentSection = PopUpProfileShareContentView()
+
+        contentSection.onLinkButtonTap = { [weak self] in
+            PopUpPresenter.dismissPopup()
+            self?.model.generateLink()
+        }
+
+        contentSection.onBLEButtonTap = { [weak self] in
+            PopUpPresenter.dismissPopup()
+            self?.model.shareContactUsingBLE()
+        }
+
+        let buttonsSection = PopUpButtonsView()
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
+
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp)
     }
 
     private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
