@@ -95,7 +95,7 @@ extension VideoCaptureManager: AVCaptureMetadataOutputObjectsDelegate {
 
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
 
-        guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let rawData = object.stringValue else { return }
+        guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let rawData = object.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
 
         if let deeplink = try? DeeplinkHandler.deeplink(rawDeeplink: rawData) {
             result = .validDeeplink(deeplink)
