@@ -17,21 +17,18 @@ PODS:
   - libwebp/webp (1.2.3)
   - lottie-ios (3.2.3)
   - ReachabilitySwift (5.0.0)
-  - Sentry (8.14.2):
-    - Sentry/Core (= 8.14.2)
-    - SentryPrivate (= 8.14.2)
-  - Sentry/Core (8.14.2):
-    - SentryPrivate (= 8.14.2)
-  - SentryPrivate (8.14.2)
+  - Sentry (8.39.0):
+    - Sentry/Core (= 8.39.0)
+  - Sentry/Core (8.39.0)
   - SwiftEntryKit (2.0.0)
   - SwiftKeychainWrapper (3.4.0)
   - SwiftyDropbox (8.2.1):
     - Alamofire (~> 5.4.3)
   - TariCommon (0.2.0)
-  - Tor (408.12.1):
-    - Tor/CTor (= 408.12.1)
-  - Tor/Core (408.12.1)
-  - Tor/CTor (408.12.1):
+  - Tor (408.12.2):
+    - Tor/CTor (= 408.12.2)
+  - Tor/Core (408.12.2)
+  - Tor/CTor (408.12.2):
     - Tor/Core
   - YatLib (0.4.1):
     - TariCommon (~> 0.2.0)
@@ -43,12 +40,12 @@ DEPENDENCIES:
   - IPtProxy (= 3.3.0)
   - lottie-ios (= 3.2.3)
   - ReachabilitySwift (= 5.0.0)
-  - Sentry (= 8.14.2)
+  - Sentry (= 8.39.0)
   - SwiftEntryKit (= 2.0.0)
   - SwiftKeychainWrapper (= 3.4.0)
   - SwiftyDropbox (= 8.2.1)
   - TariCommon (= 0.2.0)
-  - Tor (= 408.12.1)
+  - Tor (= 408.12.2)
   - YatLib (= 0.4.1)
   - Zip (= 2.1.2)
 
@@ -63,7 +60,6 @@ SPEC REPOS:
     - lottie-ios
     - ReachabilitySwift
     - Sentry
-    - SentryPrivate
     - SwiftEntryKit
     - SwiftKeychainWrapper
     - SwiftyDropbox
@@ -81,16 +77,15 @@ SPEC CHECKSUMS:
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Sentry: e0ea366f95ebb68f26d6030d8c22d6b2e6d23dd0
-  SentryPrivate: 949a21fa59872427edc73b524c3ec8456761d97f
+  Sentry: e92ec378be400dbb7f4065ff152d0f362ba8b4ba
   SwiftEntryKit: 61b5fa36f34a97dd8013e48a7345bc4c4720be9a
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   SwiftyDropbox: f6c55aae36c4ea944fe6b35f807c19897f78b09b
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
-  Tor: 958cbe68eef90659339403e40e20d7610a9456dd
+  Tor: 19907fc430953434a233c7532166d6409b9d509b
   YatLib: dda2cfe9e47790f27a13074ea815eac19a919043
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: dc384166ada1bb7778b3b6cec7e0de637592c8db
+PODFILE CHECKSUM: 154a2c1d1be3da085e9e5637dba213d68731bf8b
 
 COCOAPODS: 1.15.2
