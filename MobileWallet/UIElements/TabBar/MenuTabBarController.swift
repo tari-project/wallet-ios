@@ -114,11 +114,11 @@ extension MenuTabBarController: UITabBarControllerDelegate {
     }
 
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return Transition(viewControllers: tabBarController.viewControllers)
+        return TabBarTransition(viewControllers: tabBarController.viewControllers)
     }
 }
 
-private class Transition: NSObject, UIViewControllerAnimatedTransitioning {
+private class TabBarTransition: NSObject, UIViewControllerAnimatedTransitioning {
     let viewControllers: [UIViewController]?
     let transitionDuration: Double = CATransaction.animationDuration()
 
