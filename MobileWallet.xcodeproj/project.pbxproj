@@ -363,6 +363,7 @@
 		5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */; };
 		5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */; };
 		5421551429A4AE92000A3F49 /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551329A4AE92000A3F49 /* SearchTextField.swift */; };
+		54221CBD2CC6333C00CC77A8 /* PopUpProfileShareContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54221CBC2CC6333C00CC77A8 /* PopUpProfileShareContentView.swift */; };
 		5422CBF82B88B1CA00428394 /* ScreenRecordingSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5422CBF72B88B1CA00428394 /* ScreenRecordingSettingsViewController.swift */; };
 		5422CBFA2B88B5C900428394 /* ScreenRecordingSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5422CBF92B88B5C800428394 /* ScreenRecordingSettingsModel.swift */; };
 		5422CBFC2B88C79200428394 /* ScreenRecordingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5422CBFB2B88C79200428394 /* ScreenRecordingSettingsView.swift */; };
@@ -959,6 +960,7 @@
 		5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListViewController.swift; sourceTree = "<group>"; };
 		5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListView.swift; sourceTree = "<group>"; };
 		5421551329A4AE92000A3F49 /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
+		54221CBC2CC6333C00CC77A8 /* PopUpProfileShareContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpProfileShareContentView.swift; sourceTree = "<group>"; };
 		5422CBF72B88B1CA00428394 /* ScreenRecordingSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingSettingsViewController.swift; sourceTree = "<group>"; };
 		5422CBF92B88B5C800428394 /* ScreenRecordingSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingSettingsModel.swift; sourceTree = "<group>"; };
 		5422CBFB2B88C79200428394 /* ScreenRecordingSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingSettingsView.swift; sourceTree = "<group>"; };
@@ -2080,6 +2082,7 @@
 				54A0903729E553A900D1CDDE /* PopUpQRContentView.swift */,
 				5444C80229F14C2900BF3875 /* PopUpCircleImageHeaderView.swift */,
 				54AA2DF82B55596600D38184 /* PopUpAddressPoisoningContentView.swift */,
+				54221CBC2CC6333C00CC77A8 /* PopUpProfileShareContentView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -3574,6 +3577,7 @@
 				5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */,
 				3AABFC9D28F59B2200D87773 /* StatusLoggerManager.swift in Sources */,
 				54F306112A3B049500B5689D /* UIView+Utils.swift in Sources */,
+				54221CBD2CC6333C00CC77A8 /* PopUpProfileShareContentView.swift in Sources */,
 				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
 				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
 				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
@@ -4125,7 +4129,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.28.0;
+				MARKETING_VERSION = 0.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4158,7 +4162,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.28.0;
+				MARKETING_VERSION = 0.29.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

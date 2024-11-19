@@ -694,6 +694,11 @@ extension AddAmountViewController {
         oneSidedPaymentHelpButton.onTap = {
             PopUpPresenter.show(message: MessageModel(title: localized("add_amount.pop_up.one_sided_payment.title"), message: localized("add_amount.pop_up.one_sided_payment.description"), type: .normal))
         }
+        
+        if paymentInfo.addressComponents.isOnesidedAddress && !paymentInfo.addressComponents.isInteractiveAddress {
+            oneSidedPaymentSwitch.isUserInteractionEnabled = false
+            oneSidedPaymentSwitch.isOn = true
+        }
     }
 
     private func setupCallbacks() {

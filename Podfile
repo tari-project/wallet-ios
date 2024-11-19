@@ -4,11 +4,11 @@ use_frameworks!
 inhibit_all_warnings!
 
 target 'MobileWallet' do
-  pod 'Tor', '408.12.1'
+  pod 'Tor', '408.12.2'
   pod 'lottie-ios', '3.2.3'
   pod 'SwiftEntryKit', '2.0.0'
   pod 'ReachabilitySwift', '5.0.0'
-  pod 'Sentry', '8.14.2'
+  pod 'Sentry', '8.39.0'
   pod 'SwiftKeychainWrapper', '3.4.0'
   pod 'Giphy', '2.1.22'
   pod 'IPtProxy', '3.3.0'

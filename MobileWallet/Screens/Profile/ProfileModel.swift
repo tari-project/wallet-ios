@@ -57,8 +57,6 @@ final class ProfileModel {
     }
 
     enum Action {
-        case showQRPopUp
-        case shareQR(image: UIImage)
         case shareLink(url: URL)
         case showBLEWaitingForReceiverDialog
         case showBLESuccessDialog
@@ -73,6 +71,7 @@ final class ProfileModel {
     @Published private(set) var errorMessage: MessageModel?
     @Published private(set) var yatButtonState: YatButtonState = .hidden
     @Published private(set) var yatAddress: String?
+    @Published private(set) var qrCode: UIImage?
     @Published private(set) var action: Action?
 
     // MARK: - Properties
@@ -89,6 +88,7 @@ final class ProfileModel {
     init() {
         updateData()
         setupCallbacks()
+        generateQrCode()
     }
 
     // MARK: - Setups
@@ -173,13 +173,10 @@ final class ProfileModel {
         }
     }
 
-    func generateQrCode() {
-
-        action = .showQRPopUp
-
+    private func generateQrCode() {
         Task {
             guard let deeplink = try? makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8), let image = await QRCodeFactory.makeQrCode(data: deeplinkData) else { return }
-            action = .shareQR(image: image)
+            qrCode = image
         }
     }
 

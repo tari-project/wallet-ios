@@ -52,7 +52,10 @@ struct TariAddressComponents {
 
     let fullRaw: String
     let fullEmoji: String
+    
     let isUnknownAddress: Bool
+    let isOnesidedAddress: Bool
+    let isInteractiveAddress: Bool
 }
 
 extension TariAddressComponents {
@@ -85,5 +88,7 @@ extension TariAddressComponents {
         fullRaw = [networkBase58, featuresBase58, addressBase58].joined()
         fullEmoji = try address.emojis
         isUnknownAddress = try address.spendKey.byteVector.bytes.first { $0 != 0 } == nil
+        isOnesidedAddress = try address.features.isOnesided()
+        isInteractiveAddress = try address.features.isInteractive()
     }
 }
