@@ -442,8 +442,14 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @objc private func continueButtonTapped() {
         guard let paymentInfo = updatedPaymentInfo() else { return }
-        let controller = AddNoteViewController(paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
-        navigationController?.pushViewController(controller, animated: true)
+        
+        if paymentInfo.note != nil {
+            let paymentInfo = PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: paymentInfo.note)
+            TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
+        }else {
+            let controller = AddNoteViewController(paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
+            navigationController?.pushViewController(controller, animated: true)
+        }
     }
 
     private func calculateAmount() -> MicroTari? {
@@ -542,7 +548,11 @@ extension AddAmountViewController {
         continueButtonSecondConstraint.priority = UILayoutPriority(rawValue: 1000)
         continueButtonSecondConstraint.isActive = true
 
-        continueButton.setTitle(localized("common.continue"), for: .normal)
+        if paymentInfo.note != nil {
+            continueButton.setTitle(localized("common.send.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol), for: .normal)
+        }else {
+            continueButton.setTitle(localized("common.continue"), for: .normal)
+        }
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         continueButton.isEnabled = false
         setupKeypad()
