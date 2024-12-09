@@ -530,7 +530,6 @@
 		54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1CB1D29C7292700E6777C /* EmojiTextField.swift */; };
 		54ED0FBE2A5D315400ED1F7E /* SearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ED0FBD2A5D315400ED1F7E /* SearchField.swift */; };
 		54F1FDA62C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F1FDA52C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift */; };
-		54F23DE729BBA0C3001E39A2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */; };
 		54F2E34329EE6B8A00A7A15A /* ContactTransactionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34229EE6B8A00A7A15A /* ContactTransactionListViewController.swift */; };
 		54F2E34529EE6B9600A7A15A /* ContactTransactionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34429EE6B9600A7A15A /* ContactTransactionListView.swift */; };
 		54F2E34729EE6BA100A7A15A /* ContactTransactionListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34629EE6BA100A7A15A /* ContactTransactionListModel.swift */; };
@@ -1127,7 +1126,6 @@
 		54E1CB1D29C7292700E6777C /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 		54ED0FBD2A5D315400ED1F7E /* SearchField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchField.swift; sourceTree = "<group>"; };
 		54F1FDA52C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotPopUpHandler.swift; sourceTree = "<group>"; };
-		54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		54F2E34229EE6B8A00A7A15A /* ContactTransactionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListViewController.swift; sourceTree = "<group>"; };
 		54F2E34429EE6B9600A7A15A /* ContactTransactionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListView.swift; sourceTree = "<group>"; };
 		54F2E34629EE6BA100A7A15A /* ContactTransactionListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListModel.swift; sourceTree = "<group>"; };
@@ -1512,7 +1510,6 @@
 			children = (
 				00B4D6FB241B97CD00ED8318 /* Tari.entitlements */,
 				4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */,
-				54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */,
 				00E491AC2366E08F007B332D /* Info.plist */,
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
@@ -3323,7 +3320,6 @@
 				BF0A77A0241F904D00861A3E /* faceId.png in Resources */,
 				37C8BA352480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */,
 				BF0A77C42420DA3200861A3E /* TouchIdAnimation.json in Resources */,
-				54F23DE729BBA0C3001E39A2 /* InfoPlist.strings in Resources */,
 				BF191A2023E5AFA200D33C85 /* img_1.png in Resources */,
 				BF0A77B52420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BFE1FC0223E229FF00BA5EEC /* CheckMark.json in Resources */,
@@ -4129,7 +4125,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.29.0;
+				MARKETING_VERSION = 0.30.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4162,7 +4158,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.29.0;
+				MARKETING_VERSION = 0.30.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
