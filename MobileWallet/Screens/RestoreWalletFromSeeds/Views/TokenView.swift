@@ -124,7 +124,6 @@ final class TokenView: DynamicThemeCollectionCell {
             deleteIconView.heightAnchor.constraint(equalToConstant: 14.0),
             deleteIconView.widthAnchor.constraint(equalToConstant: 14.0)
         ]
-
         NSLayoutConstraint.activate(constraints)
     }
 

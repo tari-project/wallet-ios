@@ -51,15 +51,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>NSBluetoothAlwaysUsageDescription</string>
+	<string>The App needs access to Bluetooth to share contacts with users nearby</string>
 	<key>NSCameraUsageDescription</key>
-	<string>NSCameraUsageDescription</string>
+	<string>Tari needs access to the camera to scan the QR</string>
 	<key>NSContactsUsageDescription</key>
-	<string>NSContactsUsageDescription</string>
+	<string>The App need access to your contact book to present contats on the list</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>NSFaceIDUsageDescription</string>
+	<string>Enable Face ID to protect your wallet</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>NSPhotoLibraryAddUsageDescription</string>
+	<string>Tari needs permission to write media to photo library</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.com.tari.wallet</key>
