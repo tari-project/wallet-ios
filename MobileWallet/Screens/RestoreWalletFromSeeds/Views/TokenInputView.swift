@@ -53,6 +53,9 @@ final class TokenInputView: DynamicThemeCollectionCell {
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.spellCheckingType = .no
+        view.isSecureTextEntry = false
+        view.isUserInteractionEnabled = true
+        
         return view
     }()
 
@@ -135,6 +138,14 @@ final class TokenInputView: DynamicThemeCollectionCell {
     override func resignFirstResponder() -> Bool {
         onEndEditing?(textField.text ?? "")
         return textField.resignFirstResponder()
+    }
+    
+    public func triggerSystemTextMenu() -> Void {
+        let menuController = UIMenuController.shared
+        self.becomeFirstResponder() // Ensure the view is first responder
+
+        // Position the menu over the entire view for example:
+        menuController.showMenu(from: self, rect: self.bounds)
     }
 }
 

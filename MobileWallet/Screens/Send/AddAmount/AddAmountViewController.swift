@@ -445,9 +445,9 @@ final class AddAmountViewController: DynamicThemeViewController {
         
         if paymentInfo.note != nil {
             let paymentInfo = PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: paymentInfo.note)
-            TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
+            TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: true)
         }else {
-            let controller = AddNoteViewController(paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
+            let controller = AddNoteViewController(paymentInfo: paymentInfo, isOneSidedPayment: true)
             navigationController?.pushViewController(controller, animated: true)
         }
     }
@@ -709,6 +709,8 @@ extension AddAmountViewController {
             oneSidedPaymentSwitch.isUserInteractionEnabled = false
             oneSidedPaymentSwitch.isOn = true
         }
+        
+        oneSidedPaymentStackView.isHidden = true
     }
 
     private func setupCallbacks() {
