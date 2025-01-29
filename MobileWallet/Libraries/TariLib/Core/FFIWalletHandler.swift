@@ -346,7 +346,19 @@ final class FFIWalletHandler {
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, message, isOneSidedPayment, paymentID, errorCodePointer)
+        
+        /*
+         unsigned long long wallet_send_transaction(struct TariWallet *wallet,
+                                                    TariWalletAddress *destination,
+                                                    unsigned long long amount,
+                                                    struct TariVector *commitments,
+                                                    unsigned long long fee_per_gram,
+                                                    bool one_sided,
+                                                    const char *payment_id_string,
+                                                    int *error_out);
+         
+         */
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, isOneSidedPayment, message, errorCodePointer)
 
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result

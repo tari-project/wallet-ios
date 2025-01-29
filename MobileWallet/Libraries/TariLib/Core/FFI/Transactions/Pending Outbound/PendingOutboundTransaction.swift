@@ -85,7 +85,7 @@ final class PendingOutboundTransaction: Transaction {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = pending_outbound_transaction_get_message(pointer, errorCodePointer)
+            let result = pending_outbound_transaction_get_payment_id(pointer, errorCodePointer)
 
             guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
             return String(cString: cString)
