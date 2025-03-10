@@ -114,7 +114,7 @@ final class ContactSearchView: DynamicThemeView {
         layer.borderWidth = 2.0
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         layer.borderColor = theme.backgrounds.secondary?.cgColor

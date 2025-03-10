@@ -75,27 +75,27 @@ final class TransactionHistoryCell: DynamicThemeCell {
 
     @View private var titleLabel: StylizedLabel = {
         let view = StylizedLabel()
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.normalFont = .Poppins.Medium.withSize(14.0)
+        view.boldFont = .Poppins.Bold.withSize(14.0)
         view.separator = " "
         return view
     }()
 
     @View private var timestampLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(11.0)
+        view.font = .Poppins.Medium.withSize(11.0)
         return view
     }()
 
     @View private var infoLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(12.0)
+        view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
     @View private var noteLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         view.numberOfLines = 0
         return view
     }()
@@ -157,7 +157,7 @@ final class TransactionHistoryCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.body
         timestampLabel.textColor = theme.text.lightText

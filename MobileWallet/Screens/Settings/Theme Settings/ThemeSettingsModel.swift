@@ -44,7 +44,6 @@ final class ThemeSettingsModel {
         case system
         case light
         case dark
-        case purple
     }
 
     struct ElementModel: Identifiable {
@@ -57,8 +56,7 @@ final class ThemeSettingsModel {
     @Published var elements: [ElementModel] = [
         ElementModel(id: UUID(), element: .system),
         ElementModel(id: UUID(), element: .light),
-        ElementModel(id: UUID(), element: .dark),
-        ElementModel(id: UUID(), element: .purple)
+        ElementModel(id: UUID(), element: .dark)
     ]
 
     @Published var selectedIndex: Int = 0
@@ -81,8 +79,6 @@ final class ThemeSettingsModel {
             selectedElement = .light
         case .dark:
             selectedElement = .dark
-        case .tariPurple:
-            selectedElement = .purple
         }
 
         selectedIndex = elements.firstIndex { $0.element == selectedElement } ?? 0
@@ -96,8 +92,6 @@ final class ThemeSettingsModel {
             ThemeCoordinator.shared.colorScheme = .light
         case .dark:
             ThemeCoordinator.shared.colorScheme = .dark
-        case .purple:
-            ThemeCoordinator.shared.colorScheme = .tariPurple
         }
     }
 }

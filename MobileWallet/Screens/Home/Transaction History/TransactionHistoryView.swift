@@ -138,7 +138,7 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         tableView.backgroundColor = theme.backgrounds.primary

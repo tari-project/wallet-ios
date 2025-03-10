@@ -90,7 +90,7 @@ final class OnboardingPagerElementView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.icons.inactive
         progressView.backgroundColor = theme.icons.active

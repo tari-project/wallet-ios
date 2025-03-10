@@ -60,11 +60,11 @@ final class AddAmountSpinnerView: DynamicThemeView {
         let view = UILabel()
         view.text = localized("add_amount.spinner_view.label.calculating")
         view.textAlignment = .center
-        view.font = .Avenir.light.withSize(14.0)
+        view.font = .Poppins.Light.withSize(14.0)
         return view
     }()
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
     }

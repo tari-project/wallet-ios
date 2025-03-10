@@ -48,7 +48,7 @@ final class ContextualButton: BaseButton {
     @View private var label: UILabel = {
         let view = UILabel()
         view.textAlignment = .right
-        view.font = .Avenir.medium.withSize(17.0)
+        view.font = .Poppins.Medium.withSize(17.0)
         return view
     }()
 

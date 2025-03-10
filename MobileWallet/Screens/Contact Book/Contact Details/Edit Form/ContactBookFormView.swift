@@ -122,9 +122,9 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        secureContentView.view.backgroundColor = theme.backgrounds.primary
+        secureContentView.view.backgroundColor = .Background.popup
     }
 
     private func update(textFieldsModels: [TextFieldViewModel]) {

@@ -53,7 +53,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
 
     @View private var nameLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -62,14 +62,14 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
     @View private var peerTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_base_node_overlay.label.peer")
-        view.font = .Avenir.black.withSize(14.0)
+        view.font = .Poppins.Black.withSize(14.0)
         view.textAlignment = .center
         return view
     }()
 
     @View private var peerAddressLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -142,7 +142,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundView.backgroundColor = theme.backgrounds.secondary
         nameLabel.textColor = theme.text.body
@@ -156,7 +156,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         let namePrefix = localized("add_base_node_overlay.label.name")
         let nameText = NSMutableAttributedString(string: namePrefix + " " + name)
 
-        nameText.setAttributes([.font: UIFont.Avenir.black.withSize(14.0)], range: NSRange(location: 0, length: namePrefix.count))
+        nameText.setAttributes([.font: UIFont.Poppins.Black.withSize(14.0)], range: NSRange(location: 0, length: namePrefix.count))
         nameLabel.attributedText = nameText
     }
 

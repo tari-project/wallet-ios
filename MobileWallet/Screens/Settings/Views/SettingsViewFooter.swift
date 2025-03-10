@@ -45,7 +45,7 @@ final class SettingsViewFooter: DynamicThemeView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         view.text = AppVersionFormatter.version
         return view
     }()
@@ -72,7 +72,7 @@ final class SettingsViewFooter: DynamicThemeView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
     }

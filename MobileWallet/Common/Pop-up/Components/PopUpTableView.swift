@@ -82,7 +82,7 @@ final class PopUpTableView: DynamicThemeTableView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         separatorColor = theme.neutral.secondary
     }

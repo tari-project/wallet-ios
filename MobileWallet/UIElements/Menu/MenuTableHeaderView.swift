@@ -46,7 +46,7 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.heavy.withSize(15.0)
+        view.font = .Poppins.Bold.withSize(15.0)
         return view
     }()
 
@@ -89,7 +89,7 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
         backgroundContentView.backgroundColor = theme.backgrounds.secondary

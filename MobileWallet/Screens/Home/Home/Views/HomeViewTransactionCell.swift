@@ -41,7 +41,7 @@
 import TariCommon
 import Combine
 
-final class HomeViewTransactionCell: UITableViewCell {
+final class HomeViewTransactionCell: DynamicThemeCell {
 
     struct ViewModel: Identifiable, Hashable {
         let id: UInt64
@@ -64,6 +64,8 @@ final class HomeViewTransactionCell: UITableViewCell {
         }
     }
 
+    var viewModel: ViewModel?
+
     // MARK: - Constants
 
     static let defaultHeight: CGFloat = 70.0
@@ -73,26 +75,47 @@ final class HomeViewTransactionCell: UITableViewCell {
     @View private var glassBackgroundView = HomeGlassView()
     @View private var labelsContentView = UIView()
 
-    @View private var titleLabel: StylizedLabel = {
-        let view = StylizedLabel()
-        view.textColor = .Static.white
-        view.normalFont = .Avenir.medium.withSize(12.0)
-        view.boldFont = .Avenir.black.withSize(12.0)
-        view.separator = " "
+    @View private var iconView: UIImageView = {
+        let imageView = UIImageView(image: .gem.withRenderingMode(.alwaysTemplate))
+        return imageView
+    }()
+
+    @View private var iconViewOutline: UIView = {
+        let view = UIView()
+        return view
+    }()
+
+    @View private var containerView: UIView = {
+        let container = UIView()
+        container.clipsToBounds = true
+
+        container.backgroundColor = .Background.primary
+        container.layer.cornerRadius = 16
+        container.layer.borderColor = UIColor.Elevation.outlined.cgColor
+        container.layer.borderWidth = 1.0
+        container.clipsToBounds = true
+        return container
+    }()
+
+    @View private var titleLabel: UILabel = {
+        let view = UILabel()
+        view.textColor = .Text.primary
+        view.font = .Poppins.Medium.withSize(13)
         return view
     }()
 
     @View private var timestampLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .Static.white
-        view.font = .Avenir.light.withSize(11.0)
+        view.textColor = .Text.secondary
+        view.font = .Poppins.Regular.withSize(11.0)
         return view
     }()
 
-    @View private var amountView: AmountBadge = {
-        let view = AmountBadge()
-        view.enforcedTheme = .light
-        return view
+    @View private var amountLabel: UILabel = {
+        let label = UILabel()
+        label.font = .Poppins.SemiBold.withSize(16)
+        label.textColor = .Text.primary
+        return label
     }()
 
     // MARK: - Properties
@@ -118,22 +141,34 @@ final class HomeViewTransactionCell: UITableViewCell {
     private func setupViews() {
         backgroundColor = .clear
         selectionStyle = .none
+
+//        layer.cornerRadius = 16
+//        layer.borderColor = UIColor.Elevation.outlined.cgColor
+//        layer.borderWidth = 1.0
+//        clipsToBounds = true
     }
 
     private func setupConstraints() {
 
-        contentView.addSubview(glassBackgroundView)
+        contentView.addSubview(containerView)
         [titleLabel, timestampLabel].forEach(labelsContentView.addSubview)
-        [labelsContentView, amountView].forEach(glassBackgroundView.addSubview)
+        [labelsContentView, amountLabel, iconViewOutline, iconView].forEach(contentView.addSubview)
 
         let constraints = [
-            glassBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5.0),
-            glassBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            glassBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            glassBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5.0),
-            labelsContentView.leadingAnchor.constraint(equalTo: glassBackgroundView.leadingAnchor, constant: 10.0),
-            labelsContentView.trailingAnchor.constraint(equalTo: amountView.leadingAnchor, constant: -5.0),
-            labelsContentView.centerYAnchor.constraint(equalTo: glassBackgroundView.centerYAnchor),
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
+            containerView.leftAnchor.constraint(equalTo: leftAnchor),
+            containerView.rightAnchor.constraint(equalTo: rightAnchor),
+            iconViewOutline.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
+            iconViewOutline.centerXAnchor.constraint(equalTo: iconView.centerXAnchor),
+            iconViewOutline.widthAnchor.constraint(equalToConstant: 28),
+            iconViewOutline.heightAnchor.constraint(equalToConstant: 28),
+            iconView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            iconView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+            iconView.widthAnchor.constraint(equalToConstant: 16),
+            iconView.heightAnchor.constraint(equalToConstant: 16),
+            labelsContentView.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: 20.0),
+            labelsContentView.centerYAnchor.constraint(equalTo: centerYAnchor),
             titleLabel.topAnchor.constraint(equalTo: labelsContentView.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: labelsContentView.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: labelsContentView.trailingAnchor),
@@ -141,8 +176,8 @@ final class HomeViewTransactionCell: UITableViewCell {
             timestampLabel.leadingAnchor.constraint(equalTo: labelsContentView.leadingAnchor),
             timestampLabel.trailingAnchor.constraint(equalTo: labelsContentView.trailingAnchor),
             timestampLabel.bottomAnchor.constraint(equalTo: labelsContentView.bottomAnchor),
-            amountView.topAnchor.constraint(equalTo: labelsContentView.topAnchor),
-            amountView.trailingAnchor.constraint(equalTo: glassBackgroundView.trailingAnchor, constant: -10.0),
+            amountLabel.topAnchor.constraint(equalTo: labelsContentView.topAnchor, constant: 3),
+            amountLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
             contentView.heightAnchor.constraint(equalToConstant: Self.defaultHeight)
         ]
 
@@ -151,12 +186,53 @@ final class HomeViewTransactionCell: UITableViewCell {
 
     // MARK: - Updates
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        iconViewOutline.layer.cornerRadius = iconViewOutline.bounds.width / 2
+    }
+
+    override func update(theme: AppTheme) {
+        super.update(theme: theme)
+
+        if let model = viewModel {
+            update(viewModel: model)
+        }
+
+        containerView.backgroundColor = .Background.primary
+        containerView.layer.borderColor = UIColor.Elevation.outlined.cgColor
+        titleLabel.textColor = .Text.primary
+        timestampLabel.textColor = .Text.secondary
+        iconView.tintColor = .Background.primary
+        iconViewOutline.backgroundColor = .Text.primary
+    }
+
     func update(viewModel: ViewModel) {
+        self.viewModel = viewModel
 
         identifier = viewModel.id
-        titleLabel.textComponents = viewModel.titleComponents
-        amountView.update(viewModel: viewModel.amount)
+        titleLabel.text = "Block #1854"
 
+        var signString: NSAttributedString = NSAttributedString()
+        if viewModel.amount.valueType == .positive {
+            signString = NSAttributedString(string: "+ ", attributes: [.foregroundColor: UIColor.System.green])
+        } else if viewModel.amount.valueType == .negative {
+            signString = NSAttributedString(string: "- ", attributes: [.foregroundColor: UIColor.System.red])
+        }
+
+        let valueString = viewModel.amount.amount ?? ""
+        let amount = NSAttributedString(string: valueString.filter { $0 != "-" && $0 != " " && $0 != "+"} + " tXTM", attributes: [.foregroundColor: UIColor.Text.primary])
+
+        let amountText =  NSMutableAttributedString()
+        amountText.append(signString)
+        amountText.append(amount)
+
+        amountLabel.attributedText = amountText
+
+//        if viewModel.amount.amount != nil {
+//            amount = (viewModel.amount.amount ?? "") + " tXTM"
+//        }
+//        amountLabel.text = amount
         dynamicModel = TransactionDynamicModel(timestamp: viewModel.timestamp, giphyID: nil)
 
         dynamicModel?.$formattedTimestamp

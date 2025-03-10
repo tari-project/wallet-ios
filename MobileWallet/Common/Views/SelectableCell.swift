@@ -52,7 +52,7 @@ final class SelectableCell: DynamicThemeCell {
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
@@ -101,7 +101,7 @@ final class SelectableCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         titleLabel.textColor = theme.text.heading

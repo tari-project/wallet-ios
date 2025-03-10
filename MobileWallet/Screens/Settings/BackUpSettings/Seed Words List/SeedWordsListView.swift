@@ -236,7 +236,7 @@ final class SeedWordsListView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         descriptionLabel.textColor = theme.text.body

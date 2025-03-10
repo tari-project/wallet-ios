@@ -47,7 +47,6 @@ final class ThemeCoordinator {
         case system
         case light
         case dark
-        case tariPurple
     }
 
     // MARK: - Properties
@@ -62,7 +61,7 @@ final class ThemeCoordinator {
         }
     }
 
-    @Published private(set) var theme: ColorTheme = .light
+    @Published private(set) var theme: AppTheme = .light
     private var uiStyle: UIUserInterfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
 
     // MARK: - Initialisers
@@ -85,8 +84,6 @@ final class ThemeCoordinator {
             colorScheme = .light
         case .dark:
             colorScheme = .dark
-        case .purple:
-            colorScheme = .tariPurple
         }
     }
 
@@ -99,15 +96,12 @@ final class ThemeCoordinator {
 
     // MARK: - Actions
 
-    private func theme(colorScheme: ColorScheme) -> ColorTheme {
-
+    private func theme(colorScheme: ColorScheme) -> AppTheme {
         switch colorScheme {
         case .light:
             return .light
         case .dark:
             return .dark
-        case .tariPurple:
-            return .tariPurple
         case .system:
             return uiStyle == .dark ? .dark : .light
         }
@@ -121,8 +115,6 @@ final class ThemeCoordinator {
             UserSettingsManager.colorScheme = .light
         case .dark:
             UserSettingsManager.colorScheme = .dark
-        case .tariPurple:
-            UserSettingsManager.colorScheme = .purple
         }
     }
 
@@ -132,7 +124,7 @@ final class ThemeCoordinator {
             UIApplication.shared.firstWindow?.overrideUserInterfaceStyle = .unspecified
         case .light:
             UIApplication.shared.firstWindow?.overrideUserInterfaceStyle = .light
-        case .dark, .tariPurple:
+        case .dark:
             UIApplication.shared.firstWindow?.overrideUserInterfaceStyle = .dark
         }
     }
@@ -148,7 +140,7 @@ final class ThemeCoordinator {
             Yat.style = uiStyle == .dark ? .dark : .light
         case .light:
             Yat.style = .light
-        case .dark, .tariPurple:
+        case .dark:
             Yat.style = .dark
         }
     }

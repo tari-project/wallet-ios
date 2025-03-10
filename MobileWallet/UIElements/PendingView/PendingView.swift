@@ -46,13 +46,15 @@ final class PendingView: DynamicThemeView {
     private let containerStackView = UIStackView()
     private let title: String?
     private let definition: String?
+    private let longDefinition: String?
 
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
 
-    init(title: String?, definition: String?) {
+    init(title: String?, definition: String?, longDefinition: String?) {
         self.title = title
         self.definition = definition
+        self.longDefinition = longDefinition
         super.init()
         setupSubviews()
     }
@@ -62,15 +64,20 @@ final class PendingView: DynamicThemeView {
     }
 
     func showPendingView(completion: (() -> Void)? = nil) {
+        UIApplication.shared.isIdleTimerDisabled = true
         setupPendingView()
         UIView.animate(withDuration: CATransaction.animationDuration(), animations: { [weak self] in
             self?.alpha = 1.0
         }) { (_) in
+            Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
+                self.showLongDescription()
+            }
             completion?()
         }
     }
 
     func hidePendingView(completion: (() -> Void)? = nil) {
+        UIApplication.shared.isIdleTimerDisabled = false
         UIView.animate(withDuration: CATransaction.animationDuration(), animations: { [weak self] in
             self?.alpha = 0.0
         }) { [weak self] (_) in
@@ -98,7 +105,6 @@ final class PendingView: DynamicThemeView {
 
     private func setupSubviews() {
         setupContainerView()
-        setupPendingAnimation()
     }
 
     private func setupContainerView() {
@@ -133,42 +139,30 @@ final class PendingView: DynamicThemeView {
 
     private func setupTitleLabel(_ title: UILabel) {
         title.text = self.title
-        title.font = Theme.shared.fonts.restorePendingViewTitle
+        title.font = .Poppins.Medium.withSize(24)
 
         containerStackView.addArrangedSubview(title)
         containerStackView.setCustomSpacing(10.0, after: title)
     }
 
     private func setupDescriptionLabel(_ description: UILabel) {
-        let description = UILabel()
         description.numberOfLines = 0
         description.textAlignment = .center
 
         description.text = self.definition
-        description.font = Theme.shared.fonts.restorePendingViewDescription
+        description.font = .Poppins.Medium.withSize(14)
 
         containerStackView.addArrangedSubview(description)
     }
 
-    private func setupPendingAnimation() {
-        let pendingAnimationView = AnimationView()
-        pendingAnimationView.backgroundBehavior = .pauseAndRestore
-        pendingAnimationView.animation = Animation.named(.pendingCircleAnimation)
-
-        addSubview(pendingAnimationView)
-        pendingAnimationView.translatesAutoresizingMaskIntoConstraints = false
-        pendingAnimationView.widthAnchor.constraint(equalToConstant: 45).isActive = true
-        pendingAnimationView.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        pendingAnimationView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        pendingAnimationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30).isActive = true
-
-        pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
+    private func showLongDescription() {
+        descriptionLabel.text = longDefinition
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
-        titleLabel.textColor = theme.text.heading
-        descriptionLabel.textColor = theme.text.body
+        backgroundColor = .Background.primary
+        titleLabel.textColor = .Text.primary
+        descriptionLabel.textColor = .Text.primary
     }
 }

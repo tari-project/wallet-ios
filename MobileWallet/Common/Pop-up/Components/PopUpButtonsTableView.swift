@@ -59,7 +59,7 @@ final class PopUpButtonsTableView: DynamicThemeView {
     @View private var footerLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
@@ -114,7 +114,7 @@ final class PopUpButtonsTableView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         footerLabel.textColor = theme.text.body
     }
@@ -142,7 +142,7 @@ private final class PopUpButtonCell: DynamicThemeCell {
     @View private var label: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
@@ -188,7 +188,7 @@ private final class PopUpButtonCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
     }

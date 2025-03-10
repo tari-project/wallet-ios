@@ -47,7 +47,7 @@ final class TokenView: DynamicThemeCollectionCell {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.restoreFromSeedWordsToken
+        view.font = .Poppins.Medium.withSize(12)
         return view
     }()
 
@@ -103,6 +103,12 @@ final class TokenView: DynamicThemeCollectionCell {
         isValid = true
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        layer.cornerRadius = frame.height / 2
+    }
+
     private func setupConstraints() {
 
         [label, deleteIconView].forEach(addSubview)
@@ -129,16 +135,17 @@ final class TokenView: DynamicThemeCollectionCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         backgroundColor = theme.backgrounds.primary
-        validBorderColor = theme.neutral.tertiary
-        invalidBorderColor = theme.system.red
-        validTextColor = theme.text.body
-        invalidTextColor = theme.system.red
-        validIconTintColor = theme.text.body
-        invalidIconTintColor = theme.system.red
+
+        validBorderColor = .Elevation.outlined
+        invalidBorderColor = .System.red
+        validTextColor = .Text.body
+        invalidTextColor = .System.red
+        validIconTintColor = .Elevation.outlined
+        invalidIconTintColor = .System.red
 
         updateColors()
     }

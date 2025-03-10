@@ -60,7 +60,7 @@ final class ValuePickerView: DynamicThemeView {
     @View private var valueLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.heavy.withSize(22.0)
+        view.font = .Poppins.Bold.withSize(22.0)
         return view
     }()
 
@@ -146,14 +146,14 @@ final class ValuePickerView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         valueLabel.textColor = theme.text.heading
         valueLabel.backgroundColor = theme.backgrounds.secondary
         updateButtonsColor(theme: theme)
     }
 
-    private func updateButtonsColor(theme: ColorTheme) {
+    private func updateButtonsColor(theme: AppTheme) {
         minusButtonBackgroundView.backgroundColor = value == minValue ? theme.neutral.inactive  : theme.brand.purple
         plusButtonBackgroundView.backgroundColor = value == maxValue ? theme.neutral.inactive : theme.brand.purple
     }

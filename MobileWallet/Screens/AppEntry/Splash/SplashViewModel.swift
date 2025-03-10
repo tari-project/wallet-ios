@@ -55,6 +55,8 @@ final class SplashViewModel {
         case idle
         case working
         case success
+        case successRestored
+        case successSync
     }
 
     enum StatusRepresentation {
@@ -82,13 +84,21 @@ final class SplashViewModel {
     private let recoveryManager = SeedWordsWalletRecoveryManager()
     private var isWalletConnected: Bool
     private var paperWalletRecoveryData: PaperWalletRecoveryData?
+    private var recoveryMode: RecoveryMode = .none
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(isWalletConnected: Bool, paperWalletRecoveryData: PaperWalletRecoveryData?) {
+    enum RecoveryMode {
+        case seedPhrase
+        case paperWallet
+        case none
+    }
+
+    init(isWalletConnected: Bool, paperWalletRecoveryData: PaperWalletRecoveryData?, recoveryMode: RecoveryMode = .none) {
         self.isWalletConnected = isWalletConnected
         self.paperWalletRecoveryData = paperWalletRecoveryData
+        self.recoveryMode = recoveryMode
         status = StatusModel(status: .idle, statusRepresentation: Tari.shared.wallet(.main).isWalletDBExist ? .logo : .content)
         setupCallbacks()
         setupData()
@@ -98,7 +108,6 @@ final class SplashViewModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         NetworkManager.shared.$selectedNetwork
             .map(\.fullPresentedName)
             .sink { [weak self] in self?.networkName = $0 }
@@ -127,18 +136,20 @@ final class SplashViewModel {
         NetworkManager.shared.selectedNetwork = TariNetwork.all[index]
     }
 
-    func startWallet() {
+    func openWalletIfExists() -> Bool {
         if Tari.shared.wallet(.main).isWalletDBExist {
             openWallet()
+            return true
         } else {
-            createWallet()
+            return false
         }
     }
 
-    func recoverWalletIfNeeded() {
-        guard let paperWalletRecoveryData else { return }
+    func recoverWalletIfNeeded() -> Bool {
+        guard let paperWalletRecoveryData else { return false }
         recoveryManager.recover(wallet: .main, cipher: paperWalletRecoveryData.cipher, passphrase: paperWalletRecoveryData.passphrase, customBaseNodeHex: nil, customBaseNodeAddress: nil)
         isRecoveryInProgress = true
+        return isRecoveryInProgress
     }
 
     func deleteWallet() {
@@ -150,7 +161,7 @@ final class SplashViewModel {
 
     // MARK: - Actions
 
-    private func createWallet() {
+    public func createWallet() {
         Task {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)
@@ -175,7 +186,14 @@ final class SplashViewModel {
 
                 try await connectToWallet(isWalletConnected: isWalletConnected)
                 isWalletConnected = false
-                status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
+
+                var openStatus = Status.success
+                if recoveryMode == .paperWallet {
+                    openStatus = .successSync
+                } else if recoveryMode == .seedPhrase {
+                    openStatus = .successRestored
+                }
+                status = StatusModel(status: openStatus, statusRepresentation: statusRepresentation)
             } catch {
                 self.handle(error: error)
             }

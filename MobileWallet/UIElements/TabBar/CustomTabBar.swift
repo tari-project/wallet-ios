@@ -40,8 +40,41 @@
 
 import TariCommon
 
-final class CustomTabBar: DynamicThemeTabBar {
+class RoundedShadowView: UIView {
+    private var shadowLayer: CAShapeLayer = CAShapeLayer()
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        shadowLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: 20).cgPath
+        shadowLayer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1).cgColor
+        shadowLayer.shadowOffset = CGSize(width: 0, height: 0)
+        shadowLayer.shadowRadius = 40
+        shadowLayer.shadowOpacity = 1
+        shadowLayer.opacity = 1.0
+        shadowLayer.isHidden = false
+        shadowLayer.masksToBounds = false
+        shadowLayer.fillColor = UIColor.Components.navbarBackground.cgColor
+    }
+
+    func setup() {
+        translatesAutoresizingMaskIntoConstraints = false
+        clipsToBounds = false
+        layer.insertSublayer(shadowLayer, at: 0)
+    }
+}
+
+final class CustomTabBar: DynamicThemeTabBar {
     @View private var secureContentView = SecureWrapperView<UIView>()
 
     override init() {
@@ -55,15 +88,19 @@ final class CustomTabBar: DynamicThemeTabBar {
     }
 
     func setup() {
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        layer.shadowRadius = 8
-        layer.shadowOpacity = 0.25
-        layer.masksToBounds = false
+        clipsToBounds = false
+        backgroundColor = .clear
 
+        let rounded = RoundedShadowView()
+        addSubview(rounded)
         addSubview(secureContentView)
 
         let constraints = [
+            rounded.topAnchor.constraint(equalTo: topAnchor),
+            rounded.leadingAnchor.constraint(equalTo: leadingAnchor),
+            rounded.trailingAnchor.constraint(equalTo: trailingAnchor),
+            rounded.bottomAnchor.constraint(equalTo: bottomAnchor),
+
             secureContentView.topAnchor.constraint(equalTo: topAnchor),
             secureContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             secureContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -91,17 +128,16 @@ final class CustomTabBar: DynamicThemeTabBar {
         return sizeThatFits
     }
 
-    override func update(theme: ColorTheme) {
-
+    override func update(theme: AppTheme) {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .clear
-        appearance.stackedLayoutAppearance.normal.iconColor = theme.icons.default
-        appearance.stackedLayoutAppearance.selected.iconColor = theme.icons.active
+        appearance.backgroundColor = .Components.navbarBackground
+        appearance.stackedLayoutAppearance.normal.iconColor = .Components.navbarIcons
+        appearance.stackedLayoutAppearance.selected.iconColor = .Components.navbarIcons
 
         standardAppearance = appearance
         scrollEdgeAppearance = appearance
 
-        secureContentView.view.backgroundColor = theme.backgrounds.primary
+        secureContentView.view.backgroundColor = .Background.secondary
     }
 }

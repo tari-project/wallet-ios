@@ -48,8 +48,9 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
 
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.restoreFormSeedWordsDescription
+        view.font = .Poppins.Medium.withSize(14)
         view.text = localized("restore_from_seed_words.label.description")
+        view.textAlignment = .center
         view.numberOfLines = 0
         return view
     }()
@@ -63,8 +64,8 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private(set) var submitButton: ActionButton = {
-        let view = ActionButton()
+    @View private(set) var submitButton: StylisedButton = {
+        let view = StylisedButton(withStyle: .primary, withSize: .large)
         view.setTitle(localized("restore_from_seed_words.button.submit"), for: .normal)
         return view
     }()
@@ -127,10 +128,10 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
-        descriptionLabel.textColor = theme.text.body
+        backgroundColor = .Background.secondary
+        descriptionLabel.textColor = .Text.body
     }
 
     func update(buttonIsEnabledStatus: Bool) {

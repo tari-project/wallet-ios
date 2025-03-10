@@ -64,7 +64,7 @@ final class TariGradientView: DynamicThemeView {
         gradientLayer.frame = layer.bounds
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.neutral.primary
         gradientLayer.colors = [theme.buttons.primaryStart, theme.buttons.primaryEnd].compactMap { $0?.cgColor }

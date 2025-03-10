@@ -44,7 +44,6 @@ struct UserSettings: Codable {
         case system
         case light
         case dark
-        case purple
     }
 
     enum BLEAdvertisementMode: Codable {

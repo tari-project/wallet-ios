@@ -53,7 +53,7 @@ class MenuCell: DynamicThemeCell {
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
@@ -113,13 +113,13 @@ class MenuCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         updateTintColor(theme: theme)
         backgroundColor = theme.backgrounds.primary
     }
 
-    private func updateTintColor(theme: ColorTheme) {
+    private func updateTintColor(theme: AppTheme) {
 
         let isDestructive = viewModel?.isDestructive ?? false
         let tintColor = isDestructive ? theme.system.red : theme.text.heading

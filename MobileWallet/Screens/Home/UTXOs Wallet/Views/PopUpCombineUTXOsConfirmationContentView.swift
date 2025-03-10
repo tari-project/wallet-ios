@@ -47,7 +47,7 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
 
     @View private var messageLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -103,7 +103,7 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         messageLabel.textColor = theme.text.body
     }

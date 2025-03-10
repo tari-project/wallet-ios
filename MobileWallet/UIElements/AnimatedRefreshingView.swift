@@ -130,7 +130,7 @@ private class RefreshingInnerView: DynamicThemeView {
         update(theme: theme)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         let color: UIColor?
@@ -383,7 +383,7 @@ class AnimatedRefreshingView: DynamicThemeView {
         }
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         backgroundColor = theme.backgrounds.primary

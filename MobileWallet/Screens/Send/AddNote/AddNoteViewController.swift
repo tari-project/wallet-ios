@@ -275,7 +275,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: isOneSidedPayment)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         mainView.backgroundColor = theme.backgrounds.primary
@@ -288,7 +288,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         updateNoteViewElements(theme: theme)
     }
 
-    private func updateNoteViewElements(theme: ColorTheme) {
+    private func updateNoteViewElements(theme: AppTheme) {
         noteInput.textColor = noteText.isEmpty ? theme.text.body : theme.text.heading
         titleLabel.textColor = noteText.isEmpty && attachment == nil ? theme.text.heading : theme.text.body
     }
@@ -442,7 +442,7 @@ extension AddNoteViewController {
         var searchGiphyButtonConfiguration = UIButton.Configuration.filled()
         searchGiphyButtonConfiguration.image = Theme.shared.images.searchIcon
         searchGiphyButtonConfiguration.attributedTitle = AttributedString(localized("add_note.search_giphy_button"), attributes: AttributeContainer([
-            .font: UIFont.Avenir.black.withSize(9.0)
+            .font: UIFont.Poppins.Black.withSize(9.0)
         ]))
         searchGiphyButtonConfiguration.imagePadding = 5.0
         searchGiphyButtonConfiguration.baseForegroundColor = theme.neutral.primary
@@ -584,7 +584,7 @@ final class TariGiphyTheme: GPHTheme {
         self.type = .light
     }
 
-    override var textFieldFont: UIFont? {
+    var textFieldFont: UIFont? {
         return Theme.shared.fonts.searchContactsInputBoxText
     }
 }

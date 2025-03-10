@@ -47,7 +47,7 @@ final class LogCell: DynamicThemeCell {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -87,7 +87,7 @@ final class LogCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
     }

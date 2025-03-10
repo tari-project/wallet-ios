@@ -53,7 +53,7 @@ final class AboutViewCell: DynamicThemeCell {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.light.withSize(14.0)
+        view.font = .Poppins.Light.withSize(14.0)
         view.numberOfLines = 2
         return view
     }()
@@ -98,7 +98,7 @@ final class AboutViewCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         iconView.tintColor = theme.text.heading

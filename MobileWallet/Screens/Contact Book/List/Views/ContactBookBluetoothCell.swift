@@ -60,14 +60,14 @@ final class ContactBookBluetoothCell: DynamicThemeCell {
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("contact_book.cell.bluetooth.lable.title")
-        view.font = .Avenir.heavy.withSize(15.0)
+        view.font = .Poppins.Bold.withSize(15.0)
         return view
     }()
 
     @View private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("contact_book.cell.bluetooth.lable.subtitle")
-        view.font = .Avenir.medium.withSize(13.0)
+        view.font = .Poppins.Medium.withSize(13.0)
         return view
     }()
 
@@ -113,7 +113,7 @@ final class ContactBookBluetoothCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         avatarView.tintColor = theme.icons.default

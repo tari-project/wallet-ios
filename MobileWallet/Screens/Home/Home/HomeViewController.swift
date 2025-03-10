@@ -48,6 +48,9 @@ final class HomeViewController: SecureViewController<HomeView> {
     private let model: HomeModel
     private var cancellables = Set<AnyCancellable>()
 
+    var showWalletRestoredOnPresentation = false
+    var showWalletSyncedOnPresentation = false
+
     // MARK: - Initialisers
 
     init(model: HomeModel) {
@@ -76,6 +79,23 @@ final class HomeViewController: SecureViewController<HomeView> {
         super.viewDidAppear(animated)
         mainView.startAnimations()
         model.executeQueuedShortcut()
+
+        if showWalletRestoredOnPresentation {
+            showOverlay(for: .restored)
+        } else if showWalletSyncedOnPresentation {
+            showOverlay(for: .synced)
+        } else {
+            NotificationManager.shared.shouldPromptForNotifications { shouldPrompt in
+                if shouldPrompt {
+                    DispatchQueue.main.async {
+                        self.showOverlay(for: .notifications)
+                    }
+                }
+            }
+        }
+
+        showWalletSyncedOnPresentation = false
+        showWalletRestoredOnPresentation = false
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -97,14 +117,14 @@ final class HomeViewController: SecureViewController<HomeView> {
             .sink { [weak self] in self?.mainView.balance = $0 }
             .store(in: &cancellables)
 
+        model.$activeMiners
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.activeMiners = $0 }
+            .store(in: &cancellables)
+
         model.$availableBalance
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.availableBalance = $0 }
-            .store(in: &cancellables)
-
-        model.$avatar
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.avatar = $0 }
             .store(in: &cancellables)
 
         model.$username
@@ -147,9 +167,54 @@ final class HomeViewController: SecureViewController<HomeView> {
         mainView.onTransactionCellTap = { [weak self] in
             self?.model.select(transactionID: $0)
         }
+
+        mainView.onSendButtonTap = { [weak self] in
+            let controller = TransactionsConstructor.buildScene()
+            let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+            navigationController.setNavigationBarHidden(true, animated: false)
+            navigationController.modalPresentationStyle = .fullScreen
+            self?.present(navigationController, animated: true)
+        }
+
+        mainView.onStartMiningTap = { [weak self] in
+            self?.showOverlay(for: .startMining)
+        }
     }
 
     // MARK: - Actions
+
+    private func showOverlay(for overlay: Overlay) {
+        let overlayViewController = OverlayViewController()
+
+        overlayViewController.onCloseButtonTap = { [weak self] in
+            overlayViewController.dismiss(animated: true)
+        }
+
+        overlayViewController.onPromptButtonTap = { [weak self] in
+            self?.model.runNotifications(registerOnly: false, completion: {
+                DispatchQueue.main.async {
+                    overlayViewController.dismiss(animated: true)
+                }
+            })
+        }
+
+        overlayViewController.onNoPromptClose = { [weak self] in
+            self?.model.runNotifications(registerOnly: true, completion: {
+                DispatchQueue.main.async {
+                    overlayViewController.dismiss(animated: true)
+                }
+            })
+        }
+
+        overlayViewController.onStartMiningButtonTap = { [weak self] in
+            overlayViewController.dismiss(animated: true)
+        }
+
+        overlayViewController.activeOverlay = overlay
+        overlayViewController.transitioningDelegate = overlayViewController
+        overlayViewController.modalPresentationStyle = .custom
+        present(overlayViewController, animated: false, completion: nil)
+    }
 
     private func showConectionStatusPopUp() {
         AppConnectionHandler.shared.connectionMonitor.showDetailsPopup()

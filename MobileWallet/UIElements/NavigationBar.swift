@@ -75,14 +75,13 @@ final class NavigationBar: DynamicThemeView {
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.navigationBarTitle
+        view.font = .Poppins.SemiBold.withSize(16)
         view.textAlignment = .center
         return view
     }()
 
-    @View private var backButton: BaseButton = {
-        let view = BaseButton()
-        view.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
+    @View private var backButton: StylisedButton = {
+        let view = StylisedButton(withStyle: .text, withSize: .small)
         return view
     }()
 
@@ -162,8 +161,6 @@ final class NavigationBar: DynamicThemeView {
             backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8.0),
             backButton.widthAnchor.constraint(greaterThanOrEqualTo: backButton.heightAnchor),
             backButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            titleLabel.leadingAnchor.constraint(greaterThanOrEqualTo: backButton.trailingAnchor),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: rightStackView.leadingAnchor),
             titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             rightStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -193,26 +190,24 @@ final class NavigationBar: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
-        backButton.tintColor = theme.icons.default
-        backButton.setTitleColor(theme.brand.purple, for: .normal)
-        titleLabel.textColor = theme.text.heading
-        separator.backgroundColor = theme.neutral.tertiary
-        progressView.tintColor = theme.brand.purple
+        backgroundColor = .Background.popup
+        titleLabel.textColor = .Text.primary
+        separator.backgroundColor = .Elevation.outlined
+        progressView.tintColor = .Text.primary
         updateStackView(theme: theme)
     }
 
-    private func updateStackView(theme: ColorTheme) {
+    private func updateStackView(theme: AppTheme) {
         rightStackView
             .arrangedSubviews
             .compactMap { $0 as? BaseButton }
             .forEach {
                 $0.tintColor = theme.icons.default
-                $0.setTitleColor(theme.brand.purple, for: .normal)
-                $0.setTitleColor(theme.brand.purple?.withAlphaComponent(0.5), for: .highlighted)
-                $0.setTitleColor(theme.icons.inactive, for: .disabled)
+                $0.setTitleColor(.Text.primary, for: .normal)
+                $0.setTitleColor(.Text.primary.withAlphaComponent(0.5), for: .highlighted)
+                $0.setTitleColor(.Action.disabledBackground, for: .disabled)
             }
     }
 

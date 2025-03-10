@@ -82,21 +82,19 @@ final class PopUpButtonsView: UIView {
 
     @MainActor func addButton(model: PopUpDialogButtonModel) {
 
-        let button: BaseButton
+        let button: StylisedButton
 
         switch model.type {
         case .normal:
-            button = ActionButton()
+            button = StylisedButton(withStyle: .primary, withSize: .large)
         case .destructive:
-            let actionButton = ActionButton()
-            actionButton.style = .destructive
+            let actionButton = StylisedButton(withStyle: .destructive, withSize: .large)
             button = actionButton
         case .text:
-            let textButton = TextButton()
-            textButton.style = .secondary
+            let textButton = StylisedButton(withStyle: .text, withSize: .large)
             button = textButton
         case .textDimmed:
-            button = TextButton()
+            button = StylisedButton(withStyle: .inherit, withSize: .large)
         }
 
         button.setTitle(model.title, for: .normal)

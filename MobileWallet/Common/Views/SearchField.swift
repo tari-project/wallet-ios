@@ -66,7 +66,7 @@ final class SearchField: DynamicThemeTextField {
     // MARK: - Setups
 
     private func setupView() {
-        font = .Avenir.medium.withSize(14.0)
+        font = .Poppins.Medium.withSize(14.0)
         layer.cornerRadius = 6.0
         layer.borderWidth = 1.0
         heightAnchor.constraint(equalToConstant: 46.0).isActive = true
@@ -81,7 +81,7 @@ final class SearchField: DynamicThemeTextField {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         textColor = theme.text.heading

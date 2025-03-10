@@ -47,8 +47,8 @@ final class PopUpHeaderView: DynamicThemeView {
 
     @View private(set) var label: StylizedLabel = {
         let view = StylizedLabel()
-        view.font = .Avenir.light.withSize(18.0)
-        view.normalFont = .Avenir.light.withSize(18.0)
+        view.font = .Poppins.SemiBold.withSize(16)
+        view.normalFont = .Poppins.SemiBold.withSize(16)
         view.separator = " "
         view.textAlignment = .center
         view.numberOfLines = 0
@@ -84,8 +84,8 @@ final class PopUpHeaderView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        label.textColor = theme.text.heading
+        label.textColor = .Text.primary
     }
 }

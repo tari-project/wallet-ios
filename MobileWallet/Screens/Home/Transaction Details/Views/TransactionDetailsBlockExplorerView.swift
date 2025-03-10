@@ -92,7 +92,7 @@ final class TransactionDetailsBlockExplorerView: DynamicThemeBaseButton {
 
     // MARK: - Update
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
         accessoryView.tintColor = theme.icons.default

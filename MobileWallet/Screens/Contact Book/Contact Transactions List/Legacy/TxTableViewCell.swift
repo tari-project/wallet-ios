@@ -166,12 +166,12 @@ final class TxTableViewCell: DynamicThemeCell {
         }
     }
 
-    private func updateValue(theme: ColorTheme? = nil) {
+    private func updateValue(theme: AppTheme? = nil) {
         guard let model else { return }
         setValue(microTari: model.value.microTari, isOutboundTransaction: model.value.isOutboundTransaction, isCancelled: model.value.isCancelled, isPending: model.value.isPending, theme: theme)
     }
 
-    private func setValue(microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool, theme: ColorTheme?) {
+    private func setValue(microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool, theme: AppTheme?) {
 
         let theme = theme ?? self.theme
 
@@ -212,7 +212,7 @@ final class TxTableViewCell: DynamicThemeCell {
         valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         backgroundColor = .clear

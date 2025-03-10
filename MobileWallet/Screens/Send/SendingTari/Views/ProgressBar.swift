@@ -98,14 +98,14 @@ final class ProgressBar: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         bar.backgroundColor = theme.brand.purple
 
         updateBackgroundColor(theme: theme)
     }
 
-    private func updateBackgroundColor(theme: ColorTheme) {
+    private func updateBackgroundColor(theme: AppTheme) {
         switch state {
         case .disabled:
             backgroundColor = theme.neutral.inactive

@@ -69,8 +69,8 @@ final class ContactBookListPlaceholder: DynamicThemeView {
     @View private var titleLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
-        view.normalFont = .Avenir.medium.withSize(18.0)
-        view.boldFont = .Avenir.black.withSize(18.0)
+        view.normalFont = .Poppins.Medium.withSize(18.0)
+        view.boldFont = .Poppins.Black.withSize(18.0)
         view.separator = " "
         view.numberOfLines = 0
         return view
@@ -79,8 +79,8 @@ final class ContactBookListPlaceholder: DynamicThemeView {
     @View private var messageLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.black.withSize(14.0)
+        view.normalFont = .Poppins.Medium.withSize(14.0)
+        view.boldFont = .Poppins.Black.withSize(14.0)
         view.separator = " "
         view.numberOfLines = 0
         return view
@@ -134,7 +134,7 @@ final class ContactBookListPlaceholder: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         backgroundImageView.tintColor = theme.brand.purple

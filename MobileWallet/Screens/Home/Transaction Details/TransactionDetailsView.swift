@@ -56,7 +56,7 @@ final class TransactionDetailsView: DynamicThemeView {
     @View private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
-        view.font = .Avenir.medium.withSize(13.0)
+        view.font = .Poppins.Medium.withSize(13.0)
         view.textAlignment = .center
         view.setContentCompressionResistancePriority(.required, for: .vertical)
         return view
@@ -68,7 +68,7 @@ final class TransactionDetailsView: DynamicThemeView {
         let view = TextButton()
         view.setTitle(localized("tx_detail.tx_cancellation.cancel"), for: .normal)
         view.style = .warning
-        view.font = .Avenir.medium.withSize(12.0)
+        view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
@@ -173,7 +173,7 @@ final class TransactionDetailsView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         subtitleLabel.textColor = theme.text.heading
         backgroundColor = theme.backgrounds.primary

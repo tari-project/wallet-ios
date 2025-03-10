@@ -60,7 +60,7 @@ class DynamicThemeView: UIView, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeTabBar: UITabBar, ThemeViewProtocol {
@@ -82,7 +82,7 @@ class DynamicThemeTabBar: UITabBar, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeTableView: UITableView, ThemeViewProtocol {
@@ -104,7 +104,7 @@ class DynamicThemeTableView: UITableView, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeCollectionCell: UICollectionViewCell, ThemeViewProtocol {
@@ -126,7 +126,7 @@ class DynamicThemeCollectionCell: UICollectionViewCell, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeCell: UITableViewCell, ThemeViewProtocol {
@@ -148,7 +148,7 @@ class DynamicThemeCell: UITableViewCell, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeHeaderFooterView: UITableViewHeaderFooterView, ThemeViewProtocol {
@@ -170,7 +170,7 @@ class DynamicThemeHeaderFooterView: UITableViewHeaderFooterView, ThemeViewProtoc
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeBaseButton: BaseButton, ThemeViewProtocol {
@@ -192,7 +192,7 @@ class DynamicThemeBaseButton: BaseButton, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeToolbar: UIToolbar, ThemeViewProtocol {
@@ -214,7 +214,7 @@ class DynamicThemeToolbar: UIToolbar, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeTextField: UITextField, ThemeViewProtocol {
@@ -236,7 +236,7 @@ class DynamicThemeTextField: UITextField, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeTextView: UITextView, ThemeViewProtocol {
@@ -258,7 +258,7 @@ class DynamicThemeTextView: UITextView, ThemeViewProtocol {
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 class DynamicThemeViewController: SecureViewController<UIView>, ThemeViewProtocol {
@@ -276,19 +276,19 @@ class DynamicThemeViewController: SecureViewController<UIView>, ThemeViewProtoco
 
     // MARK: - Actions
 
-    func update(theme: ColorTheme) {}
+    func update(theme: AppTheme) {}
 }
 
 // MARK: - Misc
 
 final class ThemeViewManager {
 
-    var enforcedTheme: ColorTheme? {
+    var enforcedTheme: AppTheme? {
         didSet { handle(theme: theme) }
     }
 
-    var onThemeUpdate: ((_ theme: ColorTheme, _ isInitialUpdate: Bool) -> Void)?
-    var theme: ColorTheme { enforcedTheme ?? ThemeCoordinator.shared.theme }
+    var onThemeUpdate: ((_ theme: AppTheme, _ isInitialUpdate: Bool) -> Void)?
+    var theme: AppTheme { enforcedTheme ?? ThemeCoordinator.shared.theme }
 
     private var isInitialUpdate = true
     private var cancellables = Set<AnyCancellable>()
@@ -303,7 +303,7 @@ final class ThemeViewManager {
             .store(in: &cancellables)
     }
 
-    private func handle(theme: ColorTheme) {
+    private func handle(theme: AppTheme) {
         onThemeUpdate?(theme, isInitialUpdate)
         isInitialUpdate = false
     }
@@ -311,14 +311,14 @@ final class ThemeViewManager {
 
 protocol ThemeViewProtocol: AnyObject {
     var themeManager: ThemeViewManager { get }
-    func update(theme: ColorTheme)
+    func update(theme: AppTheme)
 }
 
 extension ThemeViewProtocol {
 
-    var theme: ColorTheme { themeManager.theme }
+    var theme: AppTheme { themeManager.theme }
 
-    var enforcedTheme: ColorTheme? {
+    var enforcedTheme: AppTheme? {
         get { themeManager.enforcedTheme }
         set { themeManager.enforcedTheme = newValue }
     }
@@ -333,7 +333,7 @@ extension ThemeViewProtocol {
         themeManager.start()
     }
 
-    fileprivate func update(theme: ColorTheme, isInitialUpdate: Bool) {
+    fileprivate func update(theme: AppTheme, isInitialUpdate: Bool) {
 
         guard !isInitialUpdate else {
             update(theme: theme)

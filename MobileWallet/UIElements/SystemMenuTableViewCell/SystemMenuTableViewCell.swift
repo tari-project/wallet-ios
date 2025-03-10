@@ -54,14 +54,12 @@ class SystemMenuTableViewCellItem: NSObject {
 
     let disableCellInProgress: Bool
     let hasSwitch: Bool
-    let hasArrow: Bool
     let isDestructive: Bool
 
     init(icon: UIImage? = nil,
          title: String,
          subtitle: String? = nil,
          mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none,
-         hasArrow: Bool = true,
          disableCellInProgress: Bool = true,
          hasSwitch: Bool = false,
          switchIsOn: Bool = false,
@@ -71,7 +69,6 @@ class SystemMenuTableViewCellItem: NSObject {
         self.title = title
         self.subtitle = subtitle
         self.mark = mark
-        self.hasArrow = hasArrow
         self.disableCellInProgress = disableCellInProgress
         self.hasSwitch = hasSwitch
         self.isSwitchIsOn = switchIsOn
@@ -94,9 +91,6 @@ class SystemMenuTableViewCell: DynamicThemeCell {
 
     @View private var iconImageView = UIImageView()
     @View private var labelsStackView = UIStackView()
-
-    private let arrow = UIImageView()
-    private var arrowWidthConstraint: NSLayoutConstraint?
 
     private let markImageView = UIImageView()
     private var markImageViewTrailingConstraint: NSLayoutConstraint?
@@ -154,7 +148,7 @@ class SystemMenuTableViewCell: DynamicThemeCell {
         }
     }
 
-    private func updateMarkDescriptionLabelColor(theme: ColorTheme) {
+    private func updateMarkDescriptionLabelColor(theme: AppTheme) {
 
         let markDescriptionLabelColor: UIColor?
 
@@ -210,20 +204,13 @@ class SystemMenuTableViewCell: DynamicThemeCell {
     func configure(_ item: SystemMenuTableViewCellItem, isDestructive: Bool = false) {
         self.item = item
 
-        if !item.hasArrow {
-            markImageViewTrailingConstraint?.constant = 0
-            arrowWidthConstraint?.constant = 0
-        }
-
         iconImageView.image = item.icon
         isIconVisible = item.icon != nil
 
         switcher.isOn = item.isSwitchIsOn
         switcher.isHidden = !item.hasSwitch
-        arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
         subtitleLabel.text = item.subtitle
-        arrow.image = Theme.shared.images.forwardArrow
 
         disableCellInProgress = item.disableCellInProgress
         mark = item.mark
@@ -274,12 +261,12 @@ class SystemMenuTableViewCell: DynamicThemeCell {
         titleWithIconConstraint?.isActive = true
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
 
-        contentView.backgroundColor = theme.backgrounds.primary
-        subtitleLabel.textColor = theme.text.body
-        normalTintColor = theme.text.heading
-        destructiveTintColor = theme.system.red
+        contentView.backgroundColor = .Background.secondary
+        subtitleLabel.textColor = .Text.primary
+        normalTintColor = .Text.primary
+        destructiveTintColor = .System.red
 
         updateTintColor()
         updateMarkDescriptionLabelColor(theme: theme)
@@ -293,7 +280,6 @@ class SystemMenuTableViewCell: DynamicThemeCell {
         iconImageView.tintColor = tintColor
         titleLabel.textColor = tintColor
         subtitleLabel.textColor = tintColor
-        arrow.tintColor = tintColor
     }
 
     deinit {
@@ -308,7 +294,6 @@ extension SystemMenuTableViewCell {
     private func setupView() {
         contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 65.0).isActive = true
 
-        setupArrow()
         setupSwitch()
         setupMark()
         setupMarkDescription()
@@ -324,21 +309,9 @@ extension SystemMenuTableViewCell {
         titleLabel.text = nil
 
         markImageViewTrailingConstraint?.constant = -12
-        arrowWidthConstraint?.constant = 8
 
         kvoPercentToken?.invalidate()
         kvoMarkToken?.invalidate()
-    }
-
-    private func setupArrow() {
-        contentView.addSubview(arrow)
-
-        arrow.translatesAutoresizingMaskIntoConstraints = false
-        arrowWidthConstraint = arrow.widthAnchor.constraint(equalToConstant: 8)
-        arrowWidthConstraint?.isActive = true
-        arrow.heightAnchor.constraint(equalToConstant: 13).isActive = true
-        arrow.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        arrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
     }
 
     private func setupMark() {
@@ -350,7 +323,6 @@ extension SystemMenuTableViewCell {
         markImageView.widthAnchor.constraint(equalToConstant: 21).isActive = true
         markImageView.heightAnchor.constraint(equalToConstant: 21).isActive = true
         markImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        markImageViewTrailingConstraint = markImageView.trailingAnchor.constraint(equalTo: arrow.leadingAnchor, constant: -12)
         markImageViewTrailingConstraint?.isActive = true
     }
 
@@ -377,13 +349,13 @@ extension SystemMenuTableViewCell {
     }
 
     private func setupTitle() {
-        titleLabel.font = .Avenir.medium.withSize(15.0)
+        titleLabel.font = .Poppins.Medium.withSize(15.0)
         titleLabel.adjustsFontSizeToFitWidth = true
         labelsStackView.addArrangedSubview(titleLabel)
     }
 
     private func setupDescriptionLabel() {
-        subtitleLabel.font = .Avenir.medium.withSize(15.0)
+        subtitleLabel.font = .Poppins.Medium.withSize(15.0)
         subtitleLabel.adjustsFontSizeToFitWidth = true
         labelsStackView.addArrangedSubview(subtitleLabel)
     }

@@ -42,6 +42,8 @@ import UIKit
 import CoreData
 import AVFoundation
 import GiphyUISDK
+import FirebaseCore
+import FirebaseMessaging
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -56,6 +58,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutsManager.configureShortcuts()
+
+        Messaging.messaging().delegate = NotificationManager.shared
+        FirebaseApp.configure()
 
         if let giphyApiKey = TariSettings.shared.giphyApiKey {
             Giphy.configure(apiKey: giphyApiKey)
@@ -100,7 +105,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     ) {
         let hexString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Logger.log(message: "Registered for push notifications with token \(hexString).", domain: .general, level: .info)
-        NotificationManager.shared.registerDeviceToken(deviceToken)
+        NotificationManager.shared.registerAPNSToken(deviceToken)
     }
 
     func application(

@@ -42,6 +42,10 @@ import UIKit
 import LocalAuthentication
 import Combine
 
+class SimpleMenuTableViewCellItem: DynamicThemeCell {
+
+}
+
 final class RestoreWalletViewController: SettingsParentTableViewController, UITableViewDelegate, UITableViewDataSource, OverlayPresentable {
 
     private enum EndFlowAction {
@@ -54,28 +58,29 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
 
     private let model = RestoreWalletModel()
     private let pendingView = PendingView(title: localized("restore_pending_view.title"),
-                                          definition: localized("restore_pending_view.description"))
+                                          definition: localized("restore_pending_view.description"),
+                                          longDefinition: localized("restore_pending_view.description_long"))
     private let items: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.syncWithDesktop.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
-        SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
-        SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue),
-        SystemMenuTableViewCellItem(title: RestoreCellTitle.paperWalletRestore.rawValue)
+//        SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
     ]
 
     private var cancellables = Set<AnyCancellable>()
 
     private enum RestoreCellTitle: CaseIterable {
+        case syncWithDesktop
         case iCloudRestore
-        case dropboxRestore
+//        case dropboxRestore
         case phraseRestore
-        case paperWalletRestore
 
         var rawValue: String {
             switch self {
+            case .syncWithDesktop: return localized("restore_wallet.item.desktop_restore")
             case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
-            case .dropboxRestore: return localized("restore_wallet.item.dropbox_restore")
+//            case .dropboxRestore: return localized("restore_wallet.item.dropbox_restore")
             case .phraseRestore: return localized("restore_wallet.item.phrase_restore")
-            case .paperWalletRestore: return localized("restore_wallet.item.paper_wallet")
             }
         }
     }
@@ -83,6 +88,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
+        tableView.tableHeaderView = .none
     }
 
     // MARK: - Setups
@@ -111,11 +117,9 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func showRecoveryOverlay() {
-
         let overlay = SeedWordsRecoveryProgressViewController()
-
         overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen(isWalletConnected: true)
+            AppRouter.transitionToSplashScreen(animated: true, isWalletConnected: true, paperWalletRecoveryData: nil, transitionFrom: .paperWallet)
         }
 
         overlay.onFailure = { [weak self] in
@@ -140,7 +144,8 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         let item = items[indexPath.row]
         cell.configure(item)
         cell.preservesSuperviewLayoutMargins = false
-        cell.separatorInset = .zero
+
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         cell.layoutMargins = .zero
         return cell
     }
@@ -153,19 +158,16 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         tableView.deselectRow(at: indexPath, animated: false)
         let item = RestoreCellTitle.allCases[indexPath.row + indexPath.section]
         switch item {
+        case .syncWithDesktop:
+            onPaperWalletRestoreAction()
         case .iCloudRestore: oniCloudRestoreAction()
-        case .dropboxRestore: onDropboxRestoreAction()
+//        case .dropboxRestore: onDropboxRestoreAction()
         case .phraseRestore: onPhraseRestoreAction()
-        case .paperWalletRestore: onPaperWalletRestoreAction()
         }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = UIView()
-        header.backgroundColor = .clear
-
-        header.heightAnchor.constraint(equalToConstant: 15.0).isActive = true
-        return header
+        return .none
     }
 
     private func oniCloudRestoreAction() {
@@ -198,11 +200,8 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func restoreWallet(from service: BackupManager.Service, password: String?) {
-
         pendingView.showPendingView { [weak self] in
-
             guard let self else { return }
-
             BackupManager.shared.backupService(service).restoreBackup(password: password)
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] completion in
@@ -260,7 +259,6 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func handle(error: Error, service: BackupManager.Service) {
-
         var errorMessage: String?
 
         switch error {
@@ -318,13 +316,19 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
             break
         }
     }
+
+    override func update(theme: AppTheme) {
+        super.update(theme: theme)
+
+        view.backgroundColor = .Background.secondary
+    }
 }
 
 // MARK: Setup subviews
 extension RestoreWalletViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.backgroundColor = .clear
+        navigationBar.backgroundColor = .Background.secondary
         navigationBar.title = localized("restore_wallet.title")
     }
 

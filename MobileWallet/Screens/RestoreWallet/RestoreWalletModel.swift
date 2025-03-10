@@ -80,6 +80,8 @@ final class RestoreWalletModel {
 
     func requestWalletRecovery(paperWalletDeeplink: PaperWalletDeeplink) {
         unconfirmedCipher = paperWalletDeeplink.privateKey
+
+        NotificationManager.shared.appId = paperWalletDeeplink.appId
         action = .showPaperWalletConfirmation
     }
 

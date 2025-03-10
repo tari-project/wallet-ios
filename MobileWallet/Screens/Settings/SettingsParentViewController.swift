@@ -69,9 +69,9 @@ class SettingsParentViewController: DynamicThemeViewController {
         NSLayoutConstraint.activate(constraints)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        mainView.backgroundColor = theme.backgrounds.primary
+        mainView.backgroundColor = .Background.secondary
     }
 }
 

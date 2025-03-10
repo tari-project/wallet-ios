@@ -48,14 +48,32 @@ enum AppRouter {
         case none
     }
 
+    public enum WalletState {
+        case current
+        case newRestored
+        case newSynced
+    }
+
     static var isNavigationReady: Bool { tabBar != nil }
     private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
 
-    // MARK: - Transitions
+    enum TransitionFromRecovery {
+        case seedPhrase
+        case paperWallet
+        case none
+    }
 
-    static func transitionToSplashScreen(animated: Bool = true, isWalletConnected: Bool = false, paperWalletRecoveryData: PaperWalletRecoveryData? = nil) {
+    static func transitionToSplashScreen(animated: Bool = true, isWalletConnected: Bool = false, paperWalletRecoveryData: PaperWalletRecoveryData? = nil, transitionFrom: TransitionFromRecovery = .none) {
 
-        let controller = SplashViewConstructor.buildScene(isWalletConnected: isWalletConnected, paperWalletRecoveryData: paperWalletRecoveryData)
+        var recoveryMode = SplashViewModel.RecoveryMode.none
+
+        if transitionFrom == .seedPhrase {
+            recoveryMode = .seedPhrase
+        } else if transitionFrom == .paperWallet {
+            recoveryMode = .paperWallet
+        }
+
+        let controller = SplashViewConstructor.buildScene(isWalletConnected: isWalletConnected, paperWalletRecoveryData: paperWalletRecoveryData, recoveryMode: recoveryMode)
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.setNavigationBarHidden(true, animated: false)
 
@@ -70,9 +88,10 @@ enum AppRouter {
         transition(to: controller, type: .moveDown)
     }
 
-    static func transitionToHomeScreen() {
-
+    static func transitionToHomeScreen(state: WalletState) {
         let tabBarController = MenuTabBarController()
+
+        tabBarController.walletState = state
         let navigationController = AlwaysPoppableNavigationController(rootViewController: tabBarController)
 
         transition(to: navigationController, type: .crossDissolve)

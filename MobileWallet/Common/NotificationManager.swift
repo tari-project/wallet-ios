@@ -42,12 +42,15 @@ import UIKit
 import UserNotifications
 import Combine
 
+import Firebase
+import FirebaseMessaging
 private struct TokenRegistrationServerRequest: Encodable {
     let token: String
     let platform: String = "ios"
+    let appId: String?
     let signature: String
     let public_nonce: String
-    let sandbox = TariSettings.shared.environment == .debug
+    let sandbox = false
 }
 
 private struct SendNotificationServerRequest: Encodable {
@@ -71,7 +74,7 @@ enum PushNotificationServerError: Error {
     case unknown
 }
 
-final class NotificationManager {
+final class NotificationManager: NSObject {
 
     enum NotificationIdentifier: String {
         case standard = "Local Notification"
@@ -86,8 +89,20 @@ final class NotificationManager {
 
     private var cancellables = Set<AnyCancellable>()
 
-    private init() {
-        setupWalletStateHandler()
+    private let defaults = UserDefaults.standard
+    private let appIdKey = "APP_ID"
+
+    var appId: String? {
+        get {
+            return defaults.string(forKey: appIdKey)
+        }
+        set {
+            defaults.set(newValue, forKey: appIdKey)
+        }
+    }
+
+    private override init() {
+        super.init()
     }
 
     func setupWalletStateHandler() {
@@ -97,8 +112,25 @@ final class NotificationManager {
             .store(in: &cancellables)
     }
 
-    func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
+    func shouldPromptForNotifications(completionHandler: @escaping (( Bool) -> Void)) {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            completionHandler(settings.authorizationStatus == .notDetermined)
+        }
+    }
 
+    func registerPushToken(completionHandler: @escaping ((Bool) -> Void)) {
+        Messaging.messaging().token { token, error in
+            if let error = error {
+                print("Error fetching FCM registration token: \(error)")
+                completionHandler(false)
+            } else if let token = token {
+                self.registerDeviceToken(token)
+                completionHandler(true)
+            }
+        }
+    }
+
+    func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
         if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
             completionHandler?(true)
             return
@@ -132,9 +164,7 @@ final class NotificationManager {
     }
 
     func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
-        if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {
-            completionHandler([.list, .banner, .badge, .sound])
-        }
+        completionHandler([.list, .banner, .badge, .sound])
     }
 
     func scheduleNotification(title: String, body: String, identifier: String = NotificationIdentifier.standard.rawValue, timeInterval: TimeInterval = 1, onCompletion: ((Bool) -> Void)? = nil) {
@@ -170,17 +200,22 @@ final class NotificationManager {
         notificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
     }
 
-    func registerDeviceToken(_ deviceToken: Data) {
-        let apnsDeviceToken = deviceToken.map {String(format: "%02.2hhx", $0)}.joined()
+    func registerAPNSToken(_ deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
+    }
 
+    func registerDeviceToken(_ fcmDeviceToken: String) {
         Logger.log(message: "Registering device token with public key", domain: .general, level: .verbose)
 
         do {
-            let messageData = try sign(message: apnsDeviceToken)
+            let messageData = try sign(message: fcmDeviceToken)
 
+            let applicationId = appId
+//            let applicationId = "test"
             let requestPayload = try JSONEncoder().encode(
                 TokenRegistrationServerRequest(
-                    token: apnsDeviceToken,
+                    token: fcmDeviceToken,
+                    appId: applicationId,
                     signature: messageData.metadata.hex,
                     public_nonce: messageData.metadata.nonce
                 )
@@ -282,5 +317,18 @@ final class NotificationManager {
         }
 
         task.resume()
+    }
+}
+
+extension NotificationManager: MessagingDelegate {
+    // Called whenever the FCM registration token is updated.
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let token = fcmToken else {
+                return
+        }
+
+        registerDeviceToken(token)
+        print("Firebase registration token: \(token)")
+        // Optionally, send the token to your application server.
     }
 }
