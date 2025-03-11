@@ -54,7 +54,7 @@ final class OnboardingPageView: DynamicThemeView {
 
     // MARK: - Constants
 
-    static var footerFont: UIFont = .Avenir.medium.withSize(11.0)
+    static var footerFont: UIFont = .Poppins.Medium.withSize(11.0)
     static var footerPadding: CGFloat = 35.0
 
     // MARK: - Subviews
@@ -77,8 +77,8 @@ final class OnboardingPageView: DynamicThemeView {
     @View private var titleLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
-        view.normalFont = .Avenir.medium.withSize(18.0)
-        view.boldFont = .Avenir.black.withSize(18.0)
+        view.normalFont = .Poppins.Medium.withSize(18.0)
+        view.boldFont = .Poppins.Black.withSize(18.0)
         view.separator = " "
         view.numberOfLines = 0
         return view
@@ -87,8 +87,8 @@ final class OnboardingPageView: DynamicThemeView {
     @View private var messageLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.black.withSize(14.0)
+        view.normalFont = .Poppins.Medium.withSize(14.0)
+        view.boldFont = .Poppins.Black.withSize(14.0)
         view.separator = " "
         view.numberOfLines = 0
         return view
@@ -199,7 +199,7 @@ final class OnboardingPageView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         backgroundImageView.tintColor = theme.brand.purple

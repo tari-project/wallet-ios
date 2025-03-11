@@ -47,7 +47,7 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     @View private var nameLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(16.0)
+        view.font = .Poppins.Medium.withSize(16.0)
         return view
     }()
 
@@ -91,7 +91,7 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     // MARK: Update
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         nameLabel.textColor = theme.text.heading

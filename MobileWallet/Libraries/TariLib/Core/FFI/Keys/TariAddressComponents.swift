@@ -52,7 +52,7 @@ struct TariAddressComponents {
 
     let fullRaw: String
     let fullEmoji: String
-    
+
     let isUnknownAddress: Bool
     let isOnesidedAddress: Bool
     let isInteractiveAddress: Bool

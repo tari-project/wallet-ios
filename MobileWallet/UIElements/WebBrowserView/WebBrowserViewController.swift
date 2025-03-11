@@ -104,7 +104,7 @@ class WebBrowserViewController: DynamicThemeViewController {
         }
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         mainView.backgroundColor = theme.backgrounds.primary

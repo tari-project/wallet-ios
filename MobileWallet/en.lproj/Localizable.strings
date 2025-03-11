@@ -107,7 +107,7 @@
 
 "home.label.spendable" = "Available to spend:";
 "home.button.all_transactions" = "View all transactions";
-"home.transaction_list.placeholder" = "Hey there, %@\n\nWelcome to Aurora! Once you start making some transactions, they'll appear right here. In the meantime, you can click the \"transact\" button below to get things rolling.";
+"home.transaction_list.placeholder" = "You don’t have any activity yet.\nOnce you receive some tXTM, you’ll see it here.";
 "home.pop_up.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.pop_up.amount_help.message" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.pop_up.amount_help.buttons.open_url" = "Go to TariLabs University";
@@ -235,13 +235,14 @@
 "settings.item.about" = "About";
 
 /* Splash view */
+"splash.import_wallet_label" = "Import wallet if you're already mining on desktop";
 "splash.disclaimer.with_params" = "By creating a wallet, you agree to the terms of the %1$@ and %2$@";
 "splash.disclaimer.param.privacy_policy" = "Privacy Policy";
 "splash.disclaimer.param.user_agreement" = "User Agreement";
-"splash.title" = "Private by default. Useful by design.";
-"splash.button.create_wallet" = "Create Your Wallet";
+"splash.title" = "TARI UNIVERSE";
+"splash.button.import_wallet" = "Import Wallet";
 "splash.button.open_wallet" = "Open Existing Wallet";
-"splash.button.select_network" = "Selected Network: %@";
+"splash.button.create_wallet" = "Create A Wallet";
 "splash.restore_wallet" = "Restore an Existing wallet";
 "splash.wallet_error.title" = "Unable to start wallet";
 "splash.wallet_error.description.corrupted_database" = "The local wallet data isn't compatible with the current app version or the data was corrupted. Please remove your wallet from the device and restore your wallet from backup.";
@@ -408,15 +409,16 @@
 "qr_code_scanner.error.no_valid_device.message" = "The QR scanner is unavailable on this device because there is no camera able to capture QR codes.";
 
 /* RestoreWallet view */
-"restore_wallet.title" = "Restore Your Wallet";
+"restore_wallet.title" = "Import Wallet";
+"restore_wallet.item.desktop_restore" = "Sync with Universe desktop";
 "restore_wallet.item.iCloud_restore" = "Restore with iCloud";
 "restore_wallet.item.dropbox_restore" = "Restore with Dropbox";
 "restore_wallet.item.phrase_restore" = "Restore with recovery phrase";
 "restore_wallet.item.paper_wallet" = "Restore from paper wallet";
-"restore_wallet.pop_up.paper_wallet.confirmation.title" = "Paper Wallet Detected";
-"restore_wallet.pop_up.paper_wallet.confirmation.message" = "You’ve scanned a paper wallet!\nWhat would you like to do?";
-"restore_wallet.pop_up.paper_wallet.confirmation.buttons.ok" = "Restore the wallet";
-"restore_wallet.pop_up.paper_wallet.confirmation.buttons.cancel" = "Don’t restore right now";
+"restore_wallet.pop_up.paper_wallet.confirmation.title" = "Sync your Universe wallet?";
+"restore_wallet.pop_up.paper_wallet.confirmation.message" = "You just scanned a wallet from the Tari Universe desktop app! Syncing it will let you track your real-time tXTM balance right on your phone.\nWhat would you like to do?";
+"restore_wallet.pop_up.paper_wallet.confirmation.buttons.ok" = "Sync Wallet";
+"restore_wallet.pop_up.paper_wallet.confirmation.buttons.cancel" = "Cancel";
 
 /* PasswordVerification view */
 "password_verification.title" = "Security";
@@ -452,7 +454,8 @@
 
 /* RestorePending view */
 "restore_pending_view.title" = "Restoring your wallet";
-"restore_pending_view.description" = "This could take between 1 to 3 minutes. Please keep the app open.";
+"restore_pending_view.description" = "This usually takes between 1 and 3 minutes.\nPlease keep the app open.";
+"restore_pending_view.description_long" = "This usually takes between 1 and 3 minutes.\nPlease keep the app open.";
 
 /* BackupPending view */
 "backup_pending_view.title" = "Backing up your wallet…";
@@ -606,8 +609,8 @@
 
 /* Restore Wallet From Seed Words */
 "restore_from_seed_words.custom_node_name" = "Recovery Base Node";
-"restore_from_seed_words.title" = "Restore With Seed Phrase";
-"restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet";
+"restore_from_seed_words.title" = "Restore a Wallet";
+"restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet.";
 "restore_from_seed_words.button.select_base_node.select" = "Select Custom Base Node";
 "restore_from_seed_words.button.select_base_node.edit" = "Edit Base Node";
 "restore_from_seed_words.button.submit" = "Restore Wallet";
@@ -624,6 +627,9 @@
 "restore_from_seed_words.error.description.unknown_error" = "Unable to generate key from seed words. Please check your seed words and try again.";
 "restore_from_seed_words.progress_overlay.label.title" = "Restoring your wallet";
 "restore_from_seed_words.progress_overlay.label.description" = "This could take between 1 to 3 minutes.\nPlease keep the app open.";
+"restore_from_seed_words.progress_overlay.label.description_long" = "It’s taking a bit longer than expected.
+This could be due to a slow internet connection, a busy network, or a hiccup with Tor. We’re on it and will have your wallet synced soon! 
+Please keep the app open while the wallet syncs.";
 "restore_from_seed_words.progress_overlay.success" = "Your wallet was restored. Welcome back!";
 "restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection";
 "restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon";
@@ -665,6 +671,7 @@
 /* Debug */
 
 "debug.popup.title" = "Debug Menu";
+"debug.popup.options.designs" = "Design system";
 "debug.popup.options.logs"= "View logs";
 "debug.popup.options.bug_report"= "Report a bug";
 "debug.popup.options.connection_status"= "View connection status";
@@ -957,5 +964,5 @@
 "paper_wallet.pop_up.sweep_confirmation.message" = "Do you want to back up your current wallet before replacing it? If you don’t back it up first, you will lose all the funds in your current wallet!";
 "paper_wallet.pop_up.sweep_confirmation.button.backup_wallet" = "Yes, back it up";
 "paper_wallet.pop_up.sweep_confirmation.button.confirm" = "No, just replace it";
-"paper_wallet.form.password.title" = "Enter the paper wallet password";
-"paper_wallet.form.password.placeholder" = "Password";
+"paper_wallet.form.password.title" = "Enter identification Code";
+"paper_wallet.form.password.placeholder" = "Identification Code";

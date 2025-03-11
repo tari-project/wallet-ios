@@ -45,9 +45,16 @@ final class MenuTabBarController: UITabBarController {
     enum Tab: Int {
         case home
         case ttlStore
-        case transactions
+//        case transactions
         case contactBook
         case settings
+    }
+
+    public var walletState: AppRouter.WalletState = .current {
+        didSet {
+            homeViewController.showWalletSyncedOnPresentation = walletState == .newSynced
+            homeViewController.showWalletRestoredOnPresentation = walletState == .newRestored
+        }
     }
 
     private let homeViewController = HomeConstructor.buildScene()
@@ -65,14 +72,11 @@ final class MenuTabBarController: UITabBarController {
 
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)
 
-        viewControllers = [homeViewController, storeViewController, transactionsViewController, contactBookViewController, settingsViewController]
+        viewControllers = [homeViewController, storeViewController, contactBookViewController, settingsViewController]
         viewControllers?.enumerated().forEach { setup(controller: $1, index: $0) }
 
         for tabBarItem in tabBar.items! {
-            // For the send image we need to raise it higher than the others
-            if Tab(rawValue: tabBarItem.tag) == .transactions {
-                tabBarItem.imageInsets = UIEdgeInsets(top: -16, left: 0, bottom: -12, right: 0)
-            } else if hasNotch { // On phones without notches the icons should stay vertically centered
+            if hasNotch { // On phones without notches the icons should stay vertically centered
                 tabBarItem.imageInsets = UIEdgeInsets(top: 13, left: 0, bottom: -13, right: 0)
             }
         }
@@ -94,7 +98,8 @@ final class MenuTabBarController: UITabBarController {
     private func setup(controller: UIViewController, index: Int) {
         guard let tab = Tab(rawValue: index) else { return }
         controller.tabBarItem.tag = tab.rawValue
-        controller.tabBarItem.image = tab.icon
+        controller.tabBarItem.image = tab.icon?.withRenderingMode(.alwaysTemplate)
+        controller.tabBarItem.selectedImage = tab.selectedIcon?.withRenderingMode(.alwaysTemplate)
     }
 }
 
@@ -102,15 +107,17 @@ extension MenuTabBarController: UITabBarControllerDelegate {
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 
-        guard Tab(rawValue: viewController.tabBarItem.tag) == .transactions else { return true }
+//        guard Tab(rawValue: viewController.tabBarItem.tag) == .transactions else { return true }
 
-        let controller = TransactionsConstructor.buildScene()
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
-        navigationController.setNavigationBarHidden(true, animated: false)
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true)
+//        let controller = TransactionsConstructor.buildScene()
+//        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+//        navigationController.setNavigationBarHidden(true, animated: false)
+//        navigationController.modalPresentationStyle = .fullScreen
+//        present(navigationController, animated: true)
 
-        return false
+//        return false
+
+        return true
     }
 
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -168,19 +175,33 @@ private class TabBarTransition: NSObject, UIViewControllerAnimatedTransitioning 
 }
 
 private extension MenuTabBarController.Tab {
-
     var icon: UIImage? {
         switch self {
         case .home:
-            return Theme.shared.images.homeItem
+            return .homeTabBar
         case .ttlStore:
-            return Theme.shared.images.ttlItem
-        case .transactions:
-            return .Images.TabBar.send
+            return .storeTabBar
+//        case .transactions:
+//            return .rewardsTabBar
         case .contactBook:
-            return .Icons.TabBar.contactBook
+            return .contactsTabBar
         case .settings:
-            return Theme.shared.images.settingsItem
+            return .settingsTabBar
+        }
+    }
+
+    var selectedIcon: UIImage? {
+        switch self {
+        case .home:
+            return .homeTabBarSelected
+        case .ttlStore:
+            return .selectedStoreTabBar
+//        case .transactions:
+//            return .selectedRewardsTabBar
+        case .contactBook:
+            return .selectedContactsTabBar
+        case .settings:
+            return .selectedSettingsTabBar
         }
     }
 }

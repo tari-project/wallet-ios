@@ -54,7 +54,8 @@ final class SecureBackupViewController: SettingsParentViewController {
     private var secureButtonBottomConstraint: NSLayoutConstraint?
 
     private let pendingView = PendingView(title: localized("backup_pending_view.title"),
-                                          definition: localized("backup_pending_view.description"))
+                                          definition: localized("backup_pending_view.description"),
+                                          longDefinition: nil)
 
     private var descriptionTextColor: UIColor?
     private var descriptionBoldTextColor: UIColor?
@@ -135,7 +136,7 @@ final class SecureBackupViewController: SettingsParentViewController {
         }
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         headerLabel.textColor = theme.text.heading

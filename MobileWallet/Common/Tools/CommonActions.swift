@@ -45,6 +45,6 @@ enum CommonActions {
         Tari.shared.canAutomaticalyReconnectWallet = false
         BLEPeripheralManager.shared.isEnabled = false
         BackupManager.shared.disableBackup()
-        AppRouter.transitionToSplashScreen(paperWalletRecoveryData: paperWalletRecoveryData)
+        AppRouter.transitionToSplashScreen(paperWalletRecoveryData: paperWalletRecoveryData, transitionFrom: .none)
     }
 }

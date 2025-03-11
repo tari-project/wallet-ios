@@ -203,11 +203,11 @@ extension TariAddress.Features {
             .filter { value.flag(bitmask: $0.rawValue) }
             .map(\.name)
     }
-    
+
     func isOnesided() -> Bool {
         return value.flag(bitmask: Feature.oneSided.rawValue)
     }
-        
+
     func isInteractive() -> Bool {
         return value.flag(bitmask: Feature.interactive.rawValue)
     }

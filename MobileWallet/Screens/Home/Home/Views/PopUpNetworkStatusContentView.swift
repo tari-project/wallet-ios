@@ -93,8 +93,8 @@ final class PopUpNetworkStatusContentView: DynamicThemeView {
 
     @View private var chainTipLabel: StylizedLabel = {
         let view = StylizedLabel()
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.normalFont = .Poppins.Medium.withSize(14.0)
+        view.boldFont = .Poppins.Bold.withSize(14.0)
         view.separator = " "
         view.textAlignment = .center
         return view
@@ -136,7 +136,7 @@ final class PopUpNetworkStatusContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         chainTipLabel.textColor = theme.text.body
     }
@@ -195,7 +195,7 @@ final class StatusView: DynamicThemeView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -249,7 +249,7 @@ final class StatusView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         iconViewBackgroundView.backgroundColor = theme.backgrounds.primary
@@ -270,7 +270,7 @@ final class StatusView: DynamicThemeView {
         iconView.image = icon
     }
 
-    private func updateBackgroundColor(theme: ColorTheme) {
+    private func updateBackgroundColor(theme: AppTheme) {
         switch status {
         case .error:
             statusDotView.backgroundColor = theme.system.red

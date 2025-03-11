@@ -53,7 +53,7 @@ final class AboutViewHeader: DynamicThemeHeaderFooterView {
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("about.label.creative_commons")
-        view.font = .Avenir.light.withSize(14.0)
+        view.font = .Poppins.Light.withSize(14.0)
         return view
     }()
 
@@ -61,7 +61,7 @@ final class AboutViewHeader: DynamicThemeHeaderFooterView {
         let view = TextButton()
         view.setTitle(localized("about.button.creative_commons"), for: .normal)
         view.style = .secondary
-        view.font = .Avenir.light.withSize(14.0)
+        view.font = .Poppins.Light.withSize(14.0)
         return view
     }()
 
@@ -112,7 +112,7 @@ final class AboutViewHeader: DynamicThemeHeaderFooterView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         tintedBackgroundView.backgroundColor = theme.backgrounds.primary
         label.textColor = theme.text.heading

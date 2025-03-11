@@ -55,7 +55,7 @@ final class AddContactView: BaseNavigationContentView {
 
     @View private(set) var nameTextField: UITextField = {
         let view = UITextField()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
@@ -64,7 +64,7 @@ final class AddContactView: BaseNavigationContentView {
     @View private var errorLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -138,7 +138,7 @@ final class AddContactView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         searchViewBackgroundView.backgroundColor = theme.backgrounds.secondary

@@ -63,7 +63,7 @@ final class PopUpCircleImageHeaderView: DynamicThemeView {
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.light.withSize(18.0)
+        view.font = .Poppins.Light.withSize(18.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -121,7 +121,7 @@ final class PopUpCircleImageHeaderView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         circleBackgroundView.backgroundColor = theme.backgrounds.primary
         circleBackgroundView.apply(shadow: theme.shadows.box)
@@ -130,7 +130,7 @@ final class PopUpCircleImageHeaderView: DynamicThemeView {
         updateImageTintColor(theme: theme)
     }
 
-    private func updateImageTintColor(theme: ColorTheme) {
+    private func updateImageTintColor(theme: AppTheme) {
 
         switch imageTintColor {
         case .none:

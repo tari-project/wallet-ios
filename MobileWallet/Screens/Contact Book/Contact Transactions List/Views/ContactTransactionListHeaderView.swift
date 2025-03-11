@@ -47,8 +47,8 @@ final class ContactTransactionListHeaderView: DynamicThemeView {
     @View private var label: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.normalFont = .Poppins.Medium.withSize(14.0)
+        view.boldFont = .Poppins.Bold.withSize(14.0)
         view.numberOfLines = 0
         view.separator = " "
         return view
@@ -102,7 +102,7 @@ final class ContactTransactionListHeaderView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         placeholder.backgroundColor = theme.backgrounds.primary

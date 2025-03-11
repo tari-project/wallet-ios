@@ -187,7 +187,6 @@
 		3A7DAB9328FDB18A002CC013 /* LogsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */; };
 		3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9428FDB220002CC013 /* LogsListCell.swift */; };
 		3A7DAB9728FDB6FD002CC013 /* LogsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9628FDB6FD002CC013 /* LogsListConstructor.swift */; };
-		3A7DAB9A28FDC972002CC013 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9928FDC972002CC013 /* LogViewController.swift */; };
 		3A7DAB9C28FDC9D8002CC013 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9B28FDC9D8002CC013 /* LogView.swift */; };
 		3A7DAB9E28FDC9E2002CC013 /* LogModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9D28FDC9E2002CC013 /* LogModel.swift */; };
 		3A7DABA028FDC9F3002CC013 /* LogConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9F28FDC9F3002CC013 /* LogConstructor.swift */; };
@@ -357,7 +356,6 @@
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
 		54150C312CAD3132005B2C9D /* RestoreWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54150C302CAD3132005B2C9D /* RestoreWalletModel.swift */; };
 		5419AA792A4473F90079E745 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA782A4473F90079E745 /* HomeViewController.swift */; };
-		5419AA7B2A4474040079E745 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA7A2A4474040079E745 /* HomeView.swift */; };
 		5419AA7D2A4474390079E745 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA7C2A4474390079E745 /* HomeModel.swift */; };
 		5419AA7F2A44744A0079E745 /* HomeConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA7E2A44744A0079E745 /* HomeConstructor.swift */; };
 		5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */; };
@@ -519,7 +517,7 @@
 		54D88EA22A5ADBFA0075DBC1 /* TransactionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D88EA12A5ADBFA0075DBC1 /* TransactionFormatter.swift */; };
 		54D88EA42A5AEAEC0075DBC1 /* TransactionDynamicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D88EA32A5AEAEC0075DBC1 /* TransactionDynamicModel.swift */; };
 		54DD2E8629C37A7600C8C0D9 /* UINavigationController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */; };
-		54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32CF2930BE3D0060108A /* ColorTheme.swift */; };
+		54DE32D02930BE3D0060108A /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32CF2930BE3D0060108A /* AppTheme.swift */; };
 		54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */; };
 		54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D32930C2640060108A /* DynamicThemeView.swift */; };
 		54DEF9F32987DA8700C4B749 /* UIScreen+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */; };
@@ -545,6 +543,40 @@
 		54FCC36F2AA5F00900CA0025 /* CustomTorBridgesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC36E2AA5F00900CA0025 /* CustomTorBridgesViewController.swift */; };
 		54FCC3712AA5FF1100CA0025 /* CustomTorBridgesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC3702AA5FF1100CA0025 /* CustomTorBridgesView.swift */; };
 		54FCC3732AA5FF1B00CA0025 /* CustomTorBridgesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC3722AA5FF1B00CA0025 /* CustomTorBridgesModel.swift */; };
+		711D7F7E2D50E0540080A987 /* Poppins SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F792D50E0540080A987 /* Poppins SemiBold.ttf */; };
+		711D7F7F2D50E0540080A987 /* Poppins Medium Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F772D50E0540080A987 /* Poppins Medium Italic.ttf */; };
+		711D7F802D50E0540080A987 /* Poppins ExtraBold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F702D50E0540080A987 /* Poppins ExtraBold Italic.ttf */; };
+		711D7F812D50E0540080A987 /* Poppins Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F732D50E0540080A987 /* Poppins Italic.ttf */; };
+		711D7F822D50E0540080A987 /* Poppins Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F762D50E0540080A987 /* Poppins Medium.ttf */; };
+		711D7F832D50E0540080A987 /* Poppins Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F6B2D50E0540080A987 /* Poppins Black.ttf */; };
+		711D7F842D50E0540080A987 /* Poppins ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F712D50E0540080A987 /* Poppins ExtraLight.ttf */; };
+		711D7F852D50E0540080A987 /* Poppins Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F7B2D50E0540080A987 /* Poppins Thin.ttf */; };
+		711D7F862D50E0540080A987 /* Poppins Thin Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F7C2D50E0540080A987 /* Poppins Thin Italic.ttf */; };
+		711D7F872D50E0540080A987 /* Poppins ExtraLight Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F722D50E0540080A987 /* Poppins ExtraLight Italic.ttf */; };
+		711D7F882D50E0540080A987 /* Poppins Bold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F6E2D50E0540080A987 /* Poppins Bold Italic.ttf */; };
+		711D7F892D50E0540080A987 /* Poppins Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F6D2D50E0540080A987 /* Poppins Bold.ttf */; };
+		711D7F8A2D50E0540080A987 /* Poppins Light Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F752D50E0540080A987 /* Poppins Light Italic.ttf */; };
+		711D7F8B2D50E0540080A987 /* Poppins Black Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F6C2D50E0540080A987 /* Poppins Black Italic.ttf */; };
+		711D7F8C2D50E0540080A987 /* Poppins ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F6F2D50E0540080A987 /* Poppins ExtraBold.ttf */; };
+		711D7F8D2D50E0540080A987 /* Poppins Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F742D50E0540080A987 /* Poppins Light.ttf */; };
+		711D7F8E2D50E0540080A987 /* Poppins Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F782D50E0540080A987 /* Poppins Regular.ttf */; };
+		711D7F8F2D50E0540080A987 /* Poppins SemiBold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F7A2D50E0540080A987 /* Poppins SemiBold Italic.ttf */; };
+		711D7F902D50E0540080A987 /* fontExporter.sh in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F6A2D50E0540080A987 /* fontExporter.sh */; };
+		711D7F942D50EB7C0080A987 /* SecondaryActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7F932D50EB7C0080A987 /* SecondaryActionButton.swift */; };
+		711D7F982D5113B20080A987 /* DrukWideTrial-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F972D5113B20080A987 /* DrukWideTrial-Bold.otf */; };
+		711D7FA22D511F770080A987 /* DesignSystemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FA12D511F760080A987 /* DesignSystemViewController.swift */; };
+		711D7FA42D511FDE0080A987 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FA32D511FDE0080A987 /* LogViewController.swift */; };
+		711D7FA82D5503540080A987 /* StylisedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FA72D5503540080A987 /* StylisedButton.swift */; };
+		711D7FB02D5532DC0080A987 /* StylisedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FAF2D5532DC0080A987 /* StylisedLabel.swift */; };
+		711D7FB22D5537060080A987 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FB12D5537050080A987 /* Typography.swift */; };
+		711D7FB42D5549EA0080A987 /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FB32D5549EA0080A987 /* SeparatorView.swift */; };
+		713FB7642D6F53D000C56CF4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713FB7632D6F53D000C56CF4 /* HomeView.swift */; };
+		714909E62D7713EF0081F417 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 714909E52D7713EF0081F417 /* GoogleService-Info.plist */; };
+		714A90442D7642100010B087 /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90432D76420E0010B087 /* OverlayView.swift */; };
+		714A90462D76491B0010B087 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90452D76491B0010B087 /* WelcomeView.swift */; };
+		714A90482D76491D0010B087 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90472D76491D0010B087 /* NotificationsView.swift */; };
+		714A904A2D7659650010B087 /* OverlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90492D7659600010B087 /* OverlayViewController.swift */; };
+		714A904E2D7686910010B087 /* MiningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A904D2D7686910010B087 /* MiningView.swift */; };
 		A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */; };
 		BF0A7766241EEA0A00861A3E /* FaceID.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A7765241EEA0A00861A3E /* FaceID.json */; };
@@ -783,7 +815,6 @@
 		3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListModel.swift; sourceTree = "<group>"; };
 		3A7DAB9428FDB220002CC013 /* LogsListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListCell.swift; sourceTree = "<group>"; };
 		3A7DAB9628FDB6FD002CC013 /* LogsListConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListConstructor.swift; sourceTree = "<group>"; };
-		3A7DAB9928FDC972002CC013 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		3A7DAB9B28FDC9D8002CC013 /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		3A7DAB9D28FDC9E2002CC013 /* LogModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogModel.swift; sourceTree = "<group>"; };
 		3A7DAB9F28FDC9F3002CC013 /* LogConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogConstructor.swift; sourceTree = "<group>"; };
@@ -953,7 +984,6 @@
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
 		54150C302CAD3132005B2C9D /* RestoreWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletModel.swift; sourceTree = "<group>"; };
 		5419AA782A4473F90079E745 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		5419AA7A2A4474040079E745 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		5419AA7C2A4474390079E745 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
 		5419AA7E2A44744A0079E745 /* HomeConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeConstructor.swift; sourceTree = "<group>"; };
 		5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListViewController.swift; sourceTree = "<group>"; };
@@ -1115,7 +1145,7 @@
 		54D88EA12A5ADBFA0075DBC1 /* TransactionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFormatter.swift; sourceTree = "<group>"; };
 		54D88EA32A5AEAEC0075DBC1 /* TransactionDynamicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDynamicModel.swift; sourceTree = "<group>"; };
 		54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Common.swift"; sourceTree = "<group>"; };
-		54DE32CF2930BE3D0060108A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
+		54DE32CF2930BE3D0060108A /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCoordinator.swift; sourceTree = "<group>"; };
 		54DE32D32930C2640060108A /* DynamicThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicThemeView.swift; sourceTree = "<group>"; };
 		54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Tools.swift"; sourceTree = "<group>"; };
@@ -1141,6 +1171,40 @@
 		54FCC36E2AA5F00900CA0025 /* CustomTorBridgesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesViewController.swift; sourceTree = "<group>"; };
 		54FCC3702AA5FF1100CA0025 /* CustomTorBridgesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesView.swift; sourceTree = "<group>"; };
 		54FCC3722AA5FF1B00CA0025 /* CustomTorBridgesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesModel.swift; sourceTree = "<group>"; };
+		711D7F6A2D50E0540080A987 /* fontExporter.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = fontExporter.sh; sourceTree = "<group>"; };
+		711D7F6B2D50E0540080A987 /* Poppins Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Black.ttf"; sourceTree = "<group>"; };
+		711D7F6C2D50E0540080A987 /* Poppins Black Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Black Italic.ttf"; sourceTree = "<group>"; };
+		711D7F6D2D50E0540080A987 /* Poppins Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Bold.ttf"; sourceTree = "<group>"; };
+		711D7F6E2D50E0540080A987 /* Poppins Bold Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Bold Italic.ttf"; sourceTree = "<group>"; };
+		711D7F6F2D50E0540080A987 /* Poppins ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins ExtraBold.ttf"; sourceTree = "<group>"; };
+		711D7F702D50E0540080A987 /* Poppins ExtraBold Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins ExtraBold Italic.ttf"; sourceTree = "<group>"; };
+		711D7F712D50E0540080A987 /* Poppins ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins ExtraLight.ttf"; sourceTree = "<group>"; };
+		711D7F722D50E0540080A987 /* Poppins ExtraLight Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins ExtraLight Italic.ttf"; sourceTree = "<group>"; };
+		711D7F732D50E0540080A987 /* Poppins Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Italic.ttf"; sourceTree = "<group>"; };
+		711D7F742D50E0540080A987 /* Poppins Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Light.ttf"; sourceTree = "<group>"; };
+		711D7F752D50E0540080A987 /* Poppins Light Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Light Italic.ttf"; sourceTree = "<group>"; };
+		711D7F762D50E0540080A987 /* Poppins Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Medium.ttf"; sourceTree = "<group>"; };
+		711D7F772D50E0540080A987 /* Poppins Medium Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Medium Italic.ttf"; sourceTree = "<group>"; };
+		711D7F782D50E0540080A987 /* Poppins Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Regular.ttf"; sourceTree = "<group>"; };
+		711D7F792D50E0540080A987 /* Poppins SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins SemiBold.ttf"; sourceTree = "<group>"; };
+		711D7F7A2D50E0540080A987 /* Poppins SemiBold Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins SemiBold Italic.ttf"; sourceTree = "<group>"; };
+		711D7F7B2D50E0540080A987 /* Poppins Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Thin.ttf"; sourceTree = "<group>"; };
+		711D7F7C2D50E0540080A987 /* Poppins Thin Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins Thin Italic.ttf"; sourceTree = "<group>"; };
+		711D7F932D50EB7C0080A987 /* SecondaryActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryActionButton.swift; sourceTree = "<group>"; };
+		711D7F972D5113B20080A987 /* DrukWideTrial-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DrukWideTrial-Bold.otf"; sourceTree = "<group>"; };
+		711D7FA12D511F760080A987 /* DesignSystemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemViewController.swift; sourceTree = "<group>"; };
+		711D7FA32D511FDE0080A987 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
+		711D7FA72D5503540080A987 /* StylisedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylisedButton.swift; sourceTree = "<group>"; };
+		711D7FAF2D5532DC0080A987 /* StylisedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylisedLabel.swift; sourceTree = "<group>"; };
+		711D7FB12D5537050080A987 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
+		711D7FB32D5549EA0080A987 /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
+		713FB7632D6F53D000C56CF4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		714909E52D7713EF0081F417 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		714A90432D76420E0010B087 /* OverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayView.swift; sourceTree = "<group>"; };
+		714A90452D76491B0010B087 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		714A90472D76491D0010B087 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
+		714A90492D7659600010B087 /* OverlayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayViewController.swift; sourceTree = "<group>"; };
+		714A904D2D7686910010B087 /* MiningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiningView.swift; sourceTree = "<group>"; };
 		A01F54A7255EAB7E00F49AFA /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteWalletViewController.swift; sourceTree = "<group>"; };
 		BF0A7765241EEA0A00861A3E /* FaceID.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = FaceID.json; sourceTree = "<group>"; };
@@ -1388,6 +1452,7 @@
 			children = (
 				3A7DAB8C28FDAF58002CC013 /* Logs */,
 				3ABC7E9428FECFB200EAC852 /* UIViewController+DebugMenu.swift */,
+				711D7FA12D511F760080A987 /* DesignSystemViewController.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -1407,6 +1472,7 @@
 		00E2BCAF236B44CE00C2A105 /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
+				711D7FA62D55034E0080A987 /* New */,
 				546CE7F229AF50F300264699 /* Keyboard Form */,
 				547A85D129ACF2C800D94985 /* Menu */,
 				00E2BCB8236B5BC000C2A105 /* Buttons */,
@@ -1461,6 +1527,7 @@
 		00E2BCB6236B46A400C2A105 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				714A90422D7641A70010B087 /* Overlays */,
 				3A860BD0287DA2A200FC4F76 /* Home */,
 				3A84CDCE2846084C005F2F8D /* UTXOs Wallet */,
 				00A6779C23743674001A853E /* Transaction Details */,
@@ -1473,6 +1540,7 @@
 			isa = PBXGroup;
 			children = (
 				00E2BCB9236B5BE800C2A105 /* ActionButton.swift */,
+				711D7F932D50EB7C0080A987 /* SecondaryActionButton.swift */,
 				3A420593279802E500A8D49C /* BaseButton.swift */,
 				3A93159A286C30AA0001660E /* LeftImageButton.swift */,
 				37875E4324D85C4300C0595B /* LoadingGIFButton.swift */,
@@ -1508,8 +1576,10 @@
 		00E491982366E08B007B332D /* MobileWallet */ = {
 			isa = PBXGroup;
 			children = (
+				711D7F7D2D50E0540080A987 /* Fonts */,
 				00B4D6FB241B97CD00ED8318 /* Tari.entitlements */,
 				4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */,
+				714909E52D7713EF0081F417 /* GoogleService-Info.plist */,
 				00E491AC2366E08F007B332D /* Info.plist */,
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
@@ -2173,6 +2243,7 @@
 				3A7DAB9028FDAFD5002CC013 /* LogsListView.swift */,
 				3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */,
 				3A7DAB9428FDB220002CC013 /* LogsListCell.swift */,
+				711D7FA32D511FDE0080A987 /* LogViewController.swift */,
 			);
 			path = List;
 			sourceTree = "<group>";
@@ -2181,7 +2252,6 @@
 			isa = PBXGroup;
 			children = (
 				3A7DAB9F28FDC9F3002CC013 /* LogConstructor.swift */,
-				3A7DAB9928FDC972002CC013 /* LogViewController.swift */,
 				3A7DAB9B28FDC9D8002CC013 /* LogView.swift */,
 				3A7DAB9D28FDC9E2002CC013 /* LogModel.swift */,
 				3A7DABA128FDD0A8002CC013 /* LogCell.swift */,
@@ -2240,7 +2310,7 @@
 			children = (
 				3A7A38D12881688800D7E8BD /* Views */,
 				5419AA782A4473F90079E745 /* HomeViewController.swift */,
-				5419AA7A2A4474040079E745 /* HomeView.swift */,
+				713FB7632D6F53D000C56CF4 /* HomeView.swift */,
 				5419AA7C2A4474390079E745 /* HomeModel.swift */,
 				5419AA7E2A44744A0079E745 /* HomeConstructor.swift */,
 			);
@@ -3006,7 +3076,7 @@
 		54DE32CE2930BE170060108A /* Theme */ = {
 			isa = PBXGroup;
 			children = (
-				54DE32CF2930BE3D0060108A /* ColorTheme.swift */,
+				54DE32CF2930BE3D0060108A /* AppTheme.swift */,
 				54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */,
 				54DE32D32930C2640060108A /* DynamicThemeView.swift */,
 			);
@@ -3082,6 +3152,56 @@
 				54A148EB2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift */,
 			);
 			path = "Custom Tor Bridges";
+			sourceTree = "<group>";
+		};
+		711D7F7D2D50E0540080A987 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				711D7F6A2D50E0540080A987 /* fontExporter.sh */,
+				711D7F6B2D50E0540080A987 /* Poppins Black.ttf */,
+				711D7F6C2D50E0540080A987 /* Poppins Black Italic.ttf */,
+				711D7F6D2D50E0540080A987 /* Poppins Bold.ttf */,
+				711D7F6E2D50E0540080A987 /* Poppins Bold Italic.ttf */,
+				711D7F6F2D50E0540080A987 /* Poppins ExtraBold.ttf */,
+				711D7F702D50E0540080A987 /* Poppins ExtraBold Italic.ttf */,
+				711D7F712D50E0540080A987 /* Poppins ExtraLight.ttf */,
+				711D7F722D50E0540080A987 /* Poppins ExtraLight Italic.ttf */,
+				711D7F732D50E0540080A987 /* Poppins Italic.ttf */,
+				711D7F742D50E0540080A987 /* Poppins Light.ttf */,
+				711D7F752D50E0540080A987 /* Poppins Light Italic.ttf */,
+				711D7F762D50E0540080A987 /* Poppins Medium.ttf */,
+				711D7F972D5113B20080A987 /* DrukWideTrial-Bold.otf */,
+				711D7F772D50E0540080A987 /* Poppins Medium Italic.ttf */,
+				711D7F782D50E0540080A987 /* Poppins Regular.ttf */,
+				711D7F792D50E0540080A987 /* Poppins SemiBold.ttf */,
+				711D7F7A2D50E0540080A987 /* Poppins SemiBold Italic.ttf */,
+				711D7F7B2D50E0540080A987 /* Poppins Thin.ttf */,
+				711D7F7C2D50E0540080A987 /* Poppins Thin Italic.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		711D7FA62D55034E0080A987 /* New */ = {
+			isa = PBXGroup;
+			children = (
+				711D7FA72D5503540080A987 /* StylisedButton.swift */,
+				711D7FAF2D5532DC0080A987 /* StylisedLabel.swift */,
+				711D7FB32D5549EA0080A987 /* SeparatorView.swift */,
+				711D7FB12D5537050080A987 /* Typography.swift */,
+			);
+			path = New;
+			sourceTree = "<group>";
+		};
+		714A90422D7641A70010B087 /* Overlays */ = {
+			isa = PBXGroup;
+			children = (
+				714A90432D76420E0010B087 /* OverlayView.swift */,
+				714A90492D7659600010B087 /* OverlayViewController.swift */,
+				714A90452D76491B0010B087 /* WelcomeView.swift */,
+				714A904D2D7686910010B087 /* MiningView.swift */,
+				714A90472D76491D0010B087 /* NotificationsView.swift */,
+			);
+			path = Overlays;
 			sourceTree = "<group>";
 		};
 		71F4BDBF8B1AF18134115485 /* Pods */ = {
@@ -3324,8 +3444,29 @@
 				BF0A77B52420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BFE1FC0223E229FF00BA5EEC /* CheckMark.json in Resources */,
 				37098043249CD48A0004ED2E /* Localizable.strings in Resources */,
+				711D7F982D5113B20080A987 /* DrukWideTrial-Bold.otf in Resources */,
 				BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */,
 				BFF1EDA32408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
+				711D7F7E2D50E0540080A987 /* Poppins SemiBold.ttf in Resources */,
+				711D7F7F2D50E0540080A987 /* Poppins Medium Italic.ttf in Resources */,
+				711D7F802D50E0540080A987 /* Poppins ExtraBold Italic.ttf in Resources */,
+				711D7F812D50E0540080A987 /* Poppins Italic.ttf in Resources */,
+				711D7F822D50E0540080A987 /* Poppins Medium.ttf in Resources */,
+				711D7F832D50E0540080A987 /* Poppins Black.ttf in Resources */,
+				711D7F842D50E0540080A987 /* Poppins ExtraLight.ttf in Resources */,
+				711D7F852D50E0540080A987 /* Poppins Thin.ttf in Resources */,
+				711D7F862D50E0540080A987 /* Poppins Thin Italic.ttf in Resources */,
+				711D7F872D50E0540080A987 /* Poppins ExtraLight Italic.ttf in Resources */,
+				711D7F882D50E0540080A987 /* Poppins Bold Italic.ttf in Resources */,
+				711D7F892D50E0540080A987 /* Poppins Bold.ttf in Resources */,
+				711D7F8A2D50E0540080A987 /* Poppins Light Italic.ttf in Resources */,
+				711D7F8B2D50E0540080A987 /* Poppins Black Italic.ttf in Resources */,
+				711D7F8C2D50E0540080A987 /* Poppins ExtraBold.ttf in Resources */,
+				711D7F8D2D50E0540080A987 /* Poppins Light.ttf in Resources */,
+				714909E62D7713EF0081F417 /* GoogleService-Info.plist in Resources */,
+				711D7F8E2D50E0540080A987 /* Poppins Regular.ttf in Resources */,
+				711D7F8F2D50E0540080A987 /* Poppins SemiBold Italic.ttf in Resources */,
+				711D7F902D50E0540080A987 /* fontExporter.sh in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
 				37EE027E248A4DCC00E25D69 /* CheckboxDeselectAnimation.json in Resources */,
 				BF191A2323E5AFA200D33C85 /* img_5.png in Resources */,
@@ -3411,7 +3552,6 @@
 				5494BFB32AF122A600791A52 /* RoundedLabeledButton.swift in Sources */,
 				3A51B1AD28F00A4F0094FDD6 /* Logger.swift in Sources */,
 				3A7DABA028FDC9F3002CC013 /* LogConstructor.swift in Sources */,
-				3A7DAB9A28FDC972002CC013 /* LogViewController.swift in Sources */,
 				54103CDC2A555A3100C456B4 /* TransactionHistoryModel.swift in Sources */,
 				540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */,
 				3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */,
@@ -3548,6 +3688,7 @@
 				54C36D0D2A5D3EA400BD973A /* QRCodeScannerViewController.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView+Content.swift in Sources */,
 				54C36D0F2A5D3EAC00BD973A /* QRCodeScannerView.swift in Sources */,
+				711D7FB42D5549EA0080A987 /* SeparatorView.swift in Sources */,
 				3A4205A127980FFA00A8D49C /* QRCodeView.swift in Sources */,
 				5477518D2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift in Sources */,
 				3AFC6E032745051400A20287 /* SettingsHeaderView.swift in Sources */,
@@ -3576,6 +3717,7 @@
 				54221CBD2CC6333C00CC77A8 /* PopUpProfileShareContentView.swift in Sources */,
 				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
 				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
+				713FB7642D6F53D000C56CF4 /* HomeView.swift in Sources */,
 				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
 				54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */,
 				3A8CC6C2290BDC70008161DC /* BugReportService.swift in Sources */,
@@ -3620,9 +3762,11 @@
 				3A0391E6290BA40E00352D73 /* BugReportingView.swift in Sources */,
 				546B032A2983F33600DBED8E /* OnboardingPagerView.swift in Sources */,
 				54E007B62B8DF55600AFCD7C /* SecurityManager.swift in Sources */,
+				711D7FA42D511FDE0080A987 /* LogViewController.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				5453242029A68310009281A7 /* PageToolbarView.swift in Sources */,
 				545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */,
+				711D7F942D50EB7C0080A987 /* SecondaryActionButton.swift in Sources */,
 				544692A429B6059C0081085D /* ContactsManager.swift in Sources */,
 				540F02412A6A7F8000691FF5 /* TransactionsConstructor.swift in Sources */,
 				5444C80829F17DA100BF3875 /* BluetoothSettingsView.swift in Sources */,
@@ -3721,6 +3865,7 @@
 				540CB6F129C1DDCC003FACEF /* AddContactModel.swift in Sources */,
 				3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */,
 				5422CBFC2B88C79200428394 /* ScreenRecordingSettingsView.swift in Sources */,
+				711D7FA82D5503540080A987 /* StylisedButton.swift in Sources */,
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				54D46A952CA6909800E554C0 /* WalletTag.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
@@ -3815,6 +3960,7 @@
 				54F2E34529EE6B9600A7A15A /* ContactTransactionListView.swift in Sources */,
 				54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */,
 				3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */,
+				711D7FB22D5537060080A987 /* Typography.swift in Sources */,
 				54F2E34E29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift in Sources */,
 				54C7EB602AC6B22C00F387DF /* TrackingConsentManager.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
@@ -3833,6 +3979,7 @@
 				54C416252A1CA81700454096 /* PendingDataManager.swift in Sources */,
 				5460258829A74DA200CF5764 /* ContactDetailsViewController.swift in Sources */,
 				3A42059A279804B300A8D49C /* QRCodeFactory.swift in Sources */,
+				711D7FA22D511F770080A987 /* DesignSystemViewController.swift in Sources */,
 				3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */,
 				540F023B2A6A7F6400691FF5 /* TransactionsViewController.swift in Sources */,
 				5499CF2D2C3EA7F5001C417F /* TariAddressComponents.swift in Sources */,
@@ -3849,12 +3996,12 @@
 				3A70434828E21F5600207D6F /* Transaction.swift in Sources */,
 				54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */,
 				3A8473BF28EC51780015E63A /* TransactionValidationStatus.swift in Sources */,
-				5419AA7B2A4474040079E745 /* HomeView.swift in Sources */,
 				54F9C5A42AA712F100DA87D8 /* CustomTorBridgesInputCell.swift in Sources */,
 				37B444A9248949B800592D92 /* Checkbox.swift in Sources */,
 				546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */,
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				3AC877E4287415AD006F327B /* UTXOsWalletPlaceholderView.swift in Sources */,
+				714A90482D76491D0010B087 /* NotificationsView.swift in Sources */,
 				3ABC7E9528FECFB200EAC852 /* UIViewController+DebugMenu.swift in Sources */,
 				3A8005C628EAF0A50022A38A /* TransactionSendResult.swift in Sources */,
 				3A3E8BF32924FB4C00490E57 /* MigrationManager.swift in Sources */,
@@ -3866,6 +4013,7 @@
 				3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */,
 				549E1A032A5EC2260063022C /* VideoCaptureManager.swift in Sources */,
 				3AE138D52804ACE100443D34 /* WebBrowserPresenter.swift in Sources */,
+				714A904A2D7659650010B087 /* OverlayViewController.swift in Sources */,
 				3A8A0558285370B200D48FCE /* TickButton.swift in Sources */,
 				3730E15124C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				54D1E1A72ABD92420021A365 /* DataCollectionSettingsViewController.swift in Sources */,
@@ -3873,6 +4021,7 @@
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
 				54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */,
+				711D7FB02D5532DC0080A987 /* StylisedLabel.swift in Sources */,
 				3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */,
 				3A312FEE28B6316D00A290D3 /* CompletedTransactions.swift in Sources */,
 				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,
@@ -3893,6 +4042,7 @@
 				5430B97B29B7401C00C80AA2 /* LinkContactsView.swift in Sources */,
 				3ACDA70526B031A400F138B8 /* SeedWordsRecoveryProgressViewController.swift in Sources */,
 				545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */,
+				714A90462D76491B0010B087 /* WelcomeView.swift in Sources */,
 				546CE7F429AF514A00264699 /* FormOverlay.swift in Sources */,
 				549B033C2B84DA8D0059983C /* SecureViewController.swift in Sources */,
 				3A3D70BB291A637100A8CD7A /* BaseMenuTableView.swift in Sources */,
@@ -3900,6 +4050,7 @@
 				3A21FC5128FFD7B8004B09A0 /* PopUpTableView.swift in Sources */,
 				544D9D4C296D9B2000D8ECEF /* UnblindedOutputs.swift in Sources */,
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
+				714A90442D7642100010B087 /* OverlayView.swift in Sources */,
 				540F02362A6A67FD00691FF5 /* AddRecipientConstructor.swift in Sources */,
 				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				3A052BF427B2658500C93671 /* AppVersionFormatter.swift in Sources */,
@@ -3916,12 +4067,13 @@
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,
 				3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */,
 				3A420594279802E500A8D49C /* BaseButton.swift in Sources */,
+				714A904E2D7686910010B087 /* MiningView.swift in Sources */,
 				54150C312CAD3132005B2C9D /* RestoreWalletModel.swift in Sources */,
 				3ABBBA7E2850815C00A3108D /* UTXOsWalletTileListView.swift in Sources */,
 				546B03232983B49400DBED8E /* StylizedLabel.swift in Sources */,
 				54D1CCC02B4D4C7200808535 /* AddressPoisoningManager.swift in Sources */,
 				549565E02AA1D21E0092A10F /* Task+Utils.swift in Sources */,
-				54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */,
+				54DE32D02930BE3D0060108A /* AppTheme.swift in Sources */,
 				54621F9929E01465000E9659 /* DeepLinkUnkeyedEncodingContainer.swift in Sources */,
 				376B502324924BB700278ACC /* PendingView.swift in Sources */,
 				3A01248127B39FC000A481F4 /* SendingTariLabel.swift in Sources */,
@@ -4125,13 +4277,15 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.31.1;
+				MARKETING_VERSION = 0.40.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -4158,13 +4312,15 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.31.1;
+				MARKETING_VERSION = 0.40.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

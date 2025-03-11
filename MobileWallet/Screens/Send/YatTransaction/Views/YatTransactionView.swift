@@ -69,7 +69,7 @@ final class YatTransactionView: UIView {
     @View private var completionLabel: UILabel = {
         let view = UILabel()
         view.textColor = .white
-        view.font = .Avenir.heavy.withSize(30.0)
+        view.font = .Poppins.Bold.withSize(30.0)
         view.alpha = 0.0
         view.transform = CGAffineTransform(scaleX: 10.0, y: 10.0)
         return view
@@ -174,10 +174,10 @@ final class YatTransactionView: UIView {
         let transactionTextRange = (text as NSString).range(of: transactionText)
         let yatIdRange = (text as NSString).range(of: yatID)
 
-        let font = UIFont.Avenir.heavy.withSize(30.0)
+        let font = UIFont.Poppins.Bold.withSize(30.0)
 
         let attributedText = NSMutableAttributedString(string: text.uppercased(), attributes: [
-            .font: UIFont.Avenir.medium.withSize(30.0),
+            .font: UIFont.Poppins.Medium.withSize(30.0),
             .foregroundColor: UIColor.white.withAlphaComponent(0.4)
         ])
 

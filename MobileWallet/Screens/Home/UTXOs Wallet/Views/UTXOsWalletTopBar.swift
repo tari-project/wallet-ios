@@ -47,7 +47,7 @@ final class UTXOsWalletTopBar: BaseToolbar {
     @View private var filterButton: LeftImageButton = {
         let view = LeftImageButton()
         view.iconView.image = .Icons.General.faucet
-        view.label.font = .Avenir.roman.withSize(14.0)
+        view.label.font = .Poppins.SemiBold.withSize(14.0)
         view.iconSize = CGSize(width: 14.0, height: 14.0)
         view.internalPadding = 12.0
         return view
@@ -55,7 +55,7 @@ final class UTXOsWalletTopBar: BaseToolbar {
 
     @View private var editButton: BaseButton = {
         let view = BaseButton()
-        view.titleLabel?.font = .Avenir.roman.withSize(14.0)
+        view.titleLabel?.font = .Poppins.SemiBold.withSize(14.0)
         return view
     }()
 
@@ -127,7 +127,7 @@ final class UTXOsWalletTopBar: BaseToolbar {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         filterButton.iconView.tintColor = theme.icons.default
         filterButton.label.textColor = theme.text.heading

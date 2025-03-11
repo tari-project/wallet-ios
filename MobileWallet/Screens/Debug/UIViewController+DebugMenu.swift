@@ -61,6 +61,7 @@ extension UIViewController {
         headerSection.label.text = localized("debug.popup.title")
 
         contentSection.update(options: [
+            localized("debug.popup.options.designs"),
             localized("debug.popup.options.logs"),
             localized("debug.popup.options.bug_report"),
             localized("debug.popup.options.connection_status")
@@ -79,10 +80,12 @@ extension UIViewController {
 
         switch selectedIndexPath.row {
         case 0:
-            moveToLogsScene()
+            moveToDesignsScene()
         case 1:
-            moveToReportBugScene()
+            moveToLogsScene()
         case 2:
+            moveToReportBugScene()
+        case 3:
             showConnectionStatus()
         default:
             break
@@ -93,6 +96,14 @@ extension UIViewController {
         if navigationController?.topViewController is LogsListViewController { return }
         let logsViewController = LogsListConstructor.buildScene()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: logsViewController)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        present(navigationController, animated: true)
+    }
+
+    private func moveToDesignsScene() {
+        if navigationController?.topViewController is DesignSystemViewController { return }
+        let designViewController = DesignSystemViewController()
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: designViewController)
         navigationController.setNavigationBarHidden(true, animated: false)
         present(navigationController, animated: true)
     }

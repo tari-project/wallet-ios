@@ -99,7 +99,7 @@ final class OnboardingView: BaseNavigationContentView {
 
     // MARK: - Theme
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
     }

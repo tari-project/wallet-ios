@@ -89,7 +89,7 @@ final class AddressView: DynamicThemeView {
 
     @View private var singleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(17.0)
+        view.font = .Poppins.Medium.withSize(17.0)
         view.textAlignment = .center
         view.isHidden = true
         return view
@@ -143,7 +143,7 @@ final class AddressView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         viewDetailsButton.tintColor = theme.icons.active
         firstSeparator.backgroundColor = theme.text.lightText
@@ -183,11 +183,11 @@ final class AddressView: DynamicThemeView {
 
         let fontSize = isCompact ? 13.0 : 17.0
 
-        prefixLabel.font = .Avenir.medium.withSize(fontSize)
-        addressPrefixLabel.font = .Avenir.medium.withSize(fontSize)
-        dotsView.font = .Avenir.medium.withSize(fontSize)
-        addressSuffixLabel.font = .Avenir.medium.withSize(fontSize)
-        singleLabel.font = .Avenir.medium.withSize(fontSize)
+        prefixLabel.font = .Poppins.Medium.withSize(fontSize)
+        addressPrefixLabel.font = .Poppins.Medium.withSize(fontSize)
+        dotsView.font = .Poppins.Medium.withSize(fontSize)
+        addressSuffixLabel.font = .Poppins.Medium.withSize(fontSize)
+        singleLabel.font = .Poppins.Medium.withSize(fontSize)
 
         stackView.spacing = isCompact ? 4.0 : 8.0
     }

@@ -46,7 +46,7 @@ final class PopUpAddressDetailsContentSectionView<T: UIView>: DynamicThemeView {
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.heavy.withSize(15.0)
+        view.font = .Poppins.Bold.withSize(15.0)
         return view
     }()
 
@@ -102,7 +102,7 @@ final class PopUpAddressDetailsContentSectionView<T: UIView>: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         contentBackgroundView.backgroundColor = theme.backgrounds.secondary
     }

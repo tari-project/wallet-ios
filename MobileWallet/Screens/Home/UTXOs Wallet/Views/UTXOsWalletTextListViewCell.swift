@@ -62,13 +62,13 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
 
     @View private var amountLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.heavy.withSize(15.0)
+        view.font = .Poppins.Bold.withSize(15.0)
         return view
     }()
 
     @View private var hashLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.roman.withSize(12.0)
+        view.font = .Poppins.SemiBold.withSize(12.0)
         return view
     }()
 
@@ -76,7 +76,7 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
 
     @View private var statusLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.roman.withSize(12.0)
+        view.font = .Poppins.SemiBold.withSize(12.0)
         return view
     }()
 
@@ -154,7 +154,7 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
 
     // MARK: - Actions
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         statusCircleView.backgroundColor = status.color(theme: theme)
         amountLabel.textColor = theme.text.heading

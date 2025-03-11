@@ -49,8 +49,8 @@ final class LinkContactsView: BaseNavigationContentView {
     @View private(set) var infoLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.normalFont = .Poppins.Medium.withSize(14.0)
+        view.boldFont = .Poppins.Bold.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -161,7 +161,7 @@ final class LinkContactsView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         tableView.backgroundColor = theme.backgrounds.primary

@@ -122,7 +122,7 @@ final class LogView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         tableView.separatorColor = theme.neutral.secondary
         overlayBackgroundView.backgroundColor = theme.backgrounds.primary?.withAlphaComponent(0.5)

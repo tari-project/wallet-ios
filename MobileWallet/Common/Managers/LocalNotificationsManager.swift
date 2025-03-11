@@ -134,7 +134,7 @@ final class LocalNotificationsManager: NSObject {
     }
 }
 
-extension LocalNotificationsManager: UNUserNotificationCenterDelegate {
+extension LocalNotificationsManager: @preconcurrency UNUserNotificationCenterDelegate {
 
     @MainActor func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         NotificationManager.shared.handleForegroundNotification(notification, completionHandler: completionHandler)

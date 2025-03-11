@@ -59,6 +59,20 @@ final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWo
         model.startRestoringWallet()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UIApplication.shared.isIdleTimerDisabled = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 180) {
+            self.mainView.descriptionLabel.text = localized("restore_from_seed_words.progress_overlay.label.description_long")
+        }
+
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
     // MARK: - Setups
 
     private func setupFeedbacks() {
@@ -92,7 +106,6 @@ final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWo
 
     private func handle(isWalletRestored: Bool) {
         guard isWalletRestored else { return }
-        ToastPresenter.show(title: localized("restore_from_seed_words.progress_overlay.success"))
         onSuccess?()
     }
 }

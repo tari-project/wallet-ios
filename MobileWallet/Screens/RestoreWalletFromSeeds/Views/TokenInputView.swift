@@ -49,13 +49,13 @@ final class TokenInputView: DynamicThemeCollectionCell {
 
     @View var textField: ObservableTextField = {
         let view = ObservableTextField()
-        view.font = Theme.shared.fonts.restoreFromSeedWordsToken
+        view.font = .Poppins.Medium.withSize(12)
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.spellCheckingType = .no
         view.isSecureTextEntry = false
         view.isUserInteractionEnabled = true
-        
+
         return view
     }()
 
@@ -120,7 +120,7 @@ final class TokenInputView: DynamicThemeCollectionCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         textField.textColor = theme.text.body
     }
@@ -139,8 +139,8 @@ final class TokenInputView: DynamicThemeCollectionCell {
         onEndEditing?(textField.text ?? "")
         return textField.resignFirstResponder()
     }
-    
-    public func triggerSystemTextMenu() -> Void {
+
+    public func triggerSystemTextMenu() {
         let menuController = UIMenuController.shared
         self.becomeFirstResponder() // Ensure the view is first responder
 

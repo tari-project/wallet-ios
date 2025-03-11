@@ -63,7 +63,7 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.title")
         view.textAlignment = .center
-        view.font = .Avenir.light.withSize(18.0)
+        view.font = .Poppins.Light.withSize(18.0)
         return view
     }()
 
@@ -71,7 +71,7 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.subtitle")
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -108,7 +108,7 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         imageView.tintColor = theme.text.body
         titleLabel.textColor = theme.text.heading

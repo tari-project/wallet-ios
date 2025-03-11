@@ -188,7 +188,7 @@ final class TokenCollectionView: DynamicThemeView {
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTapOutsideAction))
         let longPressGestureRecogninzer = UILongPressGestureRecognizer(target: self, action: #selector(onLongPressAction))
-        
+
         collectionView.dataSource = dataSource
         collectionView.delegate = self
         collectionView.backgroundView?.addGestureRecognizer(tapGestureRecognizer)
@@ -225,9 +225,9 @@ final class TokenCollectionView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.secondary
+        backgroundColor = .Background.primary
     }
 
     private func updateAutocompletionTokens() {

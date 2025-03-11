@@ -156,7 +156,7 @@ final class RequestTariAmountView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         updateAmountLabelColor(theme: theme)
@@ -184,7 +184,7 @@ final class RequestTariAmountView: DynamicThemeView {
         updateAmountLabelColor(theme: theme)
     }
 
-    private func updateAmountLabelColor(theme: ColorTheme) {
+    private func updateAmountLabelColor(theme: AppTheme) {
 
         guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
 

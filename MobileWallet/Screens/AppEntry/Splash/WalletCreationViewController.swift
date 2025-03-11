@@ -206,16 +206,8 @@ final class WalletCreationViewController: DynamicThemeViewController {
         case .localAuthentication:
             runAuth()
         case .enableNotifications:
-            runNotificationRequest()
+            break
         case .initial: break
-        }
-    }
-
-    private func runNotificationRequest() {
-        NotificationManager.shared.requestAuthorization { _ in
-            DispatchQueue.main.async {
-                AppRouter.transitionToHomeScreen()
-            }
         }
     }
 
@@ -231,7 +223,7 @@ final class WalletCreationViewController: DynamicThemeViewController {
         }
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         mainView.backgroundColor = theme.backgrounds.secondary
         firstLabel.textColor = theme.text.heading

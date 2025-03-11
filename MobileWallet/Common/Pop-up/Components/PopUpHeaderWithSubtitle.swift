@@ -47,7 +47,7 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
 
     @View private(set) var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.light.withSize(18.0)
+        view.font = .Poppins.Light.withSize(18.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -55,7 +55,7 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
 
     @View private(set) var subtitleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -93,7 +93,7 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading
         subtitleLabel.textColor = theme.text.body

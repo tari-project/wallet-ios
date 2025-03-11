@@ -54,7 +54,7 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
         let view = UILabel()
         view.text = localized("contact_book.transaction_list.placeholder.label.title")
         view.textAlignment = .center
-        view.font = .Avenir.light.withSize(18.0)
+        view.font = .Poppins.Light.withSize(18.0)
         return view
     }()
 
@@ -62,8 +62,8 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
         let view = StylizedLabel()
         view.textAlignment = .center
         view.numberOfLines = 0
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.normalFont = .Poppins.Medium.withSize(14.0)
+        view.boldFont = .Poppins.Bold.withSize(14.0)
         view.separator = " "
         return view
     }()
@@ -126,7 +126,7 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         titleLabel.textColor = theme.text.heading
@@ -199,7 +199,7 @@ final class PaintBackgroundImageView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundView.tintColor = theme.brand.purple
         imageView.tintColor = theme.icons.default

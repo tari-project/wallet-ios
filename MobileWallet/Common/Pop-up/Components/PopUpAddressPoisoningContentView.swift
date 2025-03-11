@@ -61,7 +61,7 @@ final class PopUpAddressPoisoningContentView: DynamicThemeView {
     @View private var tickMessageLabel: UILabel = {
         let view = UILabel()
         view.text = localized("address_poisoning.pop_up.label.tick_message")
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
@@ -76,7 +76,7 @@ final class PopUpAddressPoisoningContentView: DynamicThemeView {
     @View private var infoLabel: UILabel = {
         let view = UILabel()
         view.text = localized("address_poisoning.pop_up.label.trusted_info")
-        view.font = .Avenir.medium.withSize(11.0)
+        view.font = .Poppins.Medium.withSize(11.0)
         view.numberOfLines = 0
         view.setContentCompressionResistancePriority(.required, for: .vertical)
         return view
@@ -178,7 +178,7 @@ final class PopUpAddressPoisoningContentView: DynamicThemeView {
         tickMessageButton.isEnabled = !isTrusted
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         tableView.backgroundColor = theme.backgrounds.secondary
         tickMessageLabel.textColor = theme.text.links
@@ -217,7 +217,7 @@ final class PopUpAddressPoisoningContentCell: DynamicThemeCell {
 
     @View private var emojiView: ScrollableLabel = {
         let view = ScrollableLabel()
-        view.label.font = .Avenir.medium.withSize(17.0)
+        view.label.font = .Poppins.Medium.withSize(17.0)
         view.margin = 10.0
         return view
     }()
@@ -232,19 +232,19 @@ final class PopUpAddressPoisoningContentCell: DynamicThemeCell {
 
     @View private var nameLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.heavy.withSize(14.0)
+        view.font = .Poppins.Bold.withSize(14.0)
         return view
     }()
 
     @View private var transactionCountLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
     @View private var lastTransactionLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
@@ -301,7 +301,7 @@ final class PopUpAddressPoisoningContentCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         floatingContentView.backgroundColor = theme.backgrounds.primary
         floatingContentView.layer.borderColor = theme.icons.active?.cgColor

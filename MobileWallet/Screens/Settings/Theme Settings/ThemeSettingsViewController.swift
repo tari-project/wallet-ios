@@ -95,8 +95,6 @@ private extension ThemeSettingsModel.Element {
             return .Images.Themes.light
         case .dark:
             return .Images.Themes.dark
-        case .purple:
-            return .Images.Themes.purple
         }
     }
 
@@ -108,8 +106,6 @@ private extension ThemeSettingsModel.Element {
             return localized("theme_switcher.element.title.light")
         case .dark:
             return localized("theme_switcher.element.title.dark")
-        case .purple:
-            return localized("theme_switcher.element.title.purple")
         }
     }
 }

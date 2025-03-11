@@ -41,6 +41,8 @@
 import TariCommon
 import Lottie
 
+extension NSParagraphStyle: @unchecked @retroactive Sendable {}
+
 final class ActionButton: DynamicThemeBaseButton {
 
     enum Style {
@@ -50,13 +52,6 @@ final class ActionButton: DynamicThemeBaseButton {
     }
 
     // MARK: - Subviews
-
-    @View private var gradientView: GradientView = {
-        let view = GradientView()
-        view.orientation = .diagonal
-        view.isUserInteractionEnabled = false
-        return view
-    }()
 
     @View private var pendingAnimationView: AnimationView = {
         let view = AnimationView()
@@ -90,18 +85,20 @@ final class ActionButton: DynamicThemeBaseButton {
     // MARK: - Setups
 
     private func setupViews() {
-
-        layer.cornerRadius = 4.0
+        layer.cornerRadius = 25
+        layer.borderColor = theme.buttons.borderPrimary?.cgColor
+        layer.borderWidth = 1 / UIScreen.main.scale
         titleLabel?.adjustsFontSizeToFitWidth = true
         clipsToBounds = true
 
         configuration = .filled()
-        configuration?.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading: 8.0, bottom: 0.0, trailing: 8.0)
+        configuration?.contentInsets = NSDirectionalEdgeInsets(top: 0.0, leading: 11.0, bottom: 0.0, trailing: 11.0)
         configuration?.titleLineBreakMode = .byTruncatingTail
 
         configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer {
             var attributes = $0
-            attributes.font = .Avenir.heavy.withSize(16.0)
+            attributes.font = .Poppins.SemiBold.withSize(16.0)
+            attributes.kern = 0.46
             return attributes
         }
 
@@ -112,18 +109,14 @@ final class ActionButton: DynamicThemeBaseButton {
 
     private func setupConstraints() {
 
-        [gradientView, pendingAnimationView].forEach(addSubview)
+        [pendingAnimationView].forEach(addSubview)
 
         let constraints = [
-            gradientView.topAnchor.constraint(equalTo: topAnchor),
-            gradientView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            gradientView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gradientView.bottomAnchor.constraint(equalTo: bottomAnchor),
             pendingAnimationView.widthAnchor.constraint(equalToConstant: 45.0),
             pendingAnimationView.heightAnchor.constraint(equalToConstant: 45.0),
             pendingAnimationView.centerXAnchor.constraint(equalTo: centerXAnchor),
             pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            heightAnchor.constraint(equalToConstant: 53.0)
+            heightAnchor.constraint(equalToConstant: 50.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -135,20 +128,13 @@ final class ActionButton: DynamicThemeBaseButton {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        updateGradent(theme: theme)
         updateDisabledState(theme: theme)
+        layer.borderColor = theme.buttons.borderPrimary?.cgColor
     }
 
-    private func updateGradent(theme: ColorTheme) {
-        gradientView.locations = [
-            GradientLocationData(color: theme.buttons.primaryStart, location: 0.0),
-            GradientLocationData(color: theme.buttons.primaryEnd, location: 1.0)
-        ]
-    }
-
-    private func updateDisabledState(theme: ColorTheme) {
+    private func updateDisabledState(theme: AppTheme) {
         setTitleColor(theme.buttons.disabledText, for: .disabled)
     }
 
@@ -158,7 +144,6 @@ final class ActionButton: DynamicThemeBaseButton {
         case .normal:
             update(style: style, theme: theme)
         case .disabled:
-            gradientView.isHidden = true
             configuration?.background.backgroundColor = theme.buttons.disabled
         default:
             break
@@ -173,27 +158,25 @@ final class ActionButton: DynamicThemeBaseButton {
         }
     }
 
-    private func update(style: Style, theme: ColorTheme) {
+    private func update(style: Style, theme: AppTheme) {
 
         guard isEnabled else { return }
 
         switch style {
         case .normal:
             titleLabel?.isHidden = false
-            gradientView.isHidden = false
             pendingAnimationView.isHidden = true
             pendingAnimationView.stop()
+            configuration?.background.backgroundColor = theme.buttons.primaryBackground
             configuration?.baseForegroundColor = theme.buttons.primaryText
         case .destructive:
             titleLabel?.isHidden = false
-            gradientView.isHidden = true
             pendingAnimationView.isHidden = true
             pendingAnimationView.stop()
             configuration?.baseForegroundColor = theme.buttons.primaryText
             configuration?.background.backgroundColor = theme.system.red
         case .loading:
             titleLabel?.isHidden = true
-            gradientView.isHidden = false
             pendingAnimationView.isHidden = false
             pendingAnimationView.play()
         }

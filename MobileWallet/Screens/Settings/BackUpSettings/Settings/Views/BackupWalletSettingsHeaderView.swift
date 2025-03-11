@@ -84,7 +84,7 @@ final class BackupWalletSettingsHeaderView: DynamicThemeView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading
         descriptionLabel.textColor = theme.text.body

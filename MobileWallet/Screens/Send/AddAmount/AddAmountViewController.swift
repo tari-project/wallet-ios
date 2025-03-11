@@ -89,7 +89,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @View private var feeButton: TextButton = {
         let view = TextButton()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.imageSpacing = 3.0
         view.image = .Icons.General.roundedQuestionMark
         return view
@@ -97,7 +97,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @View private var modifyFeeButton: TextButton = {
         let view = TextButton()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.setTitle(localized("add_amount.label.button.adjust_fee"), for: .normal)
         view.setContentHuggingPriority(.required, for: .vertical)
         return view
@@ -106,7 +106,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     @View private var oneSidedPaymentLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.label.one_sided_payment")
-        view.font = .Avenir.medium.withSize(16.0)
+        view.font = .Poppins.Medium.withSize(16.0)
         return view
     }()
 
@@ -250,7 +250,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         }
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         mainView.backgroundColor = theme.backgrounds.primary
         oneSidedPaymentLabel.textColor = theme.text.heading
@@ -265,7 +265,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         updateWalletBalanceViews(theme: theme)
     }
 
-    private func updateAmountLabelColor(theme: ColorTheme) {
+    private func updateAmountLabelColor(theme: AppTheme) {
 
         guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
 
@@ -275,14 +275,14 @@ final class AddAmountViewController: DynamicThemeViewController {
         amountLabel.attributedText = amountText
     }
 
-    private func updateWalletBalanceViews(theme: ColorTheme) {
+    private func updateWalletBalanceViews(theme: AppTheme) {
         walletBalanceIcon.tintColor = isBalanceExceeded ? theme.system.red : theme.text.heading
         walletBalanceLabel.textColor = isBalanceExceeded ? theme.system.red : theme.text.heading
     }
 
     private func updateLabelText() {
 
-        let font: UIFont = isSmallScreen ? .Avenir.black.withSize(60.0) : .Avenir.black.withSize(90.0)
+        let font: UIFont = isSmallScreen ? .Poppins.Black.withSize(60.0) : .Poppins.Black.withSize(90.0)
 
         let amountAttributedText = NSMutableAttributedString(
             string: convertRawToFormattedString() ?? "0",
@@ -614,7 +614,7 @@ extension AddAmountViewController {
         walletBalanceIcon.contentMode = .scaleAspectFit
         walletBalanceStackView.addArrangedSubview(walletBalanceIcon)
         walletBalanceStackView.addArrangedSubview(walletBalanceLabel)
-        walletBalanceLabel.font = .Avenir.heavy.withSize(14.0)
+        walletBalanceLabel.font = .Poppins.Bold.withSize(14.0)
         walletBalanceLabel.text = "0.0"
 
         warningStackView.addArrangedSubview(walletBalanceTitleLabel)

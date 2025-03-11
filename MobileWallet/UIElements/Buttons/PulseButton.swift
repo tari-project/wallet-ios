@@ -84,7 +84,7 @@ class PulseButton: DynamicThemeBaseButton {
         })
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         tintColor = theme.brand.purple
     }

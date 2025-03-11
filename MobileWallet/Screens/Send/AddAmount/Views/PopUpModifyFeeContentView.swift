@@ -51,13 +51,13 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
         let view = UILabel()
         view.text = localized("add_amount.pop_up.adjust_fee.label.estimated_fee")
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
     @View private var estimatedFeeValueLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
-        view.font = .Avenir.medium.withSize(26.0)
+        view.font = .Poppins.Medium.withSize(26.0)
         view.iconHeight = 13.0
         return view
     }()
@@ -102,7 +102,7 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         estimatedFeeTitleLabel.textColor = theme.text.heading
         estimatedFeeValueLabel.textColor = theme.text.heading

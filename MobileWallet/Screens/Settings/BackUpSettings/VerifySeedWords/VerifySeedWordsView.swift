@@ -59,7 +59,7 @@ final class VerifySeedWordsView: BaseNavigationContentView {
     @View private var errorLabel: UILabel = {
         let view = UILabel()
         view.text = localized("verify_phrase.warning")
-        view.font = .Avenir.heavy.withSize(14.0)
+        view.font = .Poppins.Bold.withSize(14.0)
         view.textAlignment = .center
         view.layer.cornerRadius = 4.0
         view.layer.borderWidth = 1.0
@@ -174,7 +174,7 @@ final class VerifySeedWordsView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         headerLabel.textColor = theme.text.body

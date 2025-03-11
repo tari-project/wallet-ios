@@ -46,7 +46,7 @@ final class ScrollableLabel: DynamicThemeView {
 
     @View var label: UILabel = {
         let view = UILabel()
-        view.font =  UIFont.Avenir.roman.withSize(14.0)
+        view.font =  UIFont.Poppins.SemiBold.withSize(14.0)
         return view
     }()
 

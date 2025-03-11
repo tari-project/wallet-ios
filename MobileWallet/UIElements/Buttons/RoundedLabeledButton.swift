@@ -60,7 +60,7 @@ final class RoundedLabeledButton: DynamicThemeView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
         return view
     }()
@@ -136,7 +136,7 @@ final class RoundedLabeledButton: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         roundedView.apply(shadow: theme.shadows.box)
         updateColors(theme: theme)
@@ -147,7 +147,7 @@ final class RoundedLabeledButton: DynamicThemeView {
         label.text = text
     }
 
-    private func updateColors(theme: ColorTheme) {
+    private func updateColors(theme: AppTheme) {
         roundedView.backgroundColor = isSelected ? theme.brand.purple : theme.backgrounds.primary
         iconView.tintColor = isSelected ? theme.backgrounds.primary : theme.icons.default
         label.textColor = isSelected ? theme.text.heading : theme.text.body

@@ -140,7 +140,7 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
         let overlay = SeedWordsRecoveryProgressViewController()
 
         overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen(isWalletConnected: true)
+            AppRouter.transitionToSplashScreen(animated: true, isWalletConnected: true, paperWalletRecoveryData: nil, transitionFrom: .seedPhrase)
         }
 
         overlay.onFailure = { [weak self] in

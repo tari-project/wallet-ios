@@ -46,9 +46,9 @@ final class SplashViewController: UIViewController, OverlayPresentable {
 
     // MARK: - Properties
 
+    private let localAuth = LAContext()
     private let model: SplashViewModel
     private let mainView = SplashView()
-    private let authenticationContext = LAContext()
 
     private var cancellables = Set<AnyCancellable>()
     private var animateTransitions = false
@@ -77,7 +77,12 @@ final class SplashViewController: UIViewController, OverlayPresentable {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        model.recoverWalletIfNeeded()
+        if !model.recoverWalletIfNeeded() {
+            view.isHidden = true
+            if !model.openWalletIfExists() {
+                view.isHidden = false
+            }
+        }
     }
 
     // MARK: - Setups
@@ -92,9 +97,9 @@ final class SplashViewController: UIViewController, OverlayPresentable {
 
         model.$networkName
             .compactMap { $0 }
-            .map { localized("splash.button.select_network", arguments: $0) }
+            .map { localized("splash.button.create_wallet", arguments: $0) }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.selectNetworkButtonTitle = $0 }
+            .sink { [weak self] in self?.mainView.createWalletButtonTitle = $0 }
             .store(in: &cancellables)
 
         model.$appVersion
@@ -103,9 +108,9 @@ final class SplashViewController: UIViewController, OverlayPresentable {
             .store(in: &cancellables)
 
         model.$isWalletExist
-            .map { $0 ? localized("splash.button.open_wallet") : localized("splash.button.create_wallet") }
+            .map { $0 ? localized("splash.button.import_wallet") : localized("splash.button.import_wallet") }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.createWalletButtonTitle = $0 }
+            .sink { [weak self] in self?.mainView.importWalletButtonTitle = $0 }
             .store(in: &cancellables)
 
         model.$isRecoveryInProgress
@@ -120,11 +125,7 @@ final class SplashViewController: UIViewController, OverlayPresentable {
             .store(in: &cancellables)
 
         mainView.onCreateWalletButtonTap = { [weak self] in
-            self?.model.startWallet()
-        }
-
-        mainView.onSelectNetworkButtonTap = { [weak self] in
-            self?.showNetworkListPopup()
+            self?.model.createWallet()
         }
 
         mainView.onRestoreWalletButtonTap = { [weak self] in
@@ -156,14 +157,14 @@ final class SplashViewController: UIViewController, OverlayPresentable {
 
     // MARK: - Actions
 
-    private func moveToNextScreen() {
+    private func moveToNextScreen(state: AppRouter.WalletState) {
         switch TariSettings.shared.walletSettings.configurationState {
         case .notConfigured:
-            moveToOnboardingScreen(startFromLocalAuth: false)
+            moveToHomeScreen(startFromLocalAuth: false, state: state)
         case .initialized:
-            moveToOnboardingScreen(startFromLocalAuth: true)
+            moveToHomeScreen(startFromLocalAuth: true, state: state)
         case .authorized, .ready:
-            moveToHomeScreen()
+            moveToHomeScreen(startFromLocalAuth: false, state: state)
         }
     }
 
@@ -171,24 +172,25 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         navigationController?.pushViewController(RestoreWalletViewController(), animated: true)
     }
 
-    private func moveToOnboardingScreen(startFromLocalAuth: Bool) {
-        mainView.playLogoAnimation {
-            AppRouter.transitionToOnboardingScreen(startFromLocalAuth: startFromLocalAuth)
-        }
+    private func successAuth() {
+        TariSettings.shared.walletSettings.configurationState = .authorized
+        AppRouter.transitionToHomeScreen(state: .current)
     }
 
-    private func moveToHomeScreen() {
-        authenticationContext.authenticateUser { [weak self] in
-            self?.mainView.playLogoAnimation { AppRouter.transitionToHomeScreen() }
+    private func moveToHomeScreen(startFromLocalAuth: Bool, state: AppRouter.WalletState) {
+        if startFromLocalAuth {
+            localAuth.authenticateUser(onSuccess: successAuth)
+        } else {
+            TariSettings.shared.walletSettings.configurationState = .authorized
+            AppRouter.transitionToHomeScreen(state: state)
         }
     }
 
     private func showRecoveryProgress() {
-
         let overlay = SeedWordsRecoveryProgressViewController()
 
         overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen(isWalletConnected: true)
+            self.localAuth.authenticateUser(onSuccess: self.successAuth)
         }
 
         overlay.onFailure = { [weak self] in
@@ -204,35 +206,22 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         if #available(iOS 16.0, *) {
             handle(status: statusModel)
         } else {
-            handleLegacy(status: statusModel)
-        }
-    }
-
-    private func handleLegacy(status: SplashViewModel.StatusModel) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.handle(status: status)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.handle(status: statusModel)
+            }
         }
     }
 
     private func handle(status: SplashViewModel.StatusModel) {
-
-        switch (status.status, status.statusRepresentation) {
-        case (.idle, .content):
-            mainView.isCreateWalletButtonSpinnerVisible = false
-            mainView.updateLayout(showInterface: true, animated: animateTransitions)
-        case (.idle, .logo):
-            mainView.updateLayout(showInterface: false, animated: animateTransitions)
-            model.startWallet()
-        case (.working, .content):
-            mainView.isCreateWalletButtonSpinnerVisible = true
-        case (.working, .logo):
-            mainView.updateLayout(showInterface: false, animated: animateTransitions)
-        case (.success, .content):
-            mainView.updateLayout(showInterface: false, animated: animateTransitions) { [weak self] in
-                self?.moveToNextScreen()
-            }
-        case (.success, .logo):
-            moveToNextScreen()
+        switch status.status {
+            case .success:
+                moveToNextScreen(state: .current)
+            case .successRestored:
+                moveToNextScreen(state: .newRestored)
+            case .successSync:
+                moveToNextScreen(state: .newSynced)
+            case .idle, .working:
+            break
         }
 
         guard !animateTransitions else { return }

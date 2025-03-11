@@ -52,8 +52,8 @@ final class BaseMenuTableView: DynamicThemeTableView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func update(theme: ColorTheme) {
-        backgroundColor = theme.backgrounds.secondary
-        separatorColor = theme.neutral.secondary
+    override func update(theme: AppTheme) {
+        backgroundColor = .Background.secondary
+        separatorColor = .Token.divider
     }
 }

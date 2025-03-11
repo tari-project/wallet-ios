@@ -92,7 +92,7 @@ final class TransactionDetailsSectionView<T: UIView>: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.body
     }

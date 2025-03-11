@@ -60,7 +60,7 @@ final class NetworkTrafficView: DynamicThemeView {
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.label.network_traffic")
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
@@ -102,7 +102,7 @@ final class NetworkTrafficView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         iconView.tintColor = theme.text.body
         label.textColor = theme.text.body

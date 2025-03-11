@@ -102,7 +102,7 @@ final class SeedWordListElementView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         indexLabel.textColor = theme.text.body?.withAlphaComponent(0.5)
         textLabel.textColor = theme.text.body

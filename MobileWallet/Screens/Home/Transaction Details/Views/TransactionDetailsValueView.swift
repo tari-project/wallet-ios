@@ -69,7 +69,7 @@ final class TransactionDetailsValueView: DynamicThemeView {
     @View private(set) var feeButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("common.fee"), for: .normal)
-        view.font = .Avenir.roman.withSize(13.0)
+        view.font = .Poppins.SemiBold.withSize(13.0)
         view.image = .Icons.General.roundedQuestionMark
         return view
     }()
@@ -125,7 +125,7 @@ final class TransactionDetailsValueView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         currencyImageView.tintColor = theme.icons.default

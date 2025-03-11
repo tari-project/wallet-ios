@@ -49,7 +49,7 @@ final class ProfileView: BaseNavigationContentView {
 
     @View private var usernameLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.heavy.withSize(16.0)
+        view.font = .Poppins.Bold.withSize(16.0)
         view.textAlignment = .center
         return view
     }()
@@ -78,8 +78,8 @@ final class ProfileView: BaseNavigationContentView {
 
     @View private var yatOutOfSyncLabel: StylizedLabel = {
         let view = StylizedLabel()
-        view.normalFont = .Avenir.medium.withSize(13.0)
-        view.boldFont = .Avenir.heavy.withSize(13.0)
+        view.normalFont = .Poppins.Medium.withSize(13.0)
+        view.boldFont = .Poppins.Bold.withSize(13.0)
         view.separator = " "
         view.textAlignment = .center
         view.numberOfLines = 0
@@ -273,7 +273,7 @@ final class ProfileView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         backgroundColor = theme.backgrounds.secondary

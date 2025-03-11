@@ -50,7 +50,7 @@ final class TextButton: DynamicThemeBaseButton {
 
     // MARK: - Properties
 
-    var font: UIFont = .Avenir.medium.withSize(14.0) {
+    var font: UIFont = .Poppins.Medium.withSize(14.0) {
         didSet { setNeedsUpdateConfiguration() }
     }
 
@@ -104,12 +104,12 @@ final class TextButton: DynamicThemeBaseButton {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         updateTextColor(theme: theme)
     }
 
-    private func updateTextColor(theme: ColorTheme) {
+    private func updateTextColor(theme: AppTheme) {
         switch style {
         case .primary:
             configuration?.baseForegroundColor = theme.text.body

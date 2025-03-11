@@ -107,7 +107,7 @@ class LoadingGIFButton: DynamicThemeBaseButton {
         pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         setTitleColor(theme.text.links, for: .normal)
         setTitleColor(theme.buttons.disabledText, for: .disabled)

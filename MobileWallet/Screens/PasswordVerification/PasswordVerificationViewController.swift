@@ -92,12 +92,12 @@ final class PasswordVerificationViewController: SettingsParentViewController {
         }
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         updateDescriptionLabel(theme: theme)
     }
 
-    private func updateDescriptionLabel(theme: ColorTheme) {
+    private func updateDescriptionLabel(theme: AppTheme) {
 
         guard let mainTextColor = theme.text.body, let boldTextColor = theme.text.heading else { return }
 

@@ -47,6 +47,7 @@ final class HomeModel {
 
     @Published private(set) var connectionStatusIcon: UIImage?
     @Published private(set) var balance: String = ""
+    @Published private(set) var activeMiners: String = ""
     @Published private(set) var availableBalance: String = ""
     @Published private(set) var avatar: String = ""
     @Published private(set) var username: String = ""
@@ -66,6 +67,7 @@ final class HomeModel {
 
     init() {
         setupCallbacks()
+        fetchMinerStats()
     }
 
     // MARK: - Setups
@@ -106,9 +108,20 @@ final class HomeModel {
     // MARK: - Actions
 
     func runManagers() {
-        NotificationManager.shared.requestAuthorization()
         StagedWalletSecurityManager.shared.start()
         BLEPeripheralManager.shared.isEnabled = true
+    }
+
+    func runNotifications(registerOnly: Bool, completion: @escaping () -> Void) {
+        if registerOnly {
+            NotificationManager.shared.registerPushToken { _ in
+                completion()
+            }
+        } else {
+            NotificationManager.shared.requestAuthorization { _ in
+                completion()
+            }
+        }
     }
 
     func executeQueuedShortcut() {
@@ -155,12 +168,55 @@ final class HomeModel {
         Task {
             try? await transactionFormatter.updateContactsData()
             recentWalletTransactions = transactions
-            recentTransactions = transactions[0..<min(2, transactions.count)].compactMap { try? transactionFormatter.model(transaction: $0) }
+            recentTransactions = transactions[0..<min(6, transactions.count)].compactMap { try? transactionFormatter.model(transaction: $0) }
         }
     }
 
-    private func updateAvatar() {
+    struct MinerStats: Decodable {
+        let totalMiners: Int
+    }
 
+    func formatLargeNumber(_ value: Int) -> String {
+        if value >= 1_000_000 {
+            return String(format: "%.1fM", Double(value) / 1_000_000)
+        } else if value >= 1_000 {
+            return String(format: "%.1fK", Double(value) / 1_000)
+        } else {
+            return "\(value)"
+        }
+    }
+
+    func fetchMinerStats() {
+        let urlString = "https://airdrop.tari.com/api/miner/stats"
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+
+            do {
+                let decodedData = try JSONDecoder().decode(MinerStats.self, from: data)
+                self.activeMiners = self.formatLargeNumber(decodedData.totalMiners)
+
+            } catch {
+                print("JSON Decoding Error: \(error)")
+            }
+        }
+
+        task.resume()
+    }
+
+    private func updateAvatar() {
         guard let addressComponents = try? Tari.shared.wallet(.main).address.components else {
             avatar = ""
             username = ""

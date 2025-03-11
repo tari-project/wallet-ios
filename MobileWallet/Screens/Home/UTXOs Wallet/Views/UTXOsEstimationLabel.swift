@@ -49,7 +49,7 @@ final class UTXOsEstimationLabel: DynamicThemeView {
         let view = UILabel()
         view.numberOfLines = 0
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(12.0)
+        view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
@@ -94,7 +94,7 @@ final class UTXOsEstimationLabel: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         label.textColor = theme.text.body

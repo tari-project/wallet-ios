@@ -47,9 +47,9 @@ final class PopUpDescriptionContentView: DynamicThemeView {
 
     @View private(set) var label: StylizedLabel = {
         let view = StylizedLabel()
-        view.font = .Avenir.medium.withSize(14.0)
-        view.normalFont = .Avenir.medium.withSize(14.0)
-        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(12.0)
+        view.normalFont = .Poppins.Medium.withSize(12.0)
+        view.boldFont = .Poppins.Bold.withSize(14.0)
         view.separator = " "
         view.textAlignment = .center
         view.numberOfLines = 0
@@ -85,8 +85,8 @@ final class PopUpDescriptionContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        label.textColor = theme.text.body
+        label.textColor = .Text.primary
     }
 }

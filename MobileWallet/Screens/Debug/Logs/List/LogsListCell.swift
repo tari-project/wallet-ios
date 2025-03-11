@@ -47,7 +47,7 @@ final class LogsListCell: DynamicThemeCell {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
@@ -95,7 +95,7 @@ final class LogsListCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
         arrowImageView.tintColor = theme.text.heading

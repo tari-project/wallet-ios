@@ -280,7 +280,7 @@ final class SlideView: DynamicThemeView {
         draggedView.layer.cornerRadius = sliderCornerRadius
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         gradientBackgroundView.locations = [
@@ -291,7 +291,7 @@ final class SlideView: DynamicThemeView {
         updateSliderState(theme: theme)
     }
 
-    private func updateSliderState(theme: ColorTheme) {
+    private func updateSliderState(theme: AppTheme) {
         sliderTextLabel.textColor = isEnabled ? .clear : theme.buttons.disabled
         sliderHolderView.backgroundColor = isEnabled ? .clear : theme.buttons.disabled
         textLabel.textColor = isEnabled ? .Static.white : theme.buttons.disabledText
