@@ -188,7 +188,7 @@ final class TokenCollectionView: DynamicThemeView {
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTapOutsideAction))
         let longPressGestureRecogninzer = UILongPressGestureRecognizer(target: self, action: #selector(onLongPressAction))
-        
+
         collectionView.dataSource = dataSource
         collectionView.delegate = self
         collectionView.backgroundView?.addGestureRecognizer(tapGestureRecognizer)
