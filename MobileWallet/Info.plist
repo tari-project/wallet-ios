@@ -38,9 +38,7 @@
 			<key>CFBundleURLName</key>
 			<string>Dropbox</string>
 			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>db-wla963yxne31xe6</string>
-			</array>
+			<dict/>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
