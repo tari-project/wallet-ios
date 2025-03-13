@@ -187,10 +187,12 @@ final class TokenCollectionView: DynamicThemeView {
         }
 
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(onTapOutsideAction))
+        let longPressGestureRecogninzer = UILongPressGestureRecognizer(target: self, action: #selector(onLongPressAction))
 
         collectionView.dataSource = dataSource
         collectionView.delegate = self
         collectionView.backgroundView?.addGestureRecognizer(tapGestureRecognizer)
+        collectionView.backgroundView?.addGestureRecognizer(longPressGestureRecogninzer)
 
         self.dataSource = dataSource
     }
@@ -246,6 +248,10 @@ final class TokenCollectionView: DynamicThemeView {
         textField?.becomeFirstResponder()
     }
 
+    @objc private func onLongPressAction() {
+        let inputView = collectionView.subviews.first { $0 is TokenInputView }
+        (inputView as? TokenInputView)?.triggerSystemTextMenu()
+    }
     // MARK: - First Responder
 
     override func resignFirstResponder() -> Bool {

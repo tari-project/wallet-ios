@@ -40,7 +40,7 @@
 
 enum VersionValidator {
     static func compare(_ firstVersion: String, isHigherOrEqualTo secondVersion: String) -> Bool {
-        Version(rawVersion: firstVersion) >= Version(rawVersion: secondVersion)
+        return Version(rawVersion: firstVersion) >= Version(rawVersion: secondVersion)
     }
 }
 
@@ -95,8 +95,8 @@ private struct Version: Comparable {
 
         let result: Bool? = zip(firstComponents, secondComponents)
             .compactMap {
-                guard $0 != $1 else { return nil }
-                return $0 < $1
+                guard let left = Int($0), let right = Int($1) else { return false }
+                return left < right
             }
             .first
 

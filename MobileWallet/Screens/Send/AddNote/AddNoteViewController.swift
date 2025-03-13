@@ -584,7 +584,7 @@ final class TariGiphyTheme: GPHTheme {
         self.type = .light
     }
 
-    override var textFieldFont: UIFont? {
+    var textFieldFont: UIFont? {
         return Theme.shared.fonts.searchContactsInputBoxText
     }
 }

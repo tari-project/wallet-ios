@@ -3,18 +3,21 @@ PODS:
   - Base58Swift (2.1.10):
     - BigInt (~> 5.0.0)
   - BigInt (5.0.0)
-  - Giphy (2.1.22):
+  - Giphy (2.2.11):
     - libwebp
   - IPtProxy (3.3.0)
-  - libwebp (1.2.3):
-    - libwebp/demux (= 1.2.3)
-    - libwebp/mux (= 1.2.3)
-    - libwebp/webp (= 1.2.3)
-  - libwebp/demux (1.2.3):
+  - libwebp (1.5.0):
+    - libwebp/demux (= 1.5.0)
+    - libwebp/mux (= 1.5.0)
+    - libwebp/sharpyuv (= 1.5.0)
+    - libwebp/webp (= 1.5.0)
+  - libwebp/demux (1.5.0):
     - libwebp/webp
-  - libwebp/mux (1.2.3):
+  - libwebp/mux (1.5.0):
     - libwebp/demux
-  - libwebp/webp (1.2.3)
+  - libwebp/sharpyuv (1.5.0)
+  - libwebp/webp (1.5.0):
+    - libwebp/sharpyuv
   - lottie-ios (3.2.3)
   - ReachabilitySwift (5.0.0)
   - Sentry (8.39.0):
@@ -36,7 +39,7 @@ PODS:
 
 DEPENDENCIES:
   - Base58Swift (= 2.1.10)
-  - Giphy (= 2.1.22)
+  - Giphy (= 2.2.11)
   - IPtProxy (= 3.3.0)
   - lottie-ios (= 3.2.3)
   - ReachabilitySwift (= 5.0.0)
@@ -72,9 +75,9 @@ SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   Base58Swift: 53d551f0b33d9478fa63b3445e453a772d6b31a7
   BigInt: 74b4d88367b0e819d9f77393549226d36faeb0d8
-  Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
+  Giphy: faa396040488ce71a33c4c090a2fa71f868e389e
   IPtProxy: 2136e276560ffd3a1d017683259f52552fc7c2e5
-  libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
+  libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Sentry: e92ec378be400dbb7f4065ff152d0f362ba8b4ba
@@ -86,6 +89,6 @@ SPEC CHECKSUMS:
   YatLib: dda2cfe9e47790f27a13074ea815eac19a919043
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 154a2c1d1be3da085e9e5637dba213d68731bf8b
+PODFILE CHECKSUM: 5073b4018cb44a74e569481a25dfad4f4cf98940
 
 COCOAPODS: 1.15.2
