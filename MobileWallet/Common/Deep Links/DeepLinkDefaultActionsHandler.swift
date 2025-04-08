@@ -93,6 +93,13 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
+    static func handle(loginDeepLink: LoginDeeplink) {
+        Task { @MainActor in
+//            showPaperWalletDialog(privateKey: paperWalletDeepLink.privateKey)
+            print("Login params token: " + loginDeepLink.token + " refreshToken: " + (loginDeepLink.refreshToken ?? ""))
+        }
+    }
+
     private static func handle(deeplink: DeepLinkable, contacts: [ContactData], actionType: ActionType) throws {
         switch actionType {
         case .direct:

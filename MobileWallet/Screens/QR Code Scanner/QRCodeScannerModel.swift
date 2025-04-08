@@ -231,7 +231,7 @@ final class QRCodeScannerModel {
             return localized("qr_code_scanner.labels.actions.base_node_add")
         case .contacts, .profile:
             return localized("qr_code_scanner.labels.actions.contacts")
-        case .paperWallet:
+        case .paperWallet, .login:
             return ""
         }
     }

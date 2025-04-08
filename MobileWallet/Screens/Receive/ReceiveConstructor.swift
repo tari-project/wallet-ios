@@ -1,10 +1,10 @@
-//  QRCodeFactory.swift
+//  ReceiveViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 19/01/2022
-	Using Swift 5.0
-	Running on macOS 12.1
+	Created by Konrad Faltyn on 28/03/2025
+	Using Swift 6.0
+	Running on macOS 15.3
 
 	Copyright 2019 The Tari Project
 
@@ -38,38 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
 
-final class QRCodeFactory {
+class ReceiveConstructor {
+    static func buildScene() -> ReceiveViewController {
+        let viewController = ReceiveViewController()
 
-    static func makeQrCode(data: Data) async -> UIImage? {
-
-        let screenWidth = await UIScreen.main.bounds.width
-
-        return await withCheckedContinuation { continuation in
-
-            guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
-                continuation.resume(returning: nil)
-                return
-            }
-
-            filter.setValuesForKeys([
-                "inputMessage": data,
-                "inputCorrectionLevel": "Q"
-            ])
-
-            guard let outputImage = filter.outputImage else {
-                continuation.resume(returning: nil)
-                return
-            }
-
-            let scaleX = screenWidth / outputImage.extent.size.width
-            let scaleY = screenWidth / outputImage.extent.size.height
-            let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
-            let scaledOutputImage = outputImage.transformed(by: transform)
-            let image = UIImage(ciImage: scaledOutputImage)
-            continuation.resume(returning: image)
-        }
-
+        return viewController
     }
+
 }

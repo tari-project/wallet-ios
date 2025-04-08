@@ -103,28 +103,6 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @View private var oneSidedPaymentLabel: UILabel = {
-        let view = UILabel()
-        view.text = localized("add_amount.label.one_sided_payment")
-        view.font = .Poppins.Medium.withSize(16.0)
-        return view
-    }()
-
-    @View private var oneSidedPaymentSwitch = UISwitch()
-
-    @View private var oneSidedPaymentHelpButton: BaseButton = {
-        let view = BaseButton()
-        view.setImage(.Icons.General.roundedQuestionMark, for: .normal)
-        return view
-    }()
-
-    @View private var oneSidedPaymentStackView: UIStackView = {
-        let view = UIStackView()
-        view.spacing = 18.0
-        view.alignment = .center
-        return view
-    }()
-
     var rawInput = ""
     private var txFeeIsVisible = false
 
@@ -158,7 +136,6 @@ final class AddAmountViewController: DynamicThemeViewController {
             addCharacter(amount.formattedPrecise)
         }
 
-        setupOneSidedPaymentElements()
         setupCallbacks()
     }
 
@@ -172,10 +149,10 @@ final class AddAmountViewController: DynamicThemeViewController {
         do {
             guard let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias else {
                 let addressComponents = paymentInfo.addressComponents
-                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: true))
+                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false))
                 return
             }
-            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))
+            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false))
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
         }
@@ -252,12 +229,9 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     override func update(theme: AppTheme) {
         super.update(theme: theme)
-        mainView.backgroundColor = theme.backgrounds.primary
-        oneSidedPaymentLabel.textColor = theme.text.heading
-        oneSidedPaymentSwitch.onTintColor = theme.brand.purple
-        oneSidedPaymentHelpButton.tintColor = theme.text.body
+        mainView.backgroundColor = .Background.secondary
         warningView.layer.borderColor = theme.system.red?.cgColor
-        walletBalanceTitleLabel.textColor = theme.text.body
+        walletBalanceTitleLabel.textColor = .Text.primary
         balanceExceededLabel.textColor = theme.system.red
         balancePendingLabel.textColor = theme.system.red
 
@@ -441,15 +415,10 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     @objc private func continueButtonTapped() {
-        guard let paymentInfo = updatedPaymentInfo() else { return }
+        guard let fetchedPaymentInfo = updatedPaymentInfo() else { return }
         
-        if paymentInfo.note != nil {
-            let paymentInfo = PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: paymentInfo.note)
-            TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: true)
-        }else {
-            let controller = AddNoteViewController(paymentInfo: paymentInfo, isOneSidedPayment: true)
-            navigationController?.pushViewController(controller, animated: true)
-        }
+        let paymentInfo = PaymentInfo(addressComponents: fetchedPaymentInfo.addressComponents, alias: fetchedPaymentInfo.alias, yatID: fetchedPaymentInfo.yatID, amount: fetchedPaymentInfo.amount, feePerGram: fetchedPaymentInfo.feePerGram, note: fetchedPaymentInfo.note)
+        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: true)
     }
 
     private func calculateAmount() -> MicroTari? {
@@ -679,38 +648,6 @@ extension AddAmountViewController {
                 self?.deleteCharacter()
             }
         }
-    }
-
-    private func setupOneSidedPaymentElements() {
-
-        oneSidedPaymentLabel.minimumScaleFactor = 0.5
-        oneSidedPaymentLabel.adjustsFontSizeToFitWidth = true
-
-        mainView.addSubview(oneSidedPaymentStackView)
-        [oneSidedPaymentLabel, oneSidedPaymentSwitch, oneSidedPaymentHelpButton].forEach(oneSidedPaymentStackView.addArrangedSubview)
-
-        let margin = isSmallScreen ? 8.0 : 20.0
-
-        let constraints = [
-            oneSidedPaymentStackView.topAnchor.constraint(equalTo: amountKeyboardView.bottomAnchor, constant: margin),
-            oneSidedPaymentStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -margin),
-            oneSidedPaymentStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            oneSidedPaymentHelpButton.heightAnchor.constraint(equalToConstant: 44.0),
-            oneSidedPaymentHelpButton.widthAnchor.constraint(equalToConstant: 44.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-
-        oneSidedPaymentHelpButton.onTap = {
-            PopUpPresenter.show(message: MessageModel(title: localized("add_amount.pop_up.one_sided_payment.title"), message: localized("add_amount.pop_up.one_sided_payment.description"), type: .normal))
-        }
-        
-        if paymentInfo.addressComponents.isOnesidedAddress && !paymentInfo.addressComponents.isInteractiveAddress {
-            oneSidedPaymentSwitch.isUserInteractionEnabled = false
-            oneSidedPaymentSwitch.isOn = true
-        }
-        
-        oneSidedPaymentStackView.isHidden = true
     }
 
     private func setupCallbacks() {

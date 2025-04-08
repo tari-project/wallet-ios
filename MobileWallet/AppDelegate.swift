@@ -118,4 +118,24 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: UIApplication.ExtensionPointIdentifier) -> Bool {
         extensionPointIdentifier != .keyboard
     }
+
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        print("Deep link opened: \(url.absoluteString)")
+
+        if url.scheme == "tari" {
+            handleDeepLink(url)
+            return true
+        }
+        return false
+    }
+
+    private func handleDeepLink(_ url: URL) {
+        let path = url.pathComponents.joined(separator: "/")
+        print("Navigating to: \(path)")
+
+        // Example: Navigate to a specific screen
+        if path.contains("profile") {
+            // Navigate to profile screen
+        }
+    }
 }

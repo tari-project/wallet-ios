@@ -300,7 +300,7 @@ final class AddRecipientModel {
     private func map(contacts: [[ContactsManager.Model]]) -> [AddRecipientView.Section] {
 
         let contactDictornary = contacts.map { $0.map { (identifier: UUID(), model: $0) }}
-        var result: [AddRecipientView.Section] = [AddRecipientView.Section(title: nil, items: [.bluetooth])]
+        var result: [AddRecipientView.Section] = []
 
         result += contactDictornary
             .enumerated()

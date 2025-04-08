@@ -133,11 +133,11 @@ enum AppRouter {
     // MARK: - TabBar Actions
 
     static func moveToContactBook() {
-        tabBar?.setTab(.contactBook)
+        tabBar?.setTab(.profile)
     }
 
     static func moveToProfile() {
-        let controller = ProfileViewController(backButtonType: .close)
+        let controller = ProfileViewController()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.isNavigationBarHidden = true
         tabBar?.presentOnFullScreen(navigationController)

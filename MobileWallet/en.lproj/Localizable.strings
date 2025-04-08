@@ -101,7 +101,7 @@
 "transaction_history.title" = "Transaction History";
 "transaction_history.section.pending" = "Pending Transactions";
 "transaction_history.section.completed" = "Completed Transactions";
-"transaction_history.search_field.placeholder" = "Enter Emoji ID or Contact Name";
+"transaction_history.search_field.placeholder" = "Scan QR code or Enter Address";
 
 /* Home */
 

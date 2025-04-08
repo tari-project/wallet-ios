@@ -41,37 +41,21 @@
 import UIKit
 import Combine
 
-final class AddRecipientViewController: UIViewController {
+final class AddRecipientViewController: SecureViewController<AddRecipientView> {
 
     // MARK: - Properties
 
     var onContactSelected: ((PaymentInfo) -> Void)?
 
-    private let model: AddRecipientModel
-    private let mainView = AddRecipientView()
+    private let model = AddRecipientModel()
     private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Initialisers
-
-    init(model: AddRecipientModel) {
-        self.model = model
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCallbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
+        setupViews()
+        setupCallbacks()
     }
 
     // MARK: - Setups
@@ -91,7 +75,7 @@ final class AddRecipientViewController: UIViewController {
 
         model.$canMoveToNextStep
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.isContinueButtonEnabled = $0 }
+            .sink { [weak self] in self?.nextScreen(shouldContinue: $0) }
             .store(in: &cancellables)
 
         model.$isYatFound
@@ -131,18 +115,24 @@ final class AddRecipientViewController: UIViewController {
             self?.model.select(elementID: $0)
         }
 
-        mainView.onContinueButtonTap = { [weak self] in
-            self?.model.requestContinue()
-        }
-
         mainView.searchView.textField.bind(withSubject: model.searchText, storeIn: &cancellables)
     }
 
+    func setupViews() {
+        mainView.navigationBar.title = "Send"
+    }
     // MARK: - Handlers
+
+    private func nextScreen(shouldContinue: Bool) {
+        if shouldContinue {
+            self.model.requestContinue()
+        }
+    }
 
     private func handle(action: AddRecipientModel.Action) {
         switch action {
         case let .sendTokens(paymentInfo):
+            AppRouter.presentSendTransaction(paymentInfo: paymentInfo, presenter: self.navigationController)
             onContactSelected?(paymentInfo)
         case let .show(dialog):
             handle(dialog: dialog)

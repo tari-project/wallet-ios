@@ -1,10 +1,10 @@
-//  TransactionsConstructor.swift
+//  PaperWalletDeeplink.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 21/07/2023
+	Created by Adrian Truszczyński on 01/10/2024
 	Using Swift 5.0
-	Running on macOS 13.4
+	Running on macOS 14.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,9 +38,16 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum TransactionsConstructor {
+struct LoginDeeplink {
+    let token: String
+    let refreshToken: String?
 
-    static func buildScene() -> TransactionsViewController {
-        TransactionsViewController()
+    enum CodingKeys: String, CodingKey {
+        case token = "token"
+        case refreshToken = "refreshToken"
     }
+}
+
+extension LoginDeeplink: DeepLinkable {
+    static var type: DeeplinkType { .login }
 }

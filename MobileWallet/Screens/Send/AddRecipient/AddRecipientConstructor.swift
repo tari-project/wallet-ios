@@ -41,7 +41,6 @@
 enum AddRecipientConstructor {
 
     static func buildScene() -> AddRecipientViewController {
-        let model = AddRecipientModel()
-        return AddRecipientViewController(model: model)
+        return AddRecipientViewController()
     }
 }

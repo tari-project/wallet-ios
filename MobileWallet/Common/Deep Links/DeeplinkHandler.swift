@@ -58,6 +58,8 @@ enum DeeplinkHandler {
             return try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: deeplink)
         case .paperWallet:
             return try DeepLinkFormatter.model(type: PaperWalletDeeplink.self, deeplink: deeplink)
+        case .login:
+            return try DeepLinkFormatter.model(type: LoginDeeplink.self, deeplink: deeplink)
         }
     }
 
@@ -92,6 +94,8 @@ enum DeeplinkHandler {
             handle(transactionSendDeepLink: deeplink)
         case .paperWallet:
             handle(paperWalletDeepLink: deeplink)
+        case .login:
+            handle(loginDeepLink: deeplink)
         }
     }
 
@@ -118,6 +122,11 @@ enum DeeplinkHandler {
     private static func handle(paperWalletDeepLink: DeepLinkable) {
         guard let deeplink = paperWalletDeepLink as? PaperWalletDeeplink else { return }
         DeepLinkDefaultActionsHandler.handle(paperWalletDeepLink: deeplink)
+    }
+
+    private static func handle(loginDeepLink: DeepLinkable) {
+        guard let deeplink = loginDeepLink as? LoginDeeplink else { return }
+        DeepLinkDefaultActionsHandler.handle(loginDeepLink: deeplink)
     }
 
     private static func retryHandle(deeplink: DeepLinkable) {

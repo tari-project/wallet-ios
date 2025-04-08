@@ -320,6 +320,7 @@ final class HomeView: UIView {
     var onViewAllTransactionsButtonTap: (() -> Void)?
     var onAmountHelpButtonTap: (() -> Void)?
     var onSendButtonTap: (() -> Void)?
+    var onReceiveButtonTap: (() -> Void)?
     var onTransactionCellTap: ((_ identifier: UInt64) -> Void)?
     var onStartMiningTap: (() -> Void)?
 
@@ -362,8 +363,8 @@ final class HomeView: UIView {
             discloseButton.heightAnchor.constraint(equalToConstant: 20),
             titleLabel.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 8),
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8),
-            activeMinersView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10),
-            activeMinersView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10),
+            activeMinersView.widthAnchor.constraint(equalToConstant: 370),
+            activeMinersView.centerXAnchor.constraint(equalTo: centerXAnchor),
             activeMinersView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 70),
             activeMinersView.heightAnchor.constraint(equalToConstant: 79),
             walletCardView.topAnchor.constraint(equalTo: activeMinersView.bottomAnchor, constant: 10),
@@ -428,6 +429,10 @@ final class HomeView: UIView {
 
         sendButton.onTap = { [weak self] in
             self?.onSendButtonTap?()
+        }
+
+        receiveButton.onTap = { [weak self] in
+            self?.onReceiveButtonTap?()
         }
 
         activeMinersView.onStartMiningTap = { [weak self] in

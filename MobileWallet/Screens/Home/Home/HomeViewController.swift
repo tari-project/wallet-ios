@@ -169,7 +169,15 @@ final class HomeViewController: SecureViewController<HomeView> {
         }
 
         mainView.onSendButtonTap = { [weak self] in
-            let controller = TransactionsConstructor.buildScene()
+            let controller = AddRecipientConstructor.buildScene()
+            let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+            navigationController.setNavigationBarHidden(true, animated: false)
+            navigationController.modalPresentationStyle = .fullScreen
+            self?.present(navigationController, animated: true)
+        }
+
+        mainView.onReceiveButtonTap = { [weak self] in
+            let controller = ReceiveConstructor.buildScene()
             let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
             navigationController.setNavigationBarHidden(true, animated: false)
             navigationController.modalPresentationStyle = .fullScreen

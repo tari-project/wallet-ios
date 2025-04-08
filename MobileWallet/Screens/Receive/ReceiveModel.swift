@@ -1,10 +1,10 @@
-//  TransactionsView.swift
+//  ReceiveModel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 21/07/2023
-	Using Swift 5.0
-	Running on macOS 13.4
+	Created by Konrad Faltyn on 07/04/2025
+	Using Swift 6.0
+	Running on macOS 15.3
 
 	Copyright 2019 The Tari Project
 
@@ -38,38 +38,43 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import TariCommon
 
-final class TransactionsView: BaseNavigationContentView {
+class ReceiveModel {
 
-    // MARK: - Initialisers
-
-    override init() {
-        super.init()
-        setupViews()
+    struct DeeplinkData {
+        let message: String
+        let deeplink: URL
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    @Published private(set) var qrCode: UIImage?
+    @Published private(set) var deeplink: DeeplinkData?
+
+    @Published private(set) var base64Address: String?
+    @Published private(set) var emojiAddress: String?
+
+    init() {
+        base64Address = try? Tari.shared.wallet(.main).address.components.fullRaw
+        emojiAddress = try? Tari.shared.wallet(.main).address.emojis
     }
 
-    // MARK: - Setups
-
-    func setup(pagerView: UIView) {
-
-        addSubview(pagerView)
-
-        let constraints = [
-            pagerView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            pagerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            pagerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            pagerView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
+    func generateQrRequest() {
+        guard let deeplink = makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8) else { return }
+        Task {
+            qrCode = await QRCodeFactory.makeQrCode(data: deeplinkData)
+        }
     }
 
-    private func setupViews() {
-        navigationBar.backButtonType = .close
+    func shareActionRequest() {
+        guard let deeplink = makeDeeplink() else { return }
+        let message = localized("request.deeplink.message")
+        self.deeplink = DeeplinkData(message: message, deeplink: deeplink)
+    }
+
+    private func makeDeeplink() -> URL? {
+        guard let receiverAddress = try? Tari.shared.wallet(.main).address.components.fullRaw else { return nil }
+        let model = TransactionsSendDeeplink(receiverAddress: receiverAddress, amount: nil, note: nil)
+        return try? DeepLinkFormatter.deeplink(model: model)
     }
 }

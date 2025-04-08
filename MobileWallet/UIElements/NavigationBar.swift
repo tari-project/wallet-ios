@@ -157,15 +157,19 @@ final class NavigationBar: DynamicThemeView {
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.heightAnchor.constraint(equalToConstant: 44.0),
+
             backButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8.0),
-            backButton.widthAnchor.constraint(greaterThanOrEqualTo: backButton.heightAnchor),
+            backButton.widthAnchor.constraint(equalToConstant: 30),
             backButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+
             titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+
             rightStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             rightStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8.0),
             rightStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+
             bottomContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             bottomContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -192,9 +196,9 @@ final class NavigationBar: DynamicThemeView {
 
     override func update(theme: AppTheme) {
         super.update(theme: theme)
-        backgroundColor = .Background.popup
+        backgroundColor = .Background.secondary
         titleLabel.textColor = .Text.primary
-        separator.backgroundColor = .Elevation.outlined
+        separator.backgroundColor = .clear
         progressView.tintColor = .Text.primary
         updateStackView(theme: theme)
     }

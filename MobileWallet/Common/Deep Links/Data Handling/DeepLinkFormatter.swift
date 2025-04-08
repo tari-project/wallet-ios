@@ -44,6 +44,7 @@ enum DeeplinkType: String {
     case contacts = "/contacts"
     case profile = "/profile"
     case paperWallet = "/paper_wallet"
+    case login = "/airdrop/auth"
 }
 
 protocol DeepLinkable: Codable {

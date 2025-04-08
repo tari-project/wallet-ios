@@ -46,7 +46,7 @@ final class MenuTabBarController: UITabBarController {
         case home
         case ttlStore
 //        case transactions
-        case contactBook
+        case profile
         case settings
     }
 
@@ -59,8 +59,7 @@ final class MenuTabBarController: UITabBarController {
 
     private let homeViewController = HomeConstructor.buildScene()
     private let storeViewController = WebBrowserViewController()
-    private let transactionsViewController = UIViewController()
-    private let contactBookViewController = ContactBookConstructor.buildScene()
+    private let contactBookViewController = ProfileViewController()
     private let settingsViewController = SettingsViewController()
     private let customTabBar = CustomTabBar()
 
@@ -183,7 +182,7 @@ private extension MenuTabBarController.Tab {
             return .storeTabBar
 //        case .transactions:
 //            return .rewardsTabBar
-        case .contactBook:
+        case .profile:
             return .contactsTabBar
         case .settings:
             return .settingsTabBar
@@ -198,7 +197,7 @@ private extension MenuTabBarController.Tab {
             return .selectedStoreTabBar
 //        case .transactions:
 //            return .selectedRewardsTabBar
-        case .contactBook:
+        case .profile:
             return .selectedContactsTabBar
         case .settings:
             return .selectedSettingsTabBar

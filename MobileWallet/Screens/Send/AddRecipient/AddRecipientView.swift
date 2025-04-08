@@ -40,7 +40,7 @@
 
 import TariCommon
 
-final class AddRecipientView: DynamicThemeView {
+final class AddRecipientView: BaseNavigationContentView {
 
     struct Section {
         let title: String?
@@ -48,20 +48,10 @@ final class AddRecipientView: DynamicThemeView {
     }
 
     enum ItemType: Hashable {
-        case bluetooth
         case contact(model: ContactBookCell.ViewModel)
     }
 
     // MARK: - Subviews
-
-    @View private var searchViewToolbar = BaseToolbar()
-
-    @View private var topStackView: UIStackView = {
-        let view = UIStackView()
-        view.axis = .vertical
-        view.spacing = 10.0
-        return view
-    }()
 
     @View private(set) var searchView: ContactSearchView = {
         let view = ContactSearchView()
@@ -82,17 +72,9 @@ final class AddRecipientView: DynamicThemeView {
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
-        view.register(type: ContactBookBluetoothCell.self)
         view.register(type: ContactBookCell.self)
         view.register(headerFooterType: MenuTableHeaderView.self)
-        return view
-    }()
-
-    @View private var continueButtonToolbar = BaseToolbar()
-
-    @View private var continueButton: ActionButton = {
-        let view = ActionButton()
-        view.setTitle(localized("common.continue"), for: .normal)
+        view.backgroundColor = .Background.primary
         return view
     }()
 
@@ -112,10 +94,6 @@ final class AddRecipientView: DynamicThemeView {
         set { searchView.isPreviewButtonVisible = newValue }
     }
 
-    var isContinueButtonEnabled: Bool = false {
-        didSet { continueButton.isEnabled = isContinueButtonEnabled }
-    }
-
     var errorMessage: String? {
         didSet { update(errorMessage: errorMessage) }
     }
@@ -124,7 +102,6 @@ final class AddRecipientView: DynamicThemeView {
     var onYatPreviewButtonTap: (() -> Void)?
     var onBluetoothRowTap: (() -> Void)?
     var onRowTap: ((_ identifier: UUID) -> Void)?
-    var onContinueButtonTap: (() -> Void)?
 
     private var dataSource: UITableViewDiffableDataSource<Int, ItemType>?
 
@@ -143,31 +120,17 @@ final class AddRecipientView: DynamicThemeView {
     // MARK: - Setups
 
     private func setupConstraints() {
-
-        [searchView, errorMessageView].forEach(topStackView.addArrangedSubview)
-        searchViewToolbar.addSubview(topStackView)
-        continueButtonToolbar.addSubview(continueButton)
-        [tableView, searchViewToolbar, continueButtonToolbar].forEach(addSubview)
+        tableView.backgroundColor = .clear
+        [searchView, tableView].forEach(addSubview)
 
         let constraints = [
-            searchViewToolbar.topAnchor.constraint(equalTo: topAnchor),
-            searchViewToolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
-            searchViewToolbar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            topStackView.topAnchor.constraint(equalTo: searchViewToolbar.topAnchor, constant: 20.0),
-            topStackView.leadingAnchor.constraint(equalTo: searchViewToolbar.leadingAnchor, constant: 22.0),
-            topStackView.trailingAnchor.constraint(equalTo: searchViewToolbar.trailingAnchor, constant: -22.0),
-            topStackView.bottomAnchor.constraint(equalTo: searchViewToolbar.bottomAnchor, constant: -20.0),
-            tableView.topAnchor.constraint(equalTo: topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            continueButtonToolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
-            continueButtonToolbar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            continueButtonToolbar.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            continueButton.topAnchor.constraint(equalTo: continueButtonToolbar.topAnchor, constant: 25.0),
-            continueButton.leadingAnchor.constraint(equalTo: continueButtonToolbar.leadingAnchor, constant: 25.0),
-            continueButton.trailingAnchor.constraint(equalTo: continueButtonToolbar.trailingAnchor, constant: -25.0),
-            continueButton.bottomAnchor.constraint(equalTo: continueButtonToolbar.bottomAnchor, constant: -25.0)
+            searchView.topAnchor.constraint(equalTo: topAnchor, constant: 110),
+            searchView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            searchView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            tableView.topAnchor.constraint(equalTo: searchView.bottomAnchor, constant: 0),
+            tableView.leftAnchor.constraint(equalTo: leftAnchor),
+            tableView.rightAnchor.constraint(equalTo: rightAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -177,8 +140,6 @@ final class AddRecipientView: DynamicThemeView {
 
         dataSource = UITableViewDiffableDataSource<Int, ItemType>(tableView: tableView) { [weak self] tableView, indexPath, model in
             switch model {
-            case .bluetooth:
-                return self?.makeBluetoothCell(tableView: tableView, indexPath: indexPath)
             case let .contact(model):
                 return self?.makeContactCell(model: model, tableView: tableView, indexPath: indexPath)
             }
@@ -191,24 +152,16 @@ final class AddRecipientView: DynamicThemeView {
             self?.onQrCodeScannerButtonTap?()
         }
 
-        searchView.yatPreviewButton.onTap = { [weak self] in
-            self?.searchView.textField.resignFirstResponder()
-            self?.onYatPreviewButtonTap?()
-        }
-
         searchView.textField.delegate = self
-
-        continueButton.onTap = { [weak self] in
-            self?.onContinueButtonTap?()
-        }
     }
 
     // MARK: - Updates
 
     override func update(theme: AppTheme) {
         super.update(theme: theme)
-        tableView.backgroundColor = theme.backgrounds.secondary
-        tableView.separatorColor = theme.neutral.secondary
+        backgroundColor = .Background.secondary
+        tableView.backgroundColor = .clear
+        tableView.separatorColor = .Elevation.outlined
     }
 
     private func update(sections: [Section]) {
@@ -223,26 +176,6 @@ final class AddRecipientView: DynamicThemeView {
             }
 
         dataSource?.applySnapshotUsingReloadData(snapshot)
-    }
-
-    private func updateToolbarsAlpha(scrollView: UIScrollView) {
-        let maxAlpha = 0.9
-        updateSearchViewToolbarAlpha(scrollView: scrollView, maxAlpha: maxAlpha)
-        updateContinueButtonToolbarAlpha(scrollView: scrollView, maxAlpha: maxAlpha)
-    }
-
-    private func updateSearchViewToolbarAlpha(scrollView: UIScrollView, maxAlpha: CGFloat) {
-        let searchViewToolbarHeight = searchViewToolbar.bounds.height
-        guard searchViewToolbarHeight > 0.0 else { return }
-        let offset = scrollView.contentOffset.y + scrollView.contentInset.top
-        searchViewToolbar.backgroundAlpha =  min(offset, searchViewToolbarHeight) / searchViewToolbarHeight * maxAlpha
-    }
-
-    private func updateContinueButtonToolbarAlpha(scrollView: UIScrollView, maxAlpha: CGFloat) {
-        let continueButtonToolbarHeight = continueButtonToolbar.bounds.height
-        guard continueButtonToolbarHeight > 0.0 else { return }
-        let offset = scrollView.contentSize.height - scrollView.bounds.height - scrollView.contentOffset.y + scrollView.contentInset.bottom
-        continueButtonToolbar.backgroundAlpha = min(offset, continueButtonToolbarHeight) / continueButtonToolbarHeight * maxAlpha
     }
 
     private func update(errorMessage: String?) {
@@ -270,24 +203,10 @@ final class AddRecipientView: DynamicThemeView {
 
     // MARK: - Factories
 
-    private func makeBluetoothCell(tableView: UITableView, indexPath: IndexPath) -> ContactBookBluetoothCell {
-        tableView.dequeueReusableCell(type: ContactBookBluetoothCell.self, indexPath: indexPath)
-    }
-
     private func makeContactCell(model: ContactBookCell.ViewModel, tableView: UITableView, indexPath: IndexPath) -> ContactBookCell {
         let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
         cell.update(viewModel: model)
         return cell
-    }
-
-    // MARK: - Layout
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        let topInset = searchViewToolbar.frame.maxY
-        let bottomInset = bounds.height - continueButtonToolbar.frame.minY
-        tableView.contentInset = UIEdgeInsets(top: topInset, left: 0.0, bottom: bottomInset, right: 0.0)
-        updateToolbarsAlpha(scrollView: tableView)
     }
 }
 
@@ -311,8 +230,6 @@ extension AddRecipientView: UITableViewDelegate {
         guard let cell = tableView.cellForRow(at: indexPath) else { return }
 
         switch cell {
-        case is ContactBookBluetoothCell:
-            onBluetoothRowTap?()
         case let contactBookCell as ContactBookCell:
             guard let elementID = contactBookCell.elementID else { return }
             onRowTap?(elementID)
@@ -321,9 +238,6 @@ extension AddRecipientView: UITableViewDelegate {
         }
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        updateToolbarsAlpha(scrollView: scrollView)
-    }
 }
 
 extension AddRecipientView: UITextFieldDelegate {

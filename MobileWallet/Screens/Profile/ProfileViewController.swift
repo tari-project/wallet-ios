@@ -41,19 +41,18 @@
 import UIKit
 import Combine
 import YatLib
+import WebKit
 
-final class ProfileViewController: SecureViewController<ProfileView> {
+final class ProfileViewController: SecureViewController<NewProfileView>, WKNavigationDelegate {
 
     // MARK: - Properties
+    var webView: WKWebView?
 
-    private let model = ProfileModel()
+    private let model = NewProfileModel()
     private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Initialisers
-
-    init(backButtonType: NavigationBar.BackButtonType) {
+    init() {
         super.init(nibName: nil, bundle: nil)
-        mainView.backButtonType = backButtonType
     }
 
     required init?(coder: NSCoder) {
@@ -67,30 +66,15 @@ final class ProfileViewController: SecureViewController<ProfileView> {
         setupCallbacks()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        model.updateYatIdData()
-    }
-
     // MARK: - Setups
 
     private func setupCallbacks() {
 
-        model.$name
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.update(username: $0) }
-            .store(in: &cancellables)
-
-        model.$addressType
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(addressType: $0) }
-            .store(in: &cancellables)
-
-        model.$isYatOutOfSync
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isOutOfSyncLabelVisible, on: mainView)
-            .store(in: &cancellables)
+//        model.$name
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] in self?.mainView.update(username: $0) }
+//            .store(in: &cancellables)
+//
 
         model.$errorMessage
             .compactMap { $0 }
@@ -98,164 +82,65 @@ final class ProfileViewController: SecureViewController<ProfileView> {
             .sink { [weak self] in self?.show(error: $0) }
             .store(in: &cancellables)
 
-        model.$yatButtonState
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(yatButtonState: $0) }
-            .store(in: &cancellables)
-
-        model.$yatAddress
+        model.$state
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.showYatOnboardingFlow(rawAddress: $0) }
+            .sink { [weak self] in self?.handleState(state: $0) }
             .store(in: &cancellables)
 
-        model.$qrCode
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.showQrCode(qrCode: $0) }
-            .store(in: &cancellables)
-
-        model.$action
+        model.$profile
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(action: $0) }
+            .sink { [weak self] in self?.handleProfile(profile: $0) }
             .store(in: &cancellables)
 
-        mainView.yatButton.onTap = { [weak self] in
-            self?.model.toggleVisibleData()
+        mainView.inviteView.onShareButtonTap = { [weak self] in
+            self?.shareAction(refId: self?.model.profile?.referralCode)
+        }
+    }
+
+    private func shareAction(refId: String?) {
+        guard let refererCode = refId else {
+            return
         }
 
-        mainView.onEditButtonTap = { [weak self] in
-            self?.showEditNameForm()
+        let url = URL(string: "https://airdrop.tari.com/?referralCode="+refererCode)!
+
+        let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+
+        activityVC.excludedActivityTypes = [.assignToContact, .addToReadingList]
+
+        present(activityVC, animated: true, completion: nil)
+    }
+
+    private func handleState(state: NewProfileModel.State) {
+        switch state {
+        case .LoggedOut:
+            showLogin()
+        case .Error:
+            break
+        case .Initial:
+            break
+        case .Loading:
+            break
+        case .Profile:
+            break
         }
+    }
 
-        mainView.onWalletButtonTap = { [weak self] in
-            self?.moveToUTXOsWallet()
-        }
-
-        mainView.onConnectYatButtonTap = { [weak self] in
-            self?.model.reconnectYat()
-        }
-
-        mainView.onShareButtonTap = { [weak self] in
-            self?.showShareDialog()
-        }
-
-        guard let addressComponents = model.addressComponents else { return }
-        mainView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
-
-        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
-            .sink { [weak self] _ in self?.model.updateYatIdData() }
-            .store(in: &cancellables)
+    private func handleProfile(profile: UserDetails) {
+        mainView.update(profile: profile)
     }
 
     // MARK: - Actions
-
-    private func handle(addressType: ProfileModel.AddressType) {
-        switch addressType {
-        case let .address(components):
-            let viewModel = AddressView.ViewModel(prefix: components.networkAndFeatures, text: .truncated(prefix: components.coreAddressPrefix, suffix: components.coreAddressSuffix), isDetailsButtonVisible: true)
-            mainView.update(addressViewModel: viewModel, isTariAddress: true)
-        case let .yat(yat):
-            let viewModel = AddressView.ViewModel(prefix: nil, text: .single(yat), isDetailsButtonVisible: false)
-            mainView.update(addressViewModel: viewModel, isTariAddress: false)
-        }
-    }
-
-    private func handle(yatButtonState: ProfileModel.YatButtonState) {
-        switch yatButtonState {
-        case  .hidden:
-            mainView.hideYatButton()
-        case .loading:
-            mainView.showYatButtonSpinner()
-        case .off:
-            mainView.isYatButtonOn = false
-        case .on:
-            mainView.isYatButtonOn = true
-        }
-    }
-
     private func show(error: MessageModel) {
         PopUpPresenter.show(message: error)
     }
 
-    private func showYatOnboardingFlow(rawAddress: String) {
-        Yat.integration.showOnboarding(onViewController: self, records: [
-            YatRecordInput(tag: .XTMAddress, value: rawAddress)
-        ])
-    }
-
-    private func moveToUTXOsWallet() {
-        let controller = UTXOsWalletConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
-    }
-
-    private func handle(action: ProfileModel.Action) {
-
-        switch action {
-        case let .shareLink(url):
-            showLinkShareDialog(link: url)
-        case .showBLEWaitingForReceiverDialog:
-            showBLEDialog(type: .scanForContactListReceiver(onCancel: { [weak self] in self?.model.cancelBLESharing() }))
-        case .showBLESuccessDialog:
-            showBLEDialog(type: .successContactSharing)
-        case let .showBLEFailureDialog(message):
-            showBLEDialog(type: .failure(message: message))
+    private func showLogin() {
+        if let url = URL(string: "https://airdrop.tari.com/auth?mobileNetwork=nextnet") {
+            UIApplication.shared.open(url)
         }
-    }
-
-    private func showEditNameForm() {
-
-        var name = model.name
-
-        let models = [
-            ContactBookFormView.TextFieldViewModel(
-                placeholder: localized("profile_view.form.text_field.name.placeholder"),
-                text: name,
-                isEmojiKeyboardVisible: false,
-                callback: { name = $0 }
-            )
-        ]
-
-        FormOverlayPresenter.showForm(title: localized("profile_view.form.title"), textFieldModels: models, presenter: self, onClose: { [weak self] in
-            self?.model.update(name: name)
-        })
-    }
-
-    private func showQrCode(qrCode: UIImage?) {
-        mainView.qrCodeImage = qrCode
-    }
-
-    private func showShareDialog() {
-
-        let headerSection = PopUpHeaderView()
-        headerSection.label.text = localized("profile_view.pop_up.share.title")
-
-        let contentSection = PopUpProfileShareContentView()
-
-        contentSection.onLinkButtonTap = { [weak self] in
-            PopUpPresenter.dismissPopup()
-            self?.model.generateLink()
-        }
-
-        contentSection.onBLEButtonTap = { [weak self] in
-            PopUpPresenter.dismissPopup()
-            self?.model.shareContactUsingBLE()
-        }
-
-        let buttonsSection = PopUpButtonsView()
-        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
-
-        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
-        PopUpPresenter.show(popUp: popUp)
-    }
-
-    private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
-        PopUpPresenter.showBLEDialog(type: type)
-    }
-
-    private func showLinkShareDialog(link: URL) {
-        let controller = UIActivityViewController(activityItems: [link], applicationActivities: nil)
-        controller.popoverPresentationController?.sourceView = mainView.navigationBar
-        present(controller, animated: true)
     }
 }
