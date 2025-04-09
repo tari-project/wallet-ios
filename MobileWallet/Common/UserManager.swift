@@ -41,15 +41,14 @@
 import UIKit
 import Combine
 
+struct UserWrapper: Codable {
+    let user: UserDetails
+}
+
 struct UserDetails: Codable {
-    let isBot: Bool
-    let twitterFollowers: Int
     let id: String
     let referralCode: String
-    let yatUserId: String
-    let name: String
-    let role: String
-    let profileImageUrl: String
+    let displayName: String
     let rank: Rank
 
     struct Rank: Codable {
@@ -62,14 +61,9 @@ struct UserDetails: Codable {
 
     // Use CodingKeys if API uses different key names than Swift properties
     enum CodingKeys: String, CodingKey {
-        case isBot = "is_bot"
-        case twitterFollowers = "twitter_followers"
         case id
         case referralCode = "referral_code"
-        case yatUserId = "yat_user_id"
-        case name
-        case role
-        case profileImageUrl = "profileimageurl"
+        case displayName = "display_name"
         case rank
     }
 }
@@ -84,13 +78,19 @@ class UserManager: NSObject {
     private var cancellables = Set<AnyCancellable>()
 
     var accessToken: String? {
-        set {
-            UserDefaults.standard.set(newValue, forKey: "AccessToken")
-        }
         get {
             UserDefaults.standard.string(forKey: "AccessToken")
         }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "AccessToken")
+            if let newToken = newValue {
+                fetchUserDetails(accessToken: newToken)
+            }
+
+        }
     }
+
+    @Published var user: UserInfoStatus = .LoggedOut
 
     static let shared = UserManager()
 
@@ -98,17 +98,18 @@ class UserManager: NSObject {
         super.init()
     }
 
-    func getUserInfo(completion: @escaping (UserInfoStatus) -> Void) {
+    func getUserInfo() {
         guard let accessToken = self.accessToken else {
-            return completion(.LoggedOut)
+            user = .LoggedOut
+            return
         }
 
-        fetchUserDetails(accessToken: accessToken, completion: completion)
+        fetchUserDetails(accessToken: accessToken)
     }
 
-    func fetchUserDetails(accessToken: String, completion: @escaping (UserInfoStatus) -> Void) {
+    func fetchUserDetails(accessToken: String) {
         guard let url = URL(string: "https://airdrop.tari.com/api/user/details") else {
-            completion(.Error("Invalid URL"))
+            user = .Error("Invalid URL")
             return
         }
 
@@ -118,21 +119,26 @@ class UserManager: NSObject {
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                completion(.Error("Error: \(error.localizedDescription)"))
+                self.user = .Error("Error: \(error.localizedDescription)")
                 return
             }
 
             if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
-                completion(.Error("HTTP Error: \(httpResponse.statusCode)"))
+                self.user = .Error("HTTP Error: \(httpResponse.statusCode)")
                 return
             }
 
             if let data = data {
                 do {
-                    let userDetails = try JSONDecoder().decode(UserDetails.self, from: data)
-                    completion(.Ok(userDetails))
+                    if let string = String(data: data, encoding: .utf8) {
+                        print("Response string: \(string)")
+                    } else {
+                        print("Failed to convert data to string")
+                    }
+                    let userWrapper = try JSONDecoder().decode(UserWrapper.self, from: data)
+                    self.user = .Ok(userWrapper.user)
                 } catch {
-                    completion(.Error("JSON Decoding Error: \(error.localizedDescription)"))
+                    self.user = .Error("JSON Decoding Error: \(error.localizedDescription)")
                 }
             }
         }

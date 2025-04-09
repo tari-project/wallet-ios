@@ -43,8 +43,8 @@ struct LoginDeeplink {
     let refreshToken: String?
 
     enum CodingKeys: String, CodingKey {
-        case token = "token"
-        case refreshToken = "refreshToken"
+        case token
+        case refreshToken
     }
 }
 

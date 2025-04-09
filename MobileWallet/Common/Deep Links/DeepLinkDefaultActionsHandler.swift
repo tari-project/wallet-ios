@@ -97,6 +97,7 @@ enum DeepLinkDefaultActionsHandler {
         Task { @MainActor in
 //            showPaperWalletDialog(privateKey: paperWalletDeepLink.privateKey)
             print("Login params token: " + loginDeepLink.token + " refreshToken: " + (loginDeepLink.refreshToken ?? ""))
+            UserManager.shared.accessToken = loginDeepLink.token
         }
     }
 

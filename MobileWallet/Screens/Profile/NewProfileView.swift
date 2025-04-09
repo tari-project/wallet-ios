@@ -360,29 +360,29 @@ final class NewProfileView: DynamicThemeView {
 
     func setupConstraints() {
 
-        [noInvitesImageView, noInvitesTitleLabel, noInvitesDescriptionLabel].forEach(noInvitesView.addSubview)
+//        [noInvitesImageView, noInvitesTitleLabel, noInvitesDescriptionLabel].forEach(noInvitesView.addSubview)
         [minedGaugeView, gemsGaugeView].forEach(gaugesContainerView.addSubview)
-        [usernameLabel, gaugesContainerView, inviteView, invitedLabel, noInvitesView].forEach(containerView.addSubview)
-
-        containerScrollView.addSubview(containerView)
-        addSubview(containerScrollView)
+        [usernameLabel, gaugesContainerView, inviteView, /*invitedLabel,*/ noInvitesView].forEach(addSubview)
+//
+//        containerScrollView.addSubview(containerView)
+//        addSubview(containerScrollView)
+//
+//        NSLayoutConstraint.activate([
+//            containerScrollView.topAnchor.constraint(equalTo: topAnchor),
+//            containerScrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+//            containerScrollView.leftAnchor.constraint(equalTo: leftAnchor),
+//            containerScrollView.rightAnchor.constraint(equalTo: rightAnchor),
+//
+//            containerView.topAnchor.constraint(equalTo: containerScrollView.topAnchor),
+//            containerView.bottomAnchor.constraint(equalTo: containerScrollView.bottomAnchor),
+//            containerView.leftAnchor.constraint(equalTo: containerScrollView.leftAnchor),
+//            containerView.rightAnchor.constraint(equalTo: containerScrollView.rightAnchor)
+//        ])
 
         NSLayoutConstraint.activate([
-            containerScrollView.topAnchor.constraint(equalTo: topAnchor),
-            containerScrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            containerScrollView.leftAnchor.constraint(equalTo: leftAnchor),
-            containerScrollView.rightAnchor.constraint(equalTo: rightAnchor),
-
-            containerView.topAnchor.constraint(equalTo: containerScrollView.topAnchor),
-            containerView.bottomAnchor.constraint(equalTo: containerScrollView.bottomAnchor),
-            containerView.leftAnchor.constraint(equalTo: containerScrollView.leftAnchor),
-            containerView.rightAnchor.constraint(equalTo: containerScrollView.rightAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
-            usernameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 128),
+            usernameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 124),
             usernameLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            gaugesContainerView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 74),
+            gaugesContainerView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 66),
             gaugesContainerView.leftAnchor.constraint(equalTo: leftAnchor, constant: 21),
             gaugesContainerView.rightAnchor.constraint(equalTo: rightAnchor, constant: -21),
             minedGaugeView.topAnchor.constraint(equalTo: gaugesContainerView.topAnchor),
@@ -397,23 +397,23 @@ final class NewProfileView: DynamicThemeView {
             inviteView.topAnchor.constraint(equalTo: gaugesContainerView.bottomAnchor, constant: 10),
             inviteView.leftAnchor.constraint(equalTo: gaugesContainerView.leftAnchor),
             inviteView.rightAnchor.constraint(equalTo: gaugesContainerView.rightAnchor),
-            inviteView.heightAnchor.constraint(equalToConstant: 220),
-            invitedLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 21),
-            invitedLabel.topAnchor.constraint(equalTo: inviteView.bottomAnchor, constant: 20),
-            noInvitesView.topAnchor.constraint(equalTo: invitedLabel.bottomAnchor, constant: 46),
-            noInvitesView.heightAnchor.constraint(equalToConstant: 174),
-            noInvitesView.widthAnchor.constraint(equalToConstant: 356),
-            noInvitesView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            noInvitesView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -30),
-            noInvitesImageView.centerXAnchor.constraint(equalTo: noInvitesView.centerXAnchor),
-            noInvitesImageView.topAnchor.constraint(equalTo: noInvitesView.topAnchor),
-            noInvitesImageView.widthAnchor.constraint(equalToConstant: 94),
-            noInvitesImageView.heightAnchor.constraint(equalToConstant: 87),
-            noInvitesTitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            noInvitesTitleLabel.topAnchor.constraint(equalTo: noInvitesImageView.bottomAnchor, constant: 12),
-            noInvitesDescriptionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            noInvitesDescriptionLabel.widthAnchor.constraint(equalToConstant: 320),
-            noInvitesDescriptionLabel.topAnchor.constraint(equalTo: noInvitesTitleLabel.bottomAnchor)
+            inviteView.heightAnchor.constraint(equalToConstant: 220)
+//            invitedLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 21),
+//            invitedLabel.topAnchor.constraint(equalTo: inviteView.bottomAnchor, constant: 20),
+//            noInvitesView.topAnchor.constraint(equalTo: invitedLabel.bottomAnchor, constant: 46),
+//            noInvitesView.heightAnchor.constraint(equalToConstant: 174),
+//            noInvitesView.widthAnchor.constraint(equalToConstant: 356),
+//            noInvitesView.centerXAnchor.constraint(equalTo: centerXAnchor),
+//            noInvitesView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -30),
+//            noInvitesImageView.centerXAnchor.constraint(equalTo: noInvitesView.centerXAnchor),
+//            noInvitesImageView.topAnchor.constraint(equalTo: noInvitesView.topAnchor),
+//            noInvitesImageView.widthAnchor.constraint(equalToConstant: 94),
+//            noInvitesImageView.heightAnchor.constraint(equalToConstant: 87),
+//            noInvitesTitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+//            noInvitesTitleLabel.topAnchor.constraint(equalTo: noInvitesImageView.bottomAnchor, constant: 12),
+//            noInvitesDescriptionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+//            noInvitesDescriptionLabel.widthAnchor.constraint(equalToConstant: 320),
+//            noInvitesDescriptionLabel.topAnchor.constraint(equalTo: noInvitesTitleLabel.bottomAnchor)
         ])
     }
 
@@ -429,13 +429,15 @@ final class NewProfileView: DynamicThemeView {
     }
 
     func update(profile: UserDetails) {
-        usernameLabel.text = "@" + profile.name
-
-        minedGaugeView.setAmount(amount: "2000")
+        usernameLabel.text = "@" + profile.displayName
 
         gemsGaugeView.setAmount(amount: String(profile.rank.gems))
         inviteView.linkLabel.text = "tari-universe/" + profile.referralCode
 
         invitedLabel.text = "Invited Friends " + "(0)"
+    }
+
+    func update(mined: String) {
+        minedGaugeView.setAmount(amount: mined)
     }
 }

@@ -53,7 +53,6 @@ final class NewProfileModel {
     }
 
     // MARK: - View Model
-    @Published private(set) var name: String?
     @Published private(set) var errorMessage: MessageModel?
 
     @Published private(set) var state: State = .Initial
@@ -71,8 +70,11 @@ final class NewProfileModel {
 
     // MARK: - Setups
     private func setupCallbacks() {
-        $name
-            .sink { UserSettingsManager.name = $0 }
+
+        UserManager.shared.$user
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handleUpdate(status: $0)}
             .store(in: &cancellables)
     }
 
@@ -88,23 +90,20 @@ final class NewProfileModel {
             )
             return
         }
-        self.name = name
     }
 
-    private func updateData() {
-        name = UserSettingsManager.name
+    func updateData() {
+        UserManager.shared.getUserInfo()
+    }
 
-        let userManager = UserManager.shared
-
-        userManager.getUserInfo { (status: UserInfoStatus) in
-            switch status {
-            case .Error(let errorMessage):
-                self.handleError(errorMessage: errorMessage)
-            case .LoggedOut:
-                self.handleLoggedOutState()
-            case .Ok(let userDetails):
-                self.handleUserDetails(userDetails: userDetails)
-            }
+    private func handleUpdate(status: UserInfoStatus) {
+        switch status {
+        case .Error(let errorMessage):
+            self.handleError(errorMessage: errorMessage)
+        case .LoggedOut:
+            self.handleLoggedOutState()
+        case .Ok(let userDetails):
+            self.handleUserDetails(userDetails: userDetails)
         }
     }
 
