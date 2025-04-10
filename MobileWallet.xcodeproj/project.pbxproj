@@ -568,6 +568,8 @@
 		711D7FB22D5537060080A987 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FB12D5537050080A987 /* Typography.swift */; };
 		711D7FB42D5549EA0080A987 /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711D7FB32D5549EA0080A987 /* SeparatorView.swift */; };
 		711F28EB2DA3322D00751986 /* ReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 711F28EA2DA3322D00751986 /* ReceiveViewController.swift */; };
+		7134028A2DA6AB56005E9CC4 /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713402892DA6AB56005E9CC4 /* ConfirmationViewController.swift */; };
+		7134028C2DA6B3E2005E9CC4 /* ConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7134028B2DA6B3DF005E9CC4 /* ConfirmationView.swift */; };
 		713FB7642D6F53D000C56CF4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713FB7632D6F53D000C56CF4 /* HomeView.swift */; };
 		714909E62D7713EF0081F417 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 714909E52D7713EF0081F417 /* GoogleService-Info.plist */; };
 		714909E82D8AC8CD0081F417 /* NewProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714909E72D8AC8CA0081F417 /* NewProfileView.swift */; };
@@ -1201,6 +1203,8 @@
 		711D7FB12D5537050080A987 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		711D7FB32D5549EA0080A987 /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
 		711F28EA2DA3322D00751986 /* ReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveViewController.swift; sourceTree = "<group>"; };
+		713402892DA6AB56005E9CC4 /* ConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
+		7134028B2DA6B3DF005E9CC4 /* ConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationView.swift; sourceTree = "<group>"; };
 		713FB7632D6F53D000C56CF4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		714909E52D7713EF0081F417 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		714909E72D8AC8CA0081F417 /* NewProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProfileView.swift; sourceTree = "<group>"; };
@@ -1404,6 +1408,7 @@
 		00746195239901D200F00966 /* Send */ = {
 			isa = PBXGroup;
 			children = (
+				713402882DA6AB48005E9CC4 /* Confirmation */,
 				491AB89E23F3FF1200372189 /* AddAmount */,
 				005387222405132700901A68 /* AddNote */,
 				0087A1A423F4231E00B89EE7 /* AddRecipient */,
@@ -3194,6 +3199,15 @@
 			path = New;
 			sourceTree = "<group>";
 		};
+		713402882DA6AB48005E9CC4 /* Confirmation */ = {
+			isa = PBXGroup;
+			children = (
+				713402892DA6AB56005E9CC4 /* ConfirmationViewController.swift */,
+				7134028B2DA6B3DF005E9CC4 /* ConfirmationView.swift */,
+			);
+			path = Confirmation;
+			sourceTree = "<group>";
+		};
 		714A90422D7641A70010B087 /* Overlays */ = {
 			isa = PBXGroup;
 			children = (
@@ -3929,6 +3943,7 @@
 				54CF5E012A27460700B01F21 /* ContactBookBluetoothCell.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */,
+				7134028C2DA6B3E2005E9CC4 /* ConfirmationView.swift in Sources */,
 				3A84CDD828460967005F2F8D /* UTXOsWalletConstructor.swift in Sources */,
 				3ACFECAA27ABD0B100FA9FE1 /* SendingTariProgressBar.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
@@ -3993,6 +4008,7 @@
 				54A6E9F0297F1F9900A60853 /* StagedWalletSecurityManager.swift in Sources */,
 				3A7DAB9328FDB18A002CC013 /* LogsListModel.swift in Sources */,
 				3AEE7AA3286599E6000F84ED /* UTXOsWalletTopBar.swift in Sources */,
+				7134028A2DA6AB56005E9CC4 /* ConfirmationViewController.swift in Sources */,
 				3AABFC9B28F5960100D87773 /* LogFormatter.swift in Sources */,
 				714909E82D8AC8CD0081F417 /* NewProfileView.swift in Sources */,
 				491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */,

@@ -46,7 +46,6 @@ final class SettingsViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
 
     private enum Section: Int, CaseIterable {
-        case profile
         case security
         case more
         case advancedSettings
@@ -159,8 +158,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         .disclaimer: URL(string: TariSettings.shared.disclaimer),
         .blockExplorer: NetworkManager.shared.selectedNetwork.blockExplorerURL
     ]
-
-    private let profileIndexPath = IndexPath(row: 0, section: 0)
+    
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -292,7 +290,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
-        case .profile: return 1
         case .security: return securitySectionItems.count
         case .more: return moreSectionItems.count
         case .advancedSettings: return advancedSettingsSectionItems.count
@@ -301,26 +298,10 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        if indexPath == profileIndexPath {
-            let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
-            do {
-                let name = UserSettingsManager.name
-                let addressComponents = try Tari.shared.wallet(.main).address.components
-                let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false)
-                cell.update(name: name, addressViewModel: addressViewModel)
-            } catch {
-                let message = ErrorMessageManager.errorModel(forError: error)
-                PopUpPresenter.show(message: message)
-            }
-            return cell
-        }
-
         let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
 
         guard let section = Section(rawValue: indexPath.section) else { return cell }
         switch section {
-        case .profile:
-            break
         case .security:
             cell.configure(securitySectionItems[indexPath.row])
         case .more:
@@ -361,20 +342,12 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard indexPath == profileIndexPath else { return 65.0 }
         return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         guard let section = Section(rawValue: indexPath.section) else { return nil }
         switch section {
-        case .profile:
-            switch indexPath.row {
-            case 0:
-                onProfileAction()
-            default:
-                break
-            }
         case .security:
             switch indexPath.row {
             case 0:

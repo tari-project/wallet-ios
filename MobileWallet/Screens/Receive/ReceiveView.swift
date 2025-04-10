@@ -149,7 +149,7 @@ class ReceiveView: BaseNavigationContentView {
 
         NSLayoutConstraint.activate([
             qrCodeView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            qrCodeView.topAnchor.constraint(equalTo: topAnchor, constant: 235),
+            qrCodeView.topAnchor.constraint(equalTo: topAnchor, constant: 170),
             qrCodeView.widthAnchor.constraint(equalToConstant: 231),
             qrCodeView.heightAnchor.constraint(equalToConstant: 231),
             qrCodeIconViewOutline.centerYAnchor.constraint(equalTo: qrCodeIconImageView.centerYAnchor),
@@ -163,7 +163,7 @@ class ReceiveView: BaseNavigationContentView {
             shareButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -32),
             shareButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 28),
             shareButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -28),
-            iconImageView.topAnchor.constraint(equalTo: topAnchor, constant: 170),
+            iconImageView.bottomAnchor.constraint(equalTo: qrCodeView.topAnchor, constant: -16),
             iconImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 100),
             iconImageView.widthAnchor.constraint(equalToConstant: 30),
             iconImageView.heightAnchor.constraint(equalToConstant: 30),
@@ -198,7 +198,6 @@ class ReceiveView: BaseNavigationContentView {
 
     override func update(theme: AppTheme) {
         super.update(theme: theme)
-        setupViews()
 
         backgroundColor = .Background.secondary
         addressContainerView.backgroundColor = .Background.accent
@@ -206,10 +205,10 @@ class ReceiveView: BaseNavigationContentView {
         iconImageView.tintColor = .Text.primary
         titleLabel.textColor = .Text.primary
         yourAddressLabel.textColor = .Text.secondary
-        let isDarkMode = UITraitCollection.current.userInterfaceStyle == .dark
 
         separatorView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.15)
 
+        let isDarkMode = UITraitCollection.current.userInterfaceStyle == .dark
         if isDarkMode {
             qrCodeView.apply(shadow: nil)
             addressContainerView.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.12)

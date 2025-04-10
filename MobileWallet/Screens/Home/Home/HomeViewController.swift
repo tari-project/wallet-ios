@@ -112,7 +112,7 @@ final class HomeViewController: SecureViewController<HomeView> {
             .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
             .store(in: &cancellables)
 
-        model.$balance
+        model.$totalBalance
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.balance = $0 }
             .store(in: &cancellables)

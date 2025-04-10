@@ -417,8 +417,8 @@ final class AddAmountViewController: DynamicThemeViewController {
     @objc private func continueButtonTapped() {
         guard let fetchedPaymentInfo = updatedPaymentInfo() else { return }
         
-        let paymentInfo = PaymentInfo(addressComponents: fetchedPaymentInfo.addressComponents, alias: fetchedPaymentInfo.alias, yatID: fetchedPaymentInfo.yatID, amount: fetchedPaymentInfo.amount, feePerGram: fetchedPaymentInfo.feePerGram, note: fetchedPaymentInfo.note)
-        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: true)
+        let controller = ConfirmationViewController(paymentInfo: fetchedPaymentInfo)
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 
     private func calculateAmount() -> MicroTari? {

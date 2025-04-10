@@ -46,7 +46,7 @@ final class HomeModel {
     // MARK: - View Model
 
     @Published private(set) var connectionStatusIcon: UIImage?
-    @Published private(set) var balance: String = ""
+    @Published private(set) var totalBalance: String = ""
     @Published private(set) var activeMiners: String = ""
     @Published private(set) var availableBalance: String = ""
     @Published private(set) var avatar: String = ""
@@ -160,7 +160,7 @@ final class HomeModel {
     }
 
     private func handle(walletBalance: WalletBalance) {
-        balance = MicroTari(walletBalance.total).formatted
+        totalBalance = MicroTari(walletBalance.total).formatted
         availableBalance = MicroTari(walletBalance.available).formatted
     }
 

@@ -234,7 +234,7 @@ final class HomeView: UIView {
         let view = UILabel()
         view.text = localized("home.label.spendable")
         view.textColor = .Static.white
-        view.font = .Poppins.Medium.withSize(12.0)
+        view.font = .Poppins.Regular.withSize(17)
         return view
     }()
 
@@ -352,11 +352,11 @@ final class HomeView: UIView {
         [walletCardView, balanceLabel, unitLabel, balanceTitleLabel, titleLabel,
          activeMinersView, buttonsStackView, balanceContentView, avatarContentView,
          transactionTableView, transactionPlaceholderView, receiveButton, sendButton,
-         activityLabel, discloseButton, balanceHiddenLabel].forEach(addSubview)
+         activityLabel, discloseButton, balanceHiddenLabel, availableBalanceLabel].forEach(addSubview)
 
         let constraints = [
             balanceTitleLabel.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 18),
-            balanceTitleLabel.topAnchor.constraint(equalTo: walletCardView.topAnchor, constant: 115),
+            balanceTitleLabel.bottomAnchor.constraint(equalTo: balanceLabel.topAnchor),
             discloseButton.centerYAnchor.constraint(equalTo: balanceTitleLabel.centerYAnchor),
             discloseButton.leftAnchor.constraint(equalTo: balanceTitleLabel.rightAnchor, constant: 3),
             discloseButton.widthAnchor.constraint(equalToConstant: 20),
@@ -376,12 +376,14 @@ final class HomeView: UIView {
             sendButton.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 5),
             sendButton.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 11),
             balanceLabel.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 20),
-            balanceLabel.bottomAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 7),
+            balanceLabel.bottomAnchor.constraint(equalTo: availableBalanceLabel.topAnchor, constant: 4),
+            availableBalanceLabel.leftAnchor.constraint(equalTo: balanceLabel.leftAnchor),
+            availableBalanceLabel.bottomAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: -20),
             balanceHiddenLabel.leftAnchor.constraint(equalTo: balanceLabel.leftAnchor),
             balanceHiddenLabel.rightAnchor.constraint(equalTo: balanceLabel.rightAnchor),
             balanceHiddenLabel.centerXAnchor.constraint(equalTo: balanceLabel.centerXAnchor),
             balanceHiddenLabel.centerYAnchor.constraint(equalTo: balanceLabel.centerYAnchor),
-            unitLabel.leftAnchor.constraint(equalTo: balanceLabel.rightAnchor, constant: 3),
+            unitLabel.leftAnchor.constraint(equalTo: balanceLabel.rightAnchor, constant: -30),
             unitLabel.topAnchor.constraint(equalTo: balanceLabel.centerYAnchor, constant: -5),
             activityLabel.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 86),
             activityLabel.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 0),
@@ -477,10 +479,10 @@ final class HomeView: UIView {
 
     private func update(availableBalance: String) {
         availableBalanceLabel.attributedText = NSAttributedString(
-            string: availableBalance,
+            string: "Available: " + availableBalance + "tXTM",
             attributes: [
-                .foregroundColor: UIColor.Static.white,
-                .font: UIFont.Poppins.Medium.withSize(12.0)
+                .foregroundColor: UIColor.white.withAlphaComponent(0.5),
+                .font: UIFont.Poppins.Regular.withSize(17.0)
             ]
         )
     }
