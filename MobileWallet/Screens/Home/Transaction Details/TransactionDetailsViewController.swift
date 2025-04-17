@@ -40,6 +40,7 @@
 
 import UIKit
 import Combine
+import TariCommon
 
 final class TransactionDetailsViewController: SecureViewController<TransactionDetailsView> {
 
@@ -47,6 +48,15 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
 
     private let model: TransactionDetailsModel
     private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Subviews
+
+    @View private var tableView: UITableView = {
+        let view = UITableView()
+        view.separatorStyle = .none
+        view.backgroundColor = .clear
+        return view
+    }()
 
     // MARK: - Initialisers
 
@@ -63,109 +73,84 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViews()
+        setupConstraints()
+        setupTableView()
         setupModelCallbacks()
-        setupViewCallbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
     }
 
     // MARK: - Setups
 
-    private func setupModelCallbacks() {
+    private func setupViews() {
+        view.backgroundColor = .Background.primary
+    }
 
+    private func setupConstraints() {
+        view.addSubview(tableView)
+
+        let constraints = [
+            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 74),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    private func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(type: TransactionDetailsCell.self)
+        tableView.register(type: TransactionTotalCell.self)
+    }
+
+    private func setupModelCallbacks() {
         model.$title
             .receive(on: DispatchQueue.main)
-            .assign(to: \.title, on: mainView)
-            .store(in: &cancellables)
-
-        model.$subtitle
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.subtitle, on: mainView)
-            .store(in: &cancellables)
-
-        model.$transactionState
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.transactionState, on: mainView)
+            .sink { [weak self] in self?.mainView.title = $0 }
             .store(in: &cancellables)
 
         model.$amount
             .receive(on: DispatchQueue.main)
-            .assign(to: \.text, on: mainView.valueView.valueLabel)
+            .sink { [weak self] _ in self?.tableView.reloadData() }
             .store(in: &cancellables)
 
         model.$fee
             .receive(on: DispatchQueue.main)
-            .assign(to: \.fee, on: mainView.valueView)
+            .sink { [weak self] _ in self?.tableView.reloadData() }
             .store(in: &cancellables)
 
         model.$transactionDirection
             .receive(on: DispatchQueue.main)
-            .assign(to: \.title, on: mainView.contactView)
-            .store(in: &cancellables)
-
-        model.$addressComponents
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .map { AddressView.ViewModel(prefix: $0.networkAndFeatures, text: .truncated(prefix: $0.coreAddressPrefix, suffix: $0.coreAddressSuffix), isDetailsButtonVisible: true) }
-            .assign(to: \.addressViewModel, on: mainView.contactView.contentView)
-            .store(in: &cancellables)
-
-        model.$isContactSectionVisible
-            .map { !$0 }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isHidden, on: mainView.contactView)
-            .store(in: &cancellables)
-
-        model.$isAddContactButtonVisible
-            .map { !$0 }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isHidden, on: mainView.contactView.contentView.addContactButton)
-            .store(in: &cancellables)
-
-        model.$isNameSectionVisible
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.mainView.contactNameView.isHidden = !$0
-                self?.mainView.noteSeparatorView.isHidden = !$0
-            }
+            .sink { [weak self] _ in self?.tableView.reloadData() }
             .store(in: &cancellables)
 
         model.$userAlias
             .receive(on: DispatchQueue.main)
-            .assign(to: \.text, on: mainView.contactNameView.contentView.textField)
+            .sink { [weak self] _ in self?.tableView.reloadData() }
             .store(in: &cancellables)
 
         model.$note
             .receive(on: DispatchQueue.main)
-            .assign(to: \.note, on: mainView.noteView.contentView)
-            .store(in: &cancellables)
-
-        model.$gifMedia
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.gifMedia, on: mainView.noteView.contentView)
-            .store(in: &cancellables)
-
-        model.$wasTransactionCanceled
-            .filter { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
+            .sink { [weak self] _ in self?.tableView.reloadData() }
             .store(in: &cancellables)
 
         model.$isBlockExplorerActionAvailable
-            .map { !$0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.mainView.blockExplorerSeparatorView.isHidden = $0
-                self?.mainView.blockExplorerView.isHidden = $0
-            }
+            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .store(in: &cancellables)
+
+        model.$statusText
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.tableView.reloadData() }
             .store(in: &cancellables)
 
         model.$linkToOpen
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { WebBrowserPresenter.open(url: $0) }
+            .sink { UIApplication.shared.open($0) }
             .store(in: &cancellables)
 
         model.$errorModel
@@ -177,49 +162,6 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.userAliasUpdateSuccessCallback = {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
-
-        guard let addressComponents = model.addressComponents else { return }
-        mainView.contactView.contentView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: addressComponents)
-    }
-
-    private func setupViewCallbacks() {
-
-        mainView.valueView.feeButton.onTap = { [weak self] in
-            self?.showFeeInfo()
-        }
-
-        mainView.cancelButton.onTap = { [weak self] in
-            self?.showTransactionCancellationConfirmation()
-        }
-
-        mainView.contactView.contentView.addContactButton.onTap = { [weak self] in
-            self?.model.addContactAliasRequest()
-        }
-
-        mainView.contactNameView.contentView.editButton.onTap = { [weak self] in
-            self?.showEditFormOverlay()
-        }
-
-        mainView.blockExplorerView.contentView.onTap = { [weak self] in
-            self?.model.requestLinkToBlockExplorer()
-        }
-    }
-
-    private func showEditFormOverlay() {
-
-        let isContactExist = model.isContactExist
-
-        if model.contactHaveSplittedName {
-            let nameComponents = model.contactNameComponents
-            FormOverlayPresenter.showTwoFieldsContactEditForm(isContactExist: isContactExist, nameComponents: nameComponents, presenter: self) { [weak self] nameComponents in
-                self?.model.update(nameComponents: nameComponents)
-            }
-        } else {
-            let alias = model.userAlias ?? ""
-            FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: isContactExist, alias: alias, presenter: self) { [weak self] alias in
-                self?.model.update(nameComponents: [alias])
-            }
-        }
     }
 
     // MARK: - Actions
@@ -229,22 +171,123 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.resetAlias()
     }
 
-    private func showFeeInfo() {
-        PopUpPresenter.show(message: MessageModel(title: localized("common.fee_info.title"), message: localized("common.fee_info.description"), type: .normal))
+    private func statusText(for status: TransactionStatus) -> String {
+        switch status {
+        case .unknown:
+            return "Unknown"
+        case .txNullError:
+            return "Transaction Error"
+        case .completed:
+            return "Completed"
+        case .broadcast:
+            return "Broadcast"
+        case .minedUnconfirmed:
+            return "Mined (Unconfirmed)"
+        case .imported:
+            return "Imported"
+        case .pending:
+            return "Pending"
+        case .coinbase:
+            return "Coinbase"
+        case .minedConfirmed:
+            return "Mined (Confirmed)"
+        case .rejected:
+            return "Rejected"
+        case .oneSidedUnconfirmed:
+            return "One-Sided (Unconfirmed)"
+        case .oneSidedConfirmed:
+            return "One-Sided (Confirmed)"
+        case .queued:
+            return "Queued"
+        case .coinbaseUnconfirmed:
+            return "Coinbase (Unconfirmed)"
+        case .coinbaseConfirmed:
+            return "Coinbase (Confirmed)"
+        case .coinbaseNotInBlockChain:
+            return "Coinbase (Not in Blockchain)"
+        }
     }
 
-    private func showTransactionCancellationConfirmation() {
+    private func truncateEmojiAddress(_ address: String) -> String {
+        guard address.count > 8 else { return address }
+        let start = address.prefix(4)
+        let end = address.suffix(4)
+        return "\(start)...\(end)"
+    }
+}
 
-        let model = PopUpDialogModel(
-            title: localized("tx_detail.tx_cancellation.title"),
-            message: localized("tx_detail.tx_cancellation.message"),
-            buttons: [
-                PopUpDialogButtonModel(title: localized("tx_detail.tx_cancellation.yes"), type: .destructive, callback: { [weak self] in self?.model.cancelTransactionRequest() }),
-                PopUpDialogButtonModel(title: localized("tx_detail.tx_cancellation.no"), type: .text)
-            ],
-            hapticType: .none
-        )
+// MARK: - UITableViewDataSource
 
-        PopUpPresenter.showPopUp(model: model)
+extension TransactionDetailsViewController: UITableViewDataSource {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 9 // Paid, To, Contact Name, Fee, Date, Note, Txn ID, Status, Total
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.row {
+        case 8:
+            let cell = tableView.dequeueReusableCell(type: TransactionTotalCell.self, indexPath: indexPath)
+            cell.totalText = model.total
+            return cell
+        default:
+            let cell = tableView.dequeueReusableCell(type: TransactionDetailsCell.self, indexPath: indexPath)
+
+            // Configure cell based on row index
+            switch indexPath.row {
+            case 0:
+                cell.titleText = "Paid"
+                if let amount = model.amount {
+                    cell.valueText = "\(amount) tXTM"
+                }
+            case 1:
+                cell.titleText = "To"
+                if let emojiAddress = model.addressComponents?.fullEmoji {
+                    cell.valueText = truncateEmojiAddress(emojiAddress)
+                }
+            case 2:
+                cell.titleText = "Contact Name"
+                cell.valueText = model.userAlias ?? ""
+            case 3:
+                cell.titleText = "Fee"
+                if let fee = model.fee {
+                    cell.valueText = "\(fee) tXTM"
+                }
+            case 4:
+                cell.titleText = "Date"
+                if let timestamp = model.timestamp {
+                    let date: Date = Date(timeIntervalSince1970: timestamp)
+                    cell.valueText = date.formattedDisplay()
+                }
+            case 5:
+                cell.titleText = "Note"
+                cell.valueText = model.note ?? ""
+            case 6:
+                cell.titleText = "Transaction ID"
+                cell.valueText = model.identifier
+            case 7:
+                cell.titleText = "Status"
+                cell.valueText = model.statusText ?? ""
+            default:
+                break
+            }
+
+            cell.onCopyButtonTap = { [weak self] value in
+                UIPasteboard.general.string = value
+            }
+
+            return cell
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+
+extension TransactionDetailsViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 4 && model.isBlockExplorerActionAvailable {
+            model.requestLinkToBlockExplorer()
+        }
     }
 }

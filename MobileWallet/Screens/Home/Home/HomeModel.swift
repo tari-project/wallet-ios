@@ -53,6 +53,7 @@ final class HomeModel {
     @Published private(set) var username: String = ""
     @Published private(set) var recentTransactions: [TransactionFormatter.Model] = []
     @Published private(set) var selectedTransaction: Transaction?
+    @Published private(set) var isMiningActive: Bool = false
 
     // MARK: - Properties
 
@@ -68,6 +69,7 @@ final class HomeModel {
     init() {
         setupCallbacks()
         fetchMinerStats()
+        fetchMiningStatus()
     }
 
     // MARK: - Setups
@@ -168,7 +170,7 @@ final class HomeModel {
         Task {
             try? await transactionFormatter.updateContactsData()
             recentWalletTransactions = transactions
-            recentTransactions = transactions[0..<min(6, transactions.count)].compactMap { try? transactionFormatter.model(transaction: $0) }
+            recentTransactions = transactions.compactMap { try? transactionFormatter.model(transaction: $0) }
         }
     }
 
@@ -208,6 +210,46 @@ final class HomeModel {
                 let decodedData = try JSONDecoder().decode(MinerStats.self, from: data)
                 self.activeMiners = self.formatLargeNumber(decodedData.totalMiners)
 
+            } catch {
+                print("JSON Decoding Error: \(error)")
+            }
+        }
+
+        task.resume()
+    }
+
+    struct MiningStatusResponse: Decodable {
+        let mining: Bool
+    }
+
+    func fetchMiningStatus() {
+        guard let appId = NotificationManager.shared.appId else {
+            isMiningActive = false
+            return
+        }
+
+        let urlString = "https://airdrop.tari.com/api/miner/status/\(appId)"
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+
+            do {
+                let decodedData = try JSONDecoder().decode(MiningStatusResponse.self, from: data)
+                DispatchQueue.main.async {
+                    self?.isMiningActive = decodedData.mining
+                }
             } catch {
                 print("JSON Decoding Error: \(error)")
             }

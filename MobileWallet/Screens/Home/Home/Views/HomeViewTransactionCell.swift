@@ -211,7 +211,7 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         self.viewModel = viewModel
 
         identifier = viewModel.id
-        titleLabel.text = "Block #1854"
+        titleLabel.text = viewModel.titleComponents.map { $0.text }.joined(separator: " ")
 
         var signString: NSAttributedString = NSAttributedString()
         if viewModel.amount.valueType == .positive {

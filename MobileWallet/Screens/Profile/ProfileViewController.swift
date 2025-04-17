@@ -68,9 +68,13 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        model.updateData()
+        updateData()
     }
     // MARK: - Setups
+
+    func updateData() {
+        model.updateData()
+    }
 
     private func setupCallbacks() {
         model.$errorMessage
@@ -115,7 +119,18 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
         present(activityVC, animated: true, completion: nil)
     }
 
-    private func handleState(state: NewProfileModel.State) {
+    // MARK: - Actions
+    private func show(error: MessageModel) {
+        PopUpPresenter.show(message: error)
+    }
+
+    private func showLogin() {
+        if let url = URL(string: "https://airdrop.tari.com/auth?mobile=nextnet") {
+            UIApplication.shared.open(url)
+        }
+    }
+
+    func handleState(state: NewProfileModel.State) {
         switch state {
         case .LoggedOut:
             showLogin()
@@ -127,17 +142,6 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
             break
         case .Profile:
             break
-        }
-    }
-
-    // MARK: - Actions
-    private func show(error: MessageModel) {
-        PopUpPresenter.show(message: error)
-    }
-
-    private func showLogin() {
-        if let url = URL(string: "https://airdrop.tari.com/auth?mobile=nextnet") {
-            UIApplication.shared.open(url)
         }
     }
 }

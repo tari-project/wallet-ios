@@ -106,43 +106,7 @@ final class HomeViewController: SecureViewController<HomeView> {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
-        model.$connectionStatusIcon
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
-            .store(in: &cancellables)
-
-        model.$totalBalance
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.balance = $0 }
-            .store(in: &cancellables)
-
-        model.$activeMiners
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.activeMiners = $0 }
-            .store(in: &cancellables)
-
-        model.$availableBalance
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.availableBalance = $0 }
-            .store(in: &cancellables)
-
-        model.$username
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.username = $0 }
-            .store(in: &cancellables)
-
-        model.$recentTransactions
-            .receive(on: DispatchQueue.main)
-            .map { $0.map { HomeViewTransactionCell.ViewModel(id: $0.id, titleComponents: $0.titleComponents, timestamp: $0.timestamp, amount: $0.amountModel) }}
-            .sink { [weak self] in self?.mainView.transactions = $0 }
-            .store(in: &cancellables)
-
-        model.$selectedTransaction
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.moveToTransactionDetails(transaction: $0) }
-            .store(in: &cancellables)
+        setupModelCallbacks()
 
         mainView.onConnetionStatusButtonTap = { [weak self] in
             self?.showConectionStatusPopUp()
@@ -154,10 +118,6 @@ final class HomeViewController: SecureViewController<HomeView> {
 
         mainView.onAvatarButtonTap = {
             AppRouter.moveToProfile()
-        }
-
-        mainView.onViewAllTransactionsButtonTap = { [weak self] in
-            self?.moveToTransactionList()
         }
 
         mainView.onAmountHelpButtonTap = { [weak self] in
@@ -187,6 +147,50 @@ final class HomeViewController: SecureViewController<HomeView> {
         mainView.onStartMiningTap = { [weak self] in
             self?.showOverlay(for: .startMining)
         }
+    }
+
+    private func setupModelCallbacks() {
+        model.$connectionStatusIcon
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
+            .store(in: &cancellables)
+
+        model.$totalBalance
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.balance = $0 }
+            .store(in: &cancellables)
+
+        model.$activeMiners
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.activeMiners = $0 }
+            .store(in: &cancellables)
+
+        model.$availableBalance
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.availableBalance = $0 }
+            .store(in: &cancellables)
+
+        model.$username
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.username = $0 }
+            .store(in: &cancellables)
+
+        model.$isMiningActive
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.activeMinersView.setMiningActive($0) }
+            .store(in: &cancellables)
+
+        model.$recentTransactions
+            .receive(on: DispatchQueue.main)
+            .map { $0.map { HomeViewTransactionCell.ViewModel(id: $0.id, titleComponents: $0.titleComponents, timestamp: $0.timestamp, amount: $0.amountModel) }}
+            .sink { [weak self] in self?.mainView.transactions = $0 }
+            .store(in: &cancellables)
+
+        model.$selectedTransaction
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.moveToTransactionDetails(transaction: $0) }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions

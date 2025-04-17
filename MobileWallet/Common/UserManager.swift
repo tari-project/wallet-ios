@@ -86,7 +86,15 @@ class UserManager: NSObject {
             if let newToken = newValue {
                 fetchUserDetails(accessToken: newToken)
             }
+        }
+    }
 
+    var refreshToken: String? {
+        get {
+            UserDefaults.standard.string(forKey: "RefreshToken")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "RefreshToken")
         }
     }
 
