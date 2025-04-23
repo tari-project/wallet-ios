@@ -117,16 +117,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func showRecoveryOverlay() {
-        let overlay = SeedWordsRecoveryProgressViewController()
-        overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen(animated: true, isWalletConnected: true, paperWalletRecoveryData: nil, transitionFrom: .paperWallet)
-        }
-
-        overlay.onFailure = { [weak self] in
-            self?.model.removeWallet()
-        }
-
-        show(overlay: overlay)
+        AppRouter.transitionToHomeScreen(state: .newRestored)
     }
 
     private func showPaperWalletPasswordForm() {

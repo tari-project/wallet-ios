@@ -136,18 +136,7 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
     // MARK: - Actions
 
     @MainActor private func showProgressOverlay() {
-
-        let overlay = SeedWordsRecoveryProgressViewController()
-
-        overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen(animated: true, isWalletConnected: true, paperWalletRecoveryData: nil, transitionFrom: .seedPhrase)
-        }
-
-        overlay.onFailure = { [weak self] in
-            self?.model.deleteWallet()
-        }
-
-        show(overlay: overlay)
+        AppRouter.transitionToHomeScreen(state: .newRestored)
     }
 
     private func showCustomBaseNodeForm() {
