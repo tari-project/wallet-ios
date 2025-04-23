@@ -58,13 +58,33 @@ class MinersGradientView: UIView {
         return label
     }()
 
+    @View private var notMiningLabel: UILabel = {
+        let label = UILabel()
+        label.font = .Poppins.SemiBold.withSize(12)
+        label.textColor = .System.red
+        label.text = "You're not mining"
+        label.isHidden = true
+        return label
+    }()
+
+    private func isLoggedIn() -> Bool {
+        return UserDefaults.standard.string(forKey: "accessToken") != nil
+    }
+
     public func setActiveMiners(activeMiners: String) {
         minersLabel.text = activeMiners
     }
 
     public func setMiningActive(_ isActive: Bool) {
-        startMiningButton.isHidden = isActive
-        miningStatusLabel.isHidden = !isActive
+        startMiningButton.isHidden = true
+
+        if isLoggedIn() {
+            miningStatusLabel.isHidden = !isActive
+            notMiningLabel.isHidden = isActive
+        } else {
+            miningStatusLabel.isHidden = true
+            notMiningLabel.isHidden = true
+        }
     }
 
     var onStartMiningTap: (() -> Void)? {
@@ -105,7 +125,7 @@ class MinersGradientView: UIView {
         let iconView = UIImageView(image: .minersIcon)
         iconView.translatesAutoresizingMaskIntoConstraints = false
 
-        [label, iconView, minersLabel, startMiningButton, miningStatusLabel].forEach(addSubview)
+        [label, iconView, minersLabel, startMiningButton, miningStatusLabel, notMiningLabel].forEach(addSubview)
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor, constant: 18),
             label.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
@@ -118,7 +138,9 @@ class MinersGradientView: UIView {
             startMiningButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
             startMiningButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
             miningStatusLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
-            miningStatusLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
+            miningStatusLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+            notMiningLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+            notMiningLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
         ])
     }
 
@@ -141,7 +163,7 @@ class MinersGradientView: UIView {
     }
 }
 
-final class HomeView: UIView {
+final class HomeView: DynamicThemeView {
     // MARK: - Subviews
 
     var isBalanceHidden = false {
@@ -226,22 +248,14 @@ final class HomeView: UIView {
         let label = UILabel()
         label.font = UIFont.Poppins.SemiBold.withSize(56.0)
         label.textColor = .white
-        label.text = "****"
+        label.text = "*******"
         return label
     }()
 
-    @View private var balanceLabel: AnimatedBalanceLabel = {
-        let view = AnimatedBalanceLabel()
-        view.animationSpeed = .slow
-        view.adjustFontToFitWidth = false
-        return view
-    }()
-
-    @View private var unitLabel: UILabel = {
+    @View private var balanceLabel: UILabel = {
         let view = UILabel()
-        view.font = .Poppins.SemiBold.withSize(22)
+        view.font = .Poppins.SemiBold.withSize(56.0)
         view.textColor = .white
-        view.text = "tXTM"
         return view
     }()
 
@@ -259,6 +273,18 @@ final class HomeView: UIView {
         let view = UILabel()
         view.font = .Poppins.Regular.withSize(17)
         view.textColor = .white.withAlphaComponent(0.5)
+        return view
+    }()
+
+    @View private var disclaimerButton: BaseButton = {
+        let view = BaseButton()
+        view.setTitle("?", for: .normal)
+        view.titleLabel?.font = .Poppins.Regular.withSize(13)
+        view.setTitleColor(.white.withAlphaComponent(0.5), for: .normal)
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = 8
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
         return view
     }()
 
@@ -325,14 +351,15 @@ final class HomeView: UIView {
     var onReceiveButtonTap: (() -> Void)?
     var onTransactionCellTap: ((_ identifier: UInt64) -> Void)?
     var onStartMiningTap: (() -> Void)?
+    var onDisclaimerButtonTap: (() -> Void)?
 
     private var transactionsDataSource: UITableViewDiffableDataSource<Int, HomeViewTransactionCell.ViewModel>?
     private var avatarConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
     }
@@ -351,8 +378,8 @@ final class HomeView: UIView {
         balanceHiddenLabel.isHidden = true
 
         // Add header components
-        [titleLabel, activeMinersView, walletCardView, balanceLabel, unitLabel,
-         balanceTitleLabel, discloseButton, availableBalanceLabel, sendButton,
+        [titleLabel, activeMinersView, walletCardView, balanceLabel,
+         balanceTitleLabel, discloseButton, availableBalanceLabel, disclaimerButton, sendButton,
          receiveButton, activityLabel, balanceHiddenLabel].forEach(headerView.addSubview)
 
         // Add main components
@@ -361,7 +388,7 @@ final class HomeView: UIView {
         // Header constraints
         let headerConstraints = [
             titleLabel.leftAnchor.constraint(equalTo: headerView.leftAnchor, constant: 8),
-            titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 12),
+            titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 22),
 
             activeMinersView.widthAnchor.constraint(equalToConstant: 370),
             activeMinersView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
@@ -390,11 +417,13 @@ final class HomeView: UIView {
             balanceHiddenLabel.centerYAnchor.constraint(equalTo: balanceLabel.centerYAnchor),
             balanceHiddenLabel.widthAnchor.constraint(equalTo: balanceLabel.widthAnchor),
 
-            unitLabel.leftAnchor.constraint(equalTo: balanceLabel.rightAnchor, constant: 5),
-            unitLabel.topAnchor.constraint(equalTo: balanceLabel.centerYAnchor, constant: -5),
-
             availableBalanceLabel.leftAnchor.constraint(equalTo: balanceLabel.leftAnchor),
             availableBalanceLabel.bottomAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: -20),
+
+            disclaimerButton.centerYAnchor.constraint(equalTo: availableBalanceLabel.centerYAnchor),
+            disclaimerButton.leftAnchor.constraint(equalTo: availableBalanceLabel.rightAnchor, constant: 4),
+            disclaimerButton.widthAnchor.constraint(equalToConstant: 16),
+            disclaimerButton.heightAnchor.constraint(equalToConstant: 16),
 
             sendButton.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 5),
             sendButton.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 11),
@@ -466,6 +495,11 @@ final class HomeView: UIView {
             guard let self = self else { return }
             self.isBalanceHidden = !self.isBalanceHidden
         }
+
+        disclaimerButton.onTap = { [weak self] in
+            guard let self = self else { return }
+            self.onDisclaimerButtonTap?()
+        }
     }
 
     // MARK: - Updates
@@ -477,24 +511,40 @@ final class HomeView: UIView {
     private func update(balance: String) {
         let textColor = UIColor.Static.white
 
-        let balanceLabelAttributedText = NSMutableAttributedString(
-            string: balance,
-            attributes: [
-                .font: UIFont.Poppins.SemiBold.withSize(56.0),
-                .foregroundColor: textColor
-            ]
-        )
+        // Format the balance with K for thousands
+        let formattedBalance: String
+        if let value = Double(balance.replacingOccurrences(of: ",", with: "")) {
+            if value >= 10000 {
+                formattedBalance = String(format: "%.1fK", value / 1000)
+            } else {
+                formattedBalance = balance
+            }
+        } else {
+            formattedBalance = balance
+        }
 
-        let lastNumberOfDigitsToFormat = MicroTari.roundedFractionDigits + 1
-        let fractionalNumbersStartIndex = balance.count - lastNumberOfDigitsToFormat
+        // Create attributed string with different font sizes
+        let attributedString = NSMutableAttributedString()
 
-        balanceLabel.offsetIndex = fractionalNumbersStartIndex
-        balanceLabel.topOffset = 0
-        balanceLabel.attributedText = balanceLabelAttributedText
+        // Add the balance value
+        let balanceAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: UIFont.Poppins.SemiBold.withSize(56.0)
+        ]
+        attributedString.append(NSAttributedString(string: formattedBalance, attributes: balanceAttributes))
+
+        // Add the tXTM with smaller font
+        let currencyAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: UIFont.Poppins.SemiBold.withSize(28.0)
+        ]
+        attributedString.append(NSAttributedString(string: " tXTM", attributes: currencyAttributes))
+
+        balanceLabel.attributedText = attributedString
     }
 
     private func update(availableBalance: String) {
-        let text = isBalanceHidden ? "Available: *** tXTM" : "Available: \(availableBalance) tXTM"
+        let text = isBalanceHidden ? "Available: *******" : "Available: \(availableBalance) tXTM"
         availableBalanceLabel.text = text
     }
 
@@ -505,6 +555,11 @@ final class HomeView: UIView {
         transactionsDataSource?.apply(snapshot, animatingDifferences: false)
 
         activityLabel.isHidden = transactions.isEmpty
+    }
+
+    override func update(theme: AppTheme) {
+        super.update(theme: theme)
+        transactionTableView.reloadData()
     }
 
     // MARK: - Actions

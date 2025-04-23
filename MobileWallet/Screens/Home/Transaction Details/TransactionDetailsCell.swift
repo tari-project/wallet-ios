@@ -20,6 +20,12 @@ final class TransactionDetailsCell: DynamicThemeCell {
         }
     }
 
+    var onAddContactTap: (() -> Void)? {
+        didSet {
+            detailView.onAddContactTap = onAddContactTap
+        }
+    }
+
     var titleText: String? {
         didSet {
             detailView.titleText = titleText
@@ -29,6 +35,30 @@ final class TransactionDetailsCell: DynamicThemeCell {
     var valueText: String? {
         didSet {
             detailView.valueText = valueText
+        }
+    }
+
+    var isAddressCell: Bool = false {
+        didSet {
+            detailView.isAddressCell = isAddressCell
+        }
+    }
+
+    var isEmojiFormat: Bool = true {
+        didSet {
+            detailView.isEmojiFormat = isEmojiFormat
+        }
+    }
+
+    var onAddressFormatToggle: ((_ isEmojiFormat: Bool) -> Void)? {
+        didSet {
+            detailView.onAddressFormatToggle = onAddressFormatToggle
+        }
+    }
+
+    var showAddContactButton: Bool = false {
+        didSet {
+            detailView.showAddContactButton = showAddContactButton
         }
     }
 
@@ -69,5 +99,16 @@ final class TransactionDetailsCell: DynamicThemeCell {
     override func update(theme: AppTheme) {
         super.update(theme: theme)
         detailView.update(theme: theme)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        titleText = nil
+        valueText = nil
+        isAddressCell = false
+        isEmojiFormat = true
+        onCopyButtonTap = nil
+        onAddressFormatToggle = nil
+        showAddContactButton = false
     }
 }

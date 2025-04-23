@@ -103,6 +103,16 @@ final class HomeViewController: SecureViewController<HomeView> {
         mainView.stopAnimations()
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if #available(iOS 13.0, *) {
+            if previousTraitCollection?.hasDifferentColorAppearance(comparedTo: traitCollection) == true {
+                mainView.update(theme: ThemeCoordinator.shared.theme)
+            }
+        }
+    }
+
     // MARK: - Setups
 
     private func setupCallbacks() {
@@ -146,6 +156,10 @@ final class HomeViewController: SecureViewController<HomeView> {
 
         mainView.onStartMiningTap = { [weak self] in
             self?.showOverlay(for: .startMining)
+        }
+
+        mainView.onDisclaimerButtonTap = { [weak self] in
+            self?.showOverlay(for: .disclaimer)
         }
     }
 
@@ -223,6 +237,10 @@ final class HomeViewController: SecureViewController<HomeView> {
         }
 
         overlayViewController.activeOverlay = overlay
+        if overlay == .disclaimer {
+            overlayViewController.totalBalance = mainView.balance
+            overlayViewController.availableBalance = mainView.availableBalance
+        }
         overlayViewController.transitioningDelegate = overlayViewController
         overlayViewController.modalPresentationStyle = .custom
         present(overlayViewController, animated: false, completion: nil)

@@ -66,17 +66,27 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias else {
-                let addressComponents = paymentInfo.addressComponents
+            if let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias {
+                // Show contact name in the main address view
+                addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false))
+                mainView.userText = alias
 
-                let viewModel =  AddressView.ViewModel(prefix: addressComponents.networkAndFeatures,
-                                                       text: .truncated(prefix: addressComponents.coreAddressPrefix,
-                                                                        suffix: addressComponents.coreAddressSuffix),
-                                                       isDetailsButtonVisible: false)
+                // Update the recipient address section with the full address
+                let addressComponents = paymentInfo.addressComponents
+                mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
+                mainView.isEmojiFormat = true
+            } else {
+                let addressComponents = paymentInfo.addressComponents
+                // Show shortened address in both views
+                let viewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures,
+                                                    text: .truncated(prefix: addressComponents.coreAddressPrefix,
+                                                                    suffix: addressComponents.coreAddressSuffix),
+                                                    isDetailsButtonVisible: false)
                 addressView.update(viewModel: viewModel)
-                return
+                mainView.userText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
+                mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
+                mainView.isEmojiFormat = true
             }
-            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false))
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
         }
@@ -85,6 +95,17 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
     private func setup() {
         mainView.onCopyButonTap = { value in
             UIPasteboard.general.string = value
+        }
+
+        mainView.onAddressFormatToggle = { [weak self] isEmojiFormat in
+            guard let self = self else { return }
+            let addressComponents = self.paymentInfo.addressComponents
+            self.mainView.isEmojiFormat = isEmojiFormat
+            if isEmojiFormat {
+                self.mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
+            } else {
+                self.mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
+            }
         }
 
         mainView.onSendButonTap = {
@@ -130,7 +151,8 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
         }
 
         let addressComponents = paymentInfo.addressComponents
-        mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 20)
+        mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
+        mainView.isEmojiFormat = true
 
         mainView.noteText = paymentInfo.note
     }

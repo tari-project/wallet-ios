@@ -583,6 +583,9 @@
 		71717AF92DB0786100CCB640 /* TransactionDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AF82DB0786100CCB640 /* TransactionDetailsCell.swift */; };
 		71717AFB2DB0831E00CCB640 /* TransactionTotalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AFA2DB0831E00CCB640 /* TransactionTotalCell.swift */; };
 		71717AFF2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AFE2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift */; };
+		717B28A12DB82C4400EDD05A /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A02DB82C4400EDD05A /* DetailView.swift */; };
+		717B28A32DB83D5300EDD05A /* DisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A22DB83D5300EDD05A /* DisclaimerView.swift */; };
+		717B28A52DB8622200EDD05A /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A42DB8622200EDD05A /* APIService.swift */; };
 		71AFC9242DA41A6D00684FA7 /* ReceiveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */; };
 		71F2B2232D8C20E700104073 /* LoginDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F2B2222D8C20E700104073 /* LoginDeeplink.swift */; };
 		71F94EC52DA32D0B00D3F2AC /* ReceiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F94EC42DA32D0B00D3F2AC /* ReceiveView.swift */; };
@@ -1221,6 +1224,9 @@
 		71717AF82DB0786100CCB640 /* TransactionDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsCell.swift; sourceTree = "<group>"; };
 		71717AFA2DB0831E00CCB640 /* TransactionTotalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTotalCell.swift; sourceTree = "<group>"; };
 		71717AFE2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTransactionsPlaceholderCell.swift; sourceTree = "<group>"; };
+		717B28A02DB82C4400EDD05A /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		717B28A22DB83D5300EDD05A /* DisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclaimerView.swift; sourceTree = "<group>"; };
+		717B28A42DB8622200EDD05A /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveModel.swift; sourceTree = "<group>"; };
 		71F2B2222D8C20E700104073 /* LoginDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDeeplink.swift; sourceTree = "<group>"; };
 		71F94EC42DA32D0B00D3F2AC /* ReceiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveView.swift; sourceTree = "<group>"; };
@@ -1355,6 +1361,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				717B28A42DB8622200EDD05A /* APIService.swift */,
 				37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */,
 				00B4D6F4241B777500ED8318 /* BackgroundTasks */,
 				54CB24F629FA64F50008632D /* Data Models */,
@@ -2290,6 +2297,7 @@
 				3A82455327E1EDBB003B6B59 /* TransactionDetailsValueView.swift */,
 				3A82455527E1EE0D003B6B59 /* TransactionDetailsSectionView.swift */,
 				3A82455727E1EE38003B6B59 /* TransactionDetailsEmojiView.swift */,
+				717B28A02DB82C4400EDD05A /* DetailView.swift */,
 				3A82455927E1EE93003B6B59 /* TransactionDetailsContactView.swift */,
 				3A82455B27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift */,
 				3A115B1727EC4B14001259E5 /* TransactionDetailsSeparatorView.swift */,
@@ -3223,6 +3231,7 @@
 				714A90432D76420E0010B087 /* OverlayView.swift */,
 				714A90492D7659600010B087 /* OverlayViewController.swift */,
 				714A90452D76491B0010B087 /* WelcomeView.swift */,
+				717B28A22DB83D5300EDD05A /* DisclaimerView.swift */,
 				714A904D2D7686910010B087 /* MiningView.swift */,
 				714A90472D76491D0010B087 /* NotificationsView.swift */,
 			);
@@ -3660,6 +3669,7 @@
 				5444C81729F1C10700BF3875 /* PopUpTag.swift in Sources */,
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
 				3AE88506283785100070D1AC /* PopUpModifyFeeContentView.swift in Sources */,
+				717B28A12DB82C4400EDD05A /* DetailView.swift in Sources */,
 				3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */,
 				5453242429A68D14009281A7 /* TariGradientView.swift in Sources */,
 				37B48A8324B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
@@ -3851,6 +3861,7 @@
 				54DF83C32A4C59380040E3F4 /* AmountBadge.swift in Sources */,
 				3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */,
 				71717AFB2DB0831E00CCB640 /* TransactionTotalCell.swift in Sources */,
+				717B28A32DB83D5300EDD05A /* DisclaimerView.swift in Sources */,
 				3A793BF128031F540094DF23 /* PopUpImageHeaderView.swift in Sources */,
 				54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
@@ -4067,6 +4078,7 @@
 				54D1E1A72ABD92420021A365 /* DataCollectionSettingsViewController.swift in Sources */,
 				3A6A033A2802DCE7000432B4 /* TariPopUp.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
+				717B28A52DB8622200EDD05A /* APIService.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
 				54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */,
 				711D7FB02D5532DC0080A987 /* StylisedLabel.swift in Sources */,
@@ -4325,7 +4337,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.40.0;
+				MARKETING_VERSION = 0.32.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4360,7 +4372,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.40.0;
+				MARKETING_VERSION = 0.32.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

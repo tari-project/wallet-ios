@@ -154,12 +154,6 @@ final class ProfileModel {
 
         yatButtonState = .loading
 
-        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: connectedYat, tags: YatRecordTag.XTMAddress.rawValue)
-            .sink(
-                receiveCompletion: { [weak self] in self?.handle(completion: $0) },
-                receiveValue: { [weak self] in self?.handle(paymentAddressResponse: $0, yat: connectedYat) }
-            )
-            .store(in: &cancellables)
     }
 
     private func update(yatButtonState: YatButtonState) {

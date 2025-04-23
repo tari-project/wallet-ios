@@ -103,6 +103,22 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
+    @View private var percentageButtonsStackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .horizontal
+        view.spacing = 8.0
+        view.distribution = .fillEqually
+        return view
+    }()
+
+    @View private var percentageLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Poppins.Regular.withSize(14.0)
+        view.textColor = .white.withAlphaComponent(0.5)
+        view.text = "Amount:"
+        return view
+    }()
+
     var rawInput = ""
     private var txFeeIsVisible = false
 
@@ -351,7 +367,15 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func showTransactionFeeInfo() {
-        PopUpPresenter.show(message: MessageModel(title: localized("common.fee_info.title"), message: localized("common.fee_info.description"), type: .normal))
+        let model = PopUpDialogModel(
+            title: localized("common.fee_info.title"),
+            message: localized("common.fee_info.description"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("common.close"), type: .text)
+            ],
+            hapticType: .none
+        )
+        PopUpPresenter.showPopUp(model: model)
     }
 
     private func showBalanceExceeded(balance: String) {
@@ -474,6 +498,67 @@ final class AddAmountViewController: DynamicThemeViewController {
 
         feeButton.setTitle(text, for: .normal)
     }
+
+    private func makePercentageButton(title: String) -> StylisedButton {
+        let button = StylisedButton(withStyle: .outlinedInverted, withSize: .subSmall)
+        button.setTitle(title, for: .normal)
+        return button
+    }
+
+    private func setupPercentageButtons() {
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        mainView.addSubview(containerView)
+        
+        containerView.addSubview(percentageButtonsStackView)
+        
+        let buttons = [
+            makePercentageButton(title: "25%"),
+            makePercentageButton(title: "50%"),
+            makePercentageButton(title: "75%"),
+            makePercentageButton(title: "MAX")
+        ]
+        
+        buttons.forEach { button in
+            percentageButtonsStackView.addArrangedSubview(button)
+            button.onTap = { [weak self] in
+                self?.handlePercentageButtonTap(title: button.title(for: .normal) ?? "")
+            }
+        }
+        
+//        containerView.backgroundColor = .blue
+//        percentageButtonsStackView.backgroundColor = .red
+        
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: txViewContainer.bottomAnchor, constant: -20),
+            containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            containerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            containerView.heightAnchor.constraint(equalToConstant: 40),
+            
+            percentageButtonsStackView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            percentageButtonsStackView.widthAnchor.constraint(lessThanOrEqualToConstant: 280),
+            percentageButtonsStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            percentageButtonsStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        ])
+    }
+
+    private func handlePercentageButtonTap(title: String) {
+        guard let totalBalance = fetchTotalBalance() else { return }
+        
+        let percentage: Double
+        switch title {
+        case "25%": percentage = 0.25
+        case "50%": percentage = 0.5
+        case "75%": percentage = 0.75
+        case "MAX": percentage = 1.0
+        default: return
+        }
+        
+        let amount = UInt64(Double(totalBalance.rawValue) * percentage)
+        let microTari = MicroTari(amount)
+        rawInput = microTari.formatted
+        updateLabelText()
+    }
 }
 
 extension AddAmountViewController {
@@ -534,7 +619,7 @@ extension AddAmountViewController {
         amountContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         amountContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         amountContainer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        amountContainer.bottomAnchor.constraint(equalTo: amountKeyboardView.topAnchor).isActive = true
+        amountContainer.bottomAnchor.constraint(equalTo: amountKeyboardView.topAnchor, constant: -40).isActive = true
 
         let amountHeight: CGFloat = isSmallScreen ? 50.0 : 75.0
 
@@ -612,7 +697,7 @@ extension AddAmountViewController {
         mainView.addSubview(txViewContainer)
         txViewContainer.translatesAutoresizingMaskIntoConstraints = false
         txViewContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        txViewContainer.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 12).isActive = true
+        txViewContainer.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: -20).isActive = true
 
         txStackView.spacing = isSmallScreen ? 0.0 : 3.0
 
@@ -628,6 +713,8 @@ extension AddAmountViewController {
         updateNextStepElements(isEnabled: false)
 
         [networkTrafficView, feeButton, modifyFeeButton].forEach(txStackView.addArrangedSubview)
+
+        setupPercentageButtons()
     }
 
     private func setupKeypad() {

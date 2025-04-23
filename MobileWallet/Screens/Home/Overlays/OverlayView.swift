@@ -46,6 +46,7 @@ enum Overlay {
     case synced
     case notifications
     case startMining
+    case disclaimer
 }
 
 class OverlayView: UIView {
@@ -94,6 +95,10 @@ class OverlayView: UIView {
         return MiningView()
     }()
 
+    @View var disclaimerView: DisclaimerView = {
+        return DisclaimerView()
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -118,7 +123,7 @@ class OverlayView: UIView {
 
     private func setupConstraints() {
 
-        [blurrView, welcomeView, notificationView, miningView].forEach(addSubview)
+        [blurrView, welcomeView, notificationView, miningView, disclaimerView].forEach(addSubview)
 
         let constraints = [
             blurrView.leftAnchor.constraint(equalTo: leftAnchor),
@@ -136,7 +141,11 @@ class OverlayView: UIView {
             miningView.bottomAnchor.constraint(equalTo: bottomAnchor),
             miningView.leftAnchor.constraint(equalTo: leftAnchor),
             miningView.rightAnchor.constraint(equalTo: rightAnchor),
-            miningView.heightAnchor.constraint(equalToConstant: 594)
+            miningView.heightAnchor.constraint(equalToConstant: 594),
+            disclaimerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            disclaimerView.leftAnchor.constraint(equalTo: leftAnchor),
+            disclaimerView.rightAnchor.constraint(equalTo: rightAnchor),
+            disclaimerView.heightAnchor.constraint(equalToConstant: 270)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -148,26 +157,29 @@ class OverlayView: UIView {
                 notificationView.isHidden = false
                 welcomeView.isHidden = true
                 miningView.isHidden = true
+                disclaimerView.isHidden = true
             case .restored:
                 notificationView.isHidden = true
                 welcomeView.isHidden = false
                 welcomeView.isPaperWalletRestored = false
                 miningView.isHidden = true
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//                    self.onCloseButtonTap?()
-//                }
+                disclaimerView.isHidden = true
             case .synced:
                 notificationView.isHidden = true
                 welcomeView.isHidden = false
                 welcomeView.isPaperWalletRestored = true
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//                    self.onCloseButtonTap?()
-//                }
                 miningView.isHidden = true
+                disclaimerView.isHidden = true
             case .startMining:
                 notificationView.isHidden = true
                 welcomeView.isHidden = true
                 miningView.isHidden = false
+                disclaimerView.isHidden = true
+            case .disclaimer:
+                notificationView.isHidden = true
+                welcomeView.isHidden = true
+                miningView.isHidden = true
+                disclaimerView.isHidden = false
         }
 
         // animations

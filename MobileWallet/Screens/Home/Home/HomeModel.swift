@@ -40,6 +40,7 @@
 
 import UIKit
 import Combine
+import TariCommon
 
 final class HomeModel {
 
@@ -189,37 +190,20 @@ final class HomeModel {
     }
 
     func fetchMinerStats() {
-        let urlString = "https://airdrop.tari.com/api/miner/stats"
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL")
-            return
-        }
-
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                return
-            }
-
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-
-            do {
-                let decodedData = try JSONDecoder().decode(MinerStats.self, from: data)
-                self.activeMiners = self.formatLargeNumber(decodedData.totalMiners)
-
-            } catch {
-                print("JSON Decoding Error: \(error)")
-            }
-        }
-
-        task.resume()
+        APIService.shared.request(endpoint: "/miner/stats")
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Error fetching miner stats: \(error)")
+                }
+            }, receiveValue: { [weak self] (response: MinerStats) in
+                self?.activeMiners = self?.formatLargeNumber(response.totalMiners) ?? "0"
+            })
+            .store(in: &cancellables)
     }
 
     struct MiningStatusResponse: Decodable {
-        let mining: Bool
+        let mining: Bool?
     }
 
     func fetchMiningStatus() {
@@ -228,34 +212,16 @@ final class HomeModel {
             return
         }
 
-        let urlString = "https://airdrop.tari.com/api/miner/status/\(appId)"
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL")
-            return
-        }
-
-        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                return
-            }
-
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-
-            do {
-                let decodedData = try JSONDecoder().decode(MiningStatusResponse.self, from: data)
-                DispatchQueue.main.async {
-                    self?.isMiningActive = decodedData.mining
+        APIService.shared.request(endpoint: "/miner/status/\(appId)")
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Error fetching mining status: \(error)")
                 }
-            } catch {
-                print("JSON Decoding Error: \(error)")
-            }
-        }
-
-        task.resume()
+            }, receiveValue: { [weak self] (response: MiningStatusResponse) in
+                self?.isMiningActive = response.mining ?? false
+            })
+            .store(in: &cancellables)
     }
 
     private func updateAvatar() {

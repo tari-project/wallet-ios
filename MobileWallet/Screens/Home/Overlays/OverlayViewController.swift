@@ -103,11 +103,15 @@ class OverlayViewController: SecureViewController<OverlayView> {
     var onStartMiningButtonTap: (() -> Void)?
 
     var activeOverlay: Overlay = .synced
+    var totalBalance: String = ""
+    var availableBalance: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         mainView.showOverlay(for: activeOverlay, animated: false)
+        mainView.disclaimerView.totalBalance = totalBalance
+        mainView.disclaimerView.availableBalance = availableBalance
 
         mainView.onCloseButtonTap = { [weak self] in
             if self?.activeOverlay == .restored || self?.activeOverlay == .synced || self?.activeOverlay == .none {
@@ -119,7 +123,6 @@ class OverlayViewController: SecureViewController<OverlayView> {
                             self?.onCloseButtonTap?()
                         }
                     }
-
                 }
             } else {
                 self?.onCloseButtonTap?()
@@ -136,6 +139,10 @@ class OverlayViewController: SecureViewController<OverlayView> {
 
         mainView.onStartMiningButtonTap = { [weak self] in
             self?.onStartMiningButtonTap?()
+        }
+
+        mainView.disclaimerView.onCloseButtonTap = { [weak self] in
+            self?.onCloseButtonTap?()
         }
     }
 }

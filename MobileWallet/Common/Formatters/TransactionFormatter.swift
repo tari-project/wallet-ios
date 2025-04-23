@@ -101,7 +101,7 @@ final class TransactionFormatter {
             let emojiAddress = try transaction.address.components.fullEmoji
             let truncatedAddress = truncateEmojiAddress(emojiAddress)
             return [
-                StylizedLabel.StylizedText(text: "Send", style: .normal),
+                StylizedLabel.StylizedText(text: "Sent", style: .normal),
                 StylizedLabel.StylizedText(text: " \(truncatedAddress)", style: .bold)
             ]
         } else {
@@ -166,23 +166,7 @@ final class TransactionFormatter {
     }
 
     private func messageComponents(transaction: Transaction) throws -> (note: String, giphyID: String?) {
-
-        guard try !transaction.isOneSidedPayment else {
-            return (localized("transaction.one_sided_payment.note.normal"), nil)
-        }
-
-        let giphyURL = "https://giphy.com/embed/"
-        let message = try transaction.message
-
-        guard let urlEndIndex = message.range(of: giphyURL)?.lowerBound else {
-            return (message, nil)
-        }
-
-        let note = message[..<urlEndIndex].trimmingCharacters(in: .whitespaces)
-        let url = message[urlEndIndex...].trimmingCharacters(in: .whitespaces)
-        let giphyID = url.replacingOccurrences(of: giphyURL, with: "")
-
-        return (note, giphyID)
+        return (try transaction.message, nil)
     }
 
     // MARK: - Helpers

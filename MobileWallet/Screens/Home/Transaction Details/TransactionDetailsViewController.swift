@@ -112,6 +112,22 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
             .sink { [weak self] in self?.mainView.title = $0 }
             .store(in: &cancellables)
 
+        model.$isAddContactButtonVisible
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                print("isAddContactButtonVisible changed, reloading table")
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
+
+        model.$isNameSectionVisible
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                print("isNameSectionVisible changed, reloading table")
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
+
         model.$amount
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.tableView.reloadData() }
@@ -147,6 +163,11 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
             .sink { [weak self] _ in self?.tableView.reloadData() }
             .store(in: &cancellables)
 
+        model.$isEmojiFormat
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .store(in: &cancellables)
+
         model.$linkToOpen
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -165,6 +186,14 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
     }
 
     // MARK: - Actions
+
+    private func addContactAliasRequest() {
+        model.handleAddContactRequest()
+
+        guard let address = try? model.getTransactionAddress() else { return }
+        let controller = AddContactConstructor.bulidScene(onSuccess: .moveBack, address: address)
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
     override func dismissKeyboard() {
         super.dismissKeyboard()
@@ -221,7 +250,11 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
 extension TransactionDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 9 // Paid, To, Contact Name, Fee, Date, Note, Txn ID, Status, Total
+        // Hide Contact Name, Note, Address, and Fee rows for coinbase transactions
+        if model.isCoinbase {
+            return 5 // Paid, Date, Txn ID, Status, Total
+        }
+        return 9 // Paid, To/From, Contact Name, Fee, Date, Note, Txn ID, Status, Total
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -234,40 +267,70 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(type: TransactionDetailsCell.self, indexPath: indexPath)
 
             // Configure cell based on row index
-            switch indexPath.row {
+            let rowIndex: Int
+            // Adjust row index for coinbase transactions
+            if model.isCoinbase {
+                rowIndex = indexPath.row >= 1 ? indexPath.row + 3 : indexPath.row
+            } else {
+                rowIndex = indexPath.row
+            }
+
+            switch rowIndex {
             case 0:
-                cell.titleText = "Paid"
+                cell.titleText = model.isInbound ? "Received" : "Paid"
                 if let amount = model.amount {
                     cell.valueText = "\(amount) tXTM"
                 }
+                cell.isAddressCell = false
             case 1:
-                cell.titleText = "To"
+                cell.titleText = model.transactionDirection
                 if let emojiAddress = model.addressComponents?.fullEmoji {
-                    cell.valueText = truncateEmojiAddress(emojiAddress)
+                    if model.isEmojiFormat {
+                        cell.valueText = truncateEmojiAddress(emojiAddress)
+                    } else if let baseAddress = model.addressComponents?.fullRaw {
+                        cell.valueText = baseAddress.shortenedMiddle(to: 20)
+                    }
+                    cell.isAddressCell = true
+                    cell.isEmojiFormat = model.isEmojiFormat
+                    cell.onAddressFormatToggle = { [weak self] _ in
+                        self?.model.toggleAddressFormat()
+                    }
                 }
             case 2:
                 cell.titleText = "Contact Name"
                 cell.valueText = model.userAlias ?? ""
+                cell.isAddressCell = false
+                cell.showAddContactButton = model.userAlias == nil && !model.isCoinbase
+                cell.onAddContactTap = { [weak self] in
+                    print("Add contact button tapped")
+                    self?.addContactAliasRequest()
+                    print("ViewController addContactAliasRequest called")
+                }
             case 3:
                 cell.titleText = "Fee"
                 if let fee = model.fee {
                     cell.valueText = "\(fee) tXTM"
                 }
+                cell.isAddressCell = false
             case 4:
                 cell.titleText = "Date"
                 if let timestamp = model.timestamp {
                     let date: Date = Date(timeIntervalSince1970: timestamp)
                     cell.valueText = date.formattedDisplay()
                 }
+                cell.isAddressCell = false
             case 5:
                 cell.titleText = "Note"
                 cell.valueText = model.note ?? ""
+                cell.isAddressCell = false
             case 6:
                 cell.titleText = "Transaction ID"
                 cell.valueText = model.identifier
+                cell.isAddressCell = false
             case 7:
                 cell.titleText = "Status"
                 cell.valueText = model.statusText ?? ""
+                cell.isAddressCell = false
             default:
                 break
             }

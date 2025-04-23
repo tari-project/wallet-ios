@@ -44,8 +44,6 @@ final class MenuTabBarController: UITabBarController {
 
     enum Tab: Int {
         case home
-        case ttlStore
-//        case transactions
         case profile
         case settings
     }
@@ -71,7 +69,7 @@ final class MenuTabBarController: UITabBarController {
 
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)
 
-        viewControllers = [homeViewController, storeViewController, contactBookViewController, settingsViewController]
+        viewControllers = [homeViewController, contactBookViewController, settingsViewController]
         viewControllers?.enumerated().forEach { setup(controller: $1, index: $0) }
 
         for tabBarItem in tabBar.items! {
@@ -178,10 +176,6 @@ private extension MenuTabBarController.Tab {
         switch self {
         case .home:
             return .homeTabBar
-        case .ttlStore:
-            return .storeTabBar
-//        case .transactions:
-//            return .rewardsTabBar
         case .profile:
             return .contactsTabBar
         case .settings:
@@ -193,10 +187,6 @@ private extension MenuTabBarController.Tab {
         switch self {
         case .home:
             return .homeTabBarSelected
-        case .ttlStore:
-            return .selectedStoreTabBar
-//        case .transactions:
-//            return .selectedRewardsTabBar
         case .profile:
             return .selectedContactsTabBar
         case .settings:

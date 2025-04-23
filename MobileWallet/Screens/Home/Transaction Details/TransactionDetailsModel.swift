@@ -67,6 +67,9 @@ final class TransactionDetailsModel {
     @Published private(set) var identifier: String?
     @Published private(set) var status: TransactionStatus?
     @Published private(set) var statusText: String?
+    @Published private(set) var isCoinbase: Bool = false
+    @Published private(set) var isEmojiFormat: Bool = true
+    @Published private(set) var isInbound: Bool = false
 
     var isContactExist: Bool { contactModel?.isFFIContact == true }
     var contactHaveSplittedName: Bool { contactModel?.hasExternalModel ?? false }
@@ -121,6 +124,7 @@ final class TransactionDetailsModel {
             transactionDirection = try fetchTransactionDirection()
             addressComponents = try fetchAddressComponents()
             isContactSectionVisible = try !transaction.isOneSidedPayment && !transaction.isCoinbase
+            isCoinbase = try transaction.isCoinbase
             subtitle = try fetchSubtitle()
             amount = try fetchAmount()
             fee = try fetchFee()
@@ -132,7 +136,15 @@ final class TransactionDetailsModel {
             }
             status = try? transaction.status
             statusText = try fetchStatusText()
-            try handleMessage()
+
+            // Hide note for coinbase transactions
+            if try !transaction.isCoinbase {
+                try handleMessage()
+            } else {
+                note = nil
+                gifMedia = nil
+            }
+
             updateContactData()
 
             // Calculate total
@@ -140,6 +152,8 @@ final class TransactionDetailsModel {
                 let totalAmount = MicroTari(amount + fee)
                 total = totalAmount.formattedPrecise + " tXTM"
             }
+
+            isInbound = (try? transaction.isOutboundTransaction) == false
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"), type: .error)
         }
@@ -160,7 +174,7 @@ final class TransactionDetailsModel {
         }
     }
 
-    func addContactAliasRequest() {
+    func handleAddContactRequest() {
         isAddContactButtonVisible = false
         isNameSectionVisible = true
     }
@@ -205,7 +219,15 @@ final class TransactionDetailsModel {
     }
 
     func resetAlias() {
-        userAlias = userAlias
+        userAlias = contactModel?.alias
+    }
+
+    func getTransactionAddress() throws -> TariAddress {
+        try transaction.address
+    }
+
+    func toggleAddressFormat() {
+        isEmojiFormat.toggle()
     }
 
     func requestLinkToBlockExplorer() {
@@ -220,7 +242,7 @@ final class TransactionDetailsModel {
         }
 
         if try transaction.isCoinbase {
-            return localized("tx_detail.mining_reward")
+            return "Mining Reward"
         }
 
         return try transaction.isOutboundTransaction ? localized("tx_detail.payment_sent") : localized("tx_detail.payment_received")
@@ -278,8 +300,19 @@ final class TransactionDetailsModel {
     }
 
     private func fetchFee() throws -> String? {
-        guard try transaction.isOutboundTransaction, let fee = try (transaction as? CompletedTransaction)?.fee ?? (transaction as? PendingOutboundTransaction)?.fee else { return nil }
-        return MicroTari(fee).formattedWithOperator
+        // Hide fee for coinbase transactions
+        guard try !transaction.isCoinbase, try transaction.isOutboundTransaction else { return nil }
+
+        let fee: UInt64
+        if let completedFee = try (transaction as? CompletedTransaction)?.fee {
+            fee = completedFee
+        } else if let pendingFee = try (transaction as? PendingOutboundTransaction)?.fee {
+            fee = pendingFee
+        } else {
+            return nil
+        }
+
+        return MicroTari(fee).formattedPrecise
     }
 
     private func fetchAddressComponents() throws -> TariAddressComponents {
@@ -346,38 +379,10 @@ final class TransactionDetailsModel {
     }
 
     private func handleMessage() throws {
-
-        guard try !transaction.isOneSidedPayment else {
-            note = localized("transaction.one_sided_payment.note.normal")
-            gifMedia = nil
-            return
-        }
-
         let message = try transaction.message
-        let giphyLinkPrefix = "https://giphy.com/embed/"
-
-        guard let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound else {
-            note = message
-            gifMedia = nil
-            return
-        }
-
-        let messageNote = message[..<endIndex].trimmingCharacters(in: .whitespaces)
-        let link = message[endIndex...].trimmingCharacters(in: .whitespaces)
-        let gifID = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
-
-        GiphyCore.shared.gifByID(gifID) { [weak self] response, error in
-
-            if let error = error {
-                Logger.log(message: "Failed to load gif: \(error.localizedDescription)", domain: .general, level: .error)
-                return
-            }
-
-            guard let data = response?.data else { return }
-            self?.gifMedia = data
-        }
-
-        note = messageNote
+        // If note is "None", show empty string
+        note = message == "None" ? "" : message
+        gifMedia = nil
     }
 
     private func handleTransactionKernel() {
