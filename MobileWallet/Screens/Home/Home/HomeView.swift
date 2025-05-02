@@ -180,6 +180,12 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
+    @View private var syncStatusView: SyncStatusView = {
+        let view = SyncStatusView()
+        view.isHidden = true
+        return view
+    }()
+
     @View private var balanceTitleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Regular.withSize(17)
@@ -362,6 +368,15 @@ final class HomeView: DynamicThemeView {
     private var transactionsDataSource: UITableViewDiffableDataSource<Int, HomeViewTransactionCell.ViewModel>?
     private var avatarConstraints: [NSLayoutConstraint] = []
 
+    var isSyncInProgress: Bool = false {
+        didSet {
+            print("IsSyncInProgress:", !isSyncInProgress)
+            syncStatusView.isHidden = !isSyncInProgress
+            sendButton.isEnabled = !isSyncInProgress
+            transactionTableView.isScrollEnabled = !isSyncInProgress
+        }
+    }
+
     // MARK: - Initialisers
 
     override init() {
@@ -384,7 +399,7 @@ final class HomeView: DynamicThemeView {
         balanceHiddenLabel.isHidden = true
 
         // Add main components
-        [transactionTableView].forEach(addSubview)
+        [transactionTableView, syncStatusView].forEach(addSubview)
 
         // Table view constraints
         let tableViewConstraints = [
@@ -394,7 +409,15 @@ final class HomeView: DynamicThemeView {
             transactionTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
-        NSLayoutConstraint.activate(tableViewConstraints)
+        // Sync status view constraints
+        let syncStatusConstraints = [
+            syncStatusView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50),
+            syncStatusView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            syncStatusView.widthAnchor.constraint(equalToConstant: 370),
+            syncStatusView.heightAnchor.constraint(equalToConstant: 97)
+        ]
+
+        NSLayoutConstraint.activate(tableViewConstraints + syncStatusConstraints)
 
         headerView.isUserInteractionEnabled = true
         headerView.translatesAutoresizingMaskIntoConstraints = false

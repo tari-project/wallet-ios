@@ -557,6 +557,7 @@
 		7134028A2DA6AB56005E9CC4 /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713402892DA6AB56005E9CC4 /* ConfirmationViewController.swift */; };
 		7134028C2DA6B3E2005E9CC4 /* ConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7134028B2DA6B3DF005E9CC4 /* ConfirmationView.swift */; };
 		713FB7642D6F53D000C56CF4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 713FB7632D6F53D000C56CF4 /* HomeView.swift */; };
+		714103CE2DC4628500D4D452 /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714103CD2DC4628500D4D452 /* SyncStatusView.swift */; };
 		714909E62D7713EF0081F417 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 714909E52D7713EF0081F417 /* GoogleService-Info.plist */; };
 		714909E82D8AC8CD0081F417 /* NewProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714909E72D8AC8CA0081F417 /* NewProfileView.swift */; };
 		714909EA2D8ACDDB0081F417 /* NewProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714909E92D8ACDDB0081F417 /* NewProfileModel.swift */; };
@@ -1185,6 +1186,7 @@
 		713402892DA6AB56005E9CC4 /* ConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
 		7134028B2DA6B3DF005E9CC4 /* ConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationView.swift; sourceTree = "<group>"; };
 		713FB7632D6F53D000C56CF4 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		714103CD2DC4628500D4D452 /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
 		714909E52D7713EF0081F417 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		714909E72D8AC8CA0081F417 /* NewProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProfileView.swift; sourceTree = "<group>"; };
 		714909E92D8ACDDB0081F417 /* NewProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProfileModel.swift; sourceTree = "<group>"; };
@@ -2210,6 +2212,7 @@
 			isa = PBXGroup;
 			children = (
 				540CEA812A54076A00BD26C7 /* HomeBackgroundView.swift */,
+				714103CD2DC4628500D4D452 /* SyncStatusView.swift */,
 				540CEA892A543F0000BD26C7 /* HomeGlassView.swift */,
 				540CEA872A543E7B00BD26C7 /* HomeTransactionsPlaceholderView.swift */,
 				54DF83C02A4C22C30040E3F4 /* HomeViewTransactionCell.swift */,
@@ -3812,6 +3815,7 @@
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
 				546B270D2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift in Sources */,
 				3A1D8E4B28400AB8004129D5 /* AboutViewHeader.swift in Sources */,
+				714103CE2DC4628500D4D452 /* SyncStatusView.swift in Sources */,
 				54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */,
 				3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */,
 				3AF56BBB28B774C0004E8E43 /* PendingInboundTransactions.swift in Sources */,

@@ -55,6 +55,12 @@ final class HomeModel {
     @Published private(set) var recentTransactions: [TransactionFormatter.Model] = []
     @Published private(set) var selectedTransaction: Transaction?
     @Published private(set) var isMiningActive: Bool = false
+    @Published private(set) var isSyncInProgress: Bool = false
+
+    private var hasSyncedOnce: Bool {
+        get { GroupUserDefaults.hasSyncedOnce ?? false }
+        set { GroupUserDefaults.hasSyncedOnce = newValue }
+    }
 
     // MARK: - Properties
 
@@ -173,6 +179,16 @@ final class HomeModel {
         case (.connected, .connected, .online, .syncing),
             (.connected, .connected, .online, .synced):
             connectionStatusIcon = .Icons.Network.full
+        }
+
+        // Update sync status
+        if !hasSyncedOnce {
+            print("sync status:", syncStatus)
+            isSyncInProgress = syncStatus != .synced
+            if syncStatus == .synced {
+                isSyncInProgress = false
+                hasSyncedOnce = true
+            }
         }
     }
 
