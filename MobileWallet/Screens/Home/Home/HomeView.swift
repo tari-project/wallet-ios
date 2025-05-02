@@ -49,8 +49,42 @@ class MinersGradientView: UIView {
         return startMiningButton
     }()
 
+    @View private var miningStatusLabel: UILabel = {
+        let label = UILabel()
+        label.font = .Poppins.SemiBold.withSize(12)
+        label.textColor = UIColor(hex: 0x02FE63)
+        label.text = "You're mining"
+        label.isHidden = true
+        return label
+    }()
+
+    @View private var notMiningLabel: UILabel = {
+        let label = UILabel()
+        label.font = .Poppins.SemiBold.withSize(12)
+        label.textColor = .System.red
+        label.text = "You're not mining"
+        label.isHidden = true
+        return label
+    }()
+
+    private func isSyncedToDesktop() -> Bool {
+        return NotificationManager.shared.appId != nil
+    }
+
     public func setActiveMiners(activeMiners: String) {
         minersLabel.text = activeMiners
+    }
+
+    public func setMiningActive(_ isActive: Bool) {
+        startMiningButton.isHidden = true
+
+        if isSyncedToDesktop() {
+            miningStatusLabel.isHidden = !isActive
+            notMiningLabel.isHidden = isActive
+        } else {
+            miningStatusLabel.isHidden = true
+            notMiningLabel.isHidden = true
+        }
     }
 
     var onStartMiningTap: (() -> Void)? {
@@ -91,7 +125,7 @@ class MinersGradientView: UIView {
         let iconView = UIImageView(image: .minersIcon)
         iconView.translatesAutoresizingMaskIntoConstraints = false
 
-        [label, iconView, minersLabel, startMiningButton].forEach(addSubview)
+        [label, iconView, minersLabel, startMiningButton, miningStatusLabel, notMiningLabel].forEach(addSubview)
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor, constant: 18),
             label.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
@@ -102,7 +136,11 @@ class MinersGradientView: UIView {
             minersLabel.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: 6),
             minersLabel.centerYAnchor.constraint(equalTo: iconView.centerYAnchor, constant: 0),
             startMiningButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
-            startMiningButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
+            startMiningButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+            miningStatusLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+            miningStatusLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+            notMiningLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
+            notMiningLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
         ])
     }
 
@@ -125,13 +163,14 @@ class MinersGradientView: UIView {
     }
 }
 
-final class HomeView: UIView {
+final class HomeView: DynamicThemeView {
     // MARK: - Subviews
 
     var isBalanceHidden = false {
         didSet {
             balanceLabel.isHidden = isBalanceHidden
             balanceHiddenLabel.isHidden = !isBalanceHidden
+            update(availableBalance: availableBalance)
         }
     }
 
@@ -150,7 +189,7 @@ final class HomeView: UIView {
         return view
     }()
 
-    @View private var activeMinersView: MinersGradientView = {
+    @View var activeMinersView: MinersGradientView = {
         var view = MinersGradientView()
         return view
     }()
@@ -209,22 +248,16 @@ final class HomeView: UIView {
         let label = UILabel()
         label.font = UIFont.Poppins.SemiBold.withSize(56.0)
         label.textColor = .white
-        label.text = "*****"
+        label.text = "*******"
         return label
     }()
 
-    @View private var balanceLabel: AnimatedBalanceLabel = {
-        let view = AnimatedBalanceLabel()
-        view.animationSpeed = .slow
-        view.adjustFontToFitWidth = false
-        return view
-    }()
-
-    @View private var unitLabel: UILabel = {
+    @View private var balanceLabel: UILabel = {
         let view = UILabel()
-        view.font = .Poppins.SemiBold.withSize(22)
+        view.font = .Poppins.SemiBold.withSize(56.0)
         view.textColor = .white
-        view.text = "tXTM"
+        view.adjustsFontSizeToFitWidth = true
+        view.minimumScaleFactor = 0.5
         return view
     }()
 
@@ -238,10 +271,24 @@ final class HomeView: UIView {
         return view
     }()
 
-    @View private var availableBalanceLabel: AnimatedBalanceLabel = {
-        let view = AnimatedBalanceLabel()
-        view.animationSpeed = .slow
-        view.adjustFontToFitWidth = false
+    @View private var availableBalanceLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Poppins.Regular.withSize(17)
+        view.textColor = .white.withAlphaComponent(0.5)
+        view.adjustsFontSizeToFitWidth = true
+        view.minimumScaleFactor = 0.5
+        return view
+    }()
+
+    @View private var disclaimerButton: BaseButton = {
+        let view = BaseButton()
+        view.setTitle("?", for: .normal)
+        view.titleLabel?.font = .Poppins.Regular.withSize(13)
+        view.setTitleColor(.white.withAlphaComponent(0.5), for: .normal)
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = 8
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
         return view
     }()
 
@@ -252,16 +299,12 @@ final class HomeView: UIView {
         return view
     }()
 
-    @View private var avatarContentView = UIView()
-
-//    @View private var avatarView: RoundedGlassContentView<RoundedAvatarView> = {
-//        let view = RoundedGlassContentView<RoundedAvatarView>()
-//        view.borderWidth = 16.0
-//        view.subview.backgroundColorType = .static
-//        return view
-//    }()
-
-//    @View private var avatarButton = BaseButton()
+    @View private var headerView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
     @View private var transactionTableView: UITableView = {
         let view = UITableView()
@@ -270,17 +313,9 @@ final class HomeView: UIView {
         view.rowHeight = UITableView.automaticDimension
         view.backgroundColor = .clear
         view.separatorStyle = .none
-        view.bounces = false
-        return view
-    }()
-
-    @View private var transactionPlaceholderView = HomeTransactionsPlaceholderView()
-
-    @View private var viewAllTransactionsButton: BaseButton = {
-        let view = BaseButton()
-        view.setTitle(localized("home.button.all_transactions"), for: .normal)
-        view.setTitleColor(.Static.white, for: .normal)
-        view.titleLabel?.font = .Poppins.Medium.withSize(12.0)
+        view.bounces = true
+        view.contentInsetAdjustmentBehavior = .never
+        view.isUserInteractionEnabled = true
         return view
     }()
 
@@ -317,20 +352,20 @@ final class HomeView: UIView {
     var onConnetionStatusButtonTap: (() -> Void)?
     var onQRCodeScannerButtonTap: (() -> Void)?
     var onAvatarButtonTap: (() -> Void)?
-    var onViewAllTransactionsButtonTap: (() -> Void)?
     var onAmountHelpButtonTap: (() -> Void)?
     var onSendButtonTap: (() -> Void)?
     var onReceiveButtonTap: (() -> Void)?
     var onTransactionCellTap: ((_ identifier: UInt64) -> Void)?
     var onStartMiningTap: (() -> Void)?
+    var onDisclaimerButtonTap: (() -> Void)?
 
     private var transactionsDataSource: UITableViewDiffableDataSource<Int, HomeViewTransactionCell.ViewModel>?
     private var avatarConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
     }
@@ -346,64 +381,96 @@ final class HomeView: UIView {
     }
 
     private func setupConstraints() {
-
         balanceHiddenLabel.isHidden = true
 
-        [walletCardView, balanceLabel, unitLabel, balanceTitleLabel, titleLabel,
-         activeMinersView, buttonsStackView, balanceContentView, avatarContentView,
-         transactionTableView, transactionPlaceholderView, receiveButton, sendButton,
-         activityLabel, discloseButton, balanceHiddenLabel, availableBalanceLabel].forEach(addSubview)
+        // Add main components
+        [transactionTableView].forEach(addSubview)
 
-        let constraints = [
+        // Table view constraints
+        let tableViewConstraints = [
+            transactionTableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            transactionTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            transactionTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            transactionTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(tableViewConstraints)
+
+        headerView.isUserInteractionEnabled = true
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        // Add header components
+        [titleLabel, activeMinersView, walletCardView, balanceLabel,
+         balanceTitleLabel, discloseButton, availableBalanceLabel, disclaimerButton, sendButton,
+         receiveButton, activityLabel, balanceHiddenLabel].forEach { view in
+            view.isUserInteractionEnabled = true
+            headerView.addSubview(view)
+        }
+
+        // Header constraints
+        let headerConstraints = [
+            titleLabel.leftAnchor.constraint(equalTo: activeMinersView.leftAnchor),
+            titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 20),
+
+            activeMinersView.widthAnchor.constraint(equalToConstant: 370),
+            activeMinersView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            activeMinersView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+            activeMinersView.heightAnchor.constraint(equalToConstant: 79),
+
+            walletCardView.topAnchor.constraint(equalTo: activeMinersView.bottomAnchor, constant: 10),
+            walletCardView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            walletCardView.widthAnchor.constraint(equalToConstant: 370),
+            walletCardView.heightAnchor.constraint(equalToConstant: 200),
+
             balanceTitleLabel.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 18),
             balanceTitleLabel.bottomAnchor.constraint(equalTo: balanceLabel.topAnchor),
+
             discloseButton.centerYAnchor.constraint(equalTo: balanceTitleLabel.centerYAnchor),
             discloseButton.leftAnchor.constraint(equalTo: balanceTitleLabel.rightAnchor, constant: 3),
             discloseButton.widthAnchor.constraint(equalToConstant: 20),
             discloseButton.heightAnchor.constraint(equalToConstant: 20),
-            titleLabel.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 8),
-            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8),
-            activeMinersView.widthAnchor.constraint(equalToConstant: 370),
-            activeMinersView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            activeMinersView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 70),
-            activeMinersView.heightAnchor.constraint(equalToConstant: 79),
-            walletCardView.topAnchor.constraint(equalTo: activeMinersView.bottomAnchor, constant: 10),
-            walletCardView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
-            walletCardView.widthAnchor.constraint(equalToConstant: 370),
-            walletCardView.heightAnchor.constraint(equalToConstant: 200),
-            receiveButton.rightAnchor.constraint(equalTo: walletCardView.rightAnchor, constant: -5),
-            receiveButton.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 11),
-            sendButton.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 5),
-            sendButton.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 11),
+
             balanceLabel.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 20),
+            balanceLabel.rightAnchor.constraint(lessThanOrEqualTo: walletCardView.rightAnchor, constant: -20),
             balanceLabel.bottomAnchor.constraint(equalTo: availableBalanceLabel.topAnchor, constant: 4),
-            availableBalanceLabel.leftAnchor.constraint(equalTo: balanceLabel.leftAnchor),
-            availableBalanceLabel.bottomAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: -20),
+
             balanceHiddenLabel.leftAnchor.constraint(equalTo: balanceLabel.leftAnchor),
             balanceHiddenLabel.rightAnchor.constraint(equalTo: balanceLabel.rightAnchor),
             balanceHiddenLabel.centerXAnchor.constraint(equalTo: balanceLabel.centerXAnchor),
             balanceHiddenLabel.centerYAnchor.constraint(equalTo: balanceLabel.centerYAnchor),
-            unitLabel.leftAnchor.constraint(equalTo: balanceLabel.rightAnchor, constant: -30),
-            unitLabel.topAnchor.constraint(equalTo: balanceLabel.centerYAnchor, constant: -5),
+            balanceHiddenLabel.widthAnchor.constraint(equalTo: balanceLabel.widthAnchor),
+
+            availableBalanceLabel.leftAnchor.constraint(equalTo: balanceLabel.leftAnchor),
+            availableBalanceLabel.rightAnchor.constraint(lessThanOrEqualTo: walletCardView.rightAnchor, constant: -20),
+            availableBalanceLabel.bottomAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: -20),
+
+            disclaimerButton.centerYAnchor.constraint(equalTo: availableBalanceLabel.centerYAnchor),
+            disclaimerButton.leftAnchor.constraint(equalTo: availableBalanceLabel.rightAnchor, constant: 4),
+            disclaimerButton.widthAnchor.constraint(equalToConstant: 16),
+            disclaimerButton.heightAnchor.constraint(equalToConstant: 16),
+
+            sendButton.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 5),
+            sendButton.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 11),
+            sendButton.widthAnchor.constraint(equalToConstant: 180),
+            sendButton.heightAnchor.constraint(equalToConstant: 44),
+
+            receiveButton.rightAnchor.constraint(equalTo: walletCardView.rightAnchor, constant: -5),
+            receiveButton.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 11),
+            receiveButton.widthAnchor.constraint(equalToConstant: 180),
+            receiveButton.heightAnchor.constraint(equalToConstant: 44),
+
             activityLabel.topAnchor.constraint(equalTo: walletCardView.bottomAnchor, constant: 86),
             activityLabel.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 0),
-//            viewAllTransactionsButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -55.0),
-//            viewAllTransactionsButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            transactionTableView.topAnchor.constraint(equalTo: activityLabel.bottomAnchor, constant: 20.0),
-            transactionTableView.leftAnchor.constraint(equalTo: walletCardView.leftAnchor, constant: 0),
-            transactionTableView.rightAnchor.constraint(equalTo: walletCardView.rightAnchor, constant: 0),
-            transactionTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            transactionPlaceholderView.topAnchor.constraint(equalTo: transactionTableView.topAnchor),
-            transactionPlaceholderView.leadingAnchor.constraint(equalTo: transactionTableView.leadingAnchor),
-            transactionPlaceholderView.trailingAnchor.constraint(equalTo: transactionTableView.trailingAnchor),
-            transactionPlaceholderView.bottomAnchor.constraint(equalTo: transactionTableView.bottomAnchor)
+
+            headerView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            headerView.bottomAnchor.constraint(equalTo: activityLabel.bottomAnchor, constant: 20)
         ]
 
-        NSLayoutConstraint.activate(constraints + avatarConstraints)
+        NSLayoutConstraint.activate(headerConstraints)
+
+        fixHeaderView()
     }
 
     private func setupCallbacks() {
-
         transactionsDataSource = UITableViewDiffableDataSource(tableView: transactionTableView) { tableView, indexPath, viewModel in
             let cell = tableView.dequeueReusableCell(type: HomeViewTransactionCell.self, indexPath: indexPath)
             cell.update(viewModel: viewModel)
@@ -419,10 +486,6 @@ final class HomeView: UIView {
 
         qrCodeScannerButton.onTap = { [weak self] in
             self?.onQRCodeScannerButtonTap?()
-        }
-
-        viewAllTransactionsButton.onTap = { [weak self] in
-            self?.onViewAllTransactionsButtonTap?()
         }
 
         amountHelpButton.onTap = { [weak self] in
@@ -441,14 +504,14 @@ final class HomeView: UIView {
             self?.onStartMiningTap?()
         }
 
-        transactionPlaceholderView.onStartMiningButtonTap = { [weak self] in
-            self?.onStartMiningTap?()
+        discloseButton.onTap = { [weak self] in
+            guard let self = self else { return }
+            self.isBalanceHidden = !self.isBalanceHidden
         }
 
-        discloseButton.onTap = {
-//            DispatchQueue.main.async {
-//                self.isBalanceHidden = !self.isBalanceHidden
-//            }
+        disclaimerButton.onTap = { [weak self] in
+            guard let self = self else { return }
+            self.onDisclaimerButtonTap?()
         }
     }
 
@@ -460,62 +523,80 @@ final class HomeView: UIView {
 
     private func update(balance: String) {
         let textColor = UIColor.Static.white
+        let formattedBalance = balance
+        // Create attributed string with different font sizes
+        let attributedString = NSMutableAttributedString()
 
-        let balanceLabelAttributedText = NSMutableAttributedString(
-            string: balance,
-            attributes: [
-                .font: UIFont.Poppins.SemiBold.withSize(56.0),
-                .foregroundColor: textColor
-            ]
-        )
+        // Add the balance value
+        let balanceAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: UIFont.Poppins.SemiBold.withSize(56.0)
+        ]
+        attributedString.append(NSAttributedString(string: formattedBalance, attributes: balanceAttributes))
 
-        let lastNumberOfDigitsToFormat = MicroTari.roundedFractionDigits + 1
-        let fractionalNumbersStartIndex = balance.count - lastNumberOfDigitsToFormat
+        // Add the tXTM with smaller font
+        let currencyAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: UIFont.Poppins.SemiBold.withSize(28.0)
+        ]
+        attributedString.append(NSAttributedString(string: " tXTM", attributes: currencyAttributes))
 
-        balanceLabel.offsetIndex = fractionalNumbersStartIndex
-        balanceLabel.topOffset = 0
-        balanceLabel.attributedText = balanceLabelAttributedText
+        balanceLabel.attributedText = attributedString
     }
 
     private func update(availableBalance: String) {
-        availableBalanceLabel.attributedText = NSAttributedString(
-            string: "Available: " + availableBalance + "tXTM",
-            attributes: [
-                .foregroundColor: UIColor.white.withAlphaComponent(0.5),
-                .font: UIFont.Poppins.Regular.withSize(17.0)
-            ]
-        )
+        let text = isBalanceHidden ? "Available: *******" : "Available: \(availableBalance) tXTM"
+        availableBalanceLabel.text = text
     }
 
     private func update(transactions: [HomeViewTransactionCell.ViewModel]) {
-
         var snapshot = NSDiffableDataSourceSnapshot<Int, HomeViewTransactionCell.ViewModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(transactions)
         transactionsDataSource?.apply(snapshot, animatingDifferences: false)
 
         activityLabel.isHidden = transactions.isEmpty
+    }
 
-        UIView.animate(withDuration: 0.3) {
-            self.transactionPlaceholderView.alpha = transactions.isEmpty ? 1.0 : 0.0
-        }
+    override func update(theme: AppTheme) {
+        super.update(theme: theme)
+        transactionTableView.reloadData()
     }
 
     // MARK: - Actions
 
     func startAnimations() {
-//        waveBackgroundView.startAnimation()
-//        pulseView.startAnimation()
+        // waveBackgroundView.startAnimation()
+        // pulseView.startAnimation()
     }
 
     func stopAnimations() {
-//        waveBackgroundView.stopAnimation()
-//        pulseView.stopAnimation()
+        // waveBackgroundView.stopAnimation()
+        // pulseView.stopAnimation()
+    }
+
+    public func fixHeaderView() {
+        headerView.setNeedsLayout()
+        headerView.layoutIfNeeded()
+
+        var frame = headerView.frame
+        frame.size.width = 378
+        frame.size.height = 1
+        headerView.frame = frame
+
+        // Calculate the required size
+        let size = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+
+        // Create a frame that's at least as wide as the table view
+        frame.size.width = 378
+        frame.size.height = size.height
+        headerView.frame = frame
+
+        transactionTableView.tableHeaderView = headerView
     }
 }
 
 extension HomeView: UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? HomeViewTransactionCell, let identifier = cell.identifier else { return }
         onTransactionCellTap?(identifier)

@@ -93,7 +93,6 @@ final class StylisedButton: DynamicThemeBaseButton {
     }
 
     // MARK: - Setups
-
     private func setupViews() {
         configuration = .filled()
 

@@ -106,7 +106,7 @@ extension TariNetwork {
     }
 
     private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, isRecommended: Bool, dnsPeer: String, blockExplorerURL: URL?) -> Self {
-        let currencySymbol = isMainNet ? "XTR" : "tXTR"
+        let currencySymbol = isMainNet ? "XTM" : "tXTM"
         return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, isRecommended: isRecommended, dnsPeer: dnsPeer, blockExplorerURL: blockExplorerURL)
     }
 }

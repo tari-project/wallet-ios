@@ -51,7 +51,7 @@ final class CommsConfig {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = comms_config_create(publicAddress, transport.pointer, databaseName, databaseFolderPath, discoveryTimeoutInSecs, safMessageDurationInSec, false, errorCodePointer)
+        let result = comms_config_create(publicAddress, transport.pointer, databaseName, databaseFolderPath, discoveryTimeoutInSecs, (safMessageDurationInSec != 0), errorCodePointer)
 
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result

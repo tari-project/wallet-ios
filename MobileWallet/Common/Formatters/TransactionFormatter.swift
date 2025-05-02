@@ -93,33 +93,32 @@ final class TransactionFormatter {
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
 
         guard try !transaction.isCoinbase else {
-
-            guard try transaction.isOutboundTransaction else {
-                return [StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.inbound"), style: .bold)]
-            }
-
-            return [
-                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.1.bold"), style: .bold),
-                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.2"), style: .normal),
-                StylizedLabel.StylizedText(text: localized("transaction.coinbase.title.outbound.part.3.bold"), style: .bold)
-            ]
+            let blockNumber = try (transaction as? CompletedTransaction)?.confirmationCount ?? 0
+            return [StylizedLabel.StylizedText(text: "Block #\(blockNumber)", style: .bold)]
         }
 
         if try transaction.isOutboundTransaction {
+            let emojiAddress = try transaction.address.components.fullEmoji
+            let truncatedAddress = truncateEmojiAddress(emojiAddress)
             return [
-                StylizedLabel.StylizedText(text: localized("transaction.normal.title.outbound.part.1"), style: .normal),
-                StylizedLabel.StylizedText(text: name, style: .bold)
+                StylizedLabel.StylizedText(text: "Sent", style: .normal),
+                StylizedLabel.StylizedText(text: " \(truncatedAddress)", style: .bold)
             ]
         } else {
-
-            let name = try transaction.isOneSidedPayment ? localized("transaction.one_sided_payment.inbound_user_placeholder") : name
-            let text = transaction.isPending ? localized("transaction.normal.title.pending.part.2") : localized("transaction.normal.title.inbound.part.2")
-
+            let emojiAddress = try transaction.address.components.fullEmoji
+            let truncatedAddress = truncateEmojiAddress(emojiAddress)
             return [
-                StylizedLabel.StylizedText(text: name, style: .bold),
-                StylizedLabel.StylizedText(text: text, style: .normal)
+                StylizedLabel.StylizedText(text: "Received", style: .normal),
+                StylizedLabel.StylizedText(text: " \(truncatedAddress)", style: .bold)
             ]
         }
+    }
+
+    private func truncateEmojiAddress(_ address: String) -> String {
+        guard address.count > 6 else { return address }
+        let start = address.prefix(3)
+        let end = address.suffix(3)
+        return "\(start)...\(end)"
     }
 
     private func amountViewModel(transaction: Transaction) throws -> AmountBadge.ViewModel {
@@ -167,23 +166,7 @@ final class TransactionFormatter {
     }
 
     private func messageComponents(transaction: Transaction) throws -> (note: String, giphyID: String?) {
-
-        guard try !transaction.isOneSidedPayment else {
-            return (localized("transaction.one_sided_payment.note.normal"), nil)
-        }
-
-        let giphyURL = "https://giphy.com/embed/"
-        let message = try transaction.message
-
-        guard let urlEndIndex = message.range(of: giphyURL)?.lowerBound else {
-            return (message, nil)
-        }
-
-        let note = message[..<urlEndIndex].trimmingCharacters(in: .whitespaces)
-        let url = message[urlEndIndex...].trimmingCharacters(in: .whitespaces)
-        let giphyID = url.replacingOccurrences(of: giphyURL, with: "")
-
-        return (note, giphyID)
+        return (try transaction.message, nil)
     }
 
     // MARK: - Helpers

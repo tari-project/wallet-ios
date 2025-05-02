@@ -88,10 +88,7 @@ final class HomeViewTransactionCell: DynamicThemeCell {
     @View private var containerView: UIView = {
         let container = UIView()
         container.clipsToBounds = true
-
-        container.backgroundColor = .Background.primary
         container.layer.cornerRadius = 16
-        container.layer.borderColor = UIColor.Elevation.outlined.cgColor
         container.layer.borderWidth = 1.0
         container.clipsToBounds = true
         return container
@@ -200,7 +197,9 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         }
 
         containerView.backgroundColor = .Background.primary
-        containerView.layer.borderColor = UIColor.Elevation.outlined.cgColor
+
+        let borderColor: UIColor = .Elevation.outlined
+        containerView.layer.borderColor = borderColor.cgColor
         titleLabel.textColor = .Text.primary
         timestampLabel.textColor = .Text.secondary
         iconView.tintColor = .Background.primary
@@ -211,7 +210,7 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         self.viewModel = viewModel
 
         identifier = viewModel.id
-        titleLabel.text = "Block #1854"
+        titleLabel.text = viewModel.titleComponents.map { $0.text }.joined(separator: " ")
 
         var signString: NSAttributedString = NSAttributedString()
         if viewModel.amount.valueType == .positive {
@@ -221,7 +220,15 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         }
 
         let valueString = viewModel.amount.amount ?? ""
-        let amount = NSAttributedString(string: valueString.filter { $0 != "-" && $0 != " " && $0 != "+"} + " tXTM", attributes: [.foregroundColor: UIColor.Text.primary])
+        // Format to 2 decimal places
+        let formattedValue: String
+        if let value = Double(valueString.replacingOccurrences(of: ",", with: "")) {
+            formattedValue = String(format: "%.2f", value)
+        } else {
+            formattedValue = valueString
+        }
+
+        let amount = NSAttributedString(string: formattedValue.filter { $0 != "-" && $0 != " " && $0 != "+"} + " tXTM", attributes: [.foregroundColor: UIColor.Text.primary])
 
         let amountText =  NSMutableAttributedString()
         amountText.append(signString)
@@ -229,10 +236,6 @@ final class HomeViewTransactionCell: DynamicThemeCell {
 
         amountLabel.attributedText = amountText
 
-//        if viewModel.amount.amount != nil {
-//            amount = (viewModel.amount.amount ?? "") + " tXTM"
-//        }
-//        amountLabel.text = amount
         dynamicModel = TransactionDynamicModel(timestamp: viewModel.timestamp, giphyID: nil)
 
         dynamicModel?.$formattedTimestamp
@@ -248,5 +251,17 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         dynamicModel = nil
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
+
+        let borderColor: UIColor = .Elevation.outlined
+        containerView.layer.borderColor = borderColor.cgColor
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            let borderColor: UIColor = .Elevation.outlined
+            containerView.layer.borderColor = borderColor.cgColor
+        }
     }
 }

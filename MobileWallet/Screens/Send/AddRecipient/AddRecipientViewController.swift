@@ -47,8 +47,19 @@ final class AddRecipientViewController: SecureViewController<AddRecipientView> {
 
     var onContactSelected: ((PaymentInfo) -> Void)?
 
-    private let model = AddRecipientModel()
+    private let model: AddRecipientModel
     private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    init(model: AddRecipientModel) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -107,10 +118,6 @@ final class AddRecipientViewController: SecureViewController<AddRecipientView> {
             self?.model.toogleYatPreview()
         }
 
-        mainView.onBluetoothRowTap = { [weak self] in
-            self?.model.fetchTransactionDataViaBLE()
-        }
-
         mainView.onRowTap = { [weak self] in
             self?.model.select(elementID: $0)
         }
@@ -134,23 +141,6 @@ final class AddRecipientViewController: SecureViewController<AddRecipientView> {
         case let .sendTokens(paymentInfo):
             AppRouter.presentSendTransaction(paymentInfo: paymentInfo, presenter: self.navigationController)
             onContactSelected?(paymentInfo)
-        case let .show(dialog):
-            handle(dialog: dialog)
-        }
-    }
-
-    private func handle(dialog: AddRecipientModel.DialogType) {
-        switch dialog {
-        case .bleTransactionWaitingForReceiverDialog:
-            showBLEDialog(type: .scanForTransactionData(onCancel: { [weak self] in self?.model.cancelBLETask() }))
-        case let .bleTransactionConfirmationDialog(receiverName):
-            showBLEDialog(type: .confirmTransactionData(
-                receiverName: receiverName,
-                onConfirmation: { [weak self] in self?.model.confirmIncomingTransaction() },
-                onReject: { [weak self] in self?.model.cancelIncomingTransaction() }
-            ))
-        case let .bleFailureDialog(message):
-            showBLEDialog(type: .failure(message: message))
         }
     }
 

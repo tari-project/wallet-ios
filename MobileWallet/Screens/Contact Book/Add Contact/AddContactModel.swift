@@ -78,8 +78,13 @@ final class AddContactModel {
 
     // MARK: - Initialisers
 
-    init() {
+    init(address: TariAddress? = nil) {
         setupCallbacks()
+        self.address = address
+        if let address = address, let emojis = try? address.emojis {
+            emojiIDSubject.send(emojis)
+            errors.remove(.noEmojiID)
+        }
     }
 
     // MARK: - Setups

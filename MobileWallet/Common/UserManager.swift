@@ -86,7 +86,24 @@ class UserManager: NSObject {
             if let newToken = newValue {
                 fetchUserDetails(accessToken: newToken)
             }
+        }
+    }
 
+    var refreshToken: String? {
+        get {
+            UserDefaults.standard.string(forKey: "RefreshToken")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "RefreshToken")
+        }
+    }
+
+       var userId: String? {
+        get {
+            UserDefaults.standard.string(forKey: "UserId")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "UserId")
         }
     }
 
@@ -96,6 +113,13 @@ class UserManager: NSObject {
 
     override init() {
         super.init()
+    }
+
+    func clearTokens() {
+        accessToken = nil
+        refreshToken = nil
+        userId = nil
+        user = .LoggedOut
     }
 
     func getUserInfo() {
@@ -108,41 +132,17 @@ class UserManager: NSObject {
     }
 
     func fetchUserDetails(accessToken: String) {
-        guard let url = URL(string: "https://airdrop.tari.com/api/user/details") else {
-            user = .Error("Invalid URL")
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                self.user = .Error("Error: \(error.localizedDescription)")
-                return
-            }
-
-            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
-                self.user = .Error("HTTP Error: \(httpResponse.statusCode)")
-                return
-            }
-
-            if let data = data {
-                do {
-                    if let string = String(data: data, encoding: .utf8) {
-                        print("Response string: \(string)")
-                    } else {
-                        print("Failed to convert data to string")
-                    }
-                    let userWrapper = try JSONDecoder().decode(UserWrapper.self, from: data)
-                    self.user = .Ok(userWrapper.user)
-                } catch {
-                    self.user = .Error("JSON Decoding Error: \(error.localizedDescription)")
+        APIService.shared.request(endpoint: "/user/details")
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.user = .Error("Error: \(error.localizedDescription)")
+                    self?.userId = nil
                 }
-            }
-        }
-
-        task.resume()
+            }, receiveValue: { [weak self] (response: UserWrapper) in
+                self?.userId = response.user.id
+                self?.user = .Ok(response.user)
+            })
+            .store(in: &cancellables)
     }
 }

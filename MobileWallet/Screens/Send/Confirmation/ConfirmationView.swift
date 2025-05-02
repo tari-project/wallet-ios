@@ -40,92 +40,6 @@
 
 import TariCommon
 
-class DetailView: DynamicThemeView {
-    var onCopyButonTap: ((_ value: String?) -> Void)? {
-        didSet {
-            copyButton.addAction(UIAction(handler: { _ in
-                self.onCopyButonTap?(self.valueText)
-            }), for: .touchUpInside)
-        }
-    }
-
-    override init() {
-        super.init()
-        setupViews()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupViews()
-    }
-
-    @View private var titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .Poppins.Medium.withSize(12)
-        return label
-    }()
-
-    @View private var valueLabel: UILabel = {
-        let label = UILabel()
-        label.font = .Poppins.Medium.withSize(14)
-        return label
-    }()
-
-    @View private var separatorView: UIView = {
-        let view = UIView()
-        return view
-    }()
-
-    @View private var copyButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(.sendCopy.withRenderingMode(.alwaysTemplate), for: .normal)
-        button.tintColor = .Text.primary
-        button.backgroundColor = .clear
-        return button
-    }()
-
-    func setupViews() {
-
-        [titleLabel, valueLabel, separatorView, copyButton].forEach(addSubview)
-
-        NSLayoutConstraint.activate([
-            titleLabel.leftAnchor.constraint(equalTo: leftAnchor),
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            valueLabel.leftAnchor.constraint(equalTo: leftAnchor),
-            valueLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            copyButton.rightAnchor.constraint(equalTo: rightAnchor),
-            copyButton.centerYAnchor.constraint(equalTo: valueLabel.topAnchor),
-            copyButton.heightAnchor.constraint(equalToConstant: 22),
-            copyButton.widthAnchor.constraint(equalToConstant: 22),
-            separatorView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            separatorView.leftAnchor.constraint(equalTo: leftAnchor),
-            separatorView.rightAnchor.constraint(equalTo: rightAnchor),
-            separatorView.heightAnchor.constraint(equalToConstant: 1)
-        ])
-    }
-
-    public var titleText: String? {
-        didSet {
-            titleLabel.text = titleText
-        }
-    }
-
-    public var valueText: String? {
-        didSet {
-            valueLabel.text = valueText
-        }
-    }
-
-    override func update(theme: AppTheme) {
-        super.update(theme: theme)
-
-        backgroundColor = .clear
-        separatorView.backgroundColor = .Token.divider
-        titleLabel.textColor = .Text.secondary
-        valueLabel.textColor = .Text.primary
-    }
-}
-
 class ConfirmationView: DynamicThemeView {
     var onSendButonTap: (() -> Void)? {
         didSet {
@@ -206,6 +120,7 @@ class ConfirmationView: DynamicThemeView {
     @View private var recipientView: DetailView = {
         let view = DetailView()
         view.titleText = "Recipient Address"
+        view.isAddressCell = true
         return view
     }()
 
@@ -260,14 +175,31 @@ class ConfirmationView: DynamicThemeView {
 
     public var addressText: String? {
         didSet {
-            userLabel.text = addressText
             recipientView.valueText = addressText
+        }
+    }
+
+    public var userText: String? {
+        didSet {
+            userLabel.text = userText
         }
     }
 
     public var noteText: String? {
         didSet {
             noteView.valueText = noteText
+        }
+    }
+
+    public var isEmojiFormat: Bool = true {
+        didSet {
+            recipientView.isEmojiFormat = isEmojiFormat
+        }
+    }
+
+    public var onAddressFormatToggle: ((_ isEmojiFormat: Bool) -> Void)? {
+        didSet {
+            recipientView.onAddressFormatToggle = onAddressFormatToggle
         }
     }
 

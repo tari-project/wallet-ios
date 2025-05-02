@@ -59,8 +59,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutsManager.configureShortcuts()
 
-        Messaging.messaging().delegate = NotificationManager.shared
         FirebaseApp.configure()
+        Messaging.messaging().delegate = NotificationManager.shared
 
         if let giphyApiKey = TariSettings.shared.giphyApiKey {
             Giphy.configure(apiKey: giphyApiKey)
@@ -130,12 +130,11 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func handleDeepLink(_ url: URL) {
-        let path = url.pathComponents.joined(separator: "/")
-        print("Navigating to: \(path)")
-
-        // Example: Navigate to a specific screen
-        if path.contains("profile") {
-            // Navigate to profile screen
+        print("Deep link opened: \(url.absoluteString)")
+        do {
+            try DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+        } catch {
+            print("Failed to handle deep link: \(error)")
         }
     }
 }

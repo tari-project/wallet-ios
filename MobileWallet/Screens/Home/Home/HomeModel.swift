@@ -40,6 +40,7 @@
 
 import UIKit
 import Combine
+import TariCommon
 
 final class HomeModel {
 
@@ -53,10 +54,12 @@ final class HomeModel {
     @Published private(set) var username: String = ""
     @Published private(set) var recentTransactions: [TransactionFormatter.Model] = []
     @Published private(set) var selectedTransaction: Transaction?
+    @Published private(set) var isMiningActive: Bool = false
 
     // MARK: - Properties
 
     private let onContactUpdated = PassthroughSubject<Void, Never>()
+    private var miningStatusTimer: Timer?
 
     private let contactsManager = ContactsManager()
     private let transactionFormatter = TransactionFormatter()
@@ -68,6 +71,11 @@ final class HomeModel {
     init() {
         setupCallbacks()
         fetchMinerStats()
+        startMiningStatusTimer()
+    }
+
+    deinit {
+        miningStatusTimer?.invalidate()
     }
 
     // MARK: - Setups
@@ -105,11 +113,20 @@ final class HomeModel {
         }
     }
 
+    private func startMiningStatusTimer() {
+        // Initial check
+        fetchMiningStatus()
+
+        // Set up timer for periodic checks
+        miningStatusTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+            self?.fetchMiningStatus()
+        }
+    }
+
     // MARK: - Actions
 
     func runManagers() {
         StagedWalletSecurityManager.shared.start()
-        BLEPeripheralManager.shared.isEnabled = true
     }
 
     func runNotifications(registerOnly: Bool, completion: @escaping () -> Void) {
@@ -168,7 +185,7 @@ final class HomeModel {
         Task {
             try? await transactionFormatter.updateContactsData()
             recentWalletTransactions = transactions
-            recentTransactions = transactions[0..<min(6, transactions.count)].compactMap { try? transactionFormatter.model(transaction: $0) }
+            recentTransactions = transactions.compactMap { try? transactionFormatter.model(transaction: $0) }
         }
     }
 
@@ -187,33 +204,49 @@ final class HomeModel {
     }
 
     func fetchMinerStats() {
-        let urlString = "https://airdrop.tari.com/api/miner/stats"
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL")
+        APIService.shared.request(endpoint: "/miner/stats")
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Error fetching miner stats: \(error)")
+                }
+            }, receiveValue: { [weak self] (response: MinerStats) in
+                self?.activeMiners = self?.formatLargeNumber(response.totalMiners) ?? "0"
+            })
+            .store(in: &cancellables)
+    }
+
+    struct MiningStatusResponse: Decodable {
+        let mining: Bool?
+
+        enum CodingKeys: String, CodingKey {
+            case mining
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            mining = try? container.decode(Bool.self, forKey: .mining)
+        }
+    }
+
+    func fetchMiningStatus() {
+        guard let appId = NotificationManager.shared.appId else {
+            isMiningActive = false
             return
         }
 
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                return
-            }
-
-            guard let data = data else {
-                print("No data received")
-                return
-            }
-
-            do {
-                let decodedData = try JSONDecoder().decode(MinerStats.self, from: data)
-                self.activeMiners = self.formatLargeNumber(decodedData.totalMiners)
-
-            } catch {
-                print("JSON Decoding Error: \(error)")
-            }
-        }
-
-        task.resume()
+        print("Fetching mining status for appId: \(appId)")
+        APIService.shared.request(endpoint: "/miner/status/\(appId)")
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Error fetching mining status: \(error)")
+                }
+            }, receiveValue: { [weak self] (response: MiningStatusResponse) in
+                print("Mining status response: \(response)")
+                self?.isMiningActive = response.mining ?? false
+            })
+            .store(in: &cancellables)
     }
 
     private func updateAvatar() {

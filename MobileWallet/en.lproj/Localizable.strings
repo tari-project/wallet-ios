@@ -155,9 +155,9 @@
 "add_amount.error.available_balance.title" = "Available Balance error";
 "add_amount.error.available_balance.description" = "Could not get available balance from wallet";
 "add_amount.info.wait_completion_previous_tx.title" = "Hold your horses! 🐴";
-"add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTR\nuntil your previous transaction(s) are complete.\nPlease wait for at least one transaction\nto complete and then try again.";
+"add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTM\nuntil your previous transaction(s) are complete.\nPlease wait for at least one transaction\nto complete and then try again.";
 "add_amount.error.invalid_number" = "Invalid number";
-"add_amount.warning.not_enough_tari" = "Not enough tXTR in your available balance";
+"add_amount.warning.not_enough_tari" = "Not enough tXTM in your available balance";
 "add_amount.label.network_traffic" = "Network Traffic";
 "add_amount.label.button.adjust_fee" = "Speed Up Transaction";
 "add_amount.label.one_sided_payment" = "One-Sided Payment";
@@ -179,7 +179,7 @@
 "backup_wallet_settings.item.with_recovery_phrase" = "Write Down Seed Phrase";
 "backup_wallet_settings.item.onboarding" = "Learn More";
 "backup_wallet_settings.header.title" = "Wallet Backups";
-"backup_wallet_settings.header.description" = "By backing up your wallet, you’ll ensure that you don’t lose your tXTR if your phone is lost or broken.";
+"backup_wallet_settings.header.description" = "By backing up your wallet, you’ll ensure that you don’t lose your tXTM if your phone is lost or broken.";
 
 "backup_wallet_settings.switch.warning.title" = "Your backup will be deleted";
 "backup_wallet_settings.switch.warning.description" = "Are you sure you want to proceed?";
@@ -564,7 +564,7 @@
 
 /* Incompatible network */
 "incompatible_network.title"="Time to move on";
-"incompatible_network.description"="Good news: The Tari testnet has been reset, bringing a whole host of new features and upgrades.\n\nBad news: Your old tXTR is no longer good here, and the network will reset your balance to zero soon. But on the bright side, this is a great opportunity to start afresh with a spanking new wallet! What do you say?";
+"incompatible_network.description"="Good news: The Tari testnet has been reset, bringing a whole host of new features and upgrades.\n\nBad news: Your old tXTM is no longer good here, and the network will reset your balance to zero soon. But on the bright side, this is a great opportunity to start afresh with a spanking new wallet! What do you say?";
 "incompatible_network.confirm"="Start over, I say!";
 "incompatible_network.cancel"="I'll do it later";
 

@@ -83,7 +83,6 @@ final class SettingsViewController: SettingsParentTableViewController {
 
         case selectTheme
         case screenRecording
-        case bluetoothConfiguration
         case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
@@ -96,7 +95,6 @@ final class SettingsViewController: SettingsParentTableViewController {
 
             case .selectTheme: return localized("settings.item.select_theme")
             case .screenRecording: return localized("settings.item.screen_recording_settings")
-            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
@@ -125,7 +123,6 @@ final class SettingsViewController: SettingsParentTableViewController {
     private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: .Icons.Settings.theme, title: SettingsItemTitle.selectTheme.rawValue),
         screenRecordingItem,
-        SystemMenuTableViewCellItem(icon: .Icons.Settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.bridgeConfig, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.network, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
@@ -225,11 +222,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func onBluetoothSettingsAction() {
-        let controller = BluetoothSettingsConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
-    }
-
     private func onBridgeConfigurationAction() {
         let controller = TorBridgesConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
@@ -249,7 +241,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onLinkAction(indexPath: IndexPath) {
-        let item = SettingsItemTitle.allCases[indexPath.row + indexPath.section]
+        let item = SettingsItemTitle.allCases[indexPath.row + indexPath.section + 1]
 
         guard let link = links[item], let url = link else { return }
         WebBrowserPresenter.open(url: url)
@@ -358,13 +350,22 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 break
             }
         case .more:
-            switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
-            case .about:
+            let item = moreSectionItems[indexPath.row]
+            switch item.title {
+            case SettingsItemTitle.about.rawValue:
                 onAboutAction()
-            case .reportBug:
+            case SettingsItemTitle.reportBug.rawValue:
                 onReportBugAction()
-            default:
+            case SettingsItemTitle.visitTari.rawValue,
+                 SettingsItemTitle.contributeToTariAurora.rawValue,
+                 SettingsItemTitle.userAgreement.rawValue,
+                 SettingsItemTitle.privacyPolicy.rawValue,
+                 SettingsItemTitle.disclaimer.rawValue,
+                 SettingsItemTitle.blockExplorer.rawValue:
+                 
                 onLinkAction(indexPath: indexPath)
+            default:
+                break
             }
         case .advancedSettings:
             switch indexPath.row {
@@ -373,12 +374,10 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 1:
                 onScreenRecordingSettingsAction()
             case 2:
-                onBluetoothSettingsAction()
-            case 3:
                 onBridgeConfigurationAction()
-            case 4:
+            case 3:
                 onSelectNetworkAction()
-            case 5:
+            case 4:
                 onDeleteWalletAction()
             default:
                 break

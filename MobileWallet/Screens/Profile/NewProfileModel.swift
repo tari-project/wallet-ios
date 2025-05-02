@@ -97,29 +97,50 @@ final class NewProfileModel {
     }
 
     private func handleUpdate(status: UserInfoStatus) {
-        switch status {
-        case .Error(let errorMessage):
-            self.handleError(errorMessage: errorMessage)
-        case .LoggedOut:
-            self.handleLoggedOutState()
-        case .Ok(let userDetails):
-            self.handleUserDetails(userDetails: userDetails)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            switch status {
+            case .Error(let errorMessage):
+                self.state = .Error
+                self.profile = nil
+                self.errorMessage = MessageModel(
+                    title: localized("profile_view.error.title"),
+                    message: errorMessage,
+                    type: .error
+                )
+            case .LoggedOut:
+                self.state = .LoggedOut
+                self.profile = nil
+            case .Ok(let userDetails):
+                self.state = .Profile
+                self.profile = userDetails
+            }
         }
     }
 
+    func startLoading() {
+        state = .Loading
+    }
+
     private func handleError(errorMessage: String) {
-        state = .Error
-        profile = nil
+        DispatchQueue.main.async { [weak self] in
+            self?.state = .Error
+            self?.profile = nil
+        }
     }
 
     private func handleLoggedOutState() {
-        state = .LoggedOut
-        profile = nil
+        DispatchQueue.main.async { [weak self] in
+            self?.state = .LoggedOut
+            self?.profile = nil
+        }
     }
 
     private func handleUserDetails(userDetails: UserDetails) {
-        state = .Profile
-        profile = userDetails
+        DispatchQueue.main.async { [weak self] in
+            self?.state = .Profile
+            self?.profile = userDetails
+        }
     }
 
     private func show(error: Error?) {

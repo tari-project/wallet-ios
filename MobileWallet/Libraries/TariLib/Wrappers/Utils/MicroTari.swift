@@ -63,7 +63,7 @@ struct MicroTari {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = MicroTari.roundedFractionDigits
-        formatter.maximumFractionDigits = MicroTari.maxFractionDigits
+        formatter.maximumFractionDigits = MicroTari.roundedFractionDigits
         formatter.positivePrefix = "+ "
         formatter.negativePrefix = "- "
         return formatter

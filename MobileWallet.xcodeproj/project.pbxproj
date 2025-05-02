@@ -120,7 +120,6 @@
 		3A35413A26A738F5002AB5A8 /* ContentScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413926A738F5002AB5A8 /* ContentScrollView.swift */; };
 		3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */; };
 		3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */; };
-		3A39E57229012C8B000BBEBF /* DropboxBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A39E57129012C8B000BBEBF /* DropboxBackupService.swift */; };
 		3A3D70B9291A625700A8CD7A /* BackupStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D70B8291A625700A8CD7A /* BackupStatus.swift */; };
 		3A3D70BB291A637100A8CD7A /* BaseMenuTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D70BA291A637100A8CD7A /* BaseMenuTableView.swift */; };
 		3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */; };
@@ -271,8 +270,6 @@
 		3ACDA85A2721578700F08C70 /* YatTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA8592721578700F08C70 /* YatTransactionViewController.swift */; };
 		3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA85B27215BEB00F08C70 /* YatTransactionView.swift */; };
 		3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA85D2721794800F08C70 /* YatTransactionModel.swift */; };
-		3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA428278EC9BF00EBED98 /* ProfileView.swift */; };
-		3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */; };
 		3ACFA5EA2937532A00E1455A /* SplashViewConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA5E92937532A00E1455A /* SplashViewConstructor.swift */; };
 		3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */; };
 		3ACFECAA27ABD0B100FA9FE1 /* SendingTariProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFECA927ABD0B100FA9FE1 /* SendingTariProgressBar.swift */; };
@@ -379,14 +376,7 @@
 		544013A429E0003100B5DD6D /* ContactListDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544013A329E0003100B5DD6D /* ContactListDeeplink.swift */; };
 		5443954629800F1600786682 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443954529800F1600786682 /* OnboardingViewController.swift */; };
 		5444C80329F14C2900BF3875 /* PopUpCircleImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C80229F14C2900BF3875 /* PopUpCircleImageHeaderView.swift */; };
-		5444C80629F17C1800BF3875 /* BluetoothSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C80529F17C1800BF3875 /* BluetoothSettingsViewController.swift */; };
-		5444C80829F17DA100BF3875 /* BluetoothSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C80729F17DA100BF3875 /* BluetoothSettingsView.swift */; };
-		5444C80A29F17DAD00BF3875 /* BluetoothSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C80929F17DAD00BF3875 /* BluetoothSettingsModel.swift */; };
-		5444C80C29F17DB700BF3875 /* BluetoothSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C80B29F17DB700BF3875 /* BluetoothSettingsConstructor.swift */; };
-		5444C80F29F1B02B00BF3875 /* BluetoothSettingsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C80E29F1B02B00BF3875 /* BluetoothSettingsHeaderView.swift */; };
 		5444C81129F1B05C00BF3875 /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C81029F1B05C00BF3875 /* SelectableCell.swift */; };
-		5444C81329F1BD3E00BF3875 /* CBManagerState+RawState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C81229F1BD3E00BF3875 /* CBManagerState+RawState.swift */; };
-		5444C81529F1BDDD00BF3875 /* BLECentralTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C81429F1BDDD00BF3875 /* BLECentralTask.swift */; };
 		5444C81729F1C10700BF3875 /* PopUpTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C81629F1C10700BF3875 /* PopUpTag.swift */; };
 		544692A429B6059C0081085D /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544692A329B6059C0081085D /* ContactsManager.swift */; };
 		5449192E2C9301A7008F1173 /* WalletContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5449192D2C9301A7008F1173 /* WalletContainer.swift */; };
@@ -445,8 +435,6 @@
 		5488068729D4230500C2A0F9 /* UIStackView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5488068629D4230500C2A0F9 /* UIStackView+Common.swift */; };
 		5488068929D4244800C2A0F9 /* ContactBookShareBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */; };
 		54884FBC2B596E640043E2B4 /* AddressPoisoningDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54884FBB2B596E640043E2B4 /* AddressPoisoningDataHandler.swift */; };
-		54885B1929E7FEA8009175AC /* BLECentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54885B1829E7FEA8009175AC /* BLECentralManager.swift */; };
-		54885B1B29E802D7009175AC /* BLEConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54885B1A29E802D7009175AC /* BLEConstants.swift */; };
 		548A24682CA6CB2100C04CBE /* StaticPublisherWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548A24672CA6CB2100C04CBE /* StaticPublisherWrapper.swift */; };
 		548A246B2CA6CB4900C04CBE /* Publishable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548A246A2CA6CB4900C04CBE /* Publishable.swift */; };
 		548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */; };
@@ -470,7 +458,6 @@
 		54A6E9F0297F1F9900A60853 /* StagedWalletSecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */; };
 		54A6E9F2297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9F1297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift */; };
 		54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9F3297F260800A60853 /* UIViewController+Common.swift */; };
-		54A783DB29E96FF600A30594 /* BLEPeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */; };
 		54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */; };
 		54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88729F6A06F009B0653 /* DataFlowManager.swift */; };
 		54AA2DF92B55596600D38184 /* PopUpAddressPoisoningContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA2DF82B55596600D38184 /* PopUpAddressPoisoningContentView.swift */; };
@@ -496,7 +483,6 @@
 		54CB24F829FA65230008632D /* PaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB24F729FA65230008632D /* PaymentInfo.swift */; };
 		54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */; };
 		54CB9D052CBBEBF6006BD440 /* WalletCallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB9D042CBBEBF6006BD440 /* WalletCallbacks.swift */; };
-		54CF5E012A27460700B01F21 /* ContactBookBluetoothCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */; };
 		54D1CCC02B4D4C7200808535 /* AddressPoisoningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D1CCBF2B4D4C7200808535 /* AddressPoisoningManager.swift */; };
 		54D1E1A32ABD92290021A365 /* DataCollectionSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D1E1A22ABD92290021A365 /* DataCollectionSettingsConstructor.swift */; };
 		54D1E1A52ABD92380021A365 /* DataCollectionSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D1E1A42ABD92380021A365 /* DataCollectionSettingsModel.swift */; };
@@ -580,6 +566,13 @@
 		714A90482D76491D0010B087 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90472D76491D0010B087 /* NotificationsView.swift */; };
 		714A904A2D7659650010B087 /* OverlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90492D7659600010B087 /* OverlayViewController.swift */; };
 		714A904E2D7686910010B087 /* MiningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A904D2D7686910010B087 /* MiningView.swift */; };
+		716BACC92DBA766200A0CBEA /* DropboxBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716BACC72DBA766200A0CBEA /* DropboxBackupService.swift */; };
+		71717AF92DB0786100CCB640 /* TransactionDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AF82DB0786100CCB640 /* TransactionDetailsCell.swift */; };
+		71717AFB2DB0831E00CCB640 /* TransactionTotalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AFA2DB0831E00CCB640 /* TransactionTotalCell.swift */; };
+		71717AFF2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AFE2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift */; };
+		717B28A12DB82C4400EDD05A /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A02DB82C4400EDD05A /* DetailView.swift */; };
+		717B28A32DB83D5300EDD05A /* DisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A22DB83D5300EDD05A /* DisclaimerView.swift */; };
+		717B28A52DB8622200EDD05A /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A42DB8622200EDD05A /* APIService.swift */; };
 		71AFC9242DA41A6D00684FA7 /* ReceiveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */; };
 		71F2B2232D8C20E700104073 /* LoginDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F2B2222D8C20E700104073 /* LoginDeeplink.swift */; };
 		71F94EC52DA32D0B00D3F2AC /* ReceiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F94EC42DA32D0B00D3F2AC /* ReceiveView.swift */; };
@@ -755,7 +748,6 @@
 		3A35413926A738F5002AB5A8 /* ContentScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScrollView.swift; sourceTree = "<group>"; };
 		3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessageManager.swift; sourceTree = "<group>"; };
 		3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewFooter.swift; sourceTree = "<group>"; };
-		3A39E57129012C8B000BBEBF /* DropboxBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropboxBackupService.swift; sourceTree = "<group>"; };
 		3A3D70B8291A625700A8CD7A /* BackupStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupStatus.swift; sourceTree = "<group>"; };
 		3A3D70BA291A637100A8CD7A /* BaseMenuTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMenuTableView.swift; sourceTree = "<group>"; };
 		3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOTileView.swift; sourceTree = "<group>"; };
@@ -906,8 +898,6 @@
 		3ACDA8592721578700F08C70 /* YatTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionViewController.swift; sourceTree = "<group>"; };
 		3ACDA85B27215BEB00F08C70 /* YatTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionView.swift; sourceTree = "<group>"; };
 		3ACDA85D2721794800F08C70 /* YatTransactionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionModel.swift; sourceTree = "<group>"; };
-		3ACFA428278EC9BF00EBED98 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		3ACFA5E92937532A00E1455A /* SplashViewConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewConstructor.swift; sourceTree = "<group>"; };
 		3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		3ACFECA927ABD0B100FA9FE1 /* SendingTariProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTariProgressBar.swift; sourceTree = "<group>"; };
@@ -1014,14 +1004,7 @@
 		544013A329E0003100B5DD6D /* ContactListDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListDeeplink.swift; sourceTree = "<group>"; };
 		5443954529800F1600786682 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		5444C80229F14C2900BF3875 /* PopUpCircleImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpCircleImageHeaderView.swift; sourceTree = "<group>"; };
-		5444C80529F17C1800BF3875 /* BluetoothSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSettingsViewController.swift; sourceTree = "<group>"; };
-		5444C80729F17DA100BF3875 /* BluetoothSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSettingsView.swift; sourceTree = "<group>"; };
-		5444C80929F17DAD00BF3875 /* BluetoothSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSettingsModel.swift; sourceTree = "<group>"; };
-		5444C80B29F17DB700BF3875 /* BluetoothSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSettingsConstructor.swift; sourceTree = "<group>"; };
-		5444C80E29F1B02B00BF3875 /* BluetoothSettingsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSettingsHeaderView.swift; sourceTree = "<group>"; };
 		5444C81029F1B05C00BF3875 /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
-		5444C81229F1BD3E00BF3875 /* CBManagerState+RawState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CBManagerState+RawState.swift"; sourceTree = "<group>"; };
-		5444C81429F1BDDD00BF3875 /* BLECentralTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLECentralTask.swift; sourceTree = "<group>"; };
 		5444C81629F1C10700BF3875 /* PopUpTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpTag.swift; sourceTree = "<group>"; };
 		544692A329B6059C0081085D /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
 		5449192D2C9301A7008F1173 /* WalletContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletContainer.swift; sourceTree = "<group>"; };
@@ -1080,8 +1063,6 @@
 		5488068629D4230500C2A0F9 /* UIStackView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Common.swift"; sourceTree = "<group>"; };
 		5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookShareBar.swift; sourceTree = "<group>"; };
 		54884FBB2B596E640043E2B4 /* AddressPoisoningDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressPoisoningDataHandler.swift; sourceTree = "<group>"; };
-		54885B1829E7FEA8009175AC /* BLECentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLECentralManager.swift; sourceTree = "<group>"; };
-		54885B1A29E802D7009175AC /* BLEConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEConstants.swift; sourceTree = "<group>"; };
 		548A24672CA6CB2100C04CBE /* StaticPublisherWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticPublisherWrapper.swift; sourceTree = "<group>"; };
 		548A246A2CA6CB4900C04CBE /* Publishable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publishable.swift; sourceTree = "<group>"; };
 		548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Common.swift"; sourceTree = "<group>"; };
@@ -1104,7 +1085,6 @@
 		54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagedWalletSecurityManager.swift; sourceTree = "<group>"; };
 		54A6E9F1297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpStagedWalletSecurityHeaderView.swift; sourceTree = "<group>"; };
 		54A6E9F3297F260800A60853 /* UIViewController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Common.swift"; sourceTree = "<group>"; };
-		54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEPeripheralManager.swift; sourceTree = "<group>"; };
 		54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUnspentOutputsService.swift; sourceTree = "<group>"; };
 		54A9C88729F6A06F009B0653 /* DataFlowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFlowManager.swift; sourceTree = "<group>"; };
 		54A9C88929F6A54B009B0653 /* RoundedLabeledButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedLabeledButton.swift; sourceTree = "<group>"; };
@@ -1131,7 +1111,6 @@
 		54CB24F729FA65230008632D /* PaymentInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInfo.swift; sourceTree = "<group>"; };
 		54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PopPresenter+ContactBook.swift"; sourceTree = "<group>"; };
 		54CB9D042CBBEBF6006BD440 /* WalletCallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCallbacks.swift; sourceTree = "<group>"; };
-		54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookBluetoothCell.swift; sourceTree = "<group>"; };
 		54D1CCBF2B4D4C7200808535 /* AddressPoisoningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressPoisoningManager.swift; sourceTree = "<group>"; };
 		54D1E1A22ABD92290021A365 /* DataCollectionSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionSettingsConstructor.swift; sourceTree = "<group>"; };
 		54D1E1A42ABD92380021A365 /* DataCollectionSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionSettingsModel.swift; sourceTree = "<group>"; };
@@ -1215,6 +1194,13 @@
 		714A90472D76491D0010B087 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		714A90492D7659600010B087 /* OverlayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayViewController.swift; sourceTree = "<group>"; };
 		714A904D2D7686910010B087 /* MiningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiningView.swift; sourceTree = "<group>"; };
+		716BACC72DBA766200A0CBEA /* DropboxBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropboxBackupService.swift; sourceTree = "<group>"; };
+		71717AF82DB0786100CCB640 /* TransactionDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsCell.swift; sourceTree = "<group>"; };
+		71717AFA2DB0831E00CCB640 /* TransactionTotalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTotalCell.swift; sourceTree = "<group>"; };
+		71717AFE2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTransactionsPlaceholderCell.swift; sourceTree = "<group>"; };
+		717B28A02DB82C4400EDD05A /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		717B28A22DB83D5300EDD05A /* DisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclaimerView.swift; sourceTree = "<group>"; };
+		717B28A42DB8622200EDD05A /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveModel.swift; sourceTree = "<group>"; };
 		71F2B2222D8C20E700104073 /* LoginDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDeeplink.swift; sourceTree = "<group>"; };
 		71F94EC42DA32D0B00D3F2AC /* ReceiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveView.swift; sourceTree = "<group>"; };
@@ -1349,6 +1335,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				717B28A42DB8622200EDD05A /* APIService.swift */,
 				37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */,
 				00B4D6F4241B777500ED8318 /* BackgroundTasks */,
 				54CB24F629FA64F50008632D /* Data Models */,
@@ -1437,6 +1424,8 @@
 				3A82455227E1EDA6003B6B59 /* Views */,
 				37C8BA332480F575005BBC05 /* WaveEmojiAnimation */,
 				3A03682D27DF20E300F304A2 /* TransactionDetailsViewController.swift */,
+				71717AFA2DB0831E00CCB640 /* TransactionTotalCell.swift */,
+				71717AF82DB0786100CCB640 /* TransactionDetailsCell.swift */,
 				3A03683027DF211D00F304A2 /* TransactionDetailsView.swift */,
 				3AE1D57F27E0A894001A46C4 /* TransactionDetailsModel.swift */,
 				3AE1D58127E0A8C8001A46C4 /* TransactionDetailsConstructor.swift */,
@@ -1638,7 +1627,6 @@
 			isa = PBXGroup;
 			children = (
 				54D1E1A12ABD920F0021A365 /* Data Collection Settings */,
-				5444C80429F17C0000BF3875 /* Bluetooth Settings */,
 				545A9D12294F6EBD008D24A6 /* Theme Settings */,
 				3A0391E2290BA22400352D73 /* Bug Reporting */,
 				3A4949A3283FD5EF002768AE /* MoreSettings */,
@@ -1737,9 +1725,9 @@
 		37B4449C24890F3000592D92 /* Backup */ = {
 			isa = PBXGroup;
 			children = (
+				716BACC82DBA766200A0CBEA /* Dropbox */,
 				3A530BCD290AEDA400C423C7 /* Manager */,
 				3AB136D42906642700A5373D /* ICloud */,
-				3A39E57029012BC9000BBEBF /* Dropbox */,
 				3AD308632923FDBB009A53CE /* Error+BackupErrors.swift */,
 			);
 			path = Backup;
@@ -1944,7 +1932,6 @@
 			isa = PBXGroup;
 			children = (
 				54CA4D6A2CB956F700C33FD9 /* Connection Monitor */,
-				54885B1729E7FE91009175AC /* BLE */,
 				54D1CCBF2B4D4C7200808535 /* AddressPoisoningManager.swift */,
 				5482C8CF2A71105700C2C80A /* AnimationHandler.swift */,
 				3A8CC6C1290BDC70008161DC /* BugReportService.swift */,
@@ -1973,14 +1960,6 @@
 				540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		3A39E57029012BC9000BBEBF /* Dropbox */ = {
-			isa = PBXGroup;
-			children = (
-				3A39E57129012C8B000BBEBF /* DropboxBackupService.swift */,
-			);
-			path = Dropbox;
 			sourceTree = "<group>";
 		};
 		3A3E7AD4284E03030065F3C0 /* Views */ = {
@@ -2234,6 +2213,7 @@
 				540CEA892A543F0000BD26C7 /* HomeGlassView.swift */,
 				540CEA872A543E7B00BD26C7 /* HomeTransactionsPlaceholderView.swift */,
 				54DF83C02A4C22C30040E3F4 /* HomeViewTransactionCell.swift */,
+				71717AFE2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift */,
 				3A7A38D22881689A00D7E8BD /* PopUpNetworkStatusContentView.swift */,
 				540CEA852A540D6500BD26C7 /* PulseLayer.swift */,
 				5482C8CD2A70F66300C2C80A /* PulseView.swift */,
@@ -2281,6 +2261,7 @@
 				3A82455327E1EDBB003B6B59 /* TransactionDetailsValueView.swift */,
 				3A82455527E1EE0D003B6B59 /* TransactionDetailsSectionView.swift */,
 				3A82455727E1EE38003B6B59 /* TransactionDetailsEmojiView.swift */,
+				717B28A02DB82C4400EDD05A /* DetailView.swift */,
 				3A82455927E1EE93003B6B59 /* TransactionDetailsContactView.swift */,
 				3A82455B27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift */,
 				3A115B1727EC4B14001259E5 /* TransactionDetailsSeparatorView.swift */,
@@ -2752,26 +2733,6 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
-		5444C80429F17C0000BF3875 /* Bluetooth Settings */ = {
-			isa = PBXGroup;
-			children = (
-				5444C80D29F1B02000BF3875 /* Views */,
-				5444C80529F17C1800BF3875 /* BluetoothSettingsViewController.swift */,
-				5444C80729F17DA100BF3875 /* BluetoothSettingsView.swift */,
-				5444C80929F17DAD00BF3875 /* BluetoothSettingsModel.swift */,
-				5444C80B29F17DB700BF3875 /* BluetoothSettingsConstructor.swift */,
-			);
-			path = "Bluetooth Settings";
-			sourceTree = "<group>";
-		};
-		5444C80D29F1B02000BF3875 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				5444C80E29F1B02B00BF3875 /* BluetoothSettingsHeaderView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		544D9D4A296D9B0000D8ECEF /* Unblinded Outputs */ = {
 			isa = PBXGroup;
 			children = (
@@ -2934,18 +2895,6 @@
 			path = Menu;
 			sourceTree = "<group>";
 		};
-		54885B1729E7FE91009175AC /* BLE */ = {
-			isa = PBXGroup;
-			children = (
-				54885B1829E7FEA8009175AC /* BLECentralManager.swift */,
-				54885B1A29E802D7009175AC /* BLEConstants.swift */,
-				54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */,
-				5444C81229F1BD3E00BF3875 /* CBManagerState+RawState.swift */,
-				5444C81429F1BDDD00BF3875 /* BLECentralTask.swift */,
-			);
-			path = BLE;
-			sourceTree = "<group>";
-		};
 		548A24692CA6CB3700C04CBE /* Publishers */ = {
 			isa = PBXGroup;
 			children = (
@@ -2992,7 +2941,6 @@
 			isa = PBXGroup;
 			children = (
 				54B7F4442996583800BB484B /* ContactBookCell.swift */,
-				54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */,
 				5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */,
 			);
 			path = Views;
@@ -3214,10 +3162,19 @@
 				714A90432D76420E0010B087 /* OverlayView.swift */,
 				714A90492D7659600010B087 /* OverlayViewController.swift */,
 				714A90452D76491B0010B087 /* WelcomeView.swift */,
+				717B28A22DB83D5300EDD05A /* DisclaimerView.swift */,
 				714A904D2D7686910010B087 /* MiningView.swift */,
 				714A90472D76491D0010B087 /* NotificationsView.swift */,
 			);
 			path = Overlays;
+			sourceTree = "<group>";
+		};
+		716BACC82DBA766200A0CBEA /* Dropbox */ = {
+			isa = PBXGroup;
+			children = (
+				716BACC72DBA766200A0CBEA /* DropboxBackupService.swift */,
+			);
+			path = Dropbox;
 			sourceTree = "<group>";
 		};
 		71F4BDBF8B1AF18134115485 /* Pods */ = {
@@ -3326,10 +3283,8 @@
 			isa = PBXGroup;
 			children = (
 				3AA271782790284E0076E51F /* RequestTari */,
-				3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */,
 				714909E92D8ACDDB0081F417 /* NewProfileModel.swift */,
 				BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */,
-				3ACFA428278EC9BF00EBED98 /* ProfileView.swift */,
 				714909E72D8AC8CA0081F417 /* NewProfileView.swift */,
 			);
 			path = Profile;
@@ -3643,7 +3598,6 @@
 				3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */,
 				3A8473CA28EC56180015E63A /* TariFeesService.swift in Sources */,
 				54D1E1A92ABD92490021A365 /* DataCollectionSettingsView.swift in Sources */,
-				3A39E57229012C8B000BBEBF /* DropboxBackupService.swift in Sources */,
 				3AD308642923FDBB009A53CE /* Error+BackupErrors.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				3ABF91AC283FFAA50001C766 /* AboutViewCell.swift in Sources */,
@@ -3651,6 +3605,7 @@
 				5444C81729F1C10700BF3875 /* PopUpTag.swift in Sources */,
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
 				3AE88506283785100070D1AC /* PopUpModifyFeeContentView.swift in Sources */,
+				717B28A12DB82C4400EDD05A /* DetailView.swift in Sources */,
 				3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */,
 				5453242429A68D14009281A7 /* TariGradientView.swift in Sources */,
 				37B48A8324B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
@@ -3680,7 +3635,6 @@
 				54FCC36F2AA5F00900CA0025 /* CustomTorBridgesViewController.swift in Sources */,
 				37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				3A4949A5283FD603002768AE /* AboutViewController.swift in Sources */,
-				5444C80C29F17DB700BF3875 /* BluetoothSettingsConstructor.swift in Sources */,
 				3A983A6027C67C0500F0AB61 /* VerifySeedWordsConstructor.swift in Sources */,
 				540C3A1F2C748CAE00B0CC97 /* RoundedAddressView.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
@@ -3713,7 +3667,6 @@
 				4CDEC323273A5E3600999DCB /* Balance.swift in Sources */,
 				3AAE90B3291C176700BEA262 /* ICloudDocsUploadService.swift in Sources */,
 				3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
-				54885B1929E7FEA8009175AC /* BLECentralManager.swift in Sources */,
 				3A8473DA28EC57AA0015E63A /* Publisher+Binding.swift in Sources */,
 				3AF56BBD28B77969004E8E43 /* PendingOutboundTransactions.swift in Sources */,
 				37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
@@ -3765,7 +3718,6 @@
 				3AE1D58027E0A894001A46C4 /* TransactionDetailsModel.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */,
-				5444C81329F1BD3E00BF3875 /* CBManagerState+RawState.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TxTableViewCell.swift in Sources */,
 				3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				5419AA792A4473F90079E745 /* HomeViewController.swift in Sources */,
@@ -3785,7 +3737,7 @@
 				3A530BD2290AF46500C423C7 /* BackupWalletSettingsHeaderView.swift in Sources */,
 				5419AA7F2A44744A0079E745 /* HomeConstructor.swift in Sources */,
 				3A4BF7CE27B5712900CA499D /* Result+Void.swift in Sources */,
-				5444C81529F1BDDD00BF3875 /* BLECentralTask.swift in Sources */,
+				716BACC92DBA766200A0CBEA /* DropboxBackupService.swift in Sources */,
 				3A78860E2872FB39003B1F9A /* TariVectorWrapper.swift in Sources */,
 				3A6A03362802DC2B000432B4 /* PopUpDescriptionContentView.swift in Sources */,
 				3AF79D5E2727201A00613C24 /* ScrollableLabel.swift in Sources */,
@@ -3800,7 +3752,6 @@
 				545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */,
 				711D7F942D50EB7C0080A987 /* SecondaryActionButton.swift in Sources */,
 				544692A429B6059C0081085D /* ContactsManager.swift in Sources */,
-				5444C80829F17DA100BF3875 /* BluetoothSettingsView.swift in Sources */,
 				54B854B929BF993600A2367A /* ContactBookListPlaceholder.swift in Sources */,
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
 				3AE138CB28044B1E00443D34 /* CustomDeeplinkPopUpContentView.swift in Sources */,
@@ -3828,7 +3779,6 @@
 				37875E4824D8787A00C0595B /* TxTableViewModel.swift in Sources */,
 				3AF97E6727CF769A00FF6A3F /* BaseNodesAddDeeplink.swift in Sources */,
 				3A8005CF28EAF9380022A38A /* BaseNodeConnectivityStatus.swift in Sources */,
-				5444C80F29F1B02B00BF3875 /* BluetoothSettingsHeaderView.swift in Sources */,
 				3A115B1827EC4B14001259E5 /* TransactionDetailsSeparatorView.swift in Sources */,
 				549E1A012A5EB7B00063022C /* QRCodeScannerBoxView.swift in Sources */,
 				3A8473CC28EC562E0015E63A /* TariConnectionService.swift in Sources */,
@@ -3841,6 +3791,8 @@
 				3A87C3B527A94086007A553F /* CoreError.swift in Sources */,
 				54DF83C32A4C59380040E3F4 /* AmountBadge.swift in Sources */,
 				3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */,
+				71717AFB2DB0831E00CCB640 /* TransactionTotalCell.swift in Sources */,
+				717B28A32DB83D5300EDD05A /* DisclaimerView.swift in Sources */,
 				3A793BF128031F540094DF23 /* PopUpImageHeaderView.swift in Sources */,
 				54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
@@ -3904,7 +3856,6 @@
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				54D835582AC6C99D00D74FE8 /* AccessoryImageMenuCell.swift in Sources */,
 				54ADC0932A3858C40082C455 /* ErrorView.swift in Sources */,
-				54885B1B29E802D7009175AC /* BLEConstants.swift in Sources */,
 				54ED0FBE2A5D315400ED1F7E /* SearchField.swift in Sources */,
 				3A983A5E27C64B0500F0AB61 /* VerifySeedWordsModel.swift in Sources */,
 				3A6A033E2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift in Sources */,
@@ -3930,7 +3881,6 @@
 				00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				545A9D1D294F9305008D24A6 /* ThemeSettingsCollectionCell.swift in Sources */,
 				37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
-				5444C80629F17C1800BF3875 /* BluetoothSettingsViewController.swift in Sources */,
 				3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */,
 				54884FBC2B596E640043E2B4 /* AddressPoisoningDataHandler.swift in Sources */,
 				3A2B956A28648D860085BE21 /* CChar+Helpers.swift in Sources */,
@@ -3940,7 +3890,6 @@
 				5453242629A68D7D009281A7 /* RoundedAvatarView.swift in Sources */,
 				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				3A96B9452733E9A90040E59F /* TokensToolbar.swift in Sources */,
-				54CF5E012A27460700B01F21 /* ContactBookBluetoothCell.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */,
 				7134028C2DA6B3E2005E9CC4 /* ConfirmationView.swift in Sources */,
@@ -3949,6 +3898,7 @@
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
 				3AFC3D60288EC3FA0046D386 /* UnselectableTextView.swift in Sources */,
 				3A7A38D32881689A00D7E8BD /* PopUpNetworkStatusContentView.swift in Sources */,
+				71717AF92DB0786100CCB640 /* TransactionDetailsCell.swift in Sources */,
 				3A530BCF290AEDB600C423C7 /* BackupServicable.swift in Sources */,
 				3AF79D602727206200613C24 /* ContactSearchView.swift in Sources */,
 				3AECD490284F3BB300D81C80 /* BaseNavigationContentView.swift in Sources */,
@@ -3983,7 +3933,6 @@
 				548A24682CA6CB2100C04CBE /* StaticPublisherWrapper.swift in Sources */,
 				5455969D29B0A73300D6719E /* ExternalContactsManager.swift in Sources */,
 				3A0391E4290BA37C00352D73 /* BugReportingViewController.swift in Sources */,
-				54A783DB29E96FF600A30594 /* BLEPeripheralManager.swift in Sources */,
 				3A530BD8290AFBA000C423C7 /* ICloudBackupMetadataQuery.swift in Sources */,
 				54F2E34329EE6B8A00A7A15A /* ContactTransactionListViewController.swift in Sources */,
 				540CEA8A2A543F0000BD26C7 /* HomeGlassView.swift in Sources */,
@@ -3999,7 +3948,6 @@
 				54F2E34E29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift in Sources */,
 				54C7EB602AC6B22C00F387DF /* TrackingConsentManager.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
-				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */,
 				370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				540CEA842A5407A700BD26C7 /* WaveView.swift in Sources */,
@@ -4023,6 +3971,7 @@
 				5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */,
 				3AA2717A279028BF0076E51F /* RequestTariAmountViewController.swift in Sources */,
 				3A5A3D5C290178EB00B689C6 /* BackupWalletSettingsModel.swift in Sources */,
+				71717AFF2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift in Sources */,
 				3AE5E5662874656200D3AF85 /* PopUpUTXOsBreakContentView.swift in Sources */,
 				54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */,
 				3A4BF7D027B57CE400CA499D /* SendingTariConstructor.swift in Sources */,
@@ -4055,6 +4004,7 @@
 				54D1E1A72ABD92420021A365 /* DataCollectionSettingsViewController.swift in Sources */,
 				3A6A033A2802DCE7000432B4 /* TariPopUp.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
+				717B28A52DB8622200EDD05A /* APIService.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
 				54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */,
 				711D7FB02D5532DC0080A987 /* StylisedLabel.swift in Sources */,
@@ -4064,11 +4014,9 @@
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
 				54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */,
 				54DD2E8629C37A7600C8C0D9 /* UINavigationController+Common.swift in Sources */,
-				5444C80A29F17DAD00BF3875 /* BluetoothSettingsModel.swift in Sources */,
 				3A8826C527F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift in Sources */,
 				546B03262983E92700DBED8E /* ContentNavigationViewController.swift in Sources */,
 				542F22B72C33F69E00F07557 /* PopUpAddressDetailsContentView.swift in Sources */,
-				3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */,
 				548A246B2CA6CB4900C04CBE /* Publishable.swift in Sources */,
 				3A6A03382802DC85000432B4 /* PopUpButtonsView.swift in Sources */,
 				54F2E34729EE6BA100A7A15A /* ContactTransactionListModel.swift in Sources */,
@@ -4313,7 +4261,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.40.0;
+				MARKETING_VERSION = 0.32.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4321,7 +4269,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -4348,7 +4296,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 0.40.0;
+				MARKETING_VERSION = 0.32.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4356,7 +4304,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

@@ -45,13 +45,6 @@ final class AddRecipientModel {
 
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
-        case show(dialog: DialogType)
-    }
-
-    enum DialogType {
-        case bleTransactionWaitingForReceiverDialog
-        case bleTransactionConfirmationDialog(receiverName: String)
-        case bleFailureDialog(message: String?)
     }
 
     fileprivate enum SectionType: Int {
@@ -82,8 +75,6 @@ final class AddRecipientModel {
     @Published private var address: TariAddress?
     @Published private var yatID: String?
     @Published private var contactModels: [ContactsManager.Model] = []
-
-    private weak var bleTask: BLECentralTask?
 
     private var incomingUserProfile: UserProfileDeeplink?
     private var contactDictornary: [UUID: ContactsManager.Model] = [:]
@@ -201,34 +192,9 @@ final class AddRecipientModel {
         handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: model.addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
-    func fetchTransactionDataViaBLE() {
-
-        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.transactionData)
-        self.bleTask?.cancel()
-        self.bleTask = bleTask
-
-        action = .show(dialog: .bleTransactionWaitingForReceiverDialog)
-
-        Task {
-            do {
-                guard let rawDeeplink = try await bleTask.findAndRead()?.string, let url = URL(string: rawDeeplink) else { return }
-                let deeplink = try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: url)
-                incomingUserProfile = deeplink
-                action = .show(dialog: .bleTransactionConfirmationDialog(receiverName: deeplink.alias))
-            } catch {
-                handle(bleError: error)
-            }
-        }
-    }
-
-    func cancelBLETask() {
-        bleTask?.cancel()
-    }
-
     func confirmIncomingTransaction() {
 
         guard let incomingUserProfile else {
-            action = .show(dialog: .bleFailureDialog(message: ErrorMessageManager.errorMessage(forError: nil)))
             return
         }
 
@@ -322,21 +288,6 @@ final class AddRecipientModel {
             .reduce(into: [:]) { $0[$1.identifier] = $1.model }
 
         return result
-    }
-
-    private func handle(bleError error: Error) {
-
-        Logger.log(message: "Unable to finish BLE task. Reason: \(error)", domain: .general, level: .error)
-
-        let message: String?
-
-        if let error = error as? BLECentralManager.BLECentralError {
-            message = error.errorMessage
-        } else {
-            message = ErrorMessageManager.errorMessage(forError: error)
-        }
-
-        action = .show(dialog: .bleFailureDialog(message: message))
     }
 
     // MARK: - Helpers

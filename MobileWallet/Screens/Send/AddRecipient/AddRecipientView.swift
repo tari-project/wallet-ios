@@ -74,7 +74,7 @@ final class AddRecipientView: BaseNavigationContentView {
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
         view.register(type: ContactBookCell.self)
         view.register(headerFooterType: MenuTableHeaderView.self)
-        view.backgroundColor = .Background.primary
+        view.backgroundColor = .clear
         return view
     }()
 

@@ -51,13 +51,6 @@ final class ContactBookModel {
     enum ShareType: Int, CaseIterable {
         case qr
         case link
-        case ble
-    }
-
-    enum DialogType {
-        case bleContactSharingWaitingForReceiverDialog
-        case bleContactSharingSuccessDialog
-        case bleFailureDialog(message: String?)
     }
 
     enum Action {
@@ -65,7 +58,6 @@ final class ContactBookModel {
         case showQRDialog
         case shareQR(image: UIImage)
         case shareLink(link: URL)
-        case show(dialog: DialogType)
     }
 
     fileprivate enum SectionType: Int {
@@ -94,7 +86,6 @@ final class ContactBookModel {
 
     private let contactsManager = ContactsManager()
 
-    private weak var bleTask: BLECentralTask?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -182,15 +173,9 @@ final class ContactBookModel {
             shareQR(deeplink: deeplink)
         case .link:
             shareLink(deeplink: deeplink)
-        case .ble:
-            shareLinkViaBLE(deeplink: deeplink)
         }
 
         contentMode = .normal
-    }
-
-    func cancelBLETask() {
-        bleTask?.cancel()
     }
 
     func selectContact(contactID: UUID) {
@@ -214,42 +199,7 @@ final class ContactBookModel {
         action = .shareLink(link: deeplink)
     }
 
-    private func shareLinkViaBLE(deeplink: URL) {
-
-        guard let payload = deeplink.absoluteString.data(using: .utf8) else { return }
-
-        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.contactsShare)
-        self.bleTask?.cancel()
-        self.bleTask = bleTask
-
-        action = .show(dialog: .bleContactSharingWaitingForReceiverDialog)
-
-        Task {
-            do {
-                guard try await bleTask.findAndWrite(payload: payload) else { return }
-                action = .show(dialog: .bleContactSharingSuccessDialog)
-            } catch {
-                handle(bleError: error)
-            }
-        }
-    }
-
     // MARK: - Handlers
-
-    private func handle(bleError error: Error) {
-
-        Logger.log(message: "Unable to finish BLE task. Reason: \(error)", domain: .general, level: .error)
-
-        let message: String?
-
-        if let error = error as? BLECentralManager.BLECentralError {
-            message = error.errorMessage
-        } else {
-            message = ErrorMessageManager.errorMessage(forError: error)
-        }
-
-        action = .show(dialog: .bleFailureDialog(message: message))
-    }
 
     private func makeDeeplink() throws -> URL? {
 
@@ -321,8 +271,6 @@ extension ContactBookModel.ShareType {
             return .Icons.General.QR
         case .link:
             return .Icons.General.link
-        case .ble:
-            return .Icons.General.bluetooth
         }
     }
 
@@ -332,8 +280,6 @@ extension ContactBookModel.ShareType {
             return localized("contact_book.share_bar.buttons.qr")
         case .link:
             return localized("contact_book.share_bar.buttons.link")
-        case .ble:
-            return localized("contact_book.share_bar.buttons.ble")
         }
     }
 }

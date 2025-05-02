@@ -51,6 +51,7 @@ final class HomeViewController: SecureViewController<HomeView> {
     var showWalletRestoredOnPresentation = false
     var showWalletSyncedOnPresentation = false
 
+    var didShowOverlays = false
     // MARK: - Initialisers
 
     init(model: HomeModel) {
@@ -79,23 +80,34 @@ final class HomeViewController: SecureViewController<HomeView> {
         super.viewDidAppear(animated)
         mainView.startAnimations()
         model.executeQueuedShortcut()
+        model.fetchMiningStatus()
 
+        showOverlay()
+    }
+
+    private func showOverlay() {
+        if didShowOverlays == true {
+            return
+        }
+
+        didShowOverlays = true
         if showWalletRestoredOnPresentation {
+            showWalletRestoredOnPresentation = false
             showOverlay(for: .restored)
         } else if showWalletSyncedOnPresentation {
+            showWalletSyncedOnPresentation = false
             showOverlay(for: .synced)
         } else {
             NotificationManager.shared.shouldPromptForNotifications { shouldPrompt in
-                if shouldPrompt {
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    if shouldPrompt {
                         self.showOverlay(for: .notifications)
+                    } else {
+                        NotificationManager.shared.registerWithAPNS()
                     }
                 }
             }
         }
-
-        showWalletSyncedOnPresentation = false
-        showWalletRestoredOnPresentation = false
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -103,46 +115,20 @@ final class HomeViewController: SecureViewController<HomeView> {
         mainView.stopAnimations()
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if #available(iOS 13.0, *) {
+            if previousTraitCollection?.hasDifferentColorAppearance(comparedTo: traitCollection) == true {
+                mainView.update(theme: ThemeCoordinator.shared.theme)
+            }
+        }
+    }
+
     // MARK: - Setups
 
     private func setupCallbacks() {
-
-        model.$connectionStatusIcon
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
-            .store(in: &cancellables)
-
-        model.$totalBalance
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.balance = $0 }
-            .store(in: &cancellables)
-
-        model.$activeMiners
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.activeMiners = $0 }
-            .store(in: &cancellables)
-
-        model.$availableBalance
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.availableBalance = $0 }
-            .store(in: &cancellables)
-
-        model.$username
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.username = $0 }
-            .store(in: &cancellables)
-
-        model.$recentTransactions
-            .receive(on: DispatchQueue.main)
-            .map { $0.map { HomeViewTransactionCell.ViewModel(id: $0.id, titleComponents: $0.titleComponents, timestamp: $0.timestamp, amount: $0.amountModel) }}
-            .sink { [weak self] in self?.mainView.transactions = $0 }
-            .store(in: &cancellables)
-
-        model.$selectedTransaction
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.moveToTransactionDetails(transaction: $0) }
-            .store(in: &cancellables)
+        setupModelCallbacks()
 
         mainView.onConnetionStatusButtonTap = { [weak self] in
             self?.showConectionStatusPopUp()
@@ -154,10 +140,6 @@ final class HomeViewController: SecureViewController<HomeView> {
 
         mainView.onAvatarButtonTap = {
             AppRouter.moveToProfile()
-        }
-
-        mainView.onViewAllTransactionsButtonTap = { [weak self] in
-            self?.moveToTransactionList()
         }
 
         mainView.onAmountHelpButtonTap = { [weak self] in
@@ -187,6 +169,54 @@ final class HomeViewController: SecureViewController<HomeView> {
         mainView.onStartMiningTap = { [weak self] in
             self?.showOverlay(for: .startMining)
         }
+
+        mainView.onDisclaimerButtonTap = { [weak self] in
+            self?.showOverlay(for: .disclaimer)
+        }
+    }
+
+    private func setupModelCallbacks() {
+        model.$connectionStatusIcon
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
+            .store(in: &cancellables)
+
+        model.$totalBalance
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.balance = $0 }
+            .store(in: &cancellables)
+
+        model.$activeMiners
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.activeMiners = $0 }
+            .store(in: &cancellables)
+
+        model.$availableBalance
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.availableBalance = $0 }
+            .store(in: &cancellables)
+
+        model.$username
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.username = $0 }
+            .store(in: &cancellables)
+
+        model.$isMiningActive
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.activeMinersView.setMiningActive($0) }
+            .store(in: &cancellables)
+
+        model.$recentTransactions
+            .receive(on: DispatchQueue.main)
+            .map { $0.map { HomeViewTransactionCell.ViewModel(id: $0.id, titleComponents: $0.titleComponents, timestamp: $0.timestamp, amount: $0.amountModel) }}
+            .sink { [weak self] in self?.mainView.transactions = $0 }
+            .store(in: &cancellables)
+
+        model.$selectedTransaction
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.moveToTransactionDetails(transaction: $0) }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -219,6 +249,11 @@ final class HomeViewController: SecureViewController<HomeView> {
         }
 
         overlayViewController.activeOverlay = overlay
+        if overlay == .disclaimer {
+            overlayViewController.totalBalance = mainView.balance
+            overlayViewController.availableBalance = mainView.availableBalance
+        }
+
         overlayViewController.transitioningDelegate = overlayViewController
         overlayViewController.modalPresentationStyle = .custom
         present(overlayViewController, animated: false, completion: nil)

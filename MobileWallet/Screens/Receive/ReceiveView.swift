@@ -44,9 +44,21 @@ import TariCommon
 
 class ReceiveView: BaseNavigationContentView {
 
-    var onShareButonTap: (() -> Void)?
-    var onCopyEmojiButonTap: (() -> Void)?
-    var onCopyBaseButonTap: (() -> Void)?
+    var onShareButonTap: (() -> Void)? {
+        didSet {
+            shareButton.onTap = onShareButonTap
+        }
+    }
+    var onCopyEmojiButonTap: (() -> Void)? {
+        didSet {
+            copyEmojiButton.onTap = onCopyEmojiButonTap
+        }
+    }
+    var onCopyBaseButonTap: (() -> Void)? {
+        didSet {
+            copyBaseButton.onTap = onCopyBaseButonTap
+        }
+    }
 
     @View private var qrCodeView = QRCodeView()
     @View private var qrCodeIconViewOutline = UIImageView(image: .elipse)
@@ -142,10 +154,6 @@ class ReceiveView: BaseNavigationContentView {
          shareButton, iconImageView, titleLabel,
          networkLabel, addressContainerView, yourAddressLabel,
          emojiAddressLabel, baseAddressLabel, separatorView, copyEmojiButton, copyBaseButton].forEach(addSubview)
-
-        shareButton.onTap = onShareButonTap
-        copyBaseButton.onTap = onCopyBaseButonTap
-        copyEmojiButton.onTap = onCopyEmojiButonTap
 
         NSLayoutConstraint.activate([
             qrCodeView.centerXAnchor.constraint(equalTo: centerXAnchor),

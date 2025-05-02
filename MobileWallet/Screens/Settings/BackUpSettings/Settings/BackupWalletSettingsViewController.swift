@@ -185,8 +185,6 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
             items.append(iCloudItem)
         }
 
-        items.append(dropboxItem)
-
         if isPasswordItemVisible {
             passwordItem.title = isBackupSecuredByPassword ? localized("backup_wallet_settings.item.change_password") : localized("backup_wallet_settings.item.secure_your_backup")
             items.append(passwordItem)

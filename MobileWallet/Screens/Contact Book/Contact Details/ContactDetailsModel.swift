@@ -293,14 +293,6 @@ final class ContactDetailsModel {
             connectedWallets.removeAll()
             return
         }
-
-        Yat.api.emojiID.lookupEmojiIDPublisher(emojiId: yat, tags: nil)
-            .sink { [weak self] in
-                self?.handle(yatCompletion: $0)
-            } receiveValue: { [weak self] in
-                self?.handle(yatResponse: $0)
-            }
-            .store(in: &cancellables)
     }
 
     private func handle(yatResponse: LookupResponse) {

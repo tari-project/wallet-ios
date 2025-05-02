@@ -68,17 +68,16 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        model.updateData()
+        updateData()
     }
+
     // MARK: - Setups
 
-    private func setupCallbacks() {
-        model.$errorMessage
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.show(error: $0) }
-            .store(in: &cancellables)
+    func updateData() {
+        model.updateData()
+    }
 
+    private func setupCallbacks() {
         model.$state
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -92,11 +91,22 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
             .store(in: &cancellables)
 
         Tari.shared.wallet(.main).walletBalance.$balance
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.update(mined: MicroTari($0.total).formatted) }
             .store(in: &cancellables)
 
         mainView.inviteView.onShareButtonTap = { [weak self] in
             self?.shareAction(refId: self?.model.profile?.referralCode)
+        }
+
+        mainView.onLoginButtonTap = { [weak self] in
+            if let url = URL(string: "https://airdrop.tari.com/auth?mobile=nextnet") {
+                UIApplication.shared.open(url)
+            }
+        }
+
+        mainView.onLogoutButtonTap = { [weak self] in
+            self?.logout()
         }
     }
 
@@ -115,29 +125,33 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
         present(activityVC, animated: true, completion: nil)
     }
 
-    private func handleState(state: NewProfileModel.State) {
+    private func logout() {
+        UserManager.shared.clearTokens()
+        handleState(state: .LoggedOut)
+    }
+
+    func handleState(state: NewProfileModel.State) {
         switch state {
         case .LoggedOut:
-            showLogin()
+            mainView.containerView.isHidden = true
+            mainView.loginView.isHidden = false
+            mainView.hideLoading()
         case .Error:
-            break
+            mainView.containerView.isHidden = true
+            mainView.loginView.isHidden = false
+            mainView.hideLoading()
         case .Initial:
-            break
+            mainView.containerView.isHidden = true
+            mainView.loginView.isHidden = true
+            mainView.hideLoading()
         case .Loading:
-            break
+            mainView.containerView.isHidden = true
+            mainView.loginView.isHidden = false
+            mainView.showLoading()
         case .Profile:
-            break
-        }
-    }
-
-    // MARK: - Actions
-    private func show(error: MessageModel) {
-        PopUpPresenter.show(message: error)
-    }
-
-    private func showLogin() {
-        if let url = URL(string: "https://airdrop.tari.com/auth?mobile=nextnet") {
-            UIApplication.shared.open(url)
+            mainView.containerView.isHidden = false
+            mainView.loginView.isHidden = true
+            mainView.hideLoading()
         }
     }
 }
