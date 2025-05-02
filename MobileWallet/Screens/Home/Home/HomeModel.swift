@@ -257,6 +257,8 @@ final class HomeModel {
             .sink(receiveCompletion: { completion in
                 if case .failure(let error) = completion {
                     print("Error fetching mining status: \(error)")
+                    // If there's an error (including unauthorized), set mining to inactive
+                    self.isMiningActive = false
                 }
             }, receiveValue: { [weak self] (response: MiningStatusResponse) in
                 print("Mining status response: \(response)")
