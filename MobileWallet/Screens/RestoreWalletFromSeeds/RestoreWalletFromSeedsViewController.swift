@@ -136,16 +136,18 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
     // MARK: - Actions
 
     @MainActor private func showProgressOverlay() {
-        startRestoringWallet()
-        AppRouter.transitionToSplashScreen(animated: true, isWalletConnected: true, paperWalletRecoveryData: nil, transitionFrom: .seedPhrase)
-    }
+        let overlay = SeedWordsRecoveryProgressViewController()
 
-    func startRestoringWallet() {
-        do {
-            let isSuccess = try Tari.shared.wallet(.main).recovery.startRecovery(recoveredOutputMessage: localized("transaction.one_sided_payment.note.recovered"))
-        } catch {
-
+        overlay.onSuccess = {
+            AppRouter.transitionToSplashScreen(animated: true, isWalletConnected: true, paperWalletRecoveryData: nil, transitionFrom: .seedPhrase)
         }
+
+        overlay.onFailure = { [weak self] in
+            self?.model.deleteWallet()
+        }
+
+        show(overlay: overlay)
+        AppRouter.transitionToHomeScreen(state: .newRestored)
     }
 
     private func showCustomBaseNodeForm() {

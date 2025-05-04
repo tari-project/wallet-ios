@@ -69,7 +69,7 @@ enum DeepLinkFormatter {
     private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
 
     static func model<T: DeepLinkable>(type: T.Type, deeplink: URL) throws -> T {
-        guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
+        guard let networkName = deeplink.host else { throw DeepLinkError.invalidNetworkName }
         guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
         let decoder = DeepLinkDecoder(deeplink: deeplink)
         return try T(from: decoder)

@@ -560,7 +560,7 @@ final class HomeView: DynamicThemeView {
         // Add the currency symbol with smaller font
         let currencyAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.Poppins.SemiBold.withSize(28.0),
-            .foregroundColor: UIColor.Text.primary
+            .foregroundColor: textColor
         ]
         attributedString.append(NSAttributedString(string: " " + NetworkManager.shared.currencySymbol, attributes: currencyAttributes))
 

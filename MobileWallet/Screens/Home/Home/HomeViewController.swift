@@ -181,10 +181,11 @@ final class HomeViewController: SecureViewController<HomeView> {
             .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
             .store(in: &cancellables)
 
-        model.$isSyncInProgress
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.isSyncInProgress = $0 }
-            .store(in: &cancellables)
+        mainView.isSyncInProgress = false
+        // model.$isSyncInProgress
+        //     .receive(on: DispatchQueue.main)
+        //     .sink { [weak self] in self?.mainView.isSyncInProgress = $0 }
+        //     .store(in: &cancellables)
 
         model.$totalBalance
             .receive(on: DispatchQueue.main)
