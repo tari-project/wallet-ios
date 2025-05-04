@@ -150,7 +150,7 @@ final class TransactionDetailsModel {
             // Calculate total
             if let amount = try? transaction.amount, let fee = try? (transaction as? CompletedTransaction)?.fee ?? (transaction as? PendingOutboundTransaction)?.fee {
                 let totalAmount = MicroTari(amount + fee)
-                total = totalAmount.formattedPrecise + " tXTM"
+                total = totalAmount.formattedPrecise + " " + NetworkManager.shared.currencySymbol
             }
 
             isInbound = (try? transaction.isOutboundTransaction) == false

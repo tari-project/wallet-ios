@@ -460,7 +460,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         if amount.rawValue + fee > availableBalance {
             PopUpPresenter.show(message: MessageModel(
                 title: localized("add_amount.info.wait_completion_previous_tx.title"),
-                message: localized("add_amount.info.wait_completion_previous_tx.description"),
+                message: String(format: localized("add_amount.info.wait_completion_previous_tx.description"), NetworkManager.shared.currencySymbol),
                 type: .normal
             ))
             return nil
@@ -671,7 +671,7 @@ extension AddAmountViewController {
 
         warningStackView.addArrangedSubview(balanceExceededLabel)
         balanceExceededLabel.font = Theme.shared.fonts.amountWarningLabel
-        balanceExceededLabel.text = localized("add_amount.warning.not_enough_tari")
+        balanceExceededLabel.text = String(format: localized("add_amount.warning.not_enough_tari"), NetworkManager.shared.currencySymbol)
         balanceExceededLabel.numberOfLines = 0
         balanceExceededLabel.textAlignment = .center
         balanceExceededLabel.lineBreakMode = .byWordWrapping
@@ -681,7 +681,7 @@ extension AddAmountViewController {
         balancePendingLabel.numberOfLines = 0
         balancePendingLabel.textAlignment = .center
         balancePendingLabel.lineBreakMode = .byWordWrapping
-        balancePendingLabel.text = localized("add_amount.info.wait_completion_previous_tx.description")
+        balancePendingLabel.text = String(format: localized("add_amount.info.wait_completion_previous_tx.description"), NetworkManager.shared.currencySymbol)
         balancePendingLabel.sizeToFit()
 
         // tx fee

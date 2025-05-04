@@ -131,7 +131,7 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
 
     private func update() {
         if let amount = paymentInfo.amount {
-            mainView.amountText = amount.formattedPrecise + " " + "tXTM"
+            mainView.amountText = amount.formattedPrecise + " " + NetworkManager.shared.currencySymbol
 
             var fee: UInt64 = 0
             do {
@@ -141,13 +141,13 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
             }
             let tariFeeAmount = MicroTari(fee)
             let feeAmount = tariFeeAmount.formattedPrecise
-            mainView.feeText = feeAmount + " " + "tXTM"
+            mainView.feeText = feeAmount + " " + NetworkManager.shared.currencySymbol
 
             let totalAmount = MicroTari(amount.rawValue + fee)
-            mainView.totalAmountText = totalAmount.formattedPrecise + " " + "tXTM"
+            mainView.totalAmountText = totalAmount.formattedPrecise + " " + NetworkManager.shared.currencySymbol
         } else {
-            mainView.feeText = "0" + " " + "tXTM"
-            mainView.totalAmountText = "0" + " " + "tXTM"
+            mainView.feeText = "0" + " " + NetworkManager.shared.currencySymbol
+            mainView.totalAmountText = "0" + " " + NetworkManager.shared.currencySymbol
         }
 
         let addressComponents = paymentInfo.addressComponents

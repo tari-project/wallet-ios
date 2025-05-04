@@ -449,10 +449,11 @@ final class NewProfileView: DynamicThemeView {
             loginView.bottomAnchor.constraint(equalTo: bottomAnchor),
             loginView.topAnchor.constraint(equalTo: topAnchor),
 
-            loginBanner.topAnchor.constraint(equalTo: topAnchor, constant: 170),
+            // loginBanner.topAnchor.constraint(equalTo: topAnchor, constant: 170),
             loginBanner.widthAnchor.constraint(equalToConstant: 362),
             loginBanner.heightAnchor.constraint(equalToConstant: 275),
             loginBanner.centerXAnchor.constraint(equalTo: centerXAnchor),
+            loginBanner.bottomAnchor.constraint(equalTo: centerYAnchor, constant: 40),
 
             loginTitleLabel.topAnchor.constraint(equalTo: loginBanner.bottomAnchor, constant: 25),
             loginTitleLabel.leftAnchor.constraint(equalTo: loginBanner.leftAnchor),
@@ -462,16 +463,16 @@ final class NewProfileView: DynamicThemeView {
             loginDescriptionLabel.rightAnchor.constraint(equalTo: loginBanner.rightAnchor),
 
             loginButton.centerXAnchor.constraint(equalTo: loginView.centerXAnchor),
-            loginButton.topAnchor.constraint(equalTo: loginDescriptionLabel.bottomAnchor, constant: 30),
             loginButton.widthAnchor.constraint(equalToConstant: 362),
             loginButton.heightAnchor.constraint(equalToConstant: 50),
+            loginButton.bottomAnchor.constraint(equalTo: loginView.bottomAnchor, constant: -50),
 
             logoutButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             logoutButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50),
             logoutButton.widthAnchor.constraint(equalToConstant: 362),
             logoutButton.heightAnchor.constraint(equalToConstant: 50),
 
-            usernameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 124),
+            // usernameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 124),
             usernameLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             gaugesContainerView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 66),
             gaugesContainerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 21),
@@ -485,7 +486,7 @@ final class NewProfileView: DynamicThemeView {
             gemsGaugeView.rightAnchor.constraint(equalTo: gaugesContainerView.rightAnchor),
             gemsGaugeView.widthAnchor.constraint(equalToConstant: 164),
             gemsGaugeView.heightAnchor.constraint(equalToConstant: 120),
-            inviteView.topAnchor.constraint(equalTo: gaugesContainerView.bottomAnchor, constant: 10),
+            inviteView.topAnchor.constraint(equalTo: centerYAnchor, constant: 20),
             inviteView.leadingAnchor.constraint(equalTo: gaugesContainerView.leadingAnchor),
             inviteView.trailingAnchor.constraint(equalTo: gaugesContainerView.trailingAnchor),
             inviteView.heightAnchor.constraint(equalToConstant: 220),

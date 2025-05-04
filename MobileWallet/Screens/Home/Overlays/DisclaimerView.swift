@@ -26,7 +26,7 @@ class DisclaimerView: UIView {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(32)
         label.textColor = .Text.primary
-        label.text = "tXTM"
+        label.text = NetworkManager.shared.currencySymbol
         return label
     }()
 
@@ -82,7 +82,7 @@ class DisclaimerView: UIView {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary
-        label.text = "0 tXTM"
+        label.text = "0 " + NetworkManager.shared.currencySymbol
         return label
     }()
 
@@ -90,20 +90,20 @@ class DisclaimerView: UIView {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary
-        label.text = "0 tXTM"
+        label.text = "0 " + NetworkManager.shared.currencySymbol
         return label
     }()
 
     var totalBalance: String = "" {
         didSet {
             balanceLabel.text = totalBalance
-            totalBalanceValue.text = "\(totalBalance) tXTM"
+            totalBalanceValue.text = "\(totalBalance) " + NetworkManager.shared.currencySymbol
         }
     }
 
     var availableBalance: String = "" {
         didSet {
-            availableBalanceValue.text = "\(availableBalance) tXTM"
+            availableBalanceValue.text = "\(availableBalance) " + NetworkManager.shared.currencySymbol
         }
     }
 

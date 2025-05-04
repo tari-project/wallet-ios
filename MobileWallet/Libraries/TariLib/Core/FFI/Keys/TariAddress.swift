@@ -178,16 +178,7 @@ extension TariAddress {
 extension TariAddress.Network {
 
     var name: String {
-        switch value {
-        case 0:
-            return "MainNet"
-        case 1:
-            return "StageNet"
-        case 2:
-            return "NextNet"
-        default:
-            return "TestNet"
-        }
+        return NetworkManager.defaultNetwork.presentedName
     }
 }
 

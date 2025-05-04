@@ -557,18 +557,18 @@ final class HomeView: DynamicThemeView {
         ]
         attributedString.append(NSAttributedString(string: formattedBalance, attributes: balanceAttributes))
 
-        // Add the tXTM with smaller font
+        // Add the currency symbol with smaller font
         let currencyAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: textColor,
-            .font: UIFont.Poppins.SemiBold.withSize(28.0)
+            .font: UIFont.Poppins.SemiBold.withSize(28.0),
+            .foregroundColor: UIColor.Text.primary
         ]
-        attributedString.append(NSAttributedString(string: " tXTM", attributes: currencyAttributes))
+        attributedString.append(NSAttributedString(string: " " + NetworkManager.shared.currencySymbol, attributes: currencyAttributes))
 
         balanceLabel.attributedText = attributedString
     }
 
     private func update(availableBalance: String) {
-        let text = isBalanceHidden ? "Available: *******" : "Available: \(availableBalance) tXTM"
+        let text = isBalanceHidden ? "Available: *******" : "Available: \(availableBalance) " + NetworkManager.shared.currencySymbol
         availableBalanceLabel.text = text
     }
 

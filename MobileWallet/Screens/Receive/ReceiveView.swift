@@ -69,7 +69,7 @@ class ReceiveView: BaseNavigationContentView {
     @View private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(28)
-        label.text = "tXTM"
+        label.text = NetworkManager.shared.currencySymbol
         return label
     }()
 
@@ -107,7 +107,7 @@ class ReceiveView: BaseNavigationContentView {
     @View private var networkLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(12)
-        label.text = "Tari Testnet"
+        label.text = "Tari " + NetworkManager.shared.selectedNetwork.presentedName
         return label
     }()
 
@@ -125,6 +125,13 @@ class ReceiveView: BaseNavigationContentView {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
         button.setTitle("Share", for: .normal)
         return button
+    }()
+
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.text = NetworkManager.shared.currencySymbol
+        view.font = .Poppins.Medium.withSize(14)
+        return view
     }()
 
     var qrCode: UIImage? {

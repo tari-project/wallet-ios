@@ -16,7 +16,7 @@
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
 "common.fee_info.title" = "Where does the fee go?";
-"common.fee_info.description" = "The transaction fee is distributed to the thousands of computers (also known as “miners”) who ensure that your Tari transactions are fast and secure.";
+"common.fee_info.description" = "The transaction fee is distributed to the thousands of computers (also known as \"miners\") who ensure that your Tari transactions are fast and secure.";
 
 /* Transaction detail view */
 "tx_detail.payment_cancelled" = "Payment cancelled";
@@ -52,11 +52,11 @@
 "tx_list.title" = "Transactions";
 "tx_list.in_progress" = "In Progress";
 "tx_list.intro" = "Your wallet setup is complete.";
-"tx_list.intro_message" = "You’re ready to start exploring";
+"tx_list.intro_message" = "You're ready to start exploring";
 "tx_list.relative_hours" = "%@h ago";
 "tx_list.relative_minutes" = "%@m ago";
 "tx_list.now" = "Now";
-"tx_list.empty" = "We don’t see any transactions yet.\nHopefully something happens soon…🤞";
+"tx_list.empty" = "We don't see any transactions yet.\nHopefully something happens soon…🤞";
 "tx_list.yesterday" = "Yesterday";
 "tx_list.inbound_pending_title" = "%@sent a payment";
 "tx_list.inbound_title" = "%@paid you";
@@ -107,7 +107,7 @@
 
 "home.label.spendable" = "Available to spend:";
 "home.button.all_transactions" = "View all transactions";
-"home.transaction_list.placeholder" = "You don’t have any activity yet.\nOnce you receive some tXTM, you’ll see it here.";
+"home.transaction_list.placeholder" = "You don't have any activity yet.\nOnce you receive some %@, you'll see it here.";
 "home.pop_up.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.pop_up.amount_help.message" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.pop_up.amount_help.buttons.open_url" = "Go to TariLabs University";
@@ -127,37 +127,37 @@
 "utxos_wallet.pop_up.sort.date.descending" = "Date, Descending";
 "utxos_wallet.pop_up.sort.date.ascending" = "Date, Ascending";
 "utxos_wallet.pop_up.confirmation.title" = "Are you sure?";
-"utxos_wallet.pop_up.confirmation.button.ok" = "Yes! Let’s do it!";
+"utxos_wallet.pop_up.confirmation.button.ok" = "Yes! Let's do it!";
 "utxos_wallet.pop_up.success.title" = "Success!";
 "utxos_wallet.pop_up.break.title" = "Break Coin";
 "utxos_wallet.pop_up.break.description" = "Into how many parts would you like to break this coin?";
 "utxos_wallet.pop_up.break.estimation" = "Break %@ into %@ x %@ coins\nEstimated fee: %@";
 "utxos_wallet.pop_up.break.button.ok" = "Break";
 "utxos_wallet.pop_up.break_confirmation.message" = "You are about to break this coin.";
-"utxos_wallet.pop_up.break_success.description" = "Your coin will be broken soon. Keep an eye on the transactions screen to see when it’s been mined.";
+"utxos_wallet.pop_up.break_success.description" = "Your coin will be broken soon. Keep an eye on the transactions screen to see when it's been mined.";
 "utxos_wallet.pop_up.combine_confirmation.message" = "You are about to combine these coins.";
 "utxos_wallet.pop_up.combine_confirmation.fee" = "Estimated Fee: %@";
-"utxos_wallet.pop_up.combine_success.description" = "Your coins will be combined soon. Keep an eye on the transactions screen to see when it’s been mined.";
+"utxos_wallet.pop_up.combine_success.description" = "Your coins will be combined soon. Keep an eye on the transactions screen to see when it's been mined.";
 "utxos_wallet.pop_up.combine_break.title" = "Combine & Break Coins";
 "utxos_wallet.pop_up.combine_break.button.ok" = "Combine & Break";
 "utxos_wallet.pop_up.combine_break_confirmation.message" = "You are about to combine & break these coins.";
-"utxos_wallet.pop_up.combine_break_success.description" = "Your coins will be broken soon. Keep an eye on the transactions screen to see when it’s been mined.";
+"utxos_wallet.pop_up.combine_break_success.description" = "Your coins will be broken soon. Keep an eye on the transactions screen to see when it's been mined.";
 "utxos_wallet.pop_up.details.label.status" = "Status:";
 "utxos_wallet.pop_up.details.label.commitment" = "Commitment:";
 "utxos_wallet.pop_up.details.label.block_height" = "Block Height:";
 "utxos_wallet.pop_up.details.label.date" = "Date:";
 "utxos_wallet.pop_up.details.button.break" = "Break";
 "utxos_wallet.placeholder.label.title" = "Your wallet is empty";
-"utxos_wallet.placeholder.label.subtitle" = "Once you have some funds, you’ll be able to view your coins here.";
+"utxos_wallet.placeholder.label.subtitle" = "Once you have some funds, you'll be able to view your coins here.";
 "utxos_wallet.spinner.label.title" = "Just a sec...";
 
 /* Add amount view */
 "add_amount.error.available_balance.title" = "Available Balance error";
 "add_amount.error.available_balance.description" = "Could not get available balance from wallet";
 "add_amount.info.wait_completion_previous_tx.title" = "Hold your horses! 🐴";
-"add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTM\nuntil your previous transaction(s) are complete.\nPlease wait for at least one transaction\nto complete and then try again.";
+"add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can't send this much %@\nuntil your previous transaction(s) are complete.\nPlease wait for at least one transaction\nto complete and then try again.";
 "add_amount.error.invalid_number" = "Invalid number";
-"add_amount.warning.not_enough_tari" = "Not enough tXTM in your available balance";
+"add_amount.warning.not_enough_tari" = "Not enough %@ in your available balance";
 "add_amount.label.network_traffic" = "Network Traffic";
 "add_amount.label.button.adjust_fee" = "Speed Up Transaction";
 "add_amount.label.one_sided_payment" = "One-Sided Payment";
@@ -179,7 +179,7 @@
 "backup_wallet_settings.item.with_recovery_phrase" = "Write Down Seed Phrase";
 "backup_wallet_settings.item.onboarding" = "Learn More";
 "backup_wallet_settings.header.title" = "Wallet Backups";
-"backup_wallet_settings.header.description" = "By backing up your wallet, you’ll ensure that you don’t lose your tXTM if your phone is lost or broken.";
+"backup_wallet_settings.header.description" = "By backing up your wallet, you'll ensure that you don't lose your %@ if your phone is lost or broken.";
 
 "backup_wallet_settings.switch.warning.title" = "Your backup will be deleted";
 "backup_wallet_settings.switch.warning.description" = "Are you sure you want to proceed?";
@@ -195,11 +195,11 @@
 "secure_backup.enter_password_field.title" = "Create a Password";
 "secure_backup.enter_password_field.placeholder" = "Make it a strong one!";
 "secure_backup.confirm_password_field.title" = "Confirm Password";
-"secure_backup.confirm_password_field.placeholder" = "Let’s see it again";
+"secure_backup.confirm_password_field.placeholder" = "Let's see it again";
 
 /* SeedPhrase view */
 "seed_phrase.title" = "Back Up With Seed Phrase";
-"seed_phrase.header" = "Carefully write these 24 words down in order, and keep the paper somewhere secure where others can’t access it. Do not take a screenshot.";
+"seed_phrase.header" = "Carefully write these 24 words down in order, and keep the paper somewhere secure where others can't access it. Do not take a screenshot.";
 "seed_phrase.agreement" = "I understand that if I lose my recovery seed phrase I will not be able to restore my wallet.";
 "seed_phrase.verify_seed_phrase" = "Verify Seed Phrase";
 "seed_phrase.error.title"="Error";
@@ -320,9 +320,9 @@
 /* Store modal */
 "store_modal.title.part.1" = "Spend %@ on ";
 "store_modal.title.part.2" = "exclusive stuff";
-"store_modal.description" = "Check out The TTL Store to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!";
+"store_modal.description" = "Check out The TTL Store to spend your \"hard-earned\" %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!";
 "store_modal.action" = "Visit The TTL Store";
-"store_modal.cancel" = "I’ll check it out later";
+"store_modal.cancel" = "I'll check it out later";
 
 /* Refresh view */
 "refresh_view.checking" = "Checking for Updates";
@@ -340,7 +340,7 @@
 
 /* VerifyPhrase view */
 "verify_phrase.complete" = "Complete Verification";
-"verify_phrase.warning" = "Nope, that’s not right";
+"verify_phrase.warning" = "Nope, that's not right";
 "verify_phrase.container_description" = "Tap on the words below in the correct order";
 "verify_phrase.header" = "Select the words in the correct order.";
 "verify_phrase.title" = "Verify Seed Phrase";
@@ -357,19 +357,19 @@
 "wallet_creation.button.turn_on_notifications" = "Turn on Notifications";
 
 "wallet_creation.initial_state.first_label" = "Hold on a sec…";
-"wallet_creation.initial_state.second_label" = "We’re creating your wallet.";
+"wallet_creation.initial_state.second_label" = "We're creating your wallet.";
 
-"wallet_creation.create_emoji_state.first_label" = "We’re off to a great start!";
-"wallet_creation.create_emoji_state.second_label" = "Now, let’s create your Emoji ID.";
-"wallet_creation.create_emoji_state.description.with_param" = "Your Emoji ID is your wallet address.\n It’s how your friends can find you and send you %@!";
+"wallet_creation.create_emoji_state.first_label" = "We're off to a great start!";
+"wallet_creation.create_emoji_state.second_label" = "Now, let's create your Emoji ID.";
+"wallet_creation.create_emoji_state.description.with_param" = "Your Emoji ID is your wallet address.\n It's how your friends can find you and send you %@!";
 
-"wallet_creation.secure_your_wallet" = "🔑 Let’s secure your wallet. 🔑";
-"wallet_creation.secure_your_wallet.description.with_param" = "Sleep well at night knowing you’ve taken precautions to keep your %@ wallet safe and sound.";
+"wallet_creation.secure_your_wallet" = "🔑 Let's secure your wallet. 🔑";
+"wallet_creation.secure_your_wallet.description.with_param" = "Sleep well at night knowing you've taken precautions to keep your %@ wallet safe and sound.";
 
 "wallet_creation.emoji_state.first_label" = "This is your Emoji ID";
-"wallet_creation.emoji_state.second_label" = "Your Emoji ID is your wallet’s address, and how others can find you and send you";
+"wallet_creation.emoji_state.second_label" = "Your Emoji ID is your wallet's address, and how others can find you and send you";
 
-"wallet_creation.notifications.title" = "Don’t miss out when people";
+"wallet_creation.notifications.title" = "Don't miss out when people";
 "wallet_creation.notifications.subtitle" = "send you money.";
 "wallet_creation.notifications.description" = "Enable push notifications to keep tabs on your payments.";
 
@@ -416,7 +416,7 @@
 "restore_wallet.item.phrase_restore" = "Restore with recovery phrase";
 "restore_wallet.item.paper_wallet" = "Restore from paper wallet";
 "restore_wallet.pop_up.paper_wallet.confirmation.title" = "Sync your Universe wallet?";
-"restore_wallet.pop_up.paper_wallet.confirmation.message" = "You just scanned a wallet from the Tari Universe desktop app! Syncing it will let you track your real-time tXTM balance right on your phone.\nWhat would you like to do?";
+"restore_wallet.pop_up.paper_wallet.confirmation.message" = "You just scanned a wallet from the Tari Universe desktop app! Syncing it will let you track your real-time %@ balance right on your phone.\nWhat would you like to do?";
 "restore_wallet.pop_up.paper_wallet.confirmation.buttons.ok" = "Sync Wallet";
 "restore_wallet.pop_up.paper_wallet.confirmation.buttons.cancel" = "Cancel";
 
@@ -564,7 +564,7 @@
 
 /* Incompatible network */
 "incompatible_network.title"="Time to move on";
-"incompatible_network.description"="Good news: The Tari testnet has been reset, bringing a whole host of new features and upgrades.\n\nBad news: Your old tXTM is no longer good here, and the network will reset your balance to zero soon. But on the bright side, this is a great opportunity to start afresh with a spanking new wallet! What do you say?";
+"incompatible_network.description"="Good news: The Tari testnet has been reset, bringing a whole host of new features and upgrades.\n\nBad news: Your old %@ is no longer good here, and the network will reset your balance to zero soon. But on the bright side, this is a great opportunity to start afresh with a spanking new wallet! What do you say?";
 "incompatible_network.confirm"="Start over, I say!";
 "incompatible_network.cancel"="I'll do it later";
 

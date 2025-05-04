@@ -127,13 +127,13 @@ final class SplashViewModel {
 
     private func setupData() {
         appVersion = AppVersionFormatter.version
-        allNetworkNames = TariNetwork.all.map { $0.fullPresentedName }
+        allNetworkNames = [NetworkManager.defaultNetwork.name]
     }
 
     // MARK: - View Model Actions
 
     func selectNetwork(onIndex index: Int) {
-        NetworkManager.shared.selectedNetwork = TariNetwork.all[index]
+//        NetworkManager.shared.selectedNetwork = TariNetwork.all[index]
     }
 
     func openWalletIfExists() -> Bool {

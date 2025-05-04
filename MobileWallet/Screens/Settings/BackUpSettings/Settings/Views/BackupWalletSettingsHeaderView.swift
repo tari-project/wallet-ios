@@ -54,7 +54,7 @@ final class BackupWalletSettingsHeaderView: DynamicThemeView {
         let view = UILabel()
         view.numberOfLines = 0
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        view.text = localized("backup_wallet_settings.header.description")
+        view.text = String(format: localized("backup_wallet_settings.header.description"), NetworkManager.shared.currencySymbol)
         return view
     }()
 

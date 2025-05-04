@@ -84,7 +84,7 @@ class WelcomeView: UIView {
         didSet {
             if isPaperWalletRestored {
                 titleLabel.text = "Wallet Synced! 🎉"
-                descriptionLabel.text = "Your real-time tXTM balance is now available on your phone. 🚀"
+                descriptionLabel.text = "Your real-time " + NetworkManager.shared.currencySymbol + " balance is now available on your phone. 🚀"
             } else {
                 titleLabel.text = "Welcome back!"
                 descriptionLabel.text = "Your wallet has been successfully restored."

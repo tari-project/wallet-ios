@@ -228,7 +228,7 @@ final class HomeViewTransactionCell: DynamicThemeCell {
             formattedValue = valueString
         }
 
-        let amount = NSAttributedString(string: formattedValue.filter { $0 != "-" && $0 != " " && $0 != "+"} + " tXTM", attributes: [.foregroundColor: UIColor.Text.primary])
+        let amount = NSAttributedString(string: formattedValue.filter { $0 != "-" && $0 != " " && $0 != "+"} + " " + NetworkManager.shared.currencySymbol, attributes: [.foregroundColor: UIColor.Text.primary])
 
         let amountText =  NSMutableAttributedString()
         amountText.append(signString)

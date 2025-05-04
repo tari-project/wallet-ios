@@ -55,7 +55,7 @@ final class HomeTransactionsPlaceholderView: DynamicThemeView {
         view.font = .Poppins.Medium.withSize(12.0)
         view.numberOfLines = 0
         view.textAlignment = .center
-        view.text = localized("home.transaction_list.placeholder")
+        view.text = String(format: localized("home.transaction_list.placeholder"), NetworkManager.shared.currencySymbol)
         return view
     }()
 

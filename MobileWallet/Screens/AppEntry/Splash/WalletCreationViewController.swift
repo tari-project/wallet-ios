@@ -359,7 +359,7 @@ extension WalletCreationViewController {
     private func prepareForInitialState() {
         updateConstraintsAnimationView(animation: .none)
         firstLabel.text = localized("wallet_creation.initial_state.first_label")
-        secondLabel.text = localized("wallet_creation.initial_state.second_label")
+        secondLabel.text = String(format: localized("wallet_creation.initial_state.second_label"), NetworkManager.shared.currencySymbol)
         continueButton.setTitle(localized("wallet_creation.button.create"), for: .normal)
     }
 
@@ -443,7 +443,7 @@ extension WalletCreationViewController {
         firstLabel.text = secondLabelStringTop
         secondLabel.text = secondLabelStringBottom
         thirdLabel.font = Theme.shared.fonts.createWalletNotificationsThirdLabel
-        thirdLabel.text = localized("wallet_creation.notifications.description")
+        thirdLabel.text = String(format: localized("wallet_creation.notifications.description"), NetworkManager.shared.currencySymbol)
 
         continueButton.setTitle(localized("wallet_creation.button.turn_on_notifications"), for: .normal)
 

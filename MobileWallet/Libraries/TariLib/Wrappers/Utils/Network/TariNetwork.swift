@@ -45,31 +45,33 @@ struct TariNetwork {
     let isRecommended: Bool
     let dnsPeer: String
     let blockExplorerURL: URL?
+    let currencySymbol: String
+    let minValidVersion: String
 }
 
 extension TariNetwork {
 
-    static var all: [TariNetwork] { [nextnet].compactMap { $0 } }
-
-    static var stagenet: Self {
+    static var mainnet: Self {
         makeNetwork(
-            name: "stagenet",
-            presentedName: "StageNet",
-            isMainNet: false,
+            name: "mainnet",
+            presentedName: "Mainnet",
             isRecommended: false,
-            dnsPeer: "seeds.stagenet.tari.com",
-            blockExplorerURL: nil
+            dnsPeer: "seeds.tari.com",
+            blockExplorerURL: URL(string: "https://explore-mainnet.tari.com"),
+            currencySymbol: "XTM",
+            minValidVersion: "2.0.0-alpha.1"
         )
     }
 
     static var nextnet: Self {
         makeNetwork(
             name: "nextnet",
-            presentedName: "NextNet",
-            isMainNet: false,
+            presentedName: "Nextnet",
             isRecommended: true,
             dnsPeer: "aurora.nextnet.tari.com",
-            blockExplorerURL: URL(string: "https://explore-nextnet.tari.com")
+            blockExplorerURL: URL(string: "https://explore-nextnet.tari.com"),
+            currencySymbol: "tXTM",
+            minValidVersion: "1.4.1-rc.0"
         )
     }
 
@@ -77,10 +79,11 @@ extension TariNetwork {
         makeNetwork(
             name: "esmeralda",
             presentedName: "Esmeralda",
-            isMainNet: false,
             isRecommended: true,
             dnsPeer: "seeds.esmeralda.tari.com",
-            blockExplorerURL: nil
+            blockExplorerURL: nil,
+            currencySymbol: "tXTM",
+            minValidVersion: "1.6.0-pre.0"
         )
     }
 
@@ -105,8 +108,7 @@ extension TariNetwork {
         }
     }
 
-    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, isRecommended: Bool, dnsPeer: String, blockExplorerURL: URL?) -> Self {
-        let currencySymbol = isMainNet ? "XTM" : "tXTM"
-        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, isRecommended: isRecommended, dnsPeer: dnsPeer, blockExplorerURL: blockExplorerURL)
+    private static func makeNetwork(name: String, presentedName: String, isRecommended: Bool, dnsPeer: String, blockExplorerURL: URL?, currencySymbol: String, minValidVersion: String) -> Self {
+        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, isRecommended: isRecommended, dnsPeer: dnsPeer, blockExplorerURL: blockExplorerURL, currencySymbol: currencySymbol, minValidVersion: minValidVersion)
     }
 }

@@ -49,7 +49,13 @@ final class NetworkManager {
     // MARK: - Properties
 
     static let shared = NetworkManager()
-    private static var defaultNetwork: TariNetwork { .nextnet }
+    public static var defaultNetwork: TariNetwork {
+        #if MAINNET
+            return .mainnet
+        #else
+            return .nextnet
+        #endif
+    }
 
     @Published var selectedNetwork: TariNetwork
 
@@ -66,6 +72,8 @@ final class NetworkManager {
     }
 
     var allBaseNodes: [BaseNode] { defaultBaseNodes + customBaseNodes }
+
+    var currencySymbol: String { selectedNetwork.currencySymbol }
 
     private var settings: NetworkSettings {
         let allSettings = GroupUserDefaults.networksSettings ?? []
@@ -90,11 +98,8 @@ final class NetworkManager {
     // MARK: - Setups
 
     private static func setupNetwork() -> TariNetwork {
-        guard let selectedNetworkName = GroupUserDefaults.selectedNetworkName, let network = TariNetwork.all.first(where: { $0.name == selectedNetworkName }) else {
-            GroupUserDefaults.selectedNetworkName = defaultNetwork.name
-            return defaultNetwork
-        }
-        return network
+        GroupUserDefaults.selectedNetworkName = defaultNetwork.name
+        return defaultNetwork
     }
 
     private func setupFeedbacks() {

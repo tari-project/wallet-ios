@@ -279,7 +279,7 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             case 0:
                 cell.titleText = model.isInbound ? "Received" : "Paid"
                 if let amount = model.amount {
-                    cell.valueText = "\(amount) tXTM"
+                    cell.valueText = "\(amount) " + NetworkManager.shared.currencySymbol
                 }
                 cell.isAddressCell = false
             case 1:
@@ -309,7 +309,7 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             case 3:
                 cell.titleText = "Fee"
                 if let fee = model.fee {
-                    cell.valueText = "\(fee) tXTM"
+                    cell.valueText = "\(fee) " + NetworkManager.shared.currencySymbol
                 }
                 cell.isAddressCell = false
             case 4:

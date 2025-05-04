@@ -99,18 +99,26 @@ final class SendingTariView: DynamicThemeView {
             videoBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             videoBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
             videoBackgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
+
             logoView.centerXAnchor.constraint(equalTo: centerXAnchor),
             logoView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -70.0),
             logoView.widthAnchor.constraint(equalToConstant: 55.0),
             logoView.heightAnchor.constraint(equalToConstant: 55.0),
+
             firstLabel.topAnchor.constraint(equalTo: logoView.bottomAnchor, constant: 30.0),
             firstLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             firstLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            secondLabel.topAnchor.constraint(equalTo: firstLabel.bottomAnchor),
+            firstLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 30.0),
+
+            secondLabel.topAnchor.constraint(equalTo: firstLabel.bottomAnchor, constant: 8.0),
             secondLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             secondLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
+            secondLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 30.0),
+
             progressBar.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 40.0),
-            progressBar.centerXAnchor.constraint(equalTo: centerXAnchor)
+            progressBar.centerXAnchor.constraint(equalTo: centerXAnchor),
+            progressBar.widthAnchor.constraint(equalToConstant: 200.0),
+            progressBar.heightAnchor.constraint(equalToConstant: 4.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

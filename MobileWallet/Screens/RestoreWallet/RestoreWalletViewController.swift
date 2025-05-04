@@ -221,7 +221,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
 
         let model = PopUpDialogModel(
             title: localized("restore_wallet.pop_up.paper_wallet.confirmation.title"),
-            message: localized("restore_wallet.pop_up.paper_wallet.confirmation.message"),
+            message: String(format: localized("restore_wallet.pop_up.paper_wallet.confirmation.message"), NetworkManager.shared.currencySymbol),
             buttons: [
                 PopUpDialogButtonModel(title: localized("restore_wallet.pop_up.paper_wallet.confirmation.buttons.ok"), type: .normal, callback: { [weak self] in self?.model.confirmWalletRecovery() }),
                 PopUpDialogButtonModel(title: localized("restore_wallet.pop_up.paper_wallet.confirmation.buttons.cancel"), type: .text, callback: { [weak self] in self?.model.cancelWalletRecovery() })

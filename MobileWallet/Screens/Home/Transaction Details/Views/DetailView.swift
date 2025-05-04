@@ -9,9 +9,13 @@ class DetailView: DynamicThemeView {
 
     var onCopyButonTap: ((_ value: String?) -> Void)? {
         didSet {
-            copyButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.onCopyButonTap?(self?.valueText)
-            }), for: .touchUpInside)
+            copyButton.removeTarget(nil, action: nil, for: .touchUpInside)
+            if let action = onCopyButonTap {
+                copyButton.addAction(UIAction(handler: { [weak self] _ in
+                    guard let self = self else { return }
+                    action(self.valueText)
+                }), for: .touchUpInside)
+            }
         }
     }
 
@@ -101,6 +105,7 @@ class DetailView: DynamicThemeView {
         button.setImage(.sendCopy.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary
         button.backgroundColor = .clear
+        button.isUserInteractionEnabled = true
         return button
     }()
 

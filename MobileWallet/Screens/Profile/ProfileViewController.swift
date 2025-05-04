@@ -126,6 +126,9 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
     }
 
     private func logout() {
+        // Cancel all pending requests
+        cancellables.removeAll()
+        // Clear tokens
         UserManager.shared.clearTokens()
         handleState(state: .LoggedOut)
     }
