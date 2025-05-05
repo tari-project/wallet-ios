@@ -57,7 +57,7 @@ extension TariNetwork {
             presentedName: "Mainnet",
             isRecommended: false,
             dnsPeer: "seeds.tari.com",
-            blockExplorerURL: URL(string: "https://explore-mainnet.tari.com"),
+            blockExplorerURL: URL(string: "https://explore.tari.com"),
             currencySymbol: "XTM",
             minValidVersion: "2.0.0-alpha.1"
         )
