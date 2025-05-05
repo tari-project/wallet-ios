@@ -50,11 +50,12 @@ final class NetworkManager {
 
     static let shared = NetworkManager()
     public static var defaultNetwork: TariNetwork {
-        #if MAINNET
-            return .mainnet
-        #else
-            return .nextnet
-        #endif
+        return .mainnet
+//        #if MAINNET
+//            return .mainnet
+//        #else
+//            return .nextnet
+//        #endif
     }
 
     @Published var selectedNetwork: TariNetwork
