@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default network if not specified
-NETWORK=${1:-nextnet}
+NETWORK=mainnet
 
 FILE=env.json
 WORKING_DIR=Temp
