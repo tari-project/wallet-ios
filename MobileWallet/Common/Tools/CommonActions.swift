@@ -44,6 +44,12 @@ enum CommonActions {
         Tari.shared.delete(wallet: .main)
         Tari.shared.canAutomaticalyReconnectWallet = false
         BackupManager.shared.disableBackup()
+
+        // Clean up access tokens and appId
+        UserManager.shared.accessToken = nil
+        UserManager.shared.refreshToken = nil
+        NotificationManager.shared.appId = nil
+
         AppRouter.transitionToSplashScreen(paperWalletRecoveryData: paperWalletRecoveryData, transitionFrom: .none)
     }
 }

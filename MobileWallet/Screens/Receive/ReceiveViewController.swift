@@ -94,10 +94,26 @@ class ReceiveViewController: SecureViewController<ReceiveView> {
 
         mainView.onCopyBaseButonTap = { [weak self] in
             UIPasteboard.general.string = self?.model.base64Address
+            UIView.transition(with: self?.mainView.copyBaseButton ?? UIView(), duration: 0.2, options: .transitionCrossDissolve) {
+                self?.mainView.copyBaseButton.setTitle("Copied", for: .normal)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                UIView.transition(with: self?.mainView.copyBaseButton ?? UIView(), duration: 0.2, options: .transitionCrossDissolve) {
+                    self?.mainView.copyBaseButton.setTitle("Copy", for: .normal)
+                }
+            }
         }
 
         mainView.onCopyEmojiButonTap = { [weak self] in
             UIPasteboard.general.string = self?.model.emojiAddress
+            UIView.transition(with: self?.mainView.copyEmojiButton ?? UIView(), duration: 0.2, options: .transitionCrossDissolve) {
+                self?.mainView.copyEmojiButton.setTitle("Copied", for: .normal)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                UIView.transition(with: self?.mainView.copyEmojiButton ?? UIView(), duration: 0.2, options: .transitionCrossDissolve) {
+                    self?.mainView.copyEmojiButton.setTitle("Copy", for: .normal)
+                }
+            }
         }
     }
 

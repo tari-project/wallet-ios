@@ -47,10 +47,28 @@ final class HomeTransactionsPlaceholderCell: DynamicThemeCell {
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Text.primary
-        view.font = .Poppins.Medium.withSize(12.0)
         view.numberOfLines = 0
         view.textAlignment = .center
-        view.text = String(format: localized("home.transaction_list.placeholder"), NetworkManager.shared.currencySymbol)
+
+        let titleText = localized("home.transaction_list.placeholder.title")
+        let bodyText = String(format: localized("home.transaction_list.placeholder.body"), NetworkManager.shared.currencySymbol)
+        let fullText = titleText + bodyText
+
+        let attributedString = NSMutableAttributedString(string: fullText)
+
+        // Title style
+        let titleRange = NSRange(location: 0, length: titleText.count)
+        attributedString.addAttributes([
+            .font: UIFont.Poppins.Medium.withSize(16.0)
+        ], range: titleRange)
+
+        // Body style
+        let bodyRange = NSRange(location: titleText.count, length: bodyText.count)
+        attributedString.addAttributes([
+            .font: UIFont.Poppins.Regular.withSize(14.0)
+        ], range: bodyRange)
+
+        view.attributedText = attributedString
         return view
     }()
 
@@ -94,10 +112,12 @@ final class HomeTransactionsPlaceholderCell: DynamicThemeCell {
         let constraints = [
             titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -60),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             mineButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             mineButton.widthAnchor.constraint(equalToConstant: 156),
             mineButton.heightAnchor.constraint(equalToConstant: 36),
-            mineButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            mineButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
             contentView.heightAnchor.constraint(equalToConstant: 200)
         ]
 

@@ -76,12 +76,12 @@ class MinersGradientView: UIView {
     }
 
     public func setMiningActive(_ isActive: Bool) {
-        startMiningButton.isHidden = true
-
         if isSyncedToDesktop() {
+            startMiningButton.isHidden = true
             miningStatusLabel.isHidden = !isActive
             notMiningLabel.isHidden = isActive
         } else {
+            startMiningButton.isHidden = false
             miningStatusLabel.isHidden = true
             notMiningLabel.isHidden = true
         }
@@ -315,6 +315,7 @@ final class HomeView: DynamicThemeView {
     @View private var transactionTableView: UITableView = {
         let view = UITableView()
         view.register(type: HomeViewTransactionCell.self)
+        view.register(type: HomeTransactionsPlaceholderCell.self)
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
         view.backgroundColor = .clear
@@ -494,10 +495,16 @@ final class HomeView: DynamicThemeView {
     }
 
     private func setupCallbacks() {
-        transactionsDataSource = UITableViewDiffableDataSource(tableView: transactionTableView) { tableView, indexPath, viewModel in
-            let cell = tableView.dequeueReusableCell(type: HomeViewTransactionCell.self, indexPath: indexPath)
-            cell.update(viewModel: viewModel)
-            return cell
+        transactionsDataSource = UITableViewDiffableDataSource(tableView: transactionTableView) { [weak self] tableView, indexPath, viewModel in
+            if viewModel.id == 0 { // Placeholder cell
+                let cell = tableView.dequeueReusableCell(type: HomeTransactionsPlaceholderCell.self, indexPath: indexPath)
+                cell.onStartMiningButtonTap = self?.onStartMiningTap
+                return cell
+            } else {
+                let cell = tableView.dequeueReusableCell(type: HomeViewTransactionCell.self, indexPath: indexPath)
+                cell.update(viewModel: viewModel)
+                return cell
+            }
         }
 
         transactionTableView.dataSource = transactionsDataSource
@@ -575,9 +582,15 @@ final class HomeView: DynamicThemeView {
     private func update(transactions: [HomeViewTransactionCell.ViewModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, HomeViewTransactionCell.ViewModel>()
         snapshot.appendSections([0])
-        snapshot.appendItems(transactions)
-        transactionsDataSource?.apply(snapshot, animatingDifferences: false)
 
+        if transactions.isEmpty {
+            // Add placeholder cell when no transactions
+            snapshot.appendItems([HomeViewTransactionCell.ViewModel(id: 0, titleComponents: [], timestamp: 0, amount: AmountBadge.ViewModel(amount: nil, valueType: .invalidated))])
+        } else {
+            snapshot.appendItems(transactions)
+        }
+
+        transactionsDataSource?.apply(snapshot, animatingDifferences: false)
         activityLabel.isHidden = transactions.isEmpty
     }
 

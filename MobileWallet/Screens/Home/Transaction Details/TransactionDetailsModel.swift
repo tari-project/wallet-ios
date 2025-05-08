@@ -312,6 +312,9 @@ final class TransactionDetailsModel {
             return nil
         }
 
+        // Return nil if fee is 0
+        guard fee > 0 else { return nil }
+
         return MicroTari(fee).formattedPrecise
     }
 

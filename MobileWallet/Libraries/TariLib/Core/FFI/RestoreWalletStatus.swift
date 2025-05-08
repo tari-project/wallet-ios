@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum RestoreWalletStatus {
+enum RestoreWalletStatus: Equatable {
     case unknown
     case connectingToBaseNode
     case connectedToBaseNode
@@ -67,6 +67,25 @@ enum RestoreWalletStatus {
             self = .recoveryFailed
         default:
             self = .unknown
+        }
+    }
+
+	 static func == (lhs: RestoreWalletStatus, rhs: RestoreWalletStatus) -> Bool {
+        switch (lhs, rhs) {
+        case (.unknown, .unknown),
+             (.connectingToBaseNode, .connectingToBaseNode),
+             (.connectedToBaseNode, .connectedToBaseNode),
+             (.completed, .completed),
+             (.recoveryFailed, .recoveryFailed):
+            return true
+        case let (.connectionFailed(lhsAttempt, lhsMaxAttempts), .connectionFailed(rhsAttempt, rhsMaxAttempts)):
+            return lhsAttempt == rhsAttempt && lhsMaxAttempts == rhsMaxAttempts
+        case let (.progress(lhsRestored, lhsTotal), .progress(rhsRestored, rhsTotal)):
+            return lhsRestored == rhsRestored && lhsTotal == rhsTotal
+        case let (.scanningRoundFailed(lhsAttempt, lhsMaxAttempts), .scanningRoundFailed(rhsAttempt, rhsMaxAttempts)):
+            return lhsAttempt == rhsAttempt && lhsMaxAttempts == rhsMaxAttempts
+        default:
+            return false
         }
     }
 }

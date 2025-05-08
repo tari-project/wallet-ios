@@ -88,7 +88,7 @@ final class TransactionDetailsCell: DynamicThemeCell {
             detailView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22),
             detailView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22),
             detailView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: 48)
+            contentView.heightAnchor.constraint(equalToConstant: 74)
         ]
 
         NSLayoutConstraint.activate(constraints)

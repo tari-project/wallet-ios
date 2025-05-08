@@ -252,6 +252,9 @@ final class HomeViewController: SecureViewController<HomeView> {
 
         overlayViewController.onStartMiningButtonTap = { [weak self] in
             overlayViewController.dismiss(animated: true)
+            if let url = URL(string: "https://tari.com/") {
+                UIApplication.shared.open(url)
+            }
         }
 
         overlayViewController.activeOverlay = overlay

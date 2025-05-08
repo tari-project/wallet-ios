@@ -133,6 +133,17 @@ final class CompletedTransaction: Transaction {
         }
     }
 
+    var minedBlockHeight: UInt64 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = completed_transaction_get_mined_height(pointer, errorCodePointer)
+
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
+        }
+    }
+
     var source: TariAddress {
         get throws {
             var errorCode: Int32 = -1

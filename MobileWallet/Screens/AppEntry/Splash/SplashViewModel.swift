@@ -162,6 +162,7 @@ final class SplashViewModel {
     // MARK: - Actions
 
     public func createWallet() {
+        if status?.status == .working { return }
         Task {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)
@@ -170,6 +171,7 @@ final class SplashViewModel {
             } catch {
                 handle(error: error)
             }
+
         }
     }
 

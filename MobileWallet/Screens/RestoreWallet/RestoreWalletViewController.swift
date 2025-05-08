@@ -127,12 +127,11 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         }
 
         show(overlay: overlay)
-        AppRouter.transitionToHomeScreen(state: .newRestored)
     }
 
     private func showPaperWalletPasswordForm() {
         FormOverlayPresenter.showRecoveryPasswordForm(presenter: self) { [weak self] in
-            self?.model.enter(paperWalletPassword: $0)
+            self?.model.enter(paperWalletPassword: $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
         }
     }
 

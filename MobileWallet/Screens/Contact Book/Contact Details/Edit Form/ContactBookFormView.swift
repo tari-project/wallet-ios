@@ -48,6 +48,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
         let placeholder: String?
         let text: String?
         let isEmojiKeyboardVisible: Bool
+        let autocapitalization: Bool
         let callback: ((String) -> Void)?
     }
 
@@ -141,6 +142,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
                 textField.placeholder = model.placeholder
                 textField.text = model.text
                 textField.isEmojiKeyboardVisible = model.isEmojiKeyboardVisible
+                textField.autocapitalizationType = model.autocapitalization ? .words : .none
                 textField.onReturnPressed = { [weak self] in
                     self?.handleOnReturnPressedAction(index: index)
                 }

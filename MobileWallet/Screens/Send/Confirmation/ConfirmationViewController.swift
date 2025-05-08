@@ -153,8 +153,6 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
         let addressComponents = paymentInfo.addressComponents
         mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
         mainView.isEmojiFormat = true
-
-        mainView.noteText = paymentInfo.note
     }
 
     @objc private func continueButtonTapped() {

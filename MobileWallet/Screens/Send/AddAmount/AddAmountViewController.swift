@@ -390,13 +390,12 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func showAvailableBalance() {
-
-        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
+        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
 
         walletBalanceStackView.isHidden = false
         warningView.isHidden = false
         warningView.layer.borderWidth = 0
-        walletBalanceLabel.text = MicroTari(totalBalance).formatted
+        walletBalanceLabel.text = MicroTari(availableBalance).formatted
         balanceExceededLabel.isHidden = true
         balancePendingLabel.isHidden = true
         walletBalanceTitleLabel.isHidden = false
@@ -535,18 +534,45 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func handlePercentageButtonTap(title: String) {
-        guard let totalBalance = fetchTotalBalance() else { return }
+        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
+        let microTariBalance = MicroTari(availableBalance)
         
         let percentage: Double
         switch title {
         case "25%": percentage = 0.25
         case "50%": percentage = 0.5
         case "75%": percentage = 0.75
-        case "MAX": percentage = 1.0
+        case "MAX":
+            // For MAX, we need to estimate the fee and subtract it from the available balance
+            do {
+                // Get the current fee per gram from the selected fee option
+                guard let feePerGram = feePerGram?.rawValue else { return }
+                
+                // Estimate the fee for the available balance
+                let estimatedFee = try Tari.shared.wallet(.main).fees.estimateFee(
+                    amount: availableBalance,
+                    feePerGram: feePerGram
+                )
+                
+                // Calculate available amount by subtracting the fee
+                let availableAmount = availableBalance > estimatedFee ? availableBalance - estimatedFee : 0
+                let microTari = MicroTari(availableAmount)
+                rawInput = microTari.formatted
+                updateLabelText()
+                return
+            } catch {
+                // If fee estimation fails, fall back to using the current fee
+                let fee = self.fee ?? MicroTari()
+                let availableAmount = availableBalance > fee.rawValue ? availableBalance - fee.rawValue : 0
+                let microTari = MicroTari(availableAmount)
+                rawInput = microTari.formatted
+                updateLabelText()
+                return
+            }
         default: return
         }
         
-        let amount = UInt64(Double(totalBalance.rawValue) * percentage)
+        let amount = UInt64(Double(availableBalance) * percentage)
         let microTari = MicroTari(amount)
         rawInput = microTari.formatted
         updateLabelText()
@@ -665,7 +691,7 @@ extension AddAmountViewController {
 
         warningStackView.addArrangedSubview(walletBalanceTitleLabel)
         walletBalanceTitleLabel.font = Theme.shared.fonts.amountWarningLabel
-        walletBalanceTitleLabel.text = localized("common.wallet_balance")
+        walletBalanceTitleLabel.text = localized("common.available_balance")
         walletBalanceTitleLabel.numberOfLines = 1
         walletBalanceTitleLabel.textAlignment = .center
 
@@ -870,7 +896,7 @@ extension AddAmountViewController {
     }
 
     private func fetchTotalBalance() -> MicroTari? {
-        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
+        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.available
         return MicroTari(totalBalance)
     }
 }

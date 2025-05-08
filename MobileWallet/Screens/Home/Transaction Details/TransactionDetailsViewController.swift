@@ -252,14 +252,16 @@ extension TransactionDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Hide Contact Name, Note, Address, and Fee rows for coinbase transactions
         if model.isCoinbase {
-            return 5 // Paid, Date, Txn ID, Status, Total
+            return 4 // Paid, Date, Txn ID, Status, Total (removed Fee)
         }
-        return 9 // Paid, To/From, Contact Name, Fee, Date, Note, Txn ID, Status, Total
+        // Add note row only if there's a non-empty note
+        let baseRows = 7 // Paid, To/From, Contact Name, Date, Txn ID, Status, Total (removed Fee)
+        return (model.note?.isEmpty == false) ? baseRows : baseRows - 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
-        case 8:
+        case 7:
             let cell = tableView.dequeueReusableCell(type: TransactionTotalCell.self, indexPath: indexPath)
             cell.totalText = model.total
             return cell
@@ -270,7 +272,7 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             let rowIndex: Int
             // Adjust row index for coinbase transactions
             if model.isCoinbase {
-                rowIndex = indexPath.row >= 1 ? indexPath.row + 3 : indexPath.row
+                rowIndex = indexPath.row >= 1 ? indexPath.row + 2 : indexPath.row // Adjusted for removed fee row
             } else {
                 rowIndex = indexPath.row
             }
@@ -298,7 +300,7 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 }
             case 2:
                 cell.titleText = "Contact Name"
-                cell.valueText = model.userAlias ?? ""
+                cell.valueText = model.userAlias ?? " "
                 cell.isAddressCell = false
                 cell.showAddContactButton = model.userAlias == nil && !model.isCoinbase
                 cell.onAddContactTap = { [weak self] in
@@ -306,31 +308,33 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                     self?.addContactAliasRequest()
                     print("ViewController addContactAliasRequest called")
                 }
-            case 3:
-                cell.titleText = "Fee"
-                if let fee = model.fee {
-                    cell.valueText = "\(fee) " + NetworkManager.shared.currencySymbol
-                }
-                cell.isAddressCell = false
-            case 4:
+            // case 3: // Fee cell temporarily hidden
+            //     cell.titleText = "Fee"
+            //     if let fee = model.fee {
+            //         cell.valueText = "\(fee) " + NetworkManager.shared.currencySymbol
+            //     }
+            //     cell.isAddressCell = false
+            case 3: // Previously case 4
                 cell.titleText = "Date"
                 if let timestamp = model.timestamp {
                     let date: Date = Date(timeIntervalSince1970: timestamp)
                     cell.valueText = date.formattedDisplay()
                 }
                 cell.isAddressCell = false
-            case 5:
-                cell.titleText = "Note"
-                cell.valueText = model.note ?? ""
-                cell.isAddressCell = false
-            case 6:
+            case 4: // Previously case 5
                 cell.titleText = "Transaction ID"
                 cell.valueText = model.identifier
                 cell.isAddressCell = false
-            case 7:
+            case 5: // Previously case 6
                 cell.titleText = "Status"
                 cell.valueText = model.statusText ?? ""
                 cell.isAddressCell = false
+            case 6: // Previously case 7
+                if let note = model.note, !note.isEmpty {
+                    cell.titleText = "Note"
+                    cell.valueText = note
+                    cell.isAddressCell = false
+                }
             default:
                 break
             }

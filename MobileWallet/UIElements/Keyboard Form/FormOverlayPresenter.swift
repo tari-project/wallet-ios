@@ -64,6 +64,7 @@ extension FormOverlayPresenter {
                 placeholder: localized("contact_book.details.edit_form.text_field.name"),
                 text: alias,
                 isEmojiKeyboardVisible: false,
+                autocapitalization: false,
                 callback: { alias = $0 }
             )
         ]
@@ -83,12 +84,14 @@ extension FormOverlayPresenter {
                 placeholder: localized("contact_book.details.edit_form.text_field.first_name"),
                 text: nameComponents[0],
                 isEmojiKeyboardVisible: false,
+                autocapitalization: false,
                 callback: { nameComponents[0] = $0 }
             ),
             ContactBookFormView.TextFieldViewModel(
                 placeholder: localized("contact_book.details.edit_form.text_field.last_name"),
                 text: nameComponents[1],
                 isEmojiKeyboardVisible: false,
+                autocapitalization: false,
                 callback: { nameComponents[1] = $0 }
             )
         ]
@@ -110,18 +113,21 @@ extension FormOverlayPresenter {
                 placeholder: localized("contact_book.details.edit_form.text_field.first_name"),
                 text: nameComponents[0],
                 isEmojiKeyboardVisible: false,
+                autocapitalization: false,
                 callback: { nameComponents[0] = $0 }
             ),
             ContactBookFormView.TextFieldViewModel(
                 placeholder: localized("contact_book.details.edit_form.text_field.last_name"),
                 text: nameComponents[1],
                 isEmojiKeyboardVisible: false,
+                autocapitalization: false,
                 callback: { nameComponents[1] = $0 }
             ),
             ContactBookFormView.TextFieldViewModel(
                 placeholder: localized("contact_book.details.edit_form.text_field.yat"),
                 text: yat,
                 isEmojiKeyboardVisible: true,
+                autocapitalization: false,
                 callback: { yat = $0 }
             )
         ]
@@ -138,8 +144,8 @@ extension FormOverlayPresenter {
 
         let title = localized("restore_from_seed_words.form.title")
         let models = [
-            ContactBookFormView.TextFieldViewModel(placeholder: localized("restore_from_seed_words.form.placeholder.hex"), text: hex, isEmojiKeyboardVisible: false, callback: { hex = $0 }),
-            ContactBookFormView.TextFieldViewModel(placeholder: localized("restore_from_seed_words.form.placeholder.address"), text: address, isEmojiKeyboardVisible: false, callback: { address = $0 })
+            ContactBookFormView.TextFieldViewModel(placeholder: localized("restore_from_seed_words.form.placeholder.hex"), text: hex, isEmojiKeyboardVisible: false, autocapitalization: false, callback: { hex = $0 }),
+            ContactBookFormView.TextFieldViewModel(placeholder: localized("restore_from_seed_words.form.placeholder.address"), text: address, isEmojiKeyboardVisible: false, autocapitalization: false, callback: { address = $0 })
         ]
 
         showForm(title: title, textFieldModels: models, presenter: presenter) {
@@ -157,9 +163,9 @@ extension FormOverlayPresenter {
             title: localized("add_base_node.form.title"),
             rightButtonTitle: localized("add_base_node.form.button.save"),
             textFieldModels: [
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.name"), text: nil, isEmojiKeyboardVisible: false, callback: { name = $0 }),
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.hex"), text: nil, isEmojiKeyboardVisible: false, callback: { hex = $0 }),
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.address"), text: nil, isEmojiKeyboardVisible: false, callback: { address = $0 })
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.name"), text: nil, isEmojiKeyboardVisible: false, autocapitalization: false, callback: { name = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.hex"), text: nil, isEmojiKeyboardVisible: false, autocapitalization: false, callback: { hex = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("add_base_node.form.text_field.placeholder.address"), text: nil, isEmojiKeyboardVisible: false, autocapitalization: false, callback: { address = $0 })
             ],
             presenter: presenter,
             onClose: { onClose?(name, hex, address) }
@@ -175,6 +181,7 @@ extension FormOverlayPresenter {
                 placeholder: localized("paper_wallet.form.password.placeholder"),
                 text: "",
                 isEmojiKeyboardVisible: false,
+                autocapitalization: false,
                 callback: { password = $0 }
             )
         ]

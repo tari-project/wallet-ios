@@ -166,11 +166,11 @@ class DetailView: DynamicThemeView {
             addContactButton.widthAnchor.constraint(equalToConstant: 22),
 
             addressTypeButton.centerYAnchor.constraint(equalTo: valueLabel.centerYAnchor),
-            addressTypeButton.trailingAnchor.constraint(equalTo: copyButton.leadingAnchor, constant: -7),
+            addressTypeButton.rightAnchor.constraint(equalTo: copyButton.leftAnchor, constant: -7),
             addressTypeButton.heightAnchor.constraint(equalToConstant: 22),
             addressTypeButton.widthAnchor.constraint(equalToConstant: 22),
 
-            separatorView.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: 8),
+            separatorView.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: 10),
             separatorView.leadingAnchor.constraint(equalTo: leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: trailingAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 1),

@@ -93,7 +93,7 @@ final class TransactionFormatter {
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
 
         guard try !transaction.isCoinbase else {
-            let blockNumber = try (transaction as? CompletedTransaction)?.confirmationCount ?? 0
+            let blockNumber = try (transaction as? CompletedTransaction)?.minedBlockHeight ?? 0
             return [StylizedLabel.StylizedText(text: "Block #\(blockNumber)", style: .bold)]
         }
 
@@ -122,9 +122,8 @@ final class TransactionFormatter {
     }
 
     private func amountViewModel(transaction: Transaction) throws -> AmountBadge.ViewModel {
-
         let tariAmount = try MicroTari(transaction.amount)
-        let amount = try transaction.isOutboundTransaction ? tariAmount.formattedWithNegativeOperator : tariAmount.formattedWithOperator
+        let amount = try transaction.isOutboundTransaction ? tariAmount.formattedForHomeTransactionCell : tariAmount.formattedForHomeTransactionCell
 
         let valueType: AmountBadge.ValueType
 
