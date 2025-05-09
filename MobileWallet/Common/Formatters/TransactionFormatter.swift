@@ -98,18 +98,14 @@ final class TransactionFormatter {
         }
 
         if try transaction.isOutboundTransaction {
-            let emojiAddress = try transaction.address.components.fullEmoji
-            let truncatedAddress = truncateEmojiAddress(emojiAddress)
             return [
                 StylizedLabel.StylizedText(text: "Sent", style: .normal),
-                StylizedLabel.StylizedText(text: " \(truncatedAddress)", style: .bold)
+                StylizedLabel.StylizedText(text: " \(name)", style: .bold)
             ]
         } else {
-            let emojiAddress = try transaction.address.components.fullEmoji
-            let truncatedAddress = truncateEmojiAddress(emojiAddress)
             return [
                 StylizedLabel.StylizedText(text: "Received", style: .normal),
-                StylizedLabel.StylizedText(text: " \(truncatedAddress)", style: .bold)
+                StylizedLabel.StylizedText(text: " \(name)", style: .bold)
             ]
         }
     }

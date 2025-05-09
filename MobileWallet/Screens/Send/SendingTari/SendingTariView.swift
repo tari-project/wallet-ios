@@ -62,12 +62,14 @@ final class SendingTariView: DynamicThemeView {
     @View private var firstLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelFirst
+        view.label.textColor = .Text.primary
         return view
     }()
 
     @View private var secondLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelSecond
+        view.label.textColor = .Text.primary
         return view
     }()
 
@@ -92,6 +94,9 @@ final class SendingTariView: DynamicThemeView {
 
     private func setupConstraints() {
 
+        firstLabel.label.textColor = .Text.primary
+        secondLabel.label.textColor = .Text.primary
+
         [videoBackgroundView, logoView, firstLabel, secondLabel, progressBar].forEach(addSubview)
 
         let constraints = [
@@ -99,26 +104,18 @@ final class SendingTariView: DynamicThemeView {
             videoBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             videoBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
             videoBackgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
             logoView.centerXAnchor.constraint(equalTo: centerXAnchor),
             logoView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -70.0),
             logoView.widthAnchor.constraint(equalToConstant: 55.0),
             logoView.heightAnchor.constraint(equalToConstant: 55.0),
-
             firstLabel.topAnchor.constraint(equalTo: logoView.bottomAnchor, constant: 30.0),
             firstLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             firstLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            firstLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 30.0),
-
-            secondLabel.topAnchor.constraint(equalTo: firstLabel.bottomAnchor, constant: 8.0),
+            secondLabel.topAnchor.constraint(equalTo: firstLabel.bottomAnchor),
             secondLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             secondLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            secondLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 30.0),
-
             progressBar.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 40.0),
-            progressBar.centerXAnchor.constraint(equalTo: centerXAnchor),
-            progressBar.widthAnchor.constraint(equalToConstant: 200.0),
-            progressBar.heightAnchor.constraint(equalToConstant: 4.0)
+            progressBar.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -157,6 +154,8 @@ final class SendingTariView: DynamicThemeView {
     override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
+        firstLabel.label.textColor = .Text.primary
+        secondLabel.label.textColor = .Text.primary
     }
 
     func update(firstText: String?, secondText: String?, completion: (() -> Void)?) {

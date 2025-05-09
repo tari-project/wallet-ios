@@ -58,6 +58,25 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         return view
     }()
 
+    @View private var toastView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .Background.primary
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.Elevation.outlined.cgColor
+        view.alpha = 0
+        return view
+    }()
+
+    @View private var toastLabel: UILabel = {
+        let view = UILabel()
+        view.textColor = .Text.primary
+        view.font = .Poppins.Medium.withSize(14)
+        view.text = "Copied to clipboard"
+        view.textAlignment = .center
+        return view
+    }()
+
     // MARK: - Initialisers
 
     init(model: TransactionDetailsModel) {
@@ -78,22 +97,42 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         setupTableView()
         setupModelCallbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
+
+        // Set initial theme colors
+        toastView.backgroundColor = .Background.primary
+        toastView.layer.borderColor = UIColor.Elevation.outlined.cgColor
+        toastLabel.textColor = .Text.primary
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Update contact data when view appears
+        model.updateContactData()
     }
 
     // MARK: - Setups
 
     private func setupViews() {
         view.backgroundColor = .Background.primary
+        view.addSubview(tableView)
+        view.addSubview(toastView)
+        toastView.addSubview(toastLabel)
     }
 
     private func setupConstraints() {
-        view.addSubview(tableView)
-
         let constraints = [
             tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 74),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            toastView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            toastView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            toastView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -40),
+            toastLabel.topAnchor.constraint(equalTo: toastView.topAnchor, constant: 8),
+            toastLabel.leadingAnchor.constraint(equalTo: toastView.leadingAnchor, constant: 16),
+            toastLabel.trailingAnchor.constraint(equalTo: toastView.trailingAnchor, constant: -16),
+            toastLabel.bottomAnchor.constraint(equalTo: toastView.bottomAnchor, constant: -8)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -115,57 +154,79 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.$isAddContactButtonVisible
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                print("isAddContactButtonVisible changed, reloading table")
-                self?.tableView.reloadData()
+                // Find the contact name cell and update only that cell
+                if let indexPath = self?.findContactNameCellIndexPath() {
+                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                }
             }
             .store(in: &cancellables)
 
         model.$isNameSectionVisible
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                print("isNameSectionVisible changed, reloading table")
+                // Only reload if the name section visibility changes
                 self?.tableView.reloadData()
             }
             .store(in: &cancellables)
 
         model.$amount
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in
+                // Only reload the amount cell
+                self?.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+            }
             .store(in: &cancellables)
 
         model.$fee
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in
+                // Only reload the fee cell if it exists
+                if let indexPath = self?.findFeeCellIndexPath() {
+                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                }
+            }
             .store(in: &cancellables)
 
         model.$transactionDirection
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
-            .store(in: &cancellables)
-
-        model.$userAlias
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in
+                // Only reload the direction cell
+                self?.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+            }
             .store(in: &cancellables)
 
         model.$note
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in
+                // Only reload the note cell if it exists
+                if let indexPath = self?.findNoteCellIndexPath() {
+                    self?.tableView.reloadRows(at: [indexPath], with: .none)
+                }
+            }
             .store(in: &cancellables)
 
         model.$isBlockExplorerActionAvailable
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in
+                // Only reload the transaction ID cell
+                self?.tableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .none)
+            }
             .store(in: &cancellables)
 
         model.$statusText
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in
+                // Only reload the status cell
+                self?.tableView.reloadRows(at: [IndexPath(row: 5, section: 0)], with: .none)
+            }
             .store(in: &cancellables)
 
         model.$isEmojiFormat
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.tableView.reloadData() }
+            .sink { [weak self] _ in
+                // Only reload the address cell
+                self?.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+            }
             .store(in: &cancellables)
 
         model.$linkToOpen
@@ -183,6 +244,21 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.userAliasUpdateSuccessCallback = {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
+    }
+
+    private func findContactNameCellIndexPath() -> IndexPath? {
+        // Contact name cell is at index 2 in the table
+        return IndexPath(row: 2, section: 0)
+    }
+
+    private func findFeeCellIndexPath() -> IndexPath? {
+        // Fee cell is at index 3 in the table
+        return IndexPath(row: 3, section: 0)
+    }
+
+    private func findNoteCellIndexPath() -> IndexPath? {
+        // Note cell is at index 6 in the table
+        return IndexPath(row: 6, section: 0)
     }
 
     // MARK: - Actions
@@ -242,6 +318,23 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         let start = address.prefix(4)
         let end = address.suffix(4)
         return "\(start)...\(end)"
+    }
+
+    private func showToast() {
+        // Cancel any existing animations
+        toastView.layer.removeAllAnimations()
+
+        // Show toast with animation
+        UIView.animate(withDuration: 0.2, animations: {
+            self.toastView.alpha = 1
+        }) { _ in
+            // Hide toast after 3 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                UIView.animate(withDuration: 0.3) {
+                    self.toastView.alpha = 0
+                }
+            }
+        }
     }
 }
 
@@ -340,7 +433,15 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             }
 
             cell.onCopyButtonTap = { [weak self] value in
-                UIPasteboard.general.string = value
+                if rowIndex == 1, let addressComponents = self?.model.addressComponents {
+                    // For address cell, copy the full address based on current format
+                    let fullAddress = self?.model.isEmojiFormat == true ? addressComponents.fullEmoji : addressComponents.fullRaw
+                    UIPasteboard.general.string = fullAddress
+                } else {
+                    // For other cells, copy the displayed value
+                    UIPasteboard.general.string = value
+                }
+                self?.showToast()
             }
 
             return cell

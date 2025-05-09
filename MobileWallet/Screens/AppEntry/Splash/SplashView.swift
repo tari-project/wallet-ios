@@ -91,6 +91,13 @@ final class SplashView: DynamicThemeView {
         return label
     }()
 
+    @View private var importWalletLabelContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .Background.primary.withAlphaComponent(0.8)
+        view.layer.cornerRadius = 8
+        return view
+    }()
+
     @View private var importWallet = StylisedButton(withStyle: .primary, withSize: .large)
     @View private var createWallet = StylisedButton(withStyle: .outlined, withSize: .large)
 
@@ -163,11 +170,9 @@ final class SplashView: DynamicThemeView {
     }
 
     private func setupConstraints() {
-        [iconView, staticSplashView, titleLabel, importWalletLabel, importWallet, createWallet, separatorView, disclaimerTextView, versionLabel].forEach(addSubview)
+        [iconView, staticSplashView, titleLabel, importWalletLabelContainer, importWallet, createWallet, separatorView, disclaimerTextView, versionLabel].forEach(addSubview)
 
-//        let idleLogoConstraint = animatedLogoView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 19.0)
-//        self.idleLogoConstraint = idleLogoConstraint
-//        walletCreatedLogoConstraint = animatedLogoView.centerYAnchor.constraint(equalTo: centerYAnchor)
+        importWalletLabelContainer.addSubview(importWalletLabel)
 
         let constraints = [
             titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 63),
@@ -179,8 +184,14 @@ final class SplashView: DynamicThemeView {
             staticSplashView.leftAnchor.constraint(equalTo: leftAnchor),
             staticSplashView.rightAnchor.constraint(equalTo: rightAnchor),
             staticSplashView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            importWalletLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            importWalletLabel.bottomAnchor.constraint(equalTo: importWallet.topAnchor, constant: -10),
+            importWalletLabelContainer.centerXAnchor.constraint(equalTo: centerXAnchor),
+            importWalletLabelContainer.bottomAnchor.constraint(equalTo: importWallet.topAnchor, constant: -10),
+            importWalletLabelContainer.leadingAnchor.constraint(equalTo: importWalletLabel.leadingAnchor, constant: -12),
+            importWalletLabelContainer.trailingAnchor.constraint(equalTo: importWalletLabel.trailingAnchor, constant: 12),
+            importWalletLabelContainer.topAnchor.constraint(equalTo: importWalletLabel.topAnchor, constant: -6),
+            importWalletLabelContainer.bottomAnchor.constraint(equalTo: importWalletLabel.bottomAnchor, constant: 6),
+            importWalletLabel.centerXAnchor.constraint(equalTo: importWalletLabelContainer.centerXAnchor),
+            importWalletLabel.centerYAnchor.constraint(equalTo: importWalletLabelContainer.centerYAnchor),
             importWallet.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
             importWallet.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
             createWallet.topAnchor.constraint(equalTo: importWallet.bottomAnchor, constant: 15.0),
@@ -195,7 +206,7 @@ final class SplashView: DynamicThemeView {
             disclaimerTextView.topAnchor.constraint(equalTo: versionLabel.bottomAnchor, constant: -3.0),
             disclaimerTextView.centerXAnchor.constraint(equalTo: centerXAnchor),
             disclaimerTextView.widthAnchor.constraint(equalToConstant: 275),
-            disclaimerTextView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: 5.0)
+            disclaimerTextView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -16.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

@@ -41,14 +41,15 @@
 import UIKit
 import TariCommon
 
-final class SendingTariLabel: UIView {
+final class SendingTariLabel: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @View var label: UILabel = {
         let view = UILabel()
         view.text = " "
         view.textAlignment = .center
+        view.textColor = .Text.primary
         return view
     }()
 
@@ -59,13 +60,18 @@ final class SendingTariLabel: UIView {
         set { label.font = newValue }
     }
 
+    var textColor: UIColor? {
+        get { label.textColor }
+        set { label.textColor = newValue }
+    }
+
     private var labelTopAnchor: NSLayoutConstraint?
     private var labelBottomAnchor: NSLayoutConstraint?
 
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -81,7 +87,6 @@ final class SendingTariLabel: UIView {
     }
 
     private func setupConstraints() {
-
         addSubview(label)
 
         let labelTopAnchor = label.topAnchor.constraint(equalTo: topAnchor)
@@ -103,6 +108,7 @@ final class SendingTariLabel: UIView {
     func update(text: String?, completion: (() -> Void)? = nil) {
         hideLabel { [weak self] in
             self?.label.text = text
+            self?.label.textColor = .black
             self?.showLabel {
                 completion?()
             }
@@ -118,12 +124,12 @@ final class SendingTariLabel: UIView {
     }
 
     private func showLabel(completion: @escaping () -> Void) {
-
         labelTopAnchor?.isActive = false
         labelBottomAnchor?.isActive = true
         layoutIfNeeded()
 
         label.alpha = 1.0
+        label.textColor = .black
 
         labelBottomAnchor?.isActive = false
         labelTopAnchor?.isActive = true
@@ -133,5 +139,12 @@ final class SendingTariLabel: UIView {
         }, completion: { _ in
             completion()
         })
+    }
+
+    // MARK: - Theme Updates
+
+    override func update(theme: AppTheme) {
+        super.update(theme: theme)
+        label.textColor = .black
     }
 }

@@ -203,7 +203,7 @@ final class TransactionDetailsModel {
         }
     }
 
-    private func updateContactData() {
+    public func updateContactData() {
         Task {
             contactModel = try await fetchContactModel()
             updateAlias()

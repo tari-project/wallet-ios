@@ -220,15 +220,7 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         }
 
         let valueString = viewModel.amount.amount ?? ""
-        // Format to 2 decimal places
-        let formattedValue: String
-        if let value = Double(valueString.replacingOccurrences(of: ",", with: "")) {
-            formattedValue = String(format: "%.2f", value)
-        } else {
-            formattedValue = valueString
-        }
-
-        let amount = NSAttributedString(string: formattedValue.filter { $0 != "-" && $0 != " " && $0 != "+"} + " " + NetworkManager.shared.currencySymbol, attributes: [.foregroundColor: UIColor.Text.primary])
+        let amount = NSAttributedString(string: valueString.filter { $0 != "-" && $0 != " " && $0 != "+"} + " " + NetworkManager.shared.currencySymbol, attributes: [.foregroundColor: UIColor.Text.primary])
 
         let amountText =  NSMutableAttributedString()
         amountText.append(signString)

@@ -133,13 +133,6 @@ struct MicroTari {
         return formatted
     }
 
-    var formattedForTransactionList: String {
-        if abs(self.taris) < MicroTari.smallValueThreshold {
-            return self.taris < 0 ? "- <0.01" : "<0.01"
-        }
-        return formatted
-    }
-
     var isGreaterThanZero: Bool { rawValue > 0 }
 
     init() { self.init(0) }

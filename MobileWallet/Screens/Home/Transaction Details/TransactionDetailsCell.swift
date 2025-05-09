@@ -110,5 +110,6 @@ final class TransactionDetailsCell: DynamicThemeCell {
         onCopyButtonTap = nil
         onAddressFormatToggle = nil
         showAddContactButton = false
+        detailView.cleanup()
     }
 }
