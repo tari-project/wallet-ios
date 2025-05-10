@@ -121,13 +121,18 @@ final class AddRecipientView: BaseNavigationContentView {
 
     private func setupConstraints() {
         tableView.backgroundColor = .clear
-        [searchView, tableView].forEach(addSubview)
+        [searchView, errorMessageView, tableView].forEach(addSubview)
 
         let constraints = [
             searchView.topAnchor.constraint(equalTo: topAnchor, constant: 110),
             searchView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             searchView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            tableView.topAnchor.constraint(equalTo: searchView.bottomAnchor, constant: 0),
+
+            errorMessageView.topAnchor.constraint(equalTo: searchView.bottomAnchor, constant: 8),
+            errorMessageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            errorMessageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+
+            tableView.topAnchor.constraint(equalTo: errorMessageView.bottomAnchor, constant: 8),
             tableView.leftAnchor.constraint(equalTo: leftAnchor),
             tableView.rightAnchor.constraint(equalTo: rightAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)

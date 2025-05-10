@@ -914,6 +914,7 @@ Please keep the app open while the wallet syncs.";
 "add_recipient.my_contacts" = "Contacts";
 "add_recipient.error.can_not_send_yourself" = "Sorry, you cannot send %@ to yourself";
 "add_recipient.error.invalid_emoji_id" = "Invalid Emoji ID";
+"add_recipient.error.invalid_base_address" = "Invalid Address";
 
 /* Tracking */
 

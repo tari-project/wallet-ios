@@ -69,13 +69,17 @@ enum DeeplinkHandler {
     }
 
     static func handle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool) throws {
-
         let actionType: DeepLinkDefaultActionsHandler.ActionType
 
         if showDefaultDialogIfNeeded {
             actionType = UIApplication.shared.applicationState == .background ? .notification : .popUp
         } else {
             actionType = .direct
+        }
+
+        if deeplink.type == .login && !AppRouter.isNavigationReady {
+            retryHandle(deeplink: deeplink)
+            return
         }
 
         if deeplink.type != .login && actionType == .popUp, !(Tari.shared.wallet(.main).isWalletRunning.value && AppRouter.isNavigationReady) {
@@ -131,7 +135,16 @@ enum DeeplinkHandler {
 
     private static func retryHandle(deeplink: DeepLinkable) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            try? handle(deeplink: deeplink, showDefaultDialogIfNeeded: true)
+            do {
+                try handle(deeplink: deeplink, showDefaultDialogIfNeeded: true)
+            } catch {
+                print("Failed to handle deeplink after retry: \(error)")
+                if deeplink.type == .login {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        try? handle(deeplink: deeplink, showDefaultDialogIfNeeded: true)
+                    }
+                }
+            }
         }
     }
 }

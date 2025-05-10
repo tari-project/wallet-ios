@@ -293,31 +293,51 @@ final class AddRecipientModel {
     // MARK: - Helpers
 
     private func generateAddress(text: String) {
+        // Clear previous state
+        address = nil
 
-        guard let address = try? makeAddress(text: text) else {
-            address = nil
+        // Skip empty text
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedText.isEmpty else {
             errorMessage = nil
             return
         }
 
-        let isValid = verify(address: address)
-        self.address = isValid ? address : nil
-    }
-
-    private func makeAddress(text: String) throws -> TariAddress {
-        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        return try TariAddress.makeTariAddress(input: trimmedText)
+        do {
+            let address = try TariAddress.makeTariAddress(input: trimmedText)
+            let isValid = verify(address: address)
+            if isValid {
+                self.address = address
+                errorMessage = nil
+            }
+        } catch {
+            // Only set error message if we don't already have one
+            if errorMessage == nil {
+                // Try to provide more specific error messages based on the input format
+                if trimmedText.containsOnlyEmoji {
+                    errorMessage = localized("add_recipient.error.invalid_emoji_id")
+                } else {
+                    errorMessage = localized("add_recipient.error.invalid_base_address")
+                }
+            }
+        }
     }
 
     private func verify(address: TariAddress) -> Bool {
+        do {
+            let uniqueIdentifier = try address.components.uniqueIdentifier
+            let userUniqueIdentifier = try Tari.shared.wallet(.main).address.components.uniqueIdentifier
 
-        guard let uniqueIdentifier = try? address.components.uniqueIdentifier, let userUniqueIdentifier = try? Tari.shared.wallet(.main).address.components.uniqueIdentifier, uniqueIdentifier != userUniqueIdentifier else {
-            errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
+            guard uniqueIdentifier != userUniqueIdentifier else {
+                errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
+                return false
+            }
+
+            return true
+        } catch {
+            errorMessage = localized("add_recipient.error.invalid_base_address")
             return false
         }
-
-        errorMessage = nil
-        return true
     }
 }
 

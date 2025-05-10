@@ -125,8 +125,6 @@ final class TransactionFormatter {
 
         if transaction.isCancelled {
             valueType = .invalidated
-        } else if transaction.isPending {
-            valueType = .waiting
         } else if try transaction.isOutboundTransaction {
             valueType = .negative
         } else {
