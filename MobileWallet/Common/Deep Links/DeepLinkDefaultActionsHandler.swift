@@ -42,6 +42,7 @@ import UIKit
 
 extension Notification.Name {
     static let userDidLogin = Notification.Name("userDidLogin")
+    static let userDidLogout = Notification.Name("userDidLogout")
 }
 
 enum DeepLinkDefaultActionsHandler {

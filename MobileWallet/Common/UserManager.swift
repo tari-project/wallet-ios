@@ -76,15 +76,30 @@ enum UserInfoStatus {
 
 class UserManager: NSObject {
     private var cancellables = Set<AnyCancellable>()
+    private var retryCount = 0
+    private let maxRetries = 3
+
+    // Add token validation
+    private func isValidTokenFormat(_ token: String) -> Bool {
+        // Basic JWT token validation (you might want to adjust this based on your token format)
+        let components = token.components(separatedBy: ".")
+        return components.count == 3
+    }
 
     var accessToken: String? {
         get {
             UserDefaults.standard.string(forKey: "AccessToken")
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "AccessToken")
             if let newToken = newValue {
-                fetchUserDetails(accessToken: newToken)
+                if isValidTokenFormat(newToken) {
+                    UserDefaults.standard.set(newToken, forKey: "AccessToken")
+                    fetchUserDetails(accessToken: newToken)
+                } else {
+                    user = .Error("Invalid token format")
+                }
+            } else {
+                UserDefaults.standard.set(nil, forKey: "AccessToken")
             }
         }
     }
@@ -132,17 +147,56 @@ class UserManager: NSObject {
     }
 
     func fetchUserDetails(accessToken: String) {
+        retryCount = 0
+        attemptFetchUserDetails(accessToken: accessToken)
+    }
+
+    private func attemptFetchUserDetails(accessToken: String) {
         APIService.shared.request(endpoint: "/user/details")
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
-                    self?.user = .Error("Error: \(error.localizedDescription)")
-                    self?.userId = nil
+                    self?.handleFetchError(error: error, accessToken: accessToken)
                 }
             }, receiveValue: { [weak self] (response: UserWrapper) in
-                self?.userId = response.user.id
-                self?.user = .Ok(response.user)
+                self?.handleFetchSuccess(response: response)
             })
             .store(in: &cancellables)
+    }
+
+    private func handleFetchError(error: Error, accessToken: String) {
+        if shouldRetry(error) && retryCount < maxRetries {
+            retryCount += 1
+            print("Retrying user details fetch (attempt \(retryCount))")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                self?.attemptFetchUserDetails(accessToken: accessToken)
+            }
+        } else {
+            user = .Error("Error: \(error.localizedDescription)")
+            userId = nil
+            print("Failed to fetch user details after \(retryCount) retries")
+        }
+    }
+
+    private func handleFetchSuccess(response: UserWrapper) {
+        userId = response.user.id
+        user = .Ok(response.user)
+        retryCount = 0
+    }
+
+    private func shouldRetry(_ error: Error) -> Bool {
+        // Add logic to determine if the error is retryable
+        // For example, network errors might be retryable while authentication errors are not
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet,
+                 .networkConnectionLost,
+                 .timedOut:
+                return true
+            default:
+                return false
+            }
+        }
+        return false
     }
 }

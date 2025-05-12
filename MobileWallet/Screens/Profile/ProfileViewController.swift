@@ -68,7 +68,7 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateData()
+        model.checkUserState()
     }
 
     // MARK: - Setups
