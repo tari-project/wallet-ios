@@ -26,6 +26,12 @@ final class TransactionDetailsCell: DynamicThemeCell {
         }
     }
 
+    var onEditButtonTap: (() -> Void)? {
+        didSet {
+            detailView.onEditButtonTap = onEditButtonTap
+        }
+    }
+
     var titleText: String? {
         didSet {
             detailView.titleText = titleText
@@ -59,6 +65,24 @@ final class TransactionDetailsCell: DynamicThemeCell {
     var showAddContactButton: Bool = false {
         didSet {
             detailView.showAddContactButton = showAddContactButton
+        }
+    }
+
+    var showEditButton: Bool = false {
+        didSet {
+            detailView.showEditButton = showEditButton
+        }
+    }
+
+    var showBlockExplorerButton: Bool = false {
+        didSet {
+            detailView.showBlockExplorerButton = showBlockExplorerButton
+        }
+    }
+
+    var onBlockExplorerButtonTap: (() -> Void)? {
+        didSet {
+            detailView.onBlockExplorerButtonTap = onBlockExplorerButtonTap
         }
     }
 
@@ -110,6 +134,10 @@ final class TransactionDetailsCell: DynamicThemeCell {
         onCopyButtonTap = nil
         onAddressFormatToggle = nil
         showAddContactButton = false
+        showEditButton = false
+        showBlockExplorerButton = false
+        onEditButtonTap = nil
+        onBlockExplorerButtonTap = nil
         detailView.cleanup()
     }
 }

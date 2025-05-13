@@ -171,7 +171,8 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func oniCloudRestoreAction() {
-        authenticateUserAndRestoreWallet(from: .iCloud)
+        // Commenting out iCloud restore
+        // authenticateUserAndRestoreWallet(from: .iCloud)
     }
 
     private func onDropboxRestoreAction() {

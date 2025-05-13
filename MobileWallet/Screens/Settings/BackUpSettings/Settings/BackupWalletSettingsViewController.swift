@@ -178,12 +178,7 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
     }
 
     private func updateListItems(isPasswordItemVisible: Bool, isBackupSecuredByPassword: Bool, isBackupNowItemVisible: Bool) {
-
         var items = [seedWordsItem]
-
-        if !AppValues.general.isSimulator {
-            items.append(iCloudItem)
-        }
 
         if isPasswordItemVisible {
             passwordItem.title = isBackupSecuredByPassword ? localized("backup_wallet_settings.item.change_password") : localized("backup_wallet_settings.item.secure_your_backup")

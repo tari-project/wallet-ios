@@ -165,6 +165,7 @@ class VersionBadgeView: DynamicThemeView {
 
     override func update(theme: AppTheme) {
         super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
         layer.borderColor = UIColor.Elevation.outlined.cgColor
     }
 }

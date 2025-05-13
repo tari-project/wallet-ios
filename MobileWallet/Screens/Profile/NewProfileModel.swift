@@ -48,7 +48,7 @@ final class NewProfileModel {
         case Initial
         case Loading
         case LoggedOut
-        case Profile
+        case Profile(UserDetails)
         case Error
     }
 
@@ -56,7 +56,6 @@ final class NewProfileModel {
     @Published private(set) var errorMessage: MessageModel?
 
     @Published private(set) var state: State = .Initial
-    @Published private(set) var profile: UserDetails?
 
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
@@ -120,8 +119,10 @@ final class NewProfileModel {
     }
 
     private func handleUpdate(status: UserInfoStatus) {
+        print("NewProfileModel: handleUpdate called with status: \(status)")
         switch status {
         case .Error(let message):
+            print("NewProfileModel: Setting state to Error")
             state = .Error
             handleError(errorMessage: MessageModel(
                 title: localized("profile_view.error.title"),
@@ -130,12 +131,13 @@ final class NewProfileModel {
                 type: .normal
             ))
         case .LoggedOut:
+            print("NewProfileModel: Setting state to LoggedOut")
             state = .LoggedOut
-            profile = nil
         case .Ok(let userDetails):
-            state = .Profile
-            profile = userDetails
+            print("NewProfileModel: Setting state to Profile with userDetails")
+            state = .Profile(userDetails)
         }
+        print("NewProfileModel: State after update: \(state)")
     }
 
     private func startLoading() {
@@ -159,14 +161,12 @@ final class NewProfileModel {
 
     private func handleLoggedOutState() {
         state = .LoggedOut
-        profile = nil
         errorMessage = nil
     }
 
     private func handleUserDetails(userDetails: UserDetails) {
         DispatchQueue.main.async { [weak self] in
-            self?.state = .Profile
-            self?.profile = userDetails
+            self?.state = .Profile(userDetails)
         }
     }
 

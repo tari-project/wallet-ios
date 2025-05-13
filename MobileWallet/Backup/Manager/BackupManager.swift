@@ -227,7 +227,9 @@ final class BackupManager {
     func backupService(_ service: Service) -> BackupServicable {
         switch service {
         case .iCloud:
-            return iCloudBackupService
+            // Commenting out iCloud backup
+            // return iCloudBackupService
+            return dropboxBackupService
         case .dropbox:
             return dropboxBackupService
         }

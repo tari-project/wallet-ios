@@ -82,6 +82,7 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
     init(model: TransactionDetailsModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
+        model.presenter = self
     }
 
     required init?(coder: NSCoder) {
@@ -396,10 +397,14 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.valueText = model.userAlias ?? " "
                 cell.isAddressCell = false
                 cell.showAddContactButton = model.userAlias == nil && !model.isCoinbase
+                cell.showEditButton = model.userAlias != nil && !model.isCoinbase
                 cell.onAddContactTap = { [weak self] in
                     print("Add contact button tapped")
                     self?.addContactAliasRequest()
                     print("ViewController addContactAliasRequest called")
+                }
+                cell.onEditButtonTap = { [weak self] in
+                    self?.model.handleEditContactRequest()
                 }
             // case 3: // Fee cell temporarily hidden
             //     cell.titleText = "Fee"
@@ -418,6 +423,10 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.titleText = "Transaction ID"
                 cell.valueText = model.identifier
                 cell.isAddressCell = false
+                cell.showBlockExplorerButton = model.isBlockExplorerActionAvailable
+                cell.onBlockExplorerButtonTap = { [weak self] in
+                    self?.model.requestLinkToBlockExplorer()
+                }
             case 5: // Previously case 6
                 cell.titleText = "Status"
                 cell.valueText = model.statusText ?? ""
