@@ -575,6 +575,8 @@
 		717B28A32DB83D5300EDD05A /* DisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A22DB83D5300EDD05A /* DisclaimerView.swift */; };
 		717B28A52DB8622200EDD05A /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A42DB8622200EDD05A /* APIService.swift */; };
 		71AFC9242DA41A6D00684FA7 /* ReceiveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */; };
+		71C10D132DD174E700C165ED /* MinersGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C10D122DD174E700C165ED /* MinersGradientView.swift */; };
+		71C10D192DD17D4600C165ED /* VersionBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C10D182DD17D4600C165ED /* VersionBadgeView.swift */; };
 		71F2B2232D8C20E700104073 /* LoginDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F2B2222D8C20E700104073 /* LoginDeeplink.swift */; };
 		71F94EC52DA32D0B00D3F2AC /* ReceiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F94EC42DA32D0B00D3F2AC /* ReceiveView.swift */; };
 		71F94EC72DA32E0200D3F2AC /* ReceiveConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71F94EC62DA32E0200D3F2AC /* ReceiveConstructor.swift */; };
@@ -1204,6 +1206,8 @@
 		717B28A22DB83D5300EDD05A /* DisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclaimerView.swift; sourceTree = "<group>"; };
 		717B28A42DB8622200EDD05A /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveModel.swift; sourceTree = "<group>"; };
+		71C10D122DD174E700C165ED /* MinersGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinersGradientView.swift; sourceTree = "<group>"; };
+		71C10D182DD17D4600C165ED /* VersionBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionBadgeView.swift; sourceTree = "<group>"; };
 		71F2B2222D8C20E700104073 /* LoginDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginDeeplink.swift; sourceTree = "<group>"; };
 		71F94EC42DA32D0B00D3F2AC /* ReceiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveView.swift; sourceTree = "<group>"; };
 		71F94EC62DA32E0200D3F2AC /* ReceiveConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveConstructor.swift; sourceTree = "<group>"; };
@@ -2211,6 +2215,7 @@
 		3A7A38D12881688800D7E8BD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				71C10D122DD174E700C165ED /* MinersGradientView.swift */,
 				540CEA812A54076A00BD26C7 /* HomeBackgroundView.swift */,
 				714103CD2DC4628500D4D452 /* SyncStatusView.swift */,
 				540CEA892A543F0000BD26C7 /* HomeGlassView.swift */,
@@ -2310,6 +2315,7 @@
 			children = (
 				3A7A38D12881688800D7E8BD /* Views */,
 				5419AA782A4473F90079E745 /* HomeViewController.swift */,
+				71C10D182DD17D4600C165ED /* VersionBadgeView.swift */,
 				713FB7632D6F53D000C56CF4 /* HomeView.swift */,
 				5419AA7C2A4474390079E745 /* HomeModel.swift */,
 				5419AA7E2A44744A0079E745 /* HomeConstructor.swift */,
@@ -3709,6 +3715,7 @@
 				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
 				54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */,
 				3A8CC6C2290BDC70008161DC /* BugReportService.swift in Sources */,
+				71C10D192DD17D4600C165ED /* VersionBadgeView.swift in Sources */,
 				5453241C29A60CA0009281A7 /* TariPagerView.swift in Sources */,
 				3A47ABCD27478208007F351B /* Tari.swift in Sources */,
 				3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */,
@@ -3718,6 +3725,7 @@
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				3A03682E27DF20E300F304A2 /* TransactionDetailsViewController.swift in Sources */,
 				3A2C0B8927DA22C20018C5A8 /* ExpandButton.swift in Sources */,
+				71C10D132DD174E700C165ED /* MinersGradientView.swift in Sources */,
 				3AE1D58027E0A894001A46C4 /* TransactionDetailsModel.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */,
@@ -4266,7 +4274,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4301,7 +4309,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

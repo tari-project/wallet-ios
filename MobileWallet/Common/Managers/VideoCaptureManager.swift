@@ -94,14 +94,22 @@ final class VideoCaptureManager: NSObject {
 extension VideoCaptureManager: AVCaptureMetadataOutputObjectsDelegate {
 
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
+              let rawData = object.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            result = .invalid
+            return
+        }
 
-        guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let rawData = object.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-
-        if let deeplink = try? DeeplinkHandler.deeplink(rawDeeplink: rawData) {
-            result = .validDeeplink(deeplink)
-        } else if let bridges = rawData.findBridges() {
-            result = .torBridges(bridges)
-        } else {
+        do {
+            if let deeplink = try DeeplinkHandler.deeplink(rawDeeplink: rawData) {
+                result = .validDeeplink(deeplink)
+            } else if let bridges = rawData.findBridges() {
+                result = .torBridges(bridges)
+            } else {
+                result = .invalid
+            }
+        } catch {
+            print("Failed to parse QR code data: \(error)")
             result = .invalid
         }
     }

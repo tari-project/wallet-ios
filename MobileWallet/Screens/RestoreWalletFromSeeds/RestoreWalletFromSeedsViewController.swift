@@ -147,7 +147,6 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
         }
 
         show(overlay: overlay)
-        AppRouter.transitionToHomeScreen(state: .newRestored)
     }
 
     private func showCustomBaseNodeForm() {

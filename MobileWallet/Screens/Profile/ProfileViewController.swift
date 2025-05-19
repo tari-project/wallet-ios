@@ -68,7 +68,7 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateData()
+        model.checkUserState()
     }
 
     // MARK: - Setups
@@ -78,16 +78,12 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
     }
 
     private func setupCallbacks() {
+        // Keep strong reference to self in subscription
         model.$state
-            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handleState(state: $0) }
-            .store(in: &cancellables)
-
-        model.$profile
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.update(profile: $0) }
+            .sink { [self] state in
+                self.handleState(state: state)
+            }
             .store(in: &cancellables)
 
         Tari.shared.wallet(.main).walletBalance.$balance
@@ -96,7 +92,9 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
             .store(in: &cancellables)
 
         mainView.inviteView.onShareButtonTap = { [weak self] in
-            self?.shareAction(refId: self?.model.profile?.referralCode)
+            if case .Profile(let userDetails) = self?.model.state {
+                self?.shareAction(refId: userDetails.referralCode)
+            }
         }
 
         mainView.onLoginButtonTap = { [weak self] in
@@ -126,14 +124,13 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
     }
 
     private func logout() {
-        // Cancel all pending requests
-        cancellables.removeAll()
         // Clear tokens
         UserManager.shared.clearTokens()
         handleState(state: .LoggedOut)
     }
 
     func handleState(state: NewProfileModel.State) {
+        print("Handling state in ProfileViewController: \(state)")
         switch state {
         case .LoggedOut:
             mainView.containerView.isHidden = true
@@ -151,10 +148,11 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
             mainView.containerView.isHidden = true
             mainView.loginView.isHidden = false
             mainView.showLoading()
-        case .Profile:
+        case .Profile(let userDetails):
             mainView.containerView.isHidden = false
             mainView.loginView.isHidden = true
             mainView.hideLoading()
+            mainView.update(profile: userDetails)
         }
     }
 }

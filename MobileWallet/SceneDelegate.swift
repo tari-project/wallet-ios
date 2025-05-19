@@ -89,7 +89,17 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
-        try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+        do {
+            try DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+        } catch {
+            print("Failed to handle deeplink in SceneDelegate: \(error)")
+            // If it's a login deeplink, try again after a short delay
+            if url.path == "/airdrop/auth" {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+                }
+            }
+        }
         Yat.integration.handle(deeplink: url)
         BackupManager.shared.handle(url: url)
     }

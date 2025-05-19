@@ -48,7 +48,7 @@ final class NewProfileModel {
         case Initial
         case Loading
         case LoggedOut
-        case Profile
+        case Profile(UserDetails)
         case Error
     }
 
@@ -56,7 +56,6 @@ final class NewProfileModel {
     @Published private(set) var errorMessage: MessageModel?
 
     @Published private(set) var state: State = .Initial
-    @Published private(set) var profile: UserDetails?
 
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
@@ -64,17 +63,34 @@ final class NewProfileModel {
     // MARK: - Initialisers
 
     init() {
-        updateData()
         setupCallbacks()
+        checkUserState()
     }
 
     // MARK: - Setups
     private func setupCallbacks() {
-
+        // Observe user state changes
         UserManager.shared.$user
-            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handleUpdate(status: $0)}
+            .sink { [weak self] status in
+                self?.handleUpdate(status: status)
+            }
+            .store(in: &cancellables)
+
+        // Add observer for deeplink handling failures
+        NotificationCenter.default.publisher(for: .deeplinkHandlingFailed)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.handleError(errorMessage: "Failed to process login. Please try again.")
+            }
+            .store(in: &cancellables)
+
+        // Add observer for logout
+        NotificationCenter.default.publisher(for: .userDidLogout)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.handleLoggedOutState()
+            }
             .store(in: &cancellables)
     }
 
@@ -82,64 +98,75 @@ final class NewProfileModel {
 
     func update(name: String?) {
         guard let name, !name.isEmpty else {
-            errorMessage = MessageModel(
+            handleError(errorMessage: MessageModel(
                 title: localized("profile_view.error.no_name.title"),
                 message: localized("profile_view.error.no_name.description"),
                 closeButtonTitle: localized("profile_view.error.no_name.button"),
                 type: .normal
-            )
+            ))
             return
         }
     }
 
     func updateData() {
+        startLoading()
+        UserManager.shared.getUserInfo()
+    }
+
+    func checkUserState() {
+        startLoading()
         UserManager.shared.getUserInfo()
     }
 
     private func handleUpdate(status: UserInfoStatus) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            switch status {
-            case .Error(let errorMessage):
-                self.state = .Error
-                self.profile = nil
-                self.errorMessage = MessageModel(
-                    title: localized("profile_view.error.title"),
-                    message: errorMessage,
-                    type: .error
-                )
-            case .LoggedOut:
-                self.state = .LoggedOut
-                self.profile = nil
-            case .Ok(let userDetails):
-                self.state = .Profile
-                self.profile = userDetails
-            }
+        print("NewProfileModel: handleUpdate called with status: \(status)")
+        switch status {
+        case .Error(let message):
+            print("NewProfileModel: Setting state to Error")
+            state = .Error
+            handleError(errorMessage: MessageModel(
+                title: localized("profile_view.error.title"),
+                message: message,
+                closeButtonTitle: localized("common.buttons.ok"),
+                type: .normal
+            ))
+        case .LoggedOut:
+            print("NewProfileModel: Setting state to LoggedOut")
+            state = .LoggedOut
+        case .Ok(let userDetails):
+            print("NewProfileModel: Setting state to Profile with userDetails")
+            state = .Profile(userDetails)
         }
+        print("NewProfileModel: State after update: \(state)")
     }
 
-    func startLoading() {
+    private func startLoading() {
         state = .Loading
+        errorMessage = nil
+    }
+
+    private func handleError(errorMessage: MessageModel) {
+        self.errorMessage = errorMessage
+        state = .Error
     }
 
     private func handleError(errorMessage: String) {
-        DispatchQueue.main.async { [weak self] in
-            self?.state = .Error
-            self?.profile = nil
-        }
+        handleError(errorMessage: MessageModel(
+            title: localized("profile_view.error.title"),
+            message: errorMessage,
+            closeButtonTitle: localized("common.buttons.ok"),
+            type: .normal
+        ))
     }
 
     private func handleLoggedOutState() {
-        DispatchQueue.main.async { [weak self] in
-            self?.state = .LoggedOut
-            self?.profile = nil
-        }
+        state = .LoggedOut
+        errorMessage = nil
     }
 
     private func handleUserDetails(userDetails: UserDetails) {
         DispatchQueue.main.async { [weak self] in
-            self?.state = .Profile
-            self?.profile = userDetails
+            self?.state = .Profile(userDetails)
         }
     }
 

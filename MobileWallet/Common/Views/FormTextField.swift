@@ -80,6 +80,11 @@ final class FormTextField: DynamicThemeView {
         set { textField.isEmojiKeyboardVisible = newValue }
     }
 
+    var autocapitalizationType: UITextAutocapitalizationType {
+        get { textField.autocapitalizationType }
+        set { textField.autocapitalizationType = newValue }
+    }
+
     var onReturnPressed: (() -> Void)?
 
     // MARK: - Initialisers

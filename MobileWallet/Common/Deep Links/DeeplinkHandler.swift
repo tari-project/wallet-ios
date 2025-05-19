@@ -40,6 +40,10 @@
 
 import UIKit
 
+extension Notification.Name {
+    static let deeplinkHandlingFailed = Notification.Name("deeplinkHandlingFailed")
+}
+
 enum DeeplinkHandler {
 
     static func deeplink(rawDeeplink: String) throws -> DeepLinkable? {
@@ -69,13 +73,17 @@ enum DeeplinkHandler {
     }
 
     static func handle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool) throws {
-
         let actionType: DeepLinkDefaultActionsHandler.ActionType
 
         if showDefaultDialogIfNeeded {
             actionType = UIApplication.shared.applicationState == .background ? .notification : .popUp
         } else {
             actionType = .direct
+        }
+
+        if deeplink.type == .login && !AppRouter.isNavigationReady {
+            retryHandle(deeplink: deeplink)
+            return
         }
 
         if deeplink.type != .login && actionType == .popUp, !(Tari.shared.wallet(.main).isWalletRunning.value && AppRouter.isNavigationReady) {
@@ -130,8 +138,27 @@ enum DeeplinkHandler {
     }
 
     private static func retryHandle(deeplink: DeepLinkable) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            try? handle(deeplink: deeplink, showDefaultDialogIfNeeded: true)
+        var retryCount = 0
+        let maxRetries = 3
+        let retryDelay = 0.5
+
+        func attempt() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + retryDelay) {
+                do {
+                    try handle(deeplink: deeplink, showDefaultDialogIfNeeded: true)
+                } catch {
+                    print("Failed to handle deeplink after retry \(retryCount + 1): \(error)")
+                    if retryCount < maxRetries {
+                        retryCount += 1
+                        attempt()
+                    } else {
+                        print("Failed to handle deeplink after \(maxRetries) retries")
+                        NotificationCenter.default.post(name: .deeplinkHandlingFailed, object: nil)
+                    }
+                }
+            }
         }
+
+        attempt()
     }
 }

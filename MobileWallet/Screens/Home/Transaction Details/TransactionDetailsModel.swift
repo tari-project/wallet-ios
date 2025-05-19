@@ -80,6 +80,7 @@ final class TransactionDetailsModel {
     // MARK: - Properties
 
     private let contactsManager = ContactsManager()
+    weak var presenter: UIViewController?
 
     private var transaction: Transaction
     private var contactModel: ContactsManager.Model?
@@ -179,7 +180,60 @@ final class TransactionDetailsModel {
         isNameSectionVisible = true
     }
 
-    func update(nameComponents: [String]) {
+    func handleEditContactRequest() {
+        guard let contactModel = contactModel,
+              let presenter = presenter else { return }
+
+        if contactModel.hasExternalModel {
+            let nameComponents = contactModel.nameComponents
+            let yat = contactModel.externalModel?.yat ?? ""
+            Task { @MainActor in
+                FormOverlayPresenter.showFullContactEditForm(isContactExist: true, nameComponents: nameComponents, yat: yat, presenter: presenter) { [weak self] nameComponents, yat in
+                    self?.update(nameComponents: nameComponents, yat: yat)
+                }
+            }
+        } else {
+            let alias = contactModel.name
+            Task { @MainActor in
+                FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: true, alias: alias, presenter: presenter) { [weak self] alias in
+                    self?.update(nameComponents: [alias], yat: "")
+                }
+            }
+        }
+    }
+
+    func handleRemoveContactRequest() {
+        guard let contactModel = contactModel else { return }
+
+        let model = PopUpDialogModel(
+            title: localized("contact_book.details.popup.delete_contact.title"),
+            message: localized("contact_book.details.popup.delete_contact.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("contact_book.details.popup.delete_contact.button.ok"), type: .destructive, callback: { [weak self] in
+                    self?.removeContact()
+                }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
+            ],
+            hapticType: .none
+        )
+
+        Task { @MainActor in
+            PopUpPresenter.showPopUp(model: model)
+        }
+    }
+
+    private func removeContact() {
+        do {
+            guard let contactModel = contactModel else { return }
+            try contactsManager.remove(contact: contactModel)
+            self.contactModel = nil
+            updateAlias()
+        } catch {
+            errorModel = MessageModel(title: localized("tx_detail.error.contact.title"), message: localized("tx_detail.error.remove_contact.description"), type: .error)
+        }
+    }
+
+    func update(nameComponents: [String], yat: String = "") {
 
         guard let contactModel else {
             do {
@@ -195,7 +249,7 @@ final class TransactionDetailsModel {
         }
 
         do {
-            try contactsManager.update(nameComponents: nameComponents, isFavorite: contactModel.isFavorite, yat: contactModel.externalModel?.yat ?? "", contact: contactModel)
+            try contactsManager.update(nameComponents: nameComponents, isFavorite: contactModel.isFavorite, yat: yat, contact: contactModel)
             updateContactData()
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.contact.title"), message: localized("tx_detail.error.save_contact.description"), type: .error)
@@ -203,7 +257,7 @@ final class TransactionDetailsModel {
         }
     }
 
-    private func updateContactData() {
+    public func updateContactData() {
         Task {
             contactModel = try await fetchContactModel()
             updateAlias()
@@ -311,6 +365,9 @@ final class TransactionDetailsModel {
         } else {
             return nil
         }
+
+        // Return nil if fee is 0
+        guard fee > 0 else { return nil }
 
         return MicroTari(fee).formattedPrecise
     }

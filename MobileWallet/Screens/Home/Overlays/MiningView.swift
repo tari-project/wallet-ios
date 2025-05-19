@@ -71,7 +71,7 @@ class MiningView: UIView {
 
     @View private var linkButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
-        button.setTitle("Send Download Link", for: .normal)
+        button.setTitle("Open Download Link", for: .normal)
         return button
     }()
 

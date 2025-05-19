@@ -48,6 +48,7 @@ struct MicroTari {
     private static let conversion = 1000000
     static let roundedFractionDigits = 2
     static let maxFractionDigits = 6
+    private static let smallValueThreshold = 0.01
 
     private static let defaultFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -66,6 +67,7 @@ struct MicroTari {
         formatter.maximumFractionDigits = MicroTari.roundedFractionDigits
         formatter.positivePrefix = "+ "
         formatter.negativePrefix = "- "
+        formatter.roundingMode = .down
         return formatter
     }()
 
@@ -75,6 +77,7 @@ struct MicroTari {
         formatter.minimumFractionDigits = MicroTari.roundedFractionDigits
         formatter.maximumFractionDigits = MicroTari.maxFractionDigits
         formatter.negativePrefix = "- "
+        formatter.roundingMode = .down
         return formatter
     }()
 
@@ -102,19 +105,32 @@ struct MicroTari {
     }
 
     var formatted: String {
-        return MicroTari.defaultFormatter.string(from: NSNumber(value: self.taris))!
+        return MicroTari.defaultFormatter.string(from: NSNumber(value: self.taris)) ?? "0"
     }
 
     var formattedWithOperator: String {
-        return MicroTari.withOperatorFormatter.string(from: NSNumber(value: self.taris))!
+        if self.taris < 0 {
+            return formatted
+        }
+        return "+ " + formatted
     }
 
     var formattedWithNegativeOperator: String {
-        return MicroTari.withOperatorFormatter.string(from: NSNumber(value: self.taris * -1))!
+        if self.taris < 0 {
+            return "- " + formatted.replacingOccurrences(of: "-", with: "")
+        }
+        return formatted
     }
 
     var formattedPrecise: String {
-        return MicroTari.preciseFormatter.string(from: NSNumber(value: self.taris))!
+        MicroTari.preciseFormatter.string(from: NSNumber(value: self.taris)) ?? "0"
+    }
+
+    var formattedForHomeTransactionCell: String {
+        if abs(self.taris) < MicroTari.smallValueThreshold {
+            return self.taris < 0 ? "- <0.01" : "<0.01"
+        }
+        return formatted
     }
 
     var isGreaterThanZero: Bool { rawValue > 0 }

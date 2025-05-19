@@ -93,23 +93,19 @@ final class TransactionFormatter {
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
 
         guard try !transaction.isCoinbase else {
-            let blockNumber = try (transaction as? CompletedTransaction)?.confirmationCount ?? 0
+            let blockNumber = try (transaction as? CompletedTransaction)?.minedBlockHeight ?? 0
             return [StylizedLabel.StylizedText(text: "Block #\(blockNumber)", style: .bold)]
         }
 
         if try transaction.isOutboundTransaction {
-            let emojiAddress = try transaction.address.components.fullEmoji
-            let truncatedAddress = truncateEmojiAddress(emojiAddress)
             return [
                 StylizedLabel.StylizedText(text: "Sent", style: .normal),
-                StylizedLabel.StylizedText(text: " \(truncatedAddress)", style: .bold)
+                StylizedLabel.StylizedText(text: " \(name)", style: .bold)
             ]
         } else {
-            let emojiAddress = try transaction.address.components.fullEmoji
-            let truncatedAddress = truncateEmojiAddress(emojiAddress)
             return [
                 StylizedLabel.StylizedText(text: "Received", style: .normal),
-                StylizedLabel.StylizedText(text: " \(truncatedAddress)", style: .bold)
+                StylizedLabel.StylizedText(text: " \(name)", style: .bold)
             ]
         }
     }
@@ -122,16 +118,13 @@ final class TransactionFormatter {
     }
 
     private func amountViewModel(transaction: Transaction) throws -> AmountBadge.ViewModel {
-
         let tariAmount = try MicroTari(transaction.amount)
-        let amount = try transaction.isOutboundTransaction ? tariAmount.formattedWithNegativeOperator : tariAmount.formattedWithOperator
+        let amount = try transaction.isOutboundTransaction ? tariAmount.formattedForHomeTransactionCell : tariAmount.formattedForHomeTransactionCell
 
         let valueType: AmountBadge.ValueType
 
         if transaction.isCancelled {
             valueType = .invalidated
-        } else if transaction.isPending {
-            valueType = .waiting
         } else if try transaction.isOutboundTransaction {
             valueType = .negative
         } else {

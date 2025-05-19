@@ -11,10 +11,7 @@ class DetailView: DynamicThemeView {
         didSet {
             copyButton.removeTarget(nil, action: nil, for: .touchUpInside)
             if let action = onCopyButonTap {
-                copyButton.addAction(UIAction(handler: { [weak self] _ in
-                    guard let self = self else { return }
-                    action(self.valueText)
-                }), for: .touchUpInside)
+                copyButton.addTarget(self, action: #selector(handleCopyButtonTap(_:)), for: .touchUpInside)
             }
         }
     }
@@ -23,7 +20,16 @@ class DetailView: DynamicThemeView {
         didSet {
             addContactButton.removeTarget(nil, action: nil, for: .touchUpInside)
             if let action = onAddContactTap {
-                addContactButton.addAction(UIAction(handler: { _ in action() }), for: .touchUpInside)
+                addContactButton.addTarget(self, action: #selector(handleAddContactTap(_:)), for: .touchUpInside)
+            }
+        }
+    }
+
+    var onEditButtonTap: (() -> Void)? {
+        didSet {
+            editButton.removeTarget(nil, action: nil, for: .touchUpInside)
+            if let action = onEditButtonTap {
+                editButton.addTarget(self, action: #selector(handleEditButtonTap(_:)), for: .touchUpInside)
             }
         }
     }
@@ -43,7 +49,30 @@ class DetailView: DynamicThemeView {
     var showAddContactButton: Bool = false {
         didSet {
             addContactButton.isHidden = !showAddContactButton
-            copyButton.isHidden = showAddContactButton
+            copyButton.isHidden = showAddContactButton || showEditButton || showBlockExplorerButton
+        }
+    }
+
+    var showEditButton: Bool = false {
+        didSet {
+            editButton.isHidden = !showEditButton
+            copyButton.isHidden = showAddContactButton || showEditButton || showBlockExplorerButton
+        }
+    }
+
+    var showBlockExplorerButton: Bool = false {
+        didSet {
+            blockExplorerButton.isHidden = !showBlockExplorerButton
+            copyButton.isHidden = showAddContactButton || showEditButton || showBlockExplorerButton
+        }
+    }
+
+    var onBlockExplorerButtonTap: (() -> Void)? {
+        didSet {
+            blockExplorerButton.removeTarget(nil, action: nil, for: .touchUpInside)
+            if let action = onBlockExplorerButtonTap {
+                blockExplorerButton.addTarget(self, action: #selector(handleBlockExplorerButtonTap(_:)), for: .touchUpInside)
+            }
         }
     }
 
@@ -62,13 +91,7 @@ class DetailView: DynamicThemeView {
 
             // Add new action if it's an address cell
             if isAddressCell {
-                let action = UIAction(handler: { [weak self] _ in
-                    guard let self else { return }
-                    self.isEmojiFormat.toggle()
-                    self.onAddressFormatToggle?(self.isEmojiFormat)
-                })
-                addressTypeButton.addAction(action, for: .touchUpInside)
-                buttonAction = action
+                addressTypeButton.addTarget(self, action: #selector(handleAddressTypeButtonTap(_:)), for: .touchUpInside)
             }
         }
     }
@@ -106,6 +129,8 @@ class DetailView: DynamicThemeView {
         button.tintColor = .Text.primary
         button.backgroundColor = .clear
         button.isUserInteractionEnabled = true
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+        button.addTarget(self, action: #selector(handleCopyButtonTap(_:)), for: .touchUpInside)
         return button
     }()
 
@@ -114,6 +139,8 @@ class DetailView: DynamicThemeView {
         button.setImage(.emojiAddress.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary
         button.backgroundColor = .clear
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+        button.addTarget(self, action: #selector(handleAddressTypeButtonTap(_:)), for: .touchUpInside)
         return button
     }()
 
@@ -122,6 +149,26 @@ class DetailView: DynamicThemeView {
         button.setImage(.editContact.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary
         button.backgroundColor = .clear
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+        button.addTarget(self, action: #selector(handleAddContactTap(_:)), for: .touchUpInside)
+        return button
+    }()
+
+    @View private var editButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(.editContact.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = .Text.primary
+        button.backgroundColor = .clear
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
+        return button
+    }()
+
+    @View private var blockExplorerButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(.openExplorer.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = .Text.primary
+        button.backgroundColor = .clear
+        button.imageEdgeInsets = UIEdgeInsets(top: 11, left: 11, bottom: 11, right: 11)
         return button
     }()
 
@@ -131,6 +178,7 @@ class DetailView: DynamicThemeView {
         super.init()
         setupViews()
         setupConstraints()
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -141,10 +189,18 @@ class DetailView: DynamicThemeView {
 
     private func setupViews() {
         backgroundColor = .clear
+        addSubview(titleLabel)
+        addSubview(valueLabel)
+        addSubview(separatorView)
+        addSubview(copyButton)
+        addSubview(addressTypeButton)
+        addSubview(addContactButton)
+        addSubview(editButton)
+        addSubview(blockExplorerButton)
     }
 
     private func setupConstraints() {
-        [titleLabel, valueLabel, separatorView, copyButton, addressTypeButton, addContactButton].forEach(addSubview)
+        [titleLabel, valueLabel, separatorView, copyButton, addressTypeButton, addContactButton, editButton, blockExplorerButton].forEach(addSubview)
 
         let constraints = [
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
@@ -157,20 +213,25 @@ class DetailView: DynamicThemeView {
 
             copyButton.centerYAnchor.constraint(equalTo: valueLabel.centerYAnchor),
             copyButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            copyButton.heightAnchor.constraint(equalToConstant: 22),
-            copyButton.widthAnchor.constraint(equalToConstant: 22),
+            copyButton.heightAnchor.constraint(equalToConstant: 44),
+            copyButton.widthAnchor.constraint(equalToConstant: 44),
 
             addContactButton.centerYAnchor.constraint(equalTo: valueLabel.centerYAnchor),
             addContactButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            addContactButton.heightAnchor.constraint(equalToConstant: 22),
-            addContactButton.widthAnchor.constraint(equalToConstant: 22),
+            addContactButton.heightAnchor.constraint(equalToConstant: 44),
+            addContactButton.widthAnchor.constraint(equalToConstant: 44),
 
-            addressTypeButton.centerYAnchor.constraint(equalTo: valueLabel.centerYAnchor),
-            addressTypeButton.trailingAnchor.constraint(equalTo: copyButton.leadingAnchor, constant: -7),
-            addressTypeButton.heightAnchor.constraint(equalToConstant: 22),
-            addressTypeButton.widthAnchor.constraint(equalToConstant: 22),
+            editButton.centerYAnchor.constraint(equalTo: valueLabel.centerYAnchor),
+            editButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            editButton.heightAnchor.constraint(equalToConstant: 44),
+            editButton.widthAnchor.constraint(equalToConstant: 44),
 
-            separatorView.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: 8),
+            blockExplorerButton.centerYAnchor.constraint(equalTo: valueLabel.centerYAnchor),
+            blockExplorerButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            blockExplorerButton.heightAnchor.constraint(equalToConstant: 44),
+            blockExplorerButton.widthAnchor.constraint(equalToConstant: 44),
+
+            separatorView.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: 10),
             separatorView.leadingAnchor.constraint(equalTo: leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: trailingAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 1),
@@ -182,6 +243,10 @@ class DetailView: DynamicThemeView {
         addContactButton.isHidden = true
     }
 
+    private func setupCallbacks() {
+        copyButton.addTarget(self, action: #selector(handleCopyButtonTap(_:)), for: .touchUpInside)
+    }
+
     // MARK: - Updates
 
     override func update(theme: AppTheme) {
@@ -191,5 +256,74 @@ class DetailView: DynamicThemeView {
         titleLabel.textColor = .Text.secondary
         valueLabel.textColor = .Text.primary
         copyButton.tintColor = .Text.primary
+    }
+
+    // MARK: - Actions
+
+    @objc private func handleCopyButtonTap(_ sender: UIButton) {
+        onCopyButonTap?(valueText)
+    }
+
+    @objc private func handleAddContactTap(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.1, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                sender.transform = .identity
+            }
+        }
+        onAddContactTap?()
+    }
+
+    @objc private func handleEditButtonTap(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.1, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                sender.transform = .identity
+            }
+        }
+        onEditButtonTap?()
+    }
+
+    @objc private func handleAddressTypeButtonTap(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.1, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                sender.transform = .identity
+            }
+        }
+        isEmojiFormat.toggle()
+        onAddressFormatToggle?(isEmojiFormat)
+    }
+
+    @objc private func handleBlockExplorerButtonTap(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.1, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        }) { _ in
+            UIView.animate(withDuration: 0.1) {
+                sender.transform = .identity
+            }
+        }
+        onBlockExplorerButtonTap?()
+    }
+
+    // MARK: - Cleanup
+
+    func cleanup() {
+        // Remove all targets from all buttons
+        copyButton.removeTarget(nil, action: nil, for: .allEvents)
+        addContactButton.removeTarget(nil, action: nil, for: .allEvents)
+        addressTypeButton.removeTarget(nil, action: nil, for: .allEvents)
+        editButton.removeTarget(nil, action: nil, for: .allEvents)
+        blockExplorerButton.removeTarget(nil, action: nil, for: .allEvents)
+
+        // Reset all callbacks
+        onCopyButonTap = nil
+        onAddContactTap = nil
+        onEditButtonTap = nil
+        onBlockExplorerButtonTap = nil
+        onAddressFormatToggle = nil
     }
 }

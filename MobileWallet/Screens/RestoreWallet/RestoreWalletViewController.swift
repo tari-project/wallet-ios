@@ -127,12 +127,11 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         }
 
         show(overlay: overlay)
-        AppRouter.transitionToHomeScreen(state: .newRestored)
     }
 
     private func showPaperWalletPasswordForm() {
         FormOverlayPresenter.showRecoveryPasswordForm(presenter: self) { [weak self] in
-            self?.model.enter(paperWalletPassword: $0)
+            self?.model.enter(paperWalletPassword: $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
         }
     }
 
@@ -172,7 +171,8 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func oniCloudRestoreAction() {
-        authenticateUserAndRestoreWallet(from: .iCloud)
+        // Commenting out iCloud restore
+        // authenticateUserAndRestoreWallet(from: .iCloud)
     }
 
     private func onDropboxRestoreAction() {

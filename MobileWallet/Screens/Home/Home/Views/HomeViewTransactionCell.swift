@@ -98,6 +98,8 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         let view = UILabel()
         view.textColor = .Text.primary
         view.font = .Poppins.Medium.withSize(13)
+        view.adjustsFontSizeToFitWidth = true
+        view.minimumScaleFactor = 0.5
         return view
     }()
 
@@ -112,6 +114,8 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
 
@@ -156,6 +160,8 @@ final class HomeViewTransactionCell: DynamicThemeCell {
             containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
             containerView.leftAnchor.constraint(equalTo: leftAnchor),
             containerView.rightAnchor.constraint(equalTo: rightAnchor),
+            containerView.widthAnchor.constraint(lessThanOrEqualToConstant: 370),
+            containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             iconViewOutline.centerYAnchor.constraint(equalTo: iconView.centerYAnchor),
             iconViewOutline.centerXAnchor.constraint(equalTo: iconView.centerXAnchor),
             iconViewOutline.widthAnchor.constraint(equalToConstant: 28),
@@ -167,14 +173,16 @@ final class HomeViewTransactionCell: DynamicThemeCell {
             labelsContentView.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: 20.0),
             labelsContentView.centerYAnchor.constraint(equalTo: centerYAnchor),
             titleLabel.topAnchor.constraint(equalTo: labelsContentView.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: labelsContentView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: labelsContentView.trailingAnchor),
+            titleLabel.leftAnchor.constraint(equalTo: labelsContentView.leftAnchor),
+            titleLabel.rightAnchor.constraint(lessThanOrEqualTo: amountLabel.leftAnchor, constant: -2),
+            titleLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 60),
             timestampLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             timestampLabel.leadingAnchor.constraint(equalTo: labelsContentView.leadingAnchor),
             timestampLabel.trailingAnchor.constraint(equalTo: labelsContentView.trailingAnchor),
             timestampLabel.bottomAnchor.constraint(equalTo: labelsContentView.bottomAnchor),
             amountLabel.topAnchor.constraint(equalTo: labelsContentView.topAnchor, constant: 3),
             amountLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
+            amountLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 80),
             contentView.heightAnchor.constraint(equalToConstant: Self.defaultHeight)
         ]
 
@@ -220,15 +228,7 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         }
 
         let valueString = viewModel.amount.amount ?? ""
-        // Format to 2 decimal places
-        let formattedValue: String
-        if let value = Double(valueString.replacingOccurrences(of: ",", with: "")) {
-            formattedValue = String(format: "%.2f", value)
-        } else {
-            formattedValue = valueString
-        }
-
-        let amount = NSAttributedString(string: formattedValue.filter { $0 != "-" && $0 != " " && $0 != "+"} + " " + NetworkManager.shared.currencySymbol, attributes: [.foregroundColor: UIColor.Text.primary])
+        let amount = NSAttributedString(string: valueString.filter { $0 != "-" && $0 != " " && $0 != "+"} + " " + NetworkManager.shared.currencySymbol, attributes: [.foregroundColor: UIColor.Text.primary])
 
         let amountText =  NSMutableAttributedString()
         amountText.append(signString)

@@ -26,6 +26,12 @@ final class TransactionDetailsCell: DynamicThemeCell {
         }
     }
 
+    var onEditButtonTap: (() -> Void)? {
+        didSet {
+            detailView.onEditButtonTap = onEditButtonTap
+        }
+    }
+
     var titleText: String? {
         didSet {
             detailView.titleText = titleText
@@ -62,6 +68,24 @@ final class TransactionDetailsCell: DynamicThemeCell {
         }
     }
 
+    var showEditButton: Bool = false {
+        didSet {
+            detailView.showEditButton = showEditButton
+        }
+    }
+
+    var showBlockExplorerButton: Bool = false {
+        didSet {
+            detailView.showBlockExplorerButton = showBlockExplorerButton
+        }
+    }
+
+    var onBlockExplorerButtonTap: (() -> Void)? {
+        didSet {
+            detailView.onBlockExplorerButtonTap = onBlockExplorerButtonTap
+        }
+    }
+
     // MARK: - Initialisers
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -88,7 +112,7 @@ final class TransactionDetailsCell: DynamicThemeCell {
             detailView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22),
             detailView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22),
             detailView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: 48)
+            contentView.heightAnchor.constraint(equalToConstant: 74)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -110,5 +134,10 @@ final class TransactionDetailsCell: DynamicThemeCell {
         onCopyButtonTap = nil
         onAddressFormatToggle = nil
         showAddContactButton = false
+        showEditButton = false
+        showBlockExplorerButton = false
+        onEditButtonTap = nil
+        onBlockExplorerButtonTap = nil
+        detailView.cleanup()
     }
 }

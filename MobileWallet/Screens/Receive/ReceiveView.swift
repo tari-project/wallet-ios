@@ -201,11 +201,11 @@ class ReceiveView: BaseNavigationContentView {
             separatorView.rightAnchor.constraint(equalTo: addressContainerView.rightAnchor, constant: -15),
             separatorView.topAnchor.constraint(equalTo: emojiAddressLabel.bottomAnchor, constant: 15),
             copyEmojiButton.centerYAnchor.constraint(equalTo: emojiAddressLabel.centerYAnchor),
-            copyEmojiButton.widthAnchor.constraint(equalToConstant: 55),
+            copyEmojiButton.widthAnchor.constraint(equalToConstant: 60),
             copyEmojiButton.heightAnchor.constraint(equalToConstant: 30),
             copyEmojiButton.rightAnchor.constraint(equalTo: addressContainerView.rightAnchor, constant: -15),
             copyBaseButton.centerYAnchor.constraint(equalTo: baseAddressLabel.centerYAnchor),
-            copyBaseButton.widthAnchor.constraint(equalToConstant: 55),
+            copyBaseButton.widthAnchor.constraint(equalToConstant: 60),
             copyBaseButton.heightAnchor.constraint(equalToConstant: 30),
             copyBaseButton.rightAnchor.constraint(equalTo: addressContainerView.rightAnchor, constant: -15)
         ])

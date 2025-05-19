@@ -56,7 +56,6 @@ class ConfirmationView: DynamicThemeView {
         didSet {
             feeView.onCopyButonTap = onCopyButonTap
             recipientView.onCopyButonTap = onCopyButonTap
-            noteView.onCopyButonTap = onCopyButonTap
         }
     }
 
@@ -114,6 +113,10 @@ class ConfirmationView: DynamicThemeView {
     @View private var feeView: DetailView = {
         let view = DetailView()
         view.titleText = "Transaction Fee"
+        view.onCopyButonTap = nil
+        view.showAddContactButton = false
+        view.showEditButton = false
+        view.showBlockExplorerButton = false
         return view
     }()
 
@@ -121,12 +124,9 @@ class ConfirmationView: DynamicThemeView {
         let view = DetailView()
         view.titleText = "Recipient Address"
         view.isAddressCell = true
-        return view
-    }()
-
-    @View private var noteView: DetailView = {
-        let view = DetailView()
-        view.titleText = "Note"
+        view.showAddContactButton = false
+        view.showBlockExplorerButton = false
+        view.showEditButton = false
         return view
     }()
 
@@ -185,12 +185,6 @@ class ConfirmationView: DynamicThemeView {
         }
     }
 
-    public var noteText: String? {
-        didSet {
-            noteView.valueText = noteText
-        }
-    }
-
     public var isEmojiFormat: Bool = true {
         didSet {
             recipientView.isEmojiFormat = isEmojiFormat
@@ -207,7 +201,7 @@ class ConfirmationView: DynamicThemeView {
 
         [titleLabel, amountContainerView, addressContainerView,
          sendFundsImageView, amountLabel, tariIconView,
-         userIconView, userLabel, feeView, recipientView, noteView, totalLabel, totalValueLabel, sendButton, cancelButton].forEach(addSubview)
+         userIconView, userLabel, feeView, recipientView, totalLabel, totalValueLabel, sendButton, cancelButton].forEach(addSubview)
 
         let guide = UILayoutGuide()
         addLayoutGuide(guide)
@@ -260,16 +254,11 @@ class ConfirmationView: DynamicThemeView {
             recipientView.heightAnchor.constraint(equalToConstant: 48),
             recipientView.centerXAnchor.constraint(equalTo: centerXAnchor),
 
-            noteView.topAnchor.constraint(equalTo: recipientView.bottomAnchor, constant: 10),
-            noteView.widthAnchor.constraint(equalToConstant: 324),
-            noteView.heightAnchor.constraint(equalToConstant: 48),
-            noteView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            totalLabel.leftAnchor.constraint(equalTo: recipientView.leftAnchor),
+            totalLabel.topAnchor.constraint(equalTo: recipientView.bottomAnchor, constant: 16),
 
-            totalLabel.leftAnchor.constraint(equalTo: noteView.leftAnchor),
-            totalLabel.topAnchor.constraint(equalTo: noteView.bottomAnchor, constant: 16),
-
-            totalValueLabel.rightAnchor.constraint(equalTo: noteView.rightAnchor),
-            totalValueLabel.topAnchor.constraint(equalTo: noteView.bottomAnchor, constant: 14),
+            totalValueLabel.rightAnchor.constraint(equalTo: recipientView.rightAnchor),
+            totalValueLabel.topAnchor.constraint(equalTo: recipientView.bottomAnchor, constant: 14),
 
             sendButton.widthAnchor.constraint(equalToConstant: 342),
             sendButton.heightAnchor.constraint(equalToConstant: 50),

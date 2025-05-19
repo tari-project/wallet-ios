@@ -39,129 +39,7 @@
 */
 
 import TariCommon
-
-class MinersGradientView: UIView {
-    private let gradientLayer = CAGradientLayer()
-
-    @View private var startMiningButton: StylisedButton = {
-        let startMiningButton = StylisedButton(withStyle: .mining, withSize: .xsmall)
-        startMiningButton.setTitle("Start mining", for: .normal)
-        return startMiningButton
-    }()
-
-    @View private var miningStatusLabel: UILabel = {
-        let label = UILabel()
-        label.font = .Poppins.SemiBold.withSize(12)
-        label.textColor = UIColor(hex: 0x02FE63)
-        label.text = "You're mining"
-        label.isHidden = true
-        return label
-    }()
-
-    @View private var notMiningLabel: UILabel = {
-        let label = UILabel()
-        label.font = .Poppins.SemiBold.withSize(12)
-        label.textColor = .System.red
-        label.text = "You're not mining"
-        label.isHidden = true
-        return label
-    }()
-
-    private func isSyncedToDesktop() -> Bool {
-        return NotificationManager.shared.appId != nil
-    }
-
-    public func setActiveMiners(activeMiners: String) {
-        minersLabel.text = activeMiners
-    }
-
-    public func setMiningActive(_ isActive: Bool) {
-        startMiningButton.isHidden = true
-
-        if isSyncedToDesktop() {
-            miningStatusLabel.isHidden = !isActive
-            notMiningLabel.isHidden = isActive
-        } else {
-            miningStatusLabel.isHidden = true
-            notMiningLabel.isHidden = true
-        }
-    }
-
-    var onStartMiningTap: (() -> Void)? {
-        didSet {
-            startMiningButton.onTap = onStartMiningTap
-        }
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupGradient()
-        setupSubviews()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupGradient()
-        setupSubviews()
-    }
-
-    @View private var minersLabel: UILabel = {
-        let minersLabel = UILabel()
-        minersLabel.font = .Poppins.SemiBold.withSize(24)
-        minersLabel.textColor = .white
-        minersLabel.translatesAutoresizingMaskIntoConstraints = false
-        return minersLabel
-    }()
-
-    private func setupSubviews() {
-        let label = UILabel()
-
-        label.font = .Poppins.Medium.withSize(12)
-        label.textColor = .white
-        label.alpha = 0.5
-        label.text = "Active Miners"
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        let iconView = UIImageView(image: .minersIcon)
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-
-        [label, iconView, minersLabel, startMiningButton, miningStatusLabel, notMiningLabel].forEach(addSubview)
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 18),
-            label.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-            iconView.leftAnchor.constraint(equalTo: label.leftAnchor, constant: 0),
-            iconView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 4),
-            iconView.widthAnchor.constraint(equalToConstant: 16),
-            iconView.heightAnchor.constraint(equalToConstant: 16),
-            minersLabel.leftAnchor.constraint(equalTo: iconView.rightAnchor, constant: 6),
-            minersLabel.centerYAnchor.constraint(equalTo: iconView.centerYAnchor, constant: 0),
-            startMiningButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
-            startMiningButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            miningStatusLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
-            miningStatusLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            notMiningLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0),
-            notMiningLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -20)
-        ])
-    }
-
-    private func setupGradient() {
-        gradientLayer.colors = [
-            UIColor(hex: 0x0E1510).cgColor,
-            UIColor(hex: 0x07160B).cgColor
-        ]
-        gradientLayer.locations = [0, 1]
-        gradientLayer.startPoint = CGPoint(x: 0.25, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 0.75, y: 0.5)
-        layer.insertSublayer(gradientLayer, at: 0)
-        layer.cornerRadius = 16
-        clipsToBounds = true
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientLayer.frame = bounds
-    }
-}
+import Combine
 
 final class HomeView: DynamicThemeView {
     // MARK: - Subviews
@@ -315,6 +193,7 @@ final class HomeView: DynamicThemeView {
     @View private var transactionTableView: UITableView = {
         let view = UITableView()
         view.register(type: HomeViewTransactionCell.self)
+        view.register(type: HomeTransactionsPlaceholderCell.self)
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
         view.backgroundColor = .clear
@@ -322,6 +201,12 @@ final class HomeView: DynamicThemeView {
         view.bounces = true
         view.contentInsetAdjustmentBehavior = .never
         view.isUserInteractionEnabled = true
+        return view
+    }()
+
+    @View private var versionBadgeView: VersionBadgeView = {
+        let view = VersionBadgeView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
@@ -377,6 +262,8 @@ final class HomeView: DynamicThemeView {
         }
     }
 
+    private var cancellables: Set<AnyCancellable> = []
+
     // MARK: - Initialisers
 
     override init() {
@@ -422,7 +309,7 @@ final class HomeView: DynamicThemeView {
         headerView.isUserInteractionEnabled = true
         headerView.translatesAutoresizingMaskIntoConstraints = false
         // Add header components
-        [titleLabel, activeMinersView, walletCardView, balanceLabel,
+        [titleLabel, versionBadgeView, activeMinersView, walletCardView, balanceLabel,
          balanceTitleLabel, discloseButton, availableBalanceLabel, disclaimerButton, sendButton,
          receiveButton, activityLabel, balanceHiddenLabel].forEach { view in
             view.isUserInteractionEnabled = true
@@ -433,6 +320,10 @@ final class HomeView: DynamicThemeView {
         let headerConstraints = [
             titleLabel.leftAnchor.constraint(equalTo: activeMinersView.leftAnchor),
             titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 20),
+
+            versionBadgeView.leftAnchor.constraint(equalTo: titleLabel.rightAnchor, constant: 10),
+            versionBadgeView.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+            versionBadgeView.heightAnchor.constraint(equalToConstant: 20),
 
             activeMinersView.widthAnchor.constraint(equalToConstant: 370),
             activeMinersView.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
@@ -494,10 +385,16 @@ final class HomeView: DynamicThemeView {
     }
 
     private func setupCallbacks() {
-        transactionsDataSource = UITableViewDiffableDataSource(tableView: transactionTableView) { tableView, indexPath, viewModel in
-            let cell = tableView.dequeueReusableCell(type: HomeViewTransactionCell.self, indexPath: indexPath)
-            cell.update(viewModel: viewModel)
-            return cell
+        transactionsDataSource = UITableViewDiffableDataSource(tableView: transactionTableView) { [weak self] tableView, indexPath, viewModel in
+            if viewModel.id == 0 { // Placeholder cell
+                let cell = tableView.dequeueReusableCell(type: HomeTransactionsPlaceholderCell.self, indexPath: indexPath)
+                cell.onStartMiningButtonTap = self?.onStartMiningTap
+                return cell
+            } else {
+                let cell = tableView.dequeueReusableCell(type: HomeViewTransactionCell.self, indexPath: indexPath)
+                cell.update(viewModel: viewModel)
+                return cell
+            }
         }
 
         transactionTableView.dataSource = transactionsDataSource
@@ -536,6 +433,19 @@ final class HomeView: DynamicThemeView {
             guard let self = self else { return }
             self.onDisclaimerButtonTap?()
         }
+
+        let monitor = AppConnectionHandler.shared.connectionMonitor
+
+        Publishers.CombineLatest4(monitor.$networkConnection, monitor.$torConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
+            .sink { [weak self] in
+                self?.versionBadgeView.updateNetworkStatus(
+                    networkConnection: $0,
+                    torStatus: $1,
+                    baseNodeStatus: $2,
+                    syncStatus: $3
+                )
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - Updates
@@ -575,9 +485,15 @@ final class HomeView: DynamicThemeView {
     private func update(transactions: [HomeViewTransactionCell.ViewModel]) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, HomeViewTransactionCell.ViewModel>()
         snapshot.appendSections([0])
-        snapshot.appendItems(transactions)
-        transactionsDataSource?.apply(snapshot, animatingDifferences: false)
 
+        if transactions.isEmpty {
+            // Add placeholder cell when no transactions
+            snapshot.appendItems([HomeViewTransactionCell.ViewModel(id: 0, titleComponents: [], timestamp: 0, amount: AmountBadge.ViewModel(amount: nil, valueType: .invalidated))])
+        } else {
+            snapshot.appendItems(transactions)
+        }
+
+        transactionsDataSource?.apply(snapshot, animatingDifferences: false)
         activityLabel.isHidden = transactions.isEmpty
     }
 
