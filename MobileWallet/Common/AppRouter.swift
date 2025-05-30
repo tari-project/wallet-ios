@@ -91,7 +91,17 @@ enum AppRouter {
     static func transitionToHomeScreen(state: WalletState) {
         let tabBarController = MenuTabBarController()
 
-        tabBarController.walletState = state
+        if state == .current {
+            UserDefaults.standard.set(false, forKey: "ShouldShowWelcomeOverlay")
+        }
+
+        if TariSettings.shared.walletSettings.configurationState == .ready ||
+           TariSettings.shared.walletSettings.configurationState == .authorized {
+            tabBarController.walletState = .newRestored
+        } else {
+            tabBarController.walletState = state
+        }
+
         let navigationController = AlwaysPoppableNavigationController(rootViewController: tabBarController)
 
         transition(to: navigationController, type: .crossDissolve)

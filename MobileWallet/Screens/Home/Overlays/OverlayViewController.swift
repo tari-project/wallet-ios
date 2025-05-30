@@ -102,12 +102,29 @@ class OverlayViewController: SecureViewController<OverlayView> {
     var onNoPromptClose: (() -> Void)?
     var onStartMiningButtonTap: (() -> Void)?
 
+    // Track these with static properties that exist only for the app session
+    private static var wasDisclaimerShown = false
+
     var activeOverlay: Overlay = .synced
     var totalBalance: String = ""
     var availableBalance: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Handle only disclaimer overlay specifically - it should only show once unless explicitly requested
+        if activeOverlay == .disclaimer {
+            let shouldShowDisclaimer = UserDefaults.standard.bool(forKey: "ShouldShowDisclaimerOverlay")
+            if !shouldShowDisclaimer {
+                self.onCloseButtonTap?()
+                return
+            }
+            // Set flag to false after showing disclaimer
+            UserDefaults.standard.set(false, forKey: "ShouldShowDisclaimerOverlay")
+        }
+        // Welcome overlays (restored/synced) are controlled by the flags in HomeViewController
+        // Mining overlay always shows when requested
+        // Notification overlay is handled by NotificationManager
 
         mainView.showOverlay(for: activeOverlay, animated: false)
         mainView.disclaimerView.totalBalance = totalBalance

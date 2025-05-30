@@ -433,6 +433,7 @@ final class NewProfileView: DynamicThemeView {
     }
 
     func setupConstraints() {
+
         [containerView, loginView].forEach(addSubview)
         [minedGaugeView, gemsGaugeView].forEach(gaugesContainerView.addSubview)
         [usernameLabel, gaugesContainerView, inviteView, noInvitesView, logoutButton].forEach(containerView.addSubview)
@@ -440,8 +441,8 @@ final class NewProfileView: DynamicThemeView {
 
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            containerView.widthAnchor.constraint(lessThanOrEqualToConstant: 400),
             containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
             loginView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -472,6 +473,7 @@ final class NewProfileView: DynamicThemeView {
             usernameLabel.bottomAnchor.constraint(equalTo: gaugesContainerView.topAnchor, constant: -40),
             gaugesContainerView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 21),
             gaugesContainerView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -21),
+            gaugesContainerView.widthAnchor.constraint(lessThanOrEqualToConstant: 370),
             minedGaugeView.topAnchor.constraint(equalTo: gaugesContainerView.topAnchor),
             minedGaugeView.leadingAnchor.constraint(equalTo: gaugesContainerView.leadingAnchor),
             minedGaugeView.bottomAnchor.constraint(equalTo: gaugesContainerView.bottomAnchor),
@@ -487,6 +489,7 @@ final class NewProfileView: DynamicThemeView {
             inviteView.leftAnchor.constraint(equalTo: gaugesContainerView.leftAnchor),
             inviteView.rightAnchor.constraint(equalTo: gaugesContainerView.rightAnchor),
             inviteView.heightAnchor.constraint(equalToConstant: 220),
+            inviteView.widthAnchor.constraint(lessThanOrEqualToConstant: 370),
 
             logoutButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             logoutButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50),

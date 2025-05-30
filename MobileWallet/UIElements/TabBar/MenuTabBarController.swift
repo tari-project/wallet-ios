@@ -50,8 +50,18 @@ final class MenuTabBarController: UITabBarController {
 
     public var walletState: AppRouter.WalletState = .current {
         didSet {
-            homeViewController.showWalletSyncedOnPresentation = walletState == .newSynced
-            homeViewController.showWalletRestoredOnPresentation = walletState == .newRestored
+            // ALWAYS set default to false first
+            homeViewController.showWalletSyncedOnPresentation = false
+            homeViewController.showWalletRestoredOnPresentation = false
+
+            // Only when a wallet is explicitly created or restored AND flag is true, show welcome overlay
+            let shouldShowWelcome = UserDefaults.standard.bool(forKey: "ShouldShowWelcomeOverlay")
+
+            if shouldShowWelcome && (walletState == .newSynced || walletState == .newRestored) {
+                // Set the presentation flags based on wallet state
+                homeViewController.showWalletSyncedOnPresentation = walletState == .newSynced
+                homeViewController.showWalletRestoredOnPresentation = walletState == .newRestored
+            }
         }
     }
 

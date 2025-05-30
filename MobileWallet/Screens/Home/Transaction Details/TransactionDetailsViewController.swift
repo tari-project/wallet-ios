@@ -412,14 +412,15 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             //         cell.valueText = "\(fee) " + NetworkManager.shared.currencySymbol
             //     }
             //     cell.isAddressCell = false
-            case 3: // Previously case 4
+            case 3: // Date
                 cell.titleText = "Date"
                 if let timestamp = model.timestamp {
                     let date: Date = Date(timeIntervalSince1970: timestamp)
                     cell.valueText = date.formattedDisplay()
                 }
-                cell.isAddressCell = false
-            case 4: // Previously case 5
+                cell.onCopyButtonTap = nil
+                cell.showCopyButton = false
+            case 4: // Transaction ID
                 cell.titleText = "Transaction ID"
                 cell.valueText = model.identifier
                 cell.isAddressCell = false
@@ -427,15 +428,19 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.onBlockExplorerButtonTap = { [weak self] in
                     self?.model.requestLinkToBlockExplorer()
                 }
-            case 5: // Previously case 6
+            case 5: // Status
                 cell.titleText = "Status"
                 cell.valueText = model.statusText ?? ""
                 cell.isAddressCell = false
-            case 6: // Previously case 7
+                cell.showCopyButton = false
+            case 6: // Note
                 if let note = model.note, !note.isEmpty {
                     cell.titleText = "Note"
                     cell.valueText = note
                     cell.isAddressCell = false
+                    cell.showAddContactButton = false
+                    cell.showEditButton = false
+                    cell.showBlockExplorerButton = false
                 }
             default:
                 break

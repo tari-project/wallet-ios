@@ -43,6 +43,7 @@ import Combine
 enum QRCodeData {
     case deeplink(DeepLinkable)
     case bridges(String)
+    case base64Address(String)
 }
 
 final class QRCodeScannerModel {
@@ -55,6 +56,7 @@ final class QRCodeScannerModel {
     enum DataType {
         case deeplink(DeeplinkType)
         case torBridges
+        case base64Address
     }
 
     enum CompletionAction {
@@ -87,6 +89,13 @@ final class QRCodeScannerModel {
     private var expectTorBridges: Bool {
         expectedDataTypes.contains {
             guard case .torBridges = $0 else { return false }
+            return true
+        }
+    }
+
+    private var expectBase64Address: Bool {
+        expectedDataTypes.contains {
+            guard case .base64Address = $0 else { return false }
             return true
         }
     }
@@ -141,6 +150,8 @@ final class QRCodeScannerModel {
             onCompletion = .unexpectedData({ try? DeeplinkHandler.handle(deeplink: deeplink, showDefaultDialogIfNeeded: false) })
         case let .torBridges(bridges):
             onCompletion = .unexpectedData({ AppRouter.presentCustomTorBridgesForm(bridges: bridges) })
+        case let .base64Address(address):
+            onCompletion = .expectedData(.base64Address(address))
         case .invalid:
             break
         }
@@ -162,6 +173,8 @@ final class QRCodeScannerModel {
             handle(validDeeplink: deeplink, scanResult: scanResult)
         case let .torBridges(torBridges):
             handle(torBridges: torBridges, scanResult: scanResult)
+        case let .base64Address(address):
+            handle(base64Address: address, scanResult: scanResult)
         case .invalid:
             handleInvalidData()
         }
@@ -190,6 +203,20 @@ final class QRCodeScannerModel {
         }
 
         onCompletion = .expectedData(.bridges(torBridges))
+    }
+
+    private func handle(base64Address: String, scanResult: VideoCaptureManager.ScanResult) {
+        guard expectBase64Address else {
+            handleInvalidData()
+            return
+        }
+
+        guard let addressComponents = try? TariAddress(base58: base64Address).components else {
+            handleInvalidData()
+            return
+        }
+
+        onCompletion = .expectedData(.base64Address(base64Address))
     }
 
     private func handleInvalidData() {

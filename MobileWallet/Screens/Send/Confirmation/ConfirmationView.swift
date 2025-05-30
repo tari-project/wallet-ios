@@ -120,7 +120,7 @@ class ConfirmationView: DynamicThemeView {
         return view
     }()
 
-    @View private var recipientView: DetailView = {
+    @View public var recipientView: DetailView = {
         let view = DetailView()
         view.titleText = "Recipient Address"
         view.isAddressCell = true

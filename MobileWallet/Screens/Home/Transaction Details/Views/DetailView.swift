@@ -49,22 +49,32 @@ class DetailView: DynamicThemeView {
     var showAddContactButton: Bool = false {
         didSet {
             addContactButton.isHidden = !showAddContactButton
-            copyButton.isHidden = showAddContactButton || showEditButton || showBlockExplorerButton
+            updateCopyButtonVisibility()
         }
     }
 
     var showEditButton: Bool = false {
         didSet {
             editButton.isHidden = !showEditButton
-            copyButton.isHidden = showAddContactButton || showEditButton || showBlockExplorerButton
+            updateCopyButtonVisibility()
         }
     }
 
     var showBlockExplorerButton: Bool = false {
         didSet {
             blockExplorerButton.isHidden = !showBlockExplorerButton
-            copyButton.isHidden = showAddContactButton || showEditButton || showBlockExplorerButton
+            updateCopyButtonVisibility()
         }
+    }
+
+    var showCopyButton: Bool = true {
+        didSet {
+            updateCopyButtonVisibility()
+        }
+    }
+
+    private func updateCopyButtonVisibility() {
+        copyButton.isHidden = !showCopyButton || showAddContactButton || showEditButton || showBlockExplorerButton
     }
 
     var onBlockExplorerButtonTap: (() -> Void)? {

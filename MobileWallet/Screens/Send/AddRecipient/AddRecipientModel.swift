@@ -171,19 +171,24 @@ final class AddRecipientModel {
     // MARK: - View Model Actions
 
     func handle(qrCodeData: QRCodeData) {
-
-        guard case let .deeplink(deeplink) = qrCodeData else { return }
-
-        if let deeplink = deeplink as? TransactionsSendDeeplink {
-            var amount: MicroTari?
-            if let rawAmount = deeplink.amount {
-                amount = MicroTari(rawAmount)
+        switch qrCodeData {
+        case let .deeplink(deeplink):
+            if let deeplink = deeplink as? TransactionsSendDeeplink {
+                var amount: MicroTari?
+                if let rawAmount = deeplink.amount {
+                    amount = MicroTari(rawAmount)
+                }
+                guard let addressComponents = try? TariAddress(base58: deeplink.receiverAddress).components else { return }
+                handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
+            } else if let deeplink = deeplink as? UserProfileDeeplink {
+                guard let addressComponents = try? TariAddress(base58: deeplink.tariAddress).components else { return }
+                handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
             }
-            guard let addressComponents = try? TariAddress(base58: deeplink.receiverAddress).components else { return }
-            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
-        } else if let deeplink = deeplink as? UserProfileDeeplink {
-            guard let addressComponents = try? TariAddress(base58: deeplink.tariAddress).components else { return }
-            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+        case let .base64Address(address):
+            guard let addressComponents = try? TariAddress(base58: address).components else { return }
+            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+        case .bridges:
+            break
         }
     }
 

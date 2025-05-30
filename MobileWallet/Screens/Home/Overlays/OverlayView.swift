@@ -84,6 +84,10 @@ class OverlayView: UIView {
         onCloseButtonTap?()
     }
 
+    @objc func handleViewTap(_ sender: UITapGestureRecognizer) {
+        onCloseButtonTap?()
+    }
+
     @View private var welcomeView: WelcomeView = {
         return WelcomeView()
     }()
@@ -116,8 +120,13 @@ class OverlayView: UIView {
         blurrView.alpha = 0.7
         translatesAutoresizingMaskIntoConstraints = false
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        blurrView.addGestureRecognizer(tapGesture)
+        let backgroundTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        blurrView.addGestureRecognizer(backgroundTapGesture)
+
+        let viewTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleViewTap(_:)))
+        viewTapGesture.cancelsTouchesInView = false
+        viewTapGesture.delegate = self
+        addGestureRecognizer(viewTapGesture)
 
         setupConstraints()
     }
@@ -191,5 +200,19 @@ class OverlayView: UIView {
             }
         }
         // animations
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+extension OverlayView: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // Don't handle taps on buttons or other interactive elements
+        if touch.view is UIButton || touch.view is StylisedButton || touch.view?.isDescendant(of: welcomeView.subviews.first ?? UIView()) == true ||
+           touch.view?.isDescendant(of: notificationView.subviews.first ?? UIView()) == true ||
+           touch.view?.isDescendant(of: miningView.subviews.first ?? UIView()) == true ||
+           touch.view?.isDescendant(of: disclaimerView.subviews.first ?? UIView()) == true {
+            return false
+        }
+        return true
     }
 }

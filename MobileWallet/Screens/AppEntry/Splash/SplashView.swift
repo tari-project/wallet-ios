@@ -91,15 +91,15 @@ final class SplashView: DynamicThemeView {
         return label
     }()
 
-    @View private var importWalletLabelContainer: UIView = {
+    @View var importWalletLabelContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .Background.primary.withAlphaComponent(0.8)
         view.layer.cornerRadius = 8
         return view
     }()
 
-    @View private var importWallet = StylisedButton(withStyle: .primary, withSize: .large)
-    @View private var createWallet = StylisedButton(withStyle: .outlined, withSize: .large)
+    @View var importWallet = StylisedButton(withStyle: .primary, withSize: .large)
+    @View var createWallet = StylisedButton(withStyle: .outlined, withSize: .large)
 
     @View private var disclaimerTextView: UnselectableTextView = {
         let view = UnselectableTextView()

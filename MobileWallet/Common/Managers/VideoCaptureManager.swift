@@ -46,6 +46,7 @@ final class VideoCaptureManager: NSObject {
         case invalid
         case validDeeplink(DeepLinkable)
         case torBridges(String)
+        case base64Address(String)
     }
 
     enum SetupError: Error {
@@ -105,6 +106,8 @@ extension VideoCaptureManager: AVCaptureMetadataOutputObjectsDelegate {
                 result = .validDeeplink(deeplink)
             } else if let bridges = rawData.findBridges() {
                 result = .torBridges(bridges)
+            } else if (try? TariAddress(base58: rawData)) != nil {
+                result = .base64Address(rawData)
             } else {
                 result = .invalid
             }

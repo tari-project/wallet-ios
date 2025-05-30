@@ -90,13 +90,23 @@ final class HomeViewController: SecureViewController<HomeView> {
             return
         }
 
+        // Add an extra safeguard - ONLY show welcome overlays if the flag is explicitly set
+        let shouldShowWelcome = UserDefaults.standard.bool(forKey: "ShouldShowWelcomeOverlay")
+        if !shouldShowWelcome && !showWalletRestoredOnPresentation && !showWalletSyncedOnPresentation {
+            return
+        }
+
         didShowOverlays = true
         if showWalletRestoredOnPresentation {
             showWalletRestoredOnPresentation = false
             showOverlay(for: .restored)
+            // Set flag to false after showing the overlay
+            UserDefaults.standard.set(false, forKey: "ShouldShowWelcomeOverlay")
         } else if showWalletSyncedOnPresentation {
             showWalletSyncedOnPresentation = false
             showOverlay(for: .synced)
+            // Set flag to false after showing the overlay
+            UserDefaults.standard.set(false, forKey: "ShouldShowWelcomeOverlay")
         } else {
             NotificationManager.shared.shouldPromptForNotifications { shouldPrompt in
                 DispatchQueue.main.async {
@@ -171,6 +181,7 @@ final class HomeViewController: SecureViewController<HomeView> {
         }
 
         mainView.onDisclaimerButtonTap = { [weak self] in
+            UserDefaults.standard.set(true, forKey: "ShouldShowDisclaimerOverlay")
             self?.showOverlay(for: .disclaimer)
         }
     }

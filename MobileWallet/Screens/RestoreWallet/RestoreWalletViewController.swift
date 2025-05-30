@@ -118,8 +118,13 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
 
     private func showRecoveryOverlay() {
         let overlay = SeedWordsRecoveryProgressViewController()
+
+        // Set flag to show welcome overlay for restored wallet
+        UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
+
         overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen(animated: true, isWalletConnected: true, paperWalletRecoveryData: nil, transitionFrom: .paperWallet)
+            // Always show the same wallet creation screens as for a new wallet
+            AppRouter.transitionToOnboardingScreen(startFromLocalAuth: false)
         }
 
         overlay.onFailure = { [weak self] in
@@ -201,6 +206,9 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func restoreWallet(from service: BackupManager.Service, password: String?) {
+        // Set flag to show welcome overlay for restored wallet
+        UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
+
         pendingView.showPendingView { [weak self] in
             guard let self else { return }
             BackupManager.shared.backupService(service).restoreBackup(password: password)
@@ -255,7 +263,8 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         case .navigateBack:
             AppRouter.transitionToSplashScreen(isWalletConnected: true)
         case .navigateBackAndStartWallet:
-            AppRouter.transitionToSplashScreen()
+            // Always show creation screens for imported wallets, similar to create wallet flow
+            AppRouter.transitionToOnboardingScreen(startFromLocalAuth: false)
         }
     }
 
@@ -314,6 +323,8 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
             guard let deeplink = deeplink as? PaperWalletDeeplink else { return }
             model.requestWalletRecovery(paperWalletDeeplink: deeplink)
         case .bridges:
+            break
+        case .base64Address:
             break
         }
     }

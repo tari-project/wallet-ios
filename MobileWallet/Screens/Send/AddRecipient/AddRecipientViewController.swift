@@ -147,7 +147,7 @@ final class AddRecipientViewController: SecureViewController<AddRecipientView> {
     // MARK: - Actions
 
     private func openScanner() {
-        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.transactionSend), .deeplink(.profile)], disabledDataTypes: []) { [weak self] in
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.transactionSend), .deeplink(.profile), .base64Address], disabledDataTypes: []) { [weak self] in
             self?.model.handle(qrCodeData: $0)
         }
     }

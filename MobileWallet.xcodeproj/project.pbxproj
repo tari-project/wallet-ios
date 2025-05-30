@@ -574,6 +574,7 @@
 		717B28A12DB82C4400EDD05A /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A02DB82C4400EDD05A /* DetailView.swift */; };
 		717B28A32DB83D5300EDD05A /* DisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A22DB83D5300EDD05A /* DisclaimerView.swift */; };
 		717B28A52DB8622200EDD05A /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717B28A42DB8622200EDD05A /* APIService.swift */; };
+		71834F252DE9230E00B179A9 /* LocalAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71834F242DE9230E00B179A9 /* LocalAuthViewController.swift */; };
 		71AFC9242DA41A6D00684FA7 /* ReceiveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */; };
 		71C10D132DD174E700C165ED /* MinersGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C10D122DD174E700C165ED /* MinersGradientView.swift */; };
 		71C10D192DD17D4600C165ED /* VersionBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C10D182DD17D4600C165ED /* VersionBadgeView.swift */; };
@@ -1205,6 +1206,7 @@
 		717B28A02DB82C4400EDD05A /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		717B28A22DB83D5300EDD05A /* DisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclaimerView.swift; sourceTree = "<group>"; };
 		717B28A42DB8622200EDD05A /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		71834F242DE9230E00B179A9 /* LocalAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAuthViewController.swift; sourceTree = "<group>"; };
 		71AFC9232DA41A6D00684FA7 /* ReceiveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiveModel.swift; sourceTree = "<group>"; };
 		71C10D122DD174E700C165ED /* MinersGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinersGradientView.swift; sourceTree = "<group>"; };
 		71C10D182DD17D4600C165ED /* VersionBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionBadgeView.swift; sourceTree = "<group>"; };
@@ -1269,6 +1271,7 @@
 		0012562D2371D21E00A9C067 /* Splash */ = {
 			isa = PBXGroup;
 			children = (
+				71834F242DE9230E00B179A9 /* LocalAuthViewController.swift */,
 				3ACFA5E92937532A00E1455A /* SplashViewConstructor.swift */,
 				3A03A601288962FA00788A02 /* SplashViewModel.swift */,
 				0012562E2371D81500A9C067 /* SplashViewController.swift */,
@@ -3802,6 +3805,7 @@
 				3A87C3B527A94086007A553F /* CoreError.swift in Sources */,
 				54DF83C32A4C59380040E3F4 /* AmountBadge.swift in Sources */,
 				3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */,
+				71834F252DE9230E00B179A9 /* LocalAuthViewController.swift in Sources */,
 				71717AFB2DB0831E00CCB640 /* TransactionTotalCell.swift in Sources */,
 				717B28A32DB83D5300EDD05A /* DisclaimerView.swift in Sources */,
 				3A793BF128031F540094DF23 /* PopUpImageHeaderView.swift in Sources */,
@@ -4274,7 +4278,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4309,7 +4313,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -223,8 +223,7 @@ class DisclaimerView: UIView {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        if let touch = touches.first, !containerView.frame.contains(touch.location(in: self)) {
-            onCloseButtonTap?()
-        }
+        // Allow closing by tapping anywhere
+        onCloseButtonTap?()
     }
 }

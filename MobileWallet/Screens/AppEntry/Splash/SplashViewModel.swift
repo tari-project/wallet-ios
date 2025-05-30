@@ -157,12 +157,19 @@ final class SplashViewModel {
         Tari.shared.canAutomaticalyReconnectWallet = false
         status = StatusModel(status: .idle, statusRepresentation: .content)
         isWalletExist = Tari.shared.wallet(.main).isWalletDBExist
+
+        // Set flag to true so welcome screen shows when a new wallet is created after deletion
+        UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
     }
 
     // MARK: - Actions
 
     public func createWallet() {
         if status?.status == .working { return }
+
+        // Set flag to show welcome overlay for new wallet
+        UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
+
         Task {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)

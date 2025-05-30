@@ -122,6 +122,37 @@ extension LAContext {
         }
     }
 
+    // Add new method with failure callback
+    func authenticateUserWithFailureHandling(reason: AuthenticateUserReason = .logIn,
+                                             onSuccess: @escaping () -> Void,
+                                             onFailure: @escaping () -> Void) {
+        // Skip auth on simulator, quicker for development
+        guard !AppValues.general.isSimulator else {
+            onSuccess()
+            return
+        }
+
+        switch biometricType {
+        case .faceID, .touchID, .pin:
+            let policy: LAPolicy = .deviceOwnerAuthentication
+            let localizedReason = reason.rawValue
+
+            evaluatePolicy(policy, localizedReason: localizedReason) { success, error in
+                DispatchQueue.main.async {
+                    if success {
+                        onSuccess()
+                    } else {
+                        Logger.log(message: "Biometrics auth failed or canceled: \(error?.localizedDescription ?? "N/A")", domain: .general, level: .error)
+                        onFailure()
+                    }
+                }
+            }
+        case .none:
+            // No biometrics available, just call success
+            onSuccess()
+        }
+    }
+
     private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
         let alert = UIAlertController(title: localized("authentication.fail.title"), message: reason, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: localized("authentication.try_again"), style: .default, handler: { [weak self] _ in

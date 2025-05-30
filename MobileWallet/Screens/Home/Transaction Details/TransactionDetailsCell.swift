@@ -80,6 +80,12 @@ final class TransactionDetailsCell: DynamicThemeCell {
         }
     }
 
+    var showCopyButton: Bool = true {
+        didSet {
+            detailView.showCopyButton = showCopyButton
+        }
+    }
+
     var onBlockExplorerButtonTap: (() -> Void)? {
         didSet {
             detailView.onBlockExplorerButtonTap = onBlockExplorerButtonTap
@@ -136,6 +142,7 @@ final class TransactionDetailsCell: DynamicThemeCell {
         showAddContactButton = false
         showEditButton = false
         showBlockExplorerButton = false
+        showCopyButton = true
         onEditButtonTap = nil
         onBlockExplorerButtonTap = nil
         detailView.cleanup()

@@ -52,6 +52,8 @@ final class SplashViewController: UIViewController, OverlayPresentable {
 
     private var cancellables = Set<AnyCancellable>()
     private var animateTransitions = false
+    private var continueButtonVisible = false
+    private var continueButton: StylisedButton?
 
     // MARK: - Initialisers
 
@@ -162,7 +164,7 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         case .notConfigured:
             moveToHomeScreen(startFromLocalAuth: false, state: state)
         case .initialized:
-            moveToHomeScreen(startFromLocalAuth: true, state: state)
+            showAuthenticationWithContinueOption(state: state)
         case .authorized, .ready:
             moveToHomeScreen(startFromLocalAuth: false, state: state)
         }
@@ -177,7 +179,93 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         AppRouter.transitionToHomeScreen(state: .current)
     }
 
+    private func showAuthenticationWithContinueOption(state: AppRouter.WalletState) {
+        // Skip auth on simulator, quicker for development
+        guard !AppValues.general.isSimulator else {
+            successAuth()
+            return
+        }
+
+        // Make sure views are visible
+        view.isHidden = false
+        mainView.isHidden = false
+
+        // Use the new authentication method with explicit failure handling
+        localAuth.authenticateUserWithFailureHandling(
+            onSuccess: { [weak self] in
+                self?.successAuth()
+            },
+            onFailure: { [weak self] in
+                // Handle the cancellation/failure by showing continue button
+                DispatchQueue.main.async {
+                    self?.showContinueButton(state: state)
+                }
+            }
+        )
+    }
+
+    private func showContinueButton(state: AppRouter.WalletState) {
+        guard !continueButtonVisible else { return }
+        continueButtonVisible = true
+
+        // Ensure the view is visible
+        view.isHidden = false
+        mainView.isHidden = false
+
+        // Hide wallet creation and restore buttons and the label container
+        mainView.importWallet.isHidden = true
+        mainView.createWallet.isHidden = true
+        mainView.importWalletLabelContainer.isHidden = true
+
+        // Create and add Continue button
+        let button = StylisedButton(withStyle: .primary, withSize: .large)
+        button.setTitle(localized("common.continue"), for: .normal)
+        button.onTap = { [weak self] in
+            // Instead of moving directly to home screen, trigger authentication again
+            self?.showAuthenticationAgain(state: state)
+        }
+
+        continueButton = button
+        mainView.addSubview(button)
+
+        // Log that we're adding the button
+        Logger.log(message: "Adding Continue button after authentication cancellation", domain: .general, level: .info)
+
+        // Position the button at the same position as the importWallet (Restore Wallet) button
+        button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: mainView.importWallet.centerYAnchor),
+            button.widthAnchor.constraint(equalTo: mainView.importWallet.widthAnchor),
+            button.heightAnchor.constraint(equalTo: mainView.importWallet.heightAnchor)
+        ])
+    }
+
+    private func showAuthenticationAgain(state: AppRouter.WalletState) {
+        // Show authentication again when Continue button is tapped
+        localAuth.authenticateUserWithFailureHandling(
+            onSuccess: { [weak self] in
+                // If authentication succeeds, proceed to home screen
+                self?.successAuth()
+            },
+            onFailure: {
+                // If authentication fails/cancels again, do nothing (keep the Continue button visible)
+                Logger.log(message: "Authentication cancelled again from Continue button", domain: .general, level: .info)
+            }
+        )
+    }
+
     private func moveToHomeScreen(startFromLocalAuth: Bool, state: AppRouter.WalletState) {
+        // Remove the continue button if it exists
+        continueButton?.removeFromSuperview()
+        continueButton = nil
+        continueButtonVisible = false
+
+        // Restore visibility of wallet buttons
+        mainView.importWallet.isHidden = false
+        mainView.createWallet.isHidden = false
+        mainView.importWalletLabelContainer.isHidden = false
+
         if startFromLocalAuth {
             localAuth.authenticateUser(onSuccess: successAuth)
         } else {
@@ -190,7 +278,8 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         let overlay = SeedWordsRecoveryProgressViewController()
 
         overlay.onSuccess = {
-            self.localAuth.authenticateUser(onSuccess: self.successAuth)
+            // Always transition to onboarding for recovered wallets
+            AppRouter.transitionToOnboardingScreen(startFromLocalAuth: false)
         }
 
         overlay.onFailure = { [weak self] in
@@ -215,9 +304,22 @@ final class SplashViewController: UIViewController, OverlayPresentable {
     private func handle(status: SplashViewModel.StatusModel) {
         switch status.status {
             case .success:
-                moveToNextScreen(state: .current)
+                // Check if wallet DB actually exists - if not, always show creation screens
+                if !Tari.shared.wallet(.main).isWalletDBExist {
+                    AppRouter.transitionToOnboardingScreen(startFromLocalAuth: false)
+                } else {
+                    // Only transition to onboarding screens for new wallets or when wallet is not fully configured
+                    let configState = TariSettings.shared.walletSettings.configurationState
+                    if configState == .notConfigured {
+                        AppRouter.transitionToOnboardingScreen(startFromLocalAuth: false)
+                    } else {
+                        // For existing wallets just go directly to the home screen
+                        moveToNextScreen(state: .current)
+                    }
+                }
             case .successRestored:
-                moveToNextScreen(state: .newRestored)
+                // Always transition to onboarding screens for restored wallets
+                AppRouter.transitionToOnboardingScreen(startFromLocalAuth: false)
             case .successSync:
                 moveToNextScreen(state: .newSynced)
             case .idle, .working:
