@@ -72,7 +72,7 @@ final class TransactionDetailsModel {
     @Published private(set) var isInbound: Bool = false
 
     var isContactExist: Bool { contactModel?.isFFIContact == true }
-    var contactHaveSplittedName: Bool { contactModel?.hasExternalModel ?? false }
+    var contactHaveSplittedName: Bool { contactModel?.hasIntrenalModel ?? false }
     var contactNameComponents: [String] { contactModel?.nameComponents ?? ["", ""] }
 
     var userAliasUpdateSuccessCallback: (() -> Void)?
@@ -184,9 +184,9 @@ final class TransactionDetailsModel {
         guard let contactModel = contactModel,
               let presenter = presenter else { return }
 
-        if contactModel.hasExternalModel {
+        if contactModel.hasIntrenalModel {
             let nameComponents = contactModel.nameComponents
-            let yat = contactModel.externalModel?.yat ?? ""
+            let yat = ""  // External model no longer exists, so we'll use empty string for yat
             Task { @MainActor in
                 FormOverlayPresenter.showFullContactEditForm(isContactExist: true, nameComponents: nameComponents, yat: yat, presenter: presenter) { [weak self] nameComponents, yat in
                     self?.update(nameComponents: nameComponents, yat: yat)

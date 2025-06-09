@@ -75,6 +75,11 @@ final class SplashViewController: UIViewController, OverlayPresentable {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
+
+        // Hide buttons initially
+        mainView.importWallet.isHidden = true
+        mainView.createWallet.isHidden = true
+        mainView.importWalletLabelContainer.isHidden = true
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -83,6 +88,8 @@ final class SplashViewController: UIViewController, OverlayPresentable {
             view.isHidden = true
             if !model.openWalletIfExists() {
                 view.isHidden = false
+                // Check if we need to show auth or wallet creation options
+                checkAuthenticationState()
             }
         }
     }
@@ -158,6 +165,25 @@ final class SplashViewController: UIViewController, OverlayPresentable {
     }
 
     // MARK: - Actions
+
+    private func checkAuthenticationState() {
+        switch TariSettings.shared.walletSettings.configurationState {
+        case .notConfigured:
+            // Show wallet creation options for new users
+            showWalletCreationOptions()
+        case .initialized, .authorized, .ready:
+            // Show authentication for existing users
+            showAuthenticationWithContinueOption(state: .current)
+        }
+    }
+
+    private func showWalletCreationOptions() {
+        UIView.animate(withDuration: 0.3) {
+            self.mainView.importWallet.isHidden = false
+            self.mainView.createWallet.isHidden = false
+            self.mainView.importWalletLabelContainer.isHidden = false
+        }
+    }
 
     private func moveToNextScreen(state: AppRouter.WalletState) {
         switch TariSettings.shared.walletSettings.configurationState {

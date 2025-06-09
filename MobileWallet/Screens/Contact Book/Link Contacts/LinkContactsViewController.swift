@@ -40,18 +40,18 @@
 
 import UIKit
 import Combine
-import ContactsUI
+import TariCommon
 
 final class LinkContactsViewController: SecureViewController<LinkContactsView> {
 
     // MARK: - Properties
 
-    let model: LinkContactsModel
+    let model: ContactSelectionModel
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: LinkContactsModel) {
+    init(model: ContactSelectionModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
@@ -81,8 +81,38 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
             .sink { [weak self] in self?.mainView.name = $0 }
             .store(in: &cancellables)
 
+        let modelsToViewModels: ([ContactsManager.Model]) -> [ContactBookCell.ViewModel] = { models in
+            models.map { model in
+                let addressViewModel: AddressView.ViewModel
+                if let internalModel = model.internalModel {
+                    addressViewModel = AddressView.ViewModel(
+                        prefix: internalModel.addressComponents.networkAndFeatures,
+                        text: .truncated(
+                            prefix: internalModel.addressComponents.coreAddressPrefix,
+                            suffix: internalModel.addressComponents.coreAddressSuffix
+                        ),
+                        isDetailsButtonVisible: false
+                    )
+                } else {
+                    addressViewModel = AddressView.ViewModel(
+                        prefix: nil,
+                        text: .single(model.name),
+                        isDetailsButtonVisible: false
+                    )
+                }
+
+                return ContactBookCell.ViewModel(
+                    id: model.id,
+                    addressViewModel: addressViewModel,
+                    isFavorite: model.isFavorite,
+                    contactTypeImage: nil,
+                    isSelectable: false
+                )
+            }
+        }
+
         model.$models
-            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, addressViewModel: $0.contactBookCellAddressViewModel, isFavorite: false, contactTypeImage: nil, isSelectable: false) }}
+            .map(modelsToViewModels)
             .sink { [weak self] in self?.mainView.viewModels = $0 }
             .store(in: &cancellables)
 
@@ -115,8 +145,7 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
 
     // MARK: - Handlers
 
-    private func handle(action: LinkContactsModel.Action) {
-
+    private func handle(action: ContactSelectionModel.Action) {
         switch action {
         case let .showConfirmation(address, name):
             showConfirmationDialog(address: address, name: name)
@@ -124,14 +153,10 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
             showSuccessDialog(address: address, name: name)
         case .moveToAddContact:
             moveToAddContact()
-        case .moveToPhoneBook:
-            moveToAddExternalContact()
-        case .moveToPermissionSettings:
-            openAppSettings()
         }
     }
 
-    private func mapPlaceholderViewModel(model: LinkContactsModel.PlaceholderModel?) -> ContactBookListPlaceholder.ViewModel? {
+    private func mapPlaceholderViewModel(model: ContactSelectionModel.PlaceholderModel?) -> ContactBookListPlaceholder.ViewModel? {
 
         guard let model else { return nil }
 
@@ -168,8 +193,8 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
                 StylizedLabel.StylizedText(text: name, style: .bold)
             ],
             buttons: [
-                PopUpDialogButtonModel(title: localized("common.confirm"), type: .normal, callback: { [weak self] in self?.model.linkContacts() }),
-                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { [weak self] in self?.model.cancelLinkContacts() })
+                PopUpDialogButtonModel(title: localized("common.confirm"), type: .normal, callback: { [weak self] in self?.model.confirmSelection() }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { [weak self] in self?.model.cancelSelection() })
             ],
             hapticType: .none
         )
@@ -198,25 +223,10 @@ final class LinkContactsViewController: SecureViewController<LinkContactsView> {
     }
 
     private func moveToAddContact() {
-        let controller = AddContactConstructor.bulidScene(onSuccess: .moveBack)
-        navigationController?.pushViewController(controller, animated: true)
-    }
-
-    private func moveToAddExternalContact() {
-        let controller = CNContactViewController(forNewContact: nil)
-        controller.delegate = self
-        let navigationController = UINavigationController(rootViewController: controller)
-        present(navigationController, animated: true)
-    }
-
-    private func openAppSettings() {
-        AppRouter.openAppSettings()
-    }
-}
-
-extension LinkContactsViewController: CNContactViewControllerDelegate {
-
-    func contactViewController(_ viewController: CNContactViewController, didCompleteWith contact: CNContact?) {
-        viewController.dismiss(animated: true)
+        let viewController = AddContactViewController(
+            model: AddContactModel(),
+            navigationActionType: .moveBack
+        )
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }

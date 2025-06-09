@@ -62,7 +62,6 @@ final class ContactBookModel {
 
     fileprivate enum SectionType: Int {
         case internalContacts
-        case externalContacts
     }
 
     // MARK: - View Model
@@ -77,7 +76,7 @@ final class ContactBookModel {
     @Published private(set) var areFavoriteContactsAvailable: Bool = false
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var action: Action?
-    @Published private(set) var isPermissionGranted: Bool = false
+    @Published private(set) var isPermissionGranted: Bool = true
     @Published private(set) var isSharePossible: Bool = false
 
     // MARK: - Properties
@@ -97,7 +96,6 @@ final class ContactBookModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         $contactModels
             .sink { [weak self] in self?.handle(contactModels: $0) }
             .store(in: &cancellables)
@@ -135,17 +133,14 @@ final class ContactBookModel {
             do {
                 try await contactsManager.fetchModels()
                 let tariContactModels = contactsManager.tariContactModels.filter { $0.internalModel?.addressComponents.isUnknownAddress == false }
-                contactModels = [tariContactModels, contactsManager.externalModels]
+                contactModels = [tariContactModels]
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
-
-            isPermissionGranted = contactsManager.isPermissionGranted
         }
     }
 
     func toggleSelection(contactID: UUID) {
-
         guard let model = contact(contactID: contactID), model.hasIntrenalModel else { return }
 
         guard selectedIDs.contains(contactID) else {
@@ -157,7 +152,6 @@ final class ContactBookModel {
     }
 
     func shareSelectedContacts(shareType: ShareType) {
-
         let deeplink: URL
 
         do {
@@ -186,7 +180,6 @@ final class ContactBookModel {
     // MARK: - Actions
 
     private func shareQR(deeplink: URL) {
-
         action = .showQRDialog
 
         Task {
@@ -202,7 +195,6 @@ final class ContactBookModel {
     // MARK: - Handlers
 
     private func makeDeeplink() throws -> URL? {
-
         let allModels = contactModels.flatMap { $0 }
         let list = selectedIDs
             .compactMap { selectedID in allModels.first { $0.id == selectedID }}
@@ -210,12 +202,10 @@ final class ContactBookModel {
             .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", tariAddress: $0.addressComponents.fullRaw ) }
 
         let model = ContactListDeeplink(list: list)
-
         return try DeepLinkFormatter.deeplink(model: model)
     }
 
     private func filter(contactsSections: [[ContactsManager.Model]], searchText: String) -> [[ContactsManager.Model]] {
-
         guard !searchText.isEmpty else { return contactsSections }
 
         return contactsSections.map {
@@ -232,7 +222,6 @@ final class ContactBookModel {
         contactsSections
             .enumerated()
             .reduce(into: [ContactBookContactListView.Section]()) { result, data in
-
                 let section = SectionType(rawValue: data.offset)
                 guard !data.element.isEmpty else { return }
 
@@ -255,8 +244,6 @@ final class ContactBookModel {
         areContactsAvailable = !models.isEmpty
         areFavoriteContactsAvailable = models.first { $0.isFavorite } != nil
     }
-
-    // MARK: - Helpers
 
     private func contact(contactID: UUID) -> ContactsManager.Model? {
         contactModels.flatMap { $0 }.first { $0.id == contactID }
@@ -284,16 +271,18 @@ extension ContactBookModel.ShareType {
     }
 }
 
-private extension ContactBookModel.SectionType {
-
+extension ContactBookModel.SectionType {
     var title: String? {
         switch self {
         case .internalContacts:
-            return nil
-        case .externalContacts:
-            return localized("contact_book.section.phone_contacts")
+            return localized("contact_book.section.internal.title")
         }
     }
 
-    var isSelectable: Bool { self == .internalContacts }
+    var isSelectable: Bool {
+        switch self {
+        case .internalContacts:
+            return true
+        }
+    }
 }

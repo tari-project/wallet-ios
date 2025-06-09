@@ -80,7 +80,7 @@ final class AddressPoisoningManager {
     }
 
     private func similarContacts(toSpendKey spendKey: String) throws -> [SimilarAddressData] {
-        try (contactsManager.tariContactModels + contactsManager.externalModels)
+        try contactsManager.tariContactModels
             .filter {
                 guard let internalModel = $0.internalModel else { return false }
                 return spendKey.isSimilar(to: internalModel.addressComponents.spendKey, minSameCharacters: minSameCharacters, usedPrefixSuffixCharacters: usedPrefixSuffixCharacters)
@@ -92,7 +92,7 @@ final class AddressPoisoningManager {
         let addressComponents = try address.components
         let emojiID = addressComponents.fullEmoji
         let uniqueIdentifier = addressComponents.uniqueIdentifier
-        guard let existingContact = (contactsManager.tariContactModels + contactsManager.externalModels).first(where: { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }) else {
+        guard let existingContact = contactsManager.tariContactModels.first(where: { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }) else {
             return data(address: addressComponents.fullRaw, emojiID: emojiID)
         }
         return try data(contact: existingContact) ?? data(address: addressComponents.fullRaw, emojiID: emojiID)

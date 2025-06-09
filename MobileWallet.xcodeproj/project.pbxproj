@@ -393,7 +393,6 @@
 		5453E43E2AC9D95900C7F40D /* TorBridgesConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453E43D2AC9D95900C7F40D /* TorBridgesConstructor.swift */; };
 		5455969829B08D7B00D6719E /* FormTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5455969729B08D7B00D6719E /* FormTextField.swift */; };
 		5455969B29B0A6B500D6719E /* InternalContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5455969A29B0A6B500D6719E /* InternalContactsManager.swift */; };
-		5455969D29B0A73300D6719E /* ExternalContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5455969C29B0A73300D6719E /* ExternalContactsManager.swift */; };
 		545A9D14294F6ED3008D24A6 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */; };
 		545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */; };
 		545A9D18294F6F50008D24A6 /* ThemeSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */; };
@@ -1025,7 +1024,6 @@
 		5453E43D2AC9D95900C7F40D /* TorBridgesConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesConstructor.swift; sourceTree = "<group>"; };
 		5455969729B08D7B00D6719E /* FormTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormTextField.swift; sourceTree = "<group>"; };
 		5455969A29B0A6B500D6719E /* InternalContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalContactsManager.swift; sourceTree = "<group>"; };
-		5455969C29B0A73300D6719E /* ExternalContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalContactsManager.swift; sourceTree = "<group>"; };
 		545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
 		545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsView.swift; sourceTree = "<group>"; };
 		545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsModel.swift; sourceTree = "<group>"; };
@@ -2776,7 +2774,6 @@
 			isa = PBXGroup;
 			children = (
 				5455969A29B0A6B500D6719E /* InternalContactsManager.swift */,
-				5455969C29B0A73300D6719E /* ExternalContactsManager.swift */,
 				544692A329B6059C0081085D /* ContactsManager.swift */,
 			);
 			path = Managers;
@@ -3947,7 +3944,6 @@
 				3AF985FA286B233100290387 /* PopUpSelectionView.swift in Sources */,
 				375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				548A24682CA6CB2100C04CBE /* StaticPublisherWrapper.swift in Sources */,
-				5455969D29B0A73300D6719E /* ExternalContactsManager.swift in Sources */,
 				3A0391E4290BA37C00352D73 /* BugReportingViewController.swift in Sources */,
 				3A530BD8290AFBA000C423C7 /* ICloudBackupMetadataQuery.swift in Sources */,
 				54F2E34329EE6B8A00A7A15A /* ContactTransactionListViewController.swift in Sources */,

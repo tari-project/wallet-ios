@@ -41,26 +41,39 @@
 final class InternalContactsManager {
 
     struct ContactModel: Hashable {
-
         let alias: String?
         let defaultAlias: String?
         let addressComponents: TariAddressComponents
         let isFavorite: Bool
 
         static func == (lhs: InternalContactsManager.ContactModel, rhs: InternalContactsManager.ContactModel) -> Bool {
-            lhs.addressComponents.uniqueIdentifier == rhs.addressComponents.uniqueIdentifier
+            try lhs.addressComponents.uniqueIdentifier == rhs.addressComponents.uniqueIdentifier
         }
 
         func hash(into hasher: inout Hasher) {
-            hasher.combine(addressComponents.uniqueIdentifier)
+            try hasher.combine(addressComponents.uniqueIdentifier)
         }
     }
+
+    // MARK: - Storage Model
+    private struct StoredContactModel: Codable {
+        let alias: String?
+        let defaultAlias: String?
+        let addressBase58: String
+        let isFavorite: Bool
+    }
+
+    // MARK: - Properties
+    private let userDefaults = UserDefaults.standard
+    private let contactsKey = "tari_contacts"
+
+    // MARK: - Actions
 
     func fetchAllModels() throws -> [ContactModel] {
 
         var models: [ContactModel] = []
 
-        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, defaultAlias: nil, addressComponents: $0.address.components, isFavorite: $0.isFavorite) }
+        models += try fetchWalletContacts()
         models += try fetchTariAddresses().map {
             let placeholder = try $0.components.isUnknownAddress ? localized("transaction.unknown_source") : nil
             return try ContactModel(alias: nil, defaultAlias: placeholder, addressComponents: $0.components, isFavorite: false)
@@ -93,24 +106,63 @@ final class InternalContactsManager {
     }
 
     func create(name: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
-        let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
-        try Tari.shared.wallet(.main).contacts.upsert(contact: contact)
-        return try ContactModel(alias: name, defaultAlias: nil, addressComponents: address.components, isFavorite: isFavorite)
+        let contactModel = ContactModel(alias: name, defaultAlias: nil, addressComponents: try address.components, isFavorite: isFavorite)
+        var contacts = try fetchWalletContacts()
+        contacts.append(contactModel)
+        try saveContacts(contacts)
+        return contactModel
     }
 
     func update(name: String, isFavorite: Bool, base58: String) throws {
         let address = try TariAddress(base58: base58)
-        let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
-        try Tari.shared.wallet(.main).contacts.upsert(contact: contact)
+        let updatedContact = ContactModel(alias: name, defaultAlias: nil, addressComponents: try address.components, isFavorite: isFavorite)
+        var contacts = try fetchWalletContacts()
+
+        let addressIdentifier = try address.components.uniqueIdentifier
+        if let index = try contacts.firstIndex(where: { contact in
+            contact.addressComponents.uniqueIdentifier == addressIdentifier
+        }) {
+            contacts[index] = updatedContact
+            try saveContacts(contacts)
+        }
     }
 
     func remove(uniqueIdentifier: String) throws {
-        guard let contact = try Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: uniqueIdentifier) else { return }
-        try Tari.shared.wallet(.main).contacts.remove(contact: contact)
+        var contacts = try fetchWalletContacts()
+        try contacts.removeAll { contact in
+            contact.addressComponents.uniqueIdentifier == uniqueIdentifier
+        }
+        try saveContacts(contacts)
     }
 
-    private func fetchWalletContacts() throws -> [Contact] {
-        try Tari.shared.wallet(.main).contacts.allContacts
+    private func fetchWalletContacts() throws -> [ContactModel] {
+        guard let data = userDefaults.data(forKey: contactsKey) else {
+            return []
+        }
+
+        let storedContacts = try JSONDecoder().decode([StoredContactModel].self, from: data)
+        return try storedContacts.compactMap { stored in
+            let address = try TariAddress(base58: stored.addressBase58)
+            return ContactModel(
+                alias: stored.alias,
+                defaultAlias: stored.defaultAlias,
+                addressComponents: try address.components,
+                isFavorite: stored.isFavorite
+            )
+        }
+    }
+
+    private func saveContacts(_ contacts: [ContactModel]) throws {
+        let storedContacts = try contacts.map { contact -> StoredContactModel in
+            StoredContactModel(
+                alias: contact.alias,
+                defaultAlias: contact.defaultAlias,
+                addressBase58: try contact.addressComponents.fullRaw,
+                isFavorite: contact.isFavorite
+            )
+        }
+        let data = try JSONEncoder().encode(storedContacts)
+        userDefaults.set(data, forKey: contactsKey)
     }
 
     private func fetchTariAddresses() throws -> [TariAddress] {

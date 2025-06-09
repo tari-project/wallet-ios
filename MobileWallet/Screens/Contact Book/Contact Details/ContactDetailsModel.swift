@@ -87,7 +87,7 @@ final class ContactDetailsModel {
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var addressComponents: TariAddressComponents?
 
-    var hasSplittedName: Bool { model.hasExternalModel }
+    var hasSplittedName: Bool { model.hasIntrenalModel }
     var nameComponents: [String] { model.nameComponents }
 
     // MARK: - Properties
@@ -177,11 +177,11 @@ final class ContactDetailsModel {
     }
 
     func unlinkContact() {
-
-        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress else { return }
+        let name = model.name
 
         do {
-            try contactsManager.unlink(contact: model)
+            try contactsManager.update(nameComponents: [name], isFavorite: model.isFavorite, yat: "", contact: model)
             action = .showUnlinkSuccessDialog(address: address, name: name)
             updateData()
         } catch {
@@ -226,7 +226,7 @@ final class ContactDetailsModel {
             mainMenuItems.append(internalModel.isFavorite ? .removeFromFavorites : .addToFavorites)
         }
 
-        if model.type == .linked {
+        if model.type == .internalOrEmojiID {
             mainMenuItems.append(.unlinkContact)
         } else {
             mainMenuItems.append(.linkContact)
@@ -236,7 +236,7 @@ final class ContactDetailsModel {
             mainMenuItems.append(.transactionsList)
         }
 
-        if model.isFFIContact || model.hasExternalModel {
+        if model.isFFIContact || model.hasIntrenalModel {
             mainMenuItems.append(.removeContact)
         }
 
@@ -253,7 +253,8 @@ final class ContactDetailsModel {
     }
 
     private func prepareForUnkinkAction() {
-        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress else { return }
+        let name = model.name
         action = .showUnlinkConfirmationDialog(address: address, name: name)
     }
 
@@ -330,7 +331,7 @@ final class ContactDetailsModel {
             isContactExist = true
         }
 
-        yat = model.externalModel?.yat
+        yat = ""  // No more external model, so no yat
         updateData(model: model)
     }
 

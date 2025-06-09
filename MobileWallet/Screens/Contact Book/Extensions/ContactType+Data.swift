@@ -46,10 +46,6 @@ extension ContactsManager.ContactType {
         switch self {
         case .internalOrEmojiID:
             return .Icons.ContactTypes.internal
-        case .external:
-            return .Icons.ContactTypes.external
-        case .linked:
-            return .Icons.ContactTypes.linked
         case .empty:
             return nil
         }
@@ -59,10 +55,6 @@ extension ContactsManager.ContactType {
         switch self {
         case .internalOrEmojiID:
             return localized("contact_book.contact_type.internal")
-        case .external:
-            return localized("contact_book.contact_type.external")
-        case .linked:
-            return localized("contact_book.contact_type.linked")
         case .empty:
             return nil
         }
