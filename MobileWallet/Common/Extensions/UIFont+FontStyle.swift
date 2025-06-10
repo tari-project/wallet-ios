@@ -50,7 +50,7 @@ extension UIFont {
         case Regular
 
         func withSize(_ size: CGFloat) -> UIFont {
-            UIFont.init(name: "Poppins " + self.rawValue, size: size)!
+            UIFont(name: "Poppins " + self.rawValue, size: size)!
         }
 
     }
@@ -59,7 +59,7 @@ extension UIFont {
         case Bold
 
         func withSize(_ size: CGFloat) -> UIFont {
-            UIFont.init(name: "DrukWideTrial-" + self.rawValue, size: size)!
+            UIFont(name: "DrukWideTrial-" + self.rawValue, size: size)!
         }
 
     }

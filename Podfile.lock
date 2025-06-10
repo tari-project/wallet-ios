@@ -78,9 +78,9 @@ PODS:
   - nanopb/encode (3.30910.0)
   - PromisesObjC (2.4.0)
   - ReachabilitySwift (5.0.0)
-  - Sentry (8.39.0):
-    - Sentry/Core (= 8.39.0)
-  - Sentry/Core (8.39.0)
+  - Sentry (8.52.0):
+    - Sentry/Core (= 8.52.0)
+  - Sentry/Core (8.52.0)
   - SwiftEntryKit (2.0.0)
   - SwiftKeychainWrapper (3.4.0)
   - SwiftyDropbox (8.2.1):
@@ -102,7 +102,7 @@ DEPENDENCIES:
   - IPtProxy (= 3.3.0)
   - lottie-ios (= 3.2.3)
   - ReachabilitySwift (= 5.0.0)
-  - Sentry (= 8.39.0)
+  - Sentry (= 8.52.0)
   - SwiftEntryKit (= 2.0.0)
   - SwiftKeychainWrapper (= 3.4.0)
   - SwiftyDropbox (= 8.2.1)
@@ -157,7 +157,7 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Sentry: e92ec378be400dbb7f4065ff152d0f362ba8b4ba
+  Sentry: 6838d39e8bfc183a8bb6eb1c5e1b730c773ef1c1
   SwiftEntryKit: 61b5fa36f34a97dd8013e48a7345bc4c4720be9a
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   SwiftyDropbox: f6c55aae36c4ea944fe6b35f807c19897f78b09b
@@ -166,6 +166,6 @@ SPEC CHECKSUMS:
   YatLib: dda2cfe9e47790f27a13074ea815eac19a919043
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: e9d02279d08e59d298d1e0b0de417f0cf1cb0d22
+PODFILE CHECKSUM: 1ff37decab687d14bd47140da9e83b1be3f87fdd
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

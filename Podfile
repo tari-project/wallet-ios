@@ -8,7 +8,7 @@ target 'MobileWallet' do
   pod 'lottie-ios', '3.2.3'
   pod 'SwiftEntryKit', '2.0.0'
   pod 'ReachabilitySwift', '5.0.0'
-  pod 'Sentry', '8.39.0'
+  pod 'Sentry', '8.52.0'
   pod 'SwiftKeychainWrapper', '3.4.0'
   pod 'Giphy', '2.2.11'
   pod 'IPtProxy', '3.3.0'

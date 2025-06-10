@@ -73,7 +73,7 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
 
                 // Update the recipient address section with the full address
                 let addressComponents = paymentInfo.addressComponents
-                mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
+                mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
                 mainView.isEmojiFormat = true
             } else {
                 let addressComponents = paymentInfo.addressComponents
@@ -83,8 +83,8 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
                                                                     suffix: addressComponents.coreAddressSuffix),
                                                     isDetailsButtonVisible: false)
                 addressView.update(viewModel: viewModel)
-                mainView.userText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
-                mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
+                mainView.userText = addressComponents.fullRaw.shortenedMiddle(to: 10)
+                mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
                 mainView.isEmojiFormat = true
             }
         } catch {

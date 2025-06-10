@@ -381,9 +381,10 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             case 1:
                 cell.titleText = model.transactionDirection
                 if let emojiAddress = model.addressComponents?.fullEmoji {
-                    if model.isEmojiFormat {
-                        cell.valueText = truncateEmojiAddress(emojiAddress)
-                    } else if let baseAddress = model.addressComponents?.fullRaw {
+//                    if model.isEmojiFormat {
+//                        cell.valueText = truncateEmojiAddress(emojiAddress)
+//                    } else
+                    if let baseAddress = model.addressComponents?.fullRaw {
                         cell.valueText = baseAddress.shortenedMiddle(to: 20)
                     }
                     cell.isAddressCell = true

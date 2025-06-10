@@ -56,6 +56,7 @@ struct TariAddressComponents {
     let isUnknownAddress: Bool
     let isOnesidedAddress: Bool
     let isInteractiveAddress: Bool
+    let isPaymentIDAddress: Bool
 }
 
 extension TariAddressComponents {
@@ -90,5 +91,6 @@ extension TariAddressComponents {
         isUnknownAddress = try address.spendKey.byteVector.bytes.first { $0 != 0 } == nil
         isOnesidedAddress = try address.features.isOnesided()
         isInteractiveAddress = try address.features.isInteractive()
+        isPaymentIDAddress = try address.features.isPaymentId()
     }
 }
