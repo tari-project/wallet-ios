@@ -50,7 +50,7 @@ extension UIFont {
         case Regular
 
         func withSize(_ size: CGFloat) -> UIFont {
-            UIFont(name: "Poppins " + self.rawValue, size: size)!
+            UIFont(name: "Poppins-" + self.rawValue, size: size)!
         }
 
     }
