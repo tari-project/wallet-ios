@@ -105,7 +105,7 @@ final class TransactionDetailsNoteView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         noteLabel.textColor = theme.text.heading
     }

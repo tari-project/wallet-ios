@@ -47,7 +47,7 @@ final class ErrorView: DynamicThemeView {
     @View private var label: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.heavy.withSize(14.0)
+        view.font = .Poppins.Bold.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -96,7 +96,7 @@ final class ErrorView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.system.red
         layer.borderColor =  theme.system.red?.cgColor

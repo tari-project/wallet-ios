@@ -50,13 +50,13 @@ final class SelectBaseNodeCell: DynamicThemeCell {
 
     @View private var titleLabel: UILabel = {
        let view = UILabel()
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
     @View private var subtitleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(11.0)
+        view.font = .Poppins.Medium.withSize(11.0)
         view.numberOfLines = 0
         return view
     }()
@@ -76,7 +76,7 @@ final class SelectBaseNodeCell: DynamicThemeCell {
 
     @View private var deleteButton: UIButton = {
         let view = UIButton()
-        view.titleLabel?.font = .Avenir.heavy.withSize(14.0)
+        view.titleLabel?.font = .Poppins.Bold.withSize(14.0)
         view.setTitle(localized("select_base_node.cell.delete"), for: .normal)
         return view
     }()
@@ -172,7 +172,7 @@ final class SelectBaseNodeCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         titleLabel.textColor = theme.text.heading

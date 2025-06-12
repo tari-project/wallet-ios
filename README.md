@@ -19,9 +19,16 @@ Code follows [Github's](https://github.com/github/swift-style-guide) style guide
 
 ### Getting started
 
+For nextnet network:
 ```bash
 git clone git@github.com:tari-project/wallet-ios.git
 sh update_dependencies.sh
+```
+
+For mainnet network:
+```bash
+git clone git@github.com:tari-project/wallet-ios.git
+sh update_dependencies.sh mainnet
 ```
 
 This will also create a default `env.json` file for sensitive vars. Adjust these settings as needed.

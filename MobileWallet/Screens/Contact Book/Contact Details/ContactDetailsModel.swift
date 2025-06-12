@@ -87,8 +87,8 @@ final class ContactDetailsModel {
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var addressComponents: TariAddressComponents?
 
-    var hasSplittedName: Bool { model.hasExternalModel }
-    var nameComponents: [String] { model.nameComponents }
+    var hasSplittedName: Bool { model.hasIntrenalModel }
+    var alias: String? { model.alias }
 
     // MARK: - Properties
 
@@ -172,16 +172,16 @@ final class ContactDetailsModel {
         }
     }
 
-    func update(nameComponents: [String], yat: String) {
-        update(nameComponents: nameComponents, isFavorite: model.isFavorite, yat: yat)
+    func update(alias: String?) {
+        update(alias: alias, isFavorite: model.isFavorite)
     }
 
     func unlinkContact() {
-
-        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress else { return }
+        let name = model.name
 
         do {
-            try contactsManager.unlink(contact: model)
+            try contactsManager.update(alias: name, isFavorite: model.isFavorite, contact: model)
             action = .showUnlinkSuccessDialog(address: address, name: name)
             updateData()
         } catch {
@@ -199,12 +199,12 @@ final class ContactDetailsModel {
     }
 
     private func update(isFavorite: Bool) {
-        update(nameComponents: model.nameComponents, isFavorite: isFavorite, yat: yat ?? "")
+        update(alias: model.alias, isFavorite: isFavorite)
     }
 
-    private func update(nameComponents: [String], isFavorite: Bool, yat: String) {
+    private func update(alias: String?, isFavorite: Bool) {
         do {
-            try contactsManager.update(nameComponents: nameComponents, isFavorite: isFavorite, yat: yat, contact: model)
+            try contactsManager.update(alias: alias, isFavorite: isFavorite, contact: model)
             updateData()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
@@ -226,7 +226,7 @@ final class ContactDetailsModel {
             mainMenuItems.append(internalModel.isFavorite ? .removeFromFavorites : .addToFavorites)
         }
 
-        if model.type == .linked {
+        if model.type == .internalOrEmojiID {
             mainMenuItems.append(.unlinkContact)
         } else {
             mainMenuItems.append(.linkContact)
@@ -236,7 +236,7 @@ final class ContactDetailsModel {
             mainMenuItems.append(.transactionsList)
         }
 
-        if model.isFFIContact || model.hasExternalModel {
+        if model.isFFIContact || model.hasIntrenalModel {
             mainMenuItems.append(.removeContact)
         }
 
@@ -253,7 +253,8 @@ final class ContactDetailsModel {
     }
 
     private func prepareForUnkinkAction() {
-        guard let address = model.internalModel?.addressComponents.formattedCoreAddress, let name = model.externalModel?.fullname else { return }
+        guard let address = model.internalModel?.addressComponents.formattedCoreAddress else { return }
+        let name = model.name
         action = .showUnlinkConfirmationDialog(address: address, name: name)
     }
 
@@ -293,14 +294,6 @@ final class ContactDetailsModel {
             connectedWallets.removeAll()
             return
         }
-
-        Yat.api.emojiID.lookupEmojiIDPublisher(emojiId: yat, tags: nil)
-            .sink { [weak self] in
-                self?.handle(yatCompletion: $0)
-            } receiveValue: { [weak self] in
-                self?.handle(yatResponse: $0)
-            }
-            .store(in: &cancellables)
     }
 
     private func handle(yatResponse: LookupResponse) {
@@ -338,7 +331,7 @@ final class ContactDetailsModel {
             isContactExist = true
         }
 
-        yat = model.externalModel?.yat
+        yat = ""  // No more external model, so no yat
         updateData(model: model)
     }
 

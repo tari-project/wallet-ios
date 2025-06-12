@@ -55,7 +55,7 @@ final class TokensToolbar: DynamicThemeToolbar {
     @View private var label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
-        label.font = UIFont.Avenir.medium.withSize(16.0)
+        label.font = UIFont.Poppins.Medium.withSize(16.0)
         return label
     }()
 
@@ -91,10 +91,10 @@ final class TokensToolbar: DynamicThemeToolbar {
         isTranslucent = true
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        barTintColor = theme.backgrounds.primary
-        label.textColor = theme.text.lightText
+        barTintColor = .Background.primary
+        label.textColor = .Text.primary
     }
 
     private func setupConstraints() {

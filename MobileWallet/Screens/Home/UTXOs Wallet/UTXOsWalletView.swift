@@ -243,7 +243,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
     }

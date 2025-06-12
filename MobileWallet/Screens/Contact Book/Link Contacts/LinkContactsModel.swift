@@ -40,14 +40,12 @@
 
 import Combine
 
-final class LinkContactsModel {
+final class ContactSelectionModel {
 
     enum Action {
         case showConfirmation(address: String, name: String)
         case showSuccess(address: String, name: String)
         case moveToAddContact
-        case moveToPhoneBook
-        case moveToPermissionSettings
     }
 
     struct PlaceholderModel {
@@ -73,8 +71,7 @@ final class LinkContactsModel {
     private let contactsManager = ContactsManager()
     private let contactModel: ContactsManager.Model
 
-    private var unconfirmedInternalModel: InternalContactsManager.ContactModel?
-    private var unconfirmedExternalModel: ExternalContactsManager.ContactModel?
+    private var selectedContact: InternalContactsManager.ContactModel?
     private var cancellables = Set<AnyCancellable>()
 
     init(contactModel: ContactsManager.Model) {
@@ -85,12 +82,6 @@ final class LinkContactsModel {
     // MARK: - Setups
 
     func fetchData() {
-
-        if contactModel.type == .linked {
-            errorModel = ErrorMessageManager.errorModel(forError: nil)
-            return
-        }
-
         Task {
             do {
                 try await contactsManager.fetchModels()
@@ -100,22 +91,14 @@ final class LinkContactsModel {
             }
         }
 
-        name = contactModel.internalModel?.addressComponents.formattedCoreAddress ?? contactModel.externalModel?.fullname
+        name = contactModel.internalModel?.addressComponents.formattedCoreAddress
     }
 
     private func updateModels() {
-        switch contactModel.type {
-        case .internalOrEmojiID:
-            allModels = contactsManager.externalModels
-        case .external:
-            allModels = contactsManager.tariContactModels.filter { $0.type == .internalOrEmojiID }
-        case .linked, .empty:
-            allModels = []
-        }
+        allModels = contactsManager.tariContactModels.filter { $0.type == .internalOrEmojiID }
     }
 
     private func setupCallbacks() {
-
         Publishers.CombineLatest($allModels, $searchText)
             .map { models, searchText in
                 guard !searchText.isEmpty else { return models }
@@ -134,83 +117,48 @@ final class LinkContactsModel {
     // MARK: - Actions
 
     func selectModel(index: IndexPath) {
-
         guard models.count > index.row else { return }
-
         let model = models[index.row]
 
-        let internalContact: InternalContactsManager.ContactModel
-        let externalContact: ExternalContactsManager.ContactModel
-
-        if let internalModel = contactModel.internalModel, let externalModel = model.externalModel {
-            internalContact = internalModel
-            externalContact = externalModel
-        } else if let internalModel = model.internalModel, let externalModel = contactModel.externalModel {
-            internalContact = internalModel
-            externalContact = externalModel
-        } else {
+        guard let internalModel = model.internalModel else {
             errorModel = ErrorMessageManager.errorModel(forError: nil)
             return
         }
 
-        unconfirmedInternalModel = internalContact
-        unconfirmedExternalModel = externalContact
-
-        action = .showConfirmation(address: internalContact.addressComponents.formattedCoreAddress, name: externalContact.fullname)
+        selectedContact = internalModel
+        action = .showConfirmation(address: internalModel.addressComponents.formattedCoreAddress, name: internalModel.alias ?? "")
     }
 
-    func linkContacts() {
-
-        guard let unconfirmedInternalModel, let unconfirmedExternalModel else {
+    func confirmSelection() {
+        guard let selectedContact else {
             errorModel = ErrorMessageManager.errorModel(forError: nil)
             return
         }
 
         do {
-            try contactsManager.link(internalContact: unconfirmedInternalModel, externalContact: unconfirmedExternalModel)
-            action = .showSuccess(address: unconfirmedInternalModel.addressComponents.formattedCoreAddress, name: unconfirmedExternalModel.fullname)
-            cancelLinkContacts()
+            try contactsManager.update(alias: selectedContact.alias, isFavorite: selectedContact.isFavorite, contact: contactModel)
+            action = .showSuccess(address: selectedContact.addressComponents.formattedCoreAddress, name: selectedContact.alias ?? "")
+            cancelSelection()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
-    func cancelLinkContacts() {
-        unconfirmedInternalModel = nil
-        unconfirmedExternalModel = nil
+    func cancelSelection() {
+        selectedContact = nil
     }
 
     func performPlaceholderAction() {
-        switch contactModel.type {
-        case .internalOrEmojiID:
-            action = contactsManager.isPermissionGranted ? .moveToPhoneBook : .moveToPermissionSettings
-        case .external:
-            action = .moveToAddContact
-        case .linked, .empty:
-            Logger.log(message: "LinkContactsModel: Invalid model state for placeholder button action", domain: .general, level: .error)
-        }
+        action = .moveToAddContact
     }
 
     // MARK: - Handlers
 
     private func makePlaceholderModel() -> PlaceholderModel {
-
-        let title = localized("contact_book.link_contacts.placeholder.title")
-        var message: String?
-        var buttonTitle: String?
-
-        switch contactModel.type {
-        case .internalOrEmojiID:
-            let isPermissionGranted = contactsManager.isPermissionGranted
-            message = isPermissionGranted ? localized("contact_book.link_contacts.placeholder.message.internal") : localized("contact_book.link_contacts.placeholder.message.internal.no_permission")
-            buttonTitle = isPermissionGranted ? localized("contact_book.link_contacts.placeholder.buttons.add_contact") : localized("contact_book.link_contacts.placeholder.buttons.permission_settings")
-        case .external:
-            message = localized("contact_book.link_contacts.placeholder.message.external")
-            buttonTitle = localized("contact_book.link_contacts.placeholder.buttons.add_contact")
-        case .linked, .empty:
-            Logger.log(message: "LinkContactsModel: Invalid model state for placeholder model", domain: .general, level: .error)
-        }
-
-        return PlaceholderModel(title: title, message: message, buttonTitle: buttonTitle)
+        PlaceholderModel(
+            title: localized("contact_book.link_contacts.placeholder.title"),
+            message: localized("contact_book.link_contacts.placeholder.message.internal"),
+            buttonTitle: localized("contact_book.link_contacts.placeholder.buttons.add_contact")
+        )
     }
 }

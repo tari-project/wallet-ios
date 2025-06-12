@@ -47,10 +47,10 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
 
     private let model: BackupWalletSettingsModel
     private let seedWordsItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.with_recovery_phrase"))
-    private let iCloudItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.icloud_backups"), hasArrow: false, hasSwitch: true)
-    private let dropboxItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.dropbox_backups"), hasArrow: false, hasSwitch: true)
+    private let iCloudItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.icloud_backups"), hasSwitch: true)
+    private let dropboxItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.dropbox_backups"), hasSwitch: true)
     private let passwordItem = SystemMenuTableViewCellItem(title: "")
-    private let backupNowItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.backup_now"), hasArrow: false)
+    private let backupNowItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.backup_now"))
     private let onboardingItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.onboarding"))
 
     private var items: [SystemMenuTableViewCellItem] = []
@@ -178,14 +178,7 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
     }
 
     private func updateListItems(isPasswordItemVisible: Bool, isBackupSecuredByPassword: Bool, isBackupNowItemVisible: Bool) {
-
         var items = [seedWordsItem]
-
-        if !AppValues.general.isSimulator {
-            items.append(iCloudItem)
-        }
-
-        items.append(dropboxItem)
 
         if isPasswordItemVisible {
             passwordItem.title = isBackupSecuredByPassword ? localized("backup_wallet_settings.item.change_password") : localized("backup_wallet_settings.item.secure_your_backup")

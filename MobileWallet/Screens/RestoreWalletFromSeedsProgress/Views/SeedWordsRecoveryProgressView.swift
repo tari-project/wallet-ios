@@ -55,16 +55,16 @@ final class SeedWordsRecoveryProgressView: DynamicThemeView {
 
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayTitle
+        view.font = .Poppins.Medium.withSize(24)
         view.textAlignment = .center
         view.text = localized("restore_from_seed_words.progress_overlay.label.title")
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    private let descriptionLabel: UILabel = {
+    let descriptionLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayDescription
+        view.font = .Poppins.Medium.withSize(14)
         view.textAlignment = .center
         view.numberOfLines = 0
         view.text = localized("restore_from_seed_words.progress_overlay.label.description")
@@ -74,7 +74,7 @@ final class SeedWordsRecoveryProgressView: DynamicThemeView {
 
     let statusLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayDescription
+        view.font = .Poppins.Medium.withSize(14)
         view.adjustsFontSizeToFitWidth = true
         view.textAlignment = .center
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -83,18 +83,8 @@ final class SeedWordsRecoveryProgressView: DynamicThemeView {
 
     let progressLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayTitle
+        view.font = .Poppins.Medium.withSize(24)
         view.textAlignment = .center
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    private let spinnerView: AnimationView = {
-        let view = AnimationView()
-        view.backgroundBehavior = .pauseAndRestore
-        view.animation = Animation.named(.pendingCircleAnimation)
-        view.loopMode = .loop
-        view.play()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -120,7 +110,7 @@ final class SeedWordsRecoveryProgressView: DynamicThemeView {
 
     private func setupConstraints() {
 
-        [mainContentView, statusLabel, progressLabel, spinnerView].forEach(addSubview)
+        [mainContentView, statusLabel, progressLabel].forEach(addSubview)
         [logoView, titleLabel, descriptionLabel].forEach(mainContentView.addSubview)
 
         let constraints = [
@@ -132,11 +122,7 @@ final class SeedWordsRecoveryProgressView: DynamicThemeView {
             statusLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
             progressLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5.0),
             progressLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            progressLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            spinnerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -37.0),
-            spinnerView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            spinnerView.widthAnchor.constraint(equalToConstant: 30.0),
-            spinnerView.heightAnchor.constraint(equalToConstant: 30.0)
+            progressLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
         ]
 
         let mainContentConstraints = [
@@ -158,7 +144,7 @@ final class SeedWordsRecoveryProgressView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         titleLabel.textColor = theme.text.body

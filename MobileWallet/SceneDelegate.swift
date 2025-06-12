@@ -40,6 +40,7 @@
 
 import UIKit
 import YatLib
+import LocalAuthentication
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -89,7 +90,17 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
-        try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+        do {
+            try DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+        } catch {
+            print("Failed to handle deeplink in SceneDelegate: \(error)")
+            // If it's a login deeplink, try again after a short delay
+            if url.path == "/airdrop/auth" {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+                }
+            }
+        }
         Yat.integration.handle(deeplink: url)
         BackupManager.shared.handle(url: url)
     }
@@ -102,6 +113,37 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Logger.log(message: "App State: Foreground", domain: .general, level: .info)
         UIApplication.shared.applicationIconBadgeNumber = 0
         LogFilesManager.cleanupLogs()
+
+        // IMPORTANT: When app comes to foreground from terminated state,
+        // make sure we don't show welcome overlay unless wallet was just created/restored
+        UserDefaults.standard.set(false, forKey: "ShouldShowWelcomeOverlay")
+
+        // When app comes to foreground, set wallet config state to initialized if wallet exists
+        // This will trigger the authentication screen when required
+        if Tari.shared.wallet(.main).isWalletDBExist {
+            // Set configuration state to initialized to trigger authentication
+            TariSettings.shared.walletSettings.configurationState = .initialized
+
+            // Instead of transitioning to a new splash screen, trigger auth directly if we're on the home screen
+            if let _ = UIApplication.shared.menuTabBarController {
+                // We're already in the app, show the local auth view controller
+                let authVC = LocalAuthViewController()
+                authVC.onAuthenticationSuccess = {
+                    // Authentication successful, update config state and enable auto-reconnection
+                    TariSettings.shared.walletSettings.configurationState = .authorized
+                    Tari.shared.canAutomaticalyReconnectWallet = true
+                    authVC.dismiss(animated: true)
+                }
+                authVC.onAuthenticationFailure = {
+                    // Authentication failed or was canceled, stay on the auth screen
+                    Logger.log(message: "Authentication canceled by user while app in foreground", domain: .general, level: .info)
+                }
+
+                // Present the auth view controller
+                UIApplication.shared.menuTabBarController?.present(authVC, animated: true)
+            }
+            // If we're not in the app yet, the splash screen will handle auth naturally
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

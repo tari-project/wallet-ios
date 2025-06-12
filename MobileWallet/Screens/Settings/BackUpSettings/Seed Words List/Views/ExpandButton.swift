@@ -125,7 +125,7 @@ final class ExpandButton: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         layer.borderColor = theme.icons.active?.cgColor

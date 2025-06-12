@@ -175,18 +175,9 @@ final class ContactDetailsViewController: SecureViewController<ContactDetailsVie
     }
 
     private func showEditForm() {
-
-        if model.hasSplittedName {
-            let nameComponents = model.nameComponents
-            let yat = model.yat ?? ""
-            FormOverlayPresenter.showFullContactEditForm(isContactExist: model.isContactExist, nameComponents: nameComponents, yat: yat, presenter: self) { [weak self] nameComponents, yat in
-                self?.model.update(nameComponents: nameComponents, yat: yat)
-            }
-        } else {
-            let alias = model.name ?? ""
-            FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: model.isContactExist, alias: alias, presenter: self) { [weak self] alias in
-                self?.model.update(nameComponents: [alias], yat: "")
-            }
+        let alias = model.name ?? ""
+        FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: model.isContactExist, alias: alias, presenter: self) { [weak self] alias in
+            self?.model.update(alias: alias)
         }
     }
 

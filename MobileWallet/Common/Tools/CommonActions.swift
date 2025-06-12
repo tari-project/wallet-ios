@@ -43,8 +43,13 @@ enum CommonActions {
     static func deleteWalletAndMoveToSplashScreen(startRecoveryWith paperWalletRecoveryData: PaperWalletRecoveryData? = nil) {
         Tari.shared.delete(wallet: .main)
         Tari.shared.canAutomaticalyReconnectWallet = false
-        BLEPeripheralManager.shared.isEnabled = false
         BackupManager.shared.disableBackup()
-        AppRouter.transitionToSplashScreen(paperWalletRecoveryData: paperWalletRecoveryData)
+
+        // Clean up access tokens and appId
+        UserManager.shared.accessToken = nil
+        UserManager.shared.refreshToken = nil
+        NotificationManager.shared.appId = nil
+
+        AppRouter.transitionToSplashScreen(paperWalletRecoveryData: paperWalletRecoveryData, transitionFrom: .none)
     }
 }

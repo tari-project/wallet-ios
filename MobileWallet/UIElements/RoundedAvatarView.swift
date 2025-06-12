@@ -129,13 +129,13 @@ final class RoundedAvatarView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.lightText
         updateDynamicElements(theme: theme)
     }
 
-    private func updateDynamicElements(theme: ColorTheme) {
+    private func updateDynamicElements(theme: AppTheme) {
 
         switch backgroundColorType {
         case .dynamic:
@@ -168,6 +168,6 @@ final class RoundedAvatarView: DynamicThemeView {
         let size = frame.height / 2.0
         layer.cornerRadius = size
         imageView.layer.cornerRadius = size
-        label.font = .Avenir.medium.withSize(size)
+        label.font = .Poppins.Medium.withSize(size)
     }
 }

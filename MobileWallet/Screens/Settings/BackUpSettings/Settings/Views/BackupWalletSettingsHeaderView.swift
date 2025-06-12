@@ -54,7 +54,7 @@ final class BackupWalletSettingsHeaderView: DynamicThemeView {
         let view = UILabel()
         view.numberOfLines = 0
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        view.text = localized("backup_wallet_settings.header.description")
+        view.text = String(format: localized("backup_wallet_settings.header.description"), NetworkManager.shared.currencySymbol)
         return view
     }()
 
@@ -84,7 +84,7 @@ final class BackupWalletSettingsHeaderView: DynamicThemeView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading
         descriptionLabel.textColor = theme.text.body

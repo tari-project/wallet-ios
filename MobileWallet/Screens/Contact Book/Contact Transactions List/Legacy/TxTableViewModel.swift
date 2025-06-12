@@ -123,7 +123,6 @@ class TxTableViewModel: NSObject {
     }
 
     private func updateTitleAndAvatar() throws {
-
         guard try !transaction.isOneSidedPayment else {
             let alias = localized("transaction.one_sided_payment.inbound_user_placeholder")
             title = attributed(title: localized("tx_list.inbound_pending_title", arguments: alias), withAlias: alias)

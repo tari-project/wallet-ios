@@ -55,7 +55,7 @@ final class PopUpUtxoDetailsContentView: DynamicThemeView {
 
     @View private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
-        view.font = .Avenir.heavy.withSize(26.0)
+        view.font = .Poppins.Bold.withSize(26.0)
         view.iconHeight = 13.0
         return view
     }()
@@ -108,7 +108,7 @@ final class PopUpUtxoDetailsContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         amountLabel.textColor = theme.text.heading
         updateStatusColor(theme: theme)
@@ -130,7 +130,7 @@ final class PopUpUtxoDetailsContentView: DynamicThemeView {
         updateStatusColor(theme: theme)
     }
 
-    private func updateStatusColor(theme: ColorTheme) {
+    private func updateStatusColor(theme: AppTheme) {
         statusRow.statusColor = status?.color(theme: theme)
     }
 }
@@ -141,7 +141,7 @@ private class PopUpUtxoContentRowView: DynamicThemeView {
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.heavy.withSize(12.0)
+        view.font = .Poppins.Bold.withSize(12.0)
         return view
     }()
 
@@ -162,7 +162,7 @@ private class PopUpUtxoContentRowView: DynamicThemeView {
 
     @View private var valueLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(12.0)
+        view.font = .Poppins.Medium.withSize(12.0)
         view.numberOfLines = 2
         return view
     }()
@@ -211,7 +211,7 @@ private class PopUpUtxoContentRowView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading
         valueLabel.textColor = theme.text.body

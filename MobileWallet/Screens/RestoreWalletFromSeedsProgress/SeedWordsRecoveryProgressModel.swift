@@ -64,10 +64,14 @@ final class SeedWordsRecoveryProgressModel {
     // MARK: - Setups
 
     private func registerOnRestoreProgressCallbacks() {
-
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
-                self?.startRestoringWallet()
+                // Only start recovery if it's not already in progress
+                let restoreStatus = Tari.shared.wallet(.main).recovery.status
+
+                if !(restoreStatus == .completed) || self?.viewModel.isWalletRestored != true {
+                    self?.startRestoringWallet()
+                }
             }
             .store(in: &cancellables)
 

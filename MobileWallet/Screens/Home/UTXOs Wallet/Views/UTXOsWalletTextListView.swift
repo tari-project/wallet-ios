@@ -136,7 +136,7 @@ final class UTXOsWalletTextListView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         tableView.backgroundColor = theme.backgrounds.primary
         tableView.separatorColor = theme.neutral.secondary

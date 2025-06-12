@@ -240,7 +240,7 @@ final class PasswordField: DynamicThemeView, UITextFieldDelegate {
         return true
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         warningLabel.textColor = theme.system.red

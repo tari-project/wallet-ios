@@ -46,7 +46,7 @@ final class CustomTorBridgesHeaderView: DynamicThemeHeaderFooterView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.text = localized("custom_bridges.item.paste_bridges")
         return view
     }()
@@ -80,7 +80,7 @@ final class CustomTorBridgesHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
     }

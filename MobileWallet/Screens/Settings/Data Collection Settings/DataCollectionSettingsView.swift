@@ -48,7 +48,7 @@ final class DataCollectionSettingsView: BaseNavigationContentView {
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.text = localized("data_collection_settings.label.description")
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -134,7 +134,7 @@ final class DataCollectionSettingsView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         descriptionLabel.textColor = theme.text.body

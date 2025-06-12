@@ -58,6 +58,9 @@ final class SeedWordsWalletRecoveryManager {
 
         deleteWallet(wallet: wallet)
 
+        // Set flag to show welcome overlay for recovered wallet
+        UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
+
         do {
             try Tari.shared.restore(wallet: wallet, seedWords: seedWords)
             try selectCustomBaseNode(hex: customBaseNodeHex, address: customBaseNodeAddress)
@@ -74,6 +77,9 @@ final class SeedWordsWalletRecoveryManager {
     func deleteWallet(wallet: WalletTag) {
         Tari.shared.delete(wallet: wallet)
         Tari.shared.canAutomaticalyReconnectWallet = false
+
+        // Set flag to true so welcome screen shows when a new wallet is created after deletion
+        UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
     }
 
     private func selectCustomBaseNode(hex: String?, address: String?) throws {

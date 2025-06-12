@@ -44,16 +44,30 @@ final class MenuTabBarController: UITabBarController {
 
     enum Tab: Int {
         case home
-        case ttlStore
-        case transactions
-        case contactBook
+        case profile
         case settings
+    }
+
+    public var walletState: AppRouter.WalletState = .current {
+        didSet {
+            // ALWAYS set default to false first
+            homeViewController.showWalletSyncedOnPresentation = false
+            homeViewController.showWalletRestoredOnPresentation = false
+
+            // Only when a wallet is explicitly created or restored AND flag is true, show welcome overlay
+            let shouldShowWelcome = UserDefaults.standard.bool(forKey: "ShouldShowWelcomeOverlay")
+
+            if shouldShowWelcome && (walletState == .newSynced || walletState == .newRestored) {
+                // Set the presentation flags based on wallet state
+                homeViewController.showWalletSyncedOnPresentation = walletState == .newSynced
+                homeViewController.showWalletRestoredOnPresentation = walletState == .newRestored
+            }
+        }
     }
 
     private let homeViewController = HomeConstructor.buildScene()
     private let storeViewController = WebBrowserViewController()
-    private let transactionsViewController = UIViewController()
-    private let contactBookViewController = ContactBookConstructor.buildScene()
+    private let contactBookViewController = ProfileViewController()
     private let settingsViewController = SettingsViewController()
     private let customTabBar = CustomTabBar()
 
@@ -65,14 +79,11 @@ final class MenuTabBarController: UITabBarController {
 
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)
 
-        viewControllers = [homeViewController, storeViewController, transactionsViewController, contactBookViewController, settingsViewController]
+        viewControllers = [homeViewController, contactBookViewController, settingsViewController]
         viewControllers?.enumerated().forEach { setup(controller: $1, index: $0) }
 
         for tabBarItem in tabBar.items! {
-            // For the send image we need to raise it higher than the others
-            if Tab(rawValue: tabBarItem.tag) == .transactions {
-                tabBarItem.imageInsets = UIEdgeInsets(top: -16, left: 0, bottom: -12, right: 0)
-            } else if hasNotch { // On phones without notches the icons should stay vertically centered
+            if hasNotch { // On phones without notches the icons should stay vertically centered
                 tabBarItem.imageInsets = UIEdgeInsets(top: 13, left: 0, bottom: -13, right: 0)
             }
         }
@@ -94,7 +105,8 @@ final class MenuTabBarController: UITabBarController {
     private func setup(controller: UIViewController, index: Int) {
         guard let tab = Tab(rawValue: index) else { return }
         controller.tabBarItem.tag = tab.rawValue
-        controller.tabBarItem.image = tab.icon
+        controller.tabBarItem.image = tab.icon?.withRenderingMode(.alwaysTemplate)
+        controller.tabBarItem.selectedImage = tab.selectedIcon?.withRenderingMode(.alwaysTemplate)
     }
 }
 
@@ -102,15 +114,17 @@ extension MenuTabBarController: UITabBarControllerDelegate {
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 
-        guard Tab(rawValue: viewController.tabBarItem.tag) == .transactions else { return true }
+//        guard Tab(rawValue: viewController.tabBarItem.tag) == .transactions else { return true }
 
-        let controller = TransactionsConstructor.buildScene()
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
-        navigationController.setNavigationBarHidden(true, animated: false)
-        navigationController.modalPresentationStyle = .fullScreen
-        present(navigationController, animated: true)
+//        let controller = TransactionsConstructor.buildScene()
+//        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+//        navigationController.setNavigationBarHidden(true, animated: false)
+//        navigationController.modalPresentationStyle = .fullScreen
+//        present(navigationController, animated: true)
 
-        return false
+//        return false
+
+        return true
     }
 
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -168,19 +182,25 @@ private class TabBarTransition: NSObject, UIViewControllerAnimatedTransitioning 
 }
 
 private extension MenuTabBarController.Tab {
-
     var icon: UIImage? {
         switch self {
         case .home:
-            return Theme.shared.images.homeItem
-        case .ttlStore:
-            return Theme.shared.images.ttlItem
-        case .transactions:
-            return .Images.TabBar.send
-        case .contactBook:
-            return .Icons.TabBar.contactBook
+            return .homeTabBar
+        case .profile:
+            return .contactsTabBar
         case .settings:
-            return Theme.shared.images.settingsItem
+            return .settingsTabBar
+        }
+    }
+
+    var selectedIcon: UIImage? {
+        switch self {
+        case .home:
+            return .homeTabBarSelected
+        case .profile:
+            return .selectedContactsTabBar
+        case .settings:
+            return .selectedSettingsTabBar
         }
     }
 }

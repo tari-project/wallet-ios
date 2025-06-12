@@ -62,7 +62,7 @@ final class AmountBadge: DynamicThemeView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.black.withSize(12.0)
+        view.font = .Poppins.Black.withSize(12.0)
         view.setContentHuggingPriority(.required, for: .horizontal)
         view.setContentHuggingPriority(.required, for: .vertical)
         view.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -108,7 +108,7 @@ final class AmountBadge: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         updateColors(valueType: valueType, theme: theme)
     }
@@ -119,7 +119,7 @@ final class AmountBadge: DynamicThemeView {
         updateColors(valueType: viewModel.valueType, theme: theme)
     }
 
-    private func updateColors(valueType: ValueType, theme: ColorTheme) {
+    private func updateColors(valueType: ValueType, theme: AppTheme) {
         switch valueType {
         case .positive:
             backgroundColor = theme.system.lightGreen

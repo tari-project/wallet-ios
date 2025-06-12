@@ -66,7 +66,7 @@ final class UTXOsWalletLoadingView: DynamicThemeView {
         let view = UILabel()
         view.text = localized("utxos_wallet.spinner.label.title")
         view.textAlignment = .center
-        view.font = .Avenir.roman.withSize(14.0)
+        view.font = .Poppins.SemiBold.withSize(14.0)
         return view
     }()
 
@@ -99,7 +99,7 @@ final class UTXOsWalletLoadingView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.body
     }

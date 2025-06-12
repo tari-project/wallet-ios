@@ -39,14 +39,6 @@
 */
 
 enum MigrationManager {
-
-    // MARK: - Properties
-
-    private static let esmeraldaMinValidVersion = "1.6.0-pre.0"
-    private static let nextNetMinValidVersion = "1.13.0-rc.0"
-
-    private static var minValidVersion: String { nextNetMinValidVersion }
-
     // MARK: - Actions
 
     static func validateWalletVersion(completion: @escaping (Bool) -> Void) {
@@ -69,7 +61,7 @@ enum MigrationManager {
         let version = await fetchDBVersion()
 
         if let version {
-            let min = minValidVersion
+            let min = NetworkManager.defaultNetwork.minValidVersion
             let isValid = VersionValidator.compare(version, isHigherOrEqualTo: min)
             Logger.log(message: "Min. Valid Wallet Version: \(min), Local Wallet Version: \(version), isValid: \(isValid)", domain: .general, level: .info)
             return isValid

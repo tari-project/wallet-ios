@@ -76,7 +76,7 @@ struct TariSettings {
     let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
-    let torBridgesUrl = "https://bridges.torproject.org/bridges"
+    let torBridgesUrl = "https://bridges.torproject.org/bridges?transport=obfs4"
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?

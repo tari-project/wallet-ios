@@ -115,10 +115,23 @@ final class CompletedTransaction: Transaction {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = completed_transaction_get_payment_id(pointer, errorCodePointer)
+            let result = completed_transaction_get_payment_id_as_bytes(pointer, errorCodePointer)
 
-            guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
-            return String(cString: cString)
+            /** ## Returns
+            * `*mut ByteVector` - Pointer to the created ByteVector. Note that it will be ptr::null_mut()
+            * if the byte_array pointer was null or if the elements in the byte_vector don't match
+            * element_count when it is created
+            *
+            * # Safety
+            * The ```byte_vector_destroy``` function must be called when finished with a ByteVector to prevent a memory leak
+            */
+            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+
+            // Create a ByteVector instance that will handle memory management
+            let byteVector = ByteVector(pointer: result)
+
+            // Convert the bytes to a string
+            return try byteVector.data.string
         }
     }
 
@@ -127,6 +140,17 @@ final class CompletedTransaction: Transaction {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = completed_transaction_get_timestamp(pointer, errorCodePointer)
+
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
+        }
+    }
+
+    var minedBlockHeight: UInt64 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = completed_transaction_get_mined_height(pointer, errorCodePointer)
 
             guard errorCode == 0 else { throw WalletError(code: errorCode) }
             return result

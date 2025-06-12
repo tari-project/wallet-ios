@@ -77,8 +77,8 @@ final class UTXOTileView: DynamicThemeCollectionCell {
     @View private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
         view.textColor = .Static.white
-        view.font = .Avenir.black.withSize(30.0)
-        view.secondaryFont = .Avenir.black.withSize(12.0)
+        view.font = .Poppins.Black.withSize(30.0)
+        view.secondaryFont = .Poppins.Black.withSize(12.0)
         view.separator = Locale.current.decimalSeparator
         view.iconHeight = 13.0
         return view
@@ -87,7 +87,7 @@ final class UTXOTileView: DynamicThemeCollectionCell {
     @View private var dateLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Static.white
-        view.font = .Avenir.medium.withSize(12.0)
+        view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
@@ -189,19 +189,19 @@ final class UTXOTileView: DynamicThemeCollectionCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         updateViewStatus(theme: theme)
         updateSelectionState(theme: theme)
         backgroundColor = theme.backgrounds.primary
     }
 
-    private func updateViewStatus(theme: ColorTheme) {
+    private func updateViewStatus(theme: AppTheme) {
         backgroundContentView.backgroundColor = theme.brand.purple?.colorVariant(text: colorHash ?? "")
         cornerRoundedShapeLayer.fillColor = status.color(theme: theme)?.cgColor
     }
 
-    private func updateSelectionState(theme: ColorTheme) {
+    private func updateSelectionState(theme: AppTheme) {
         let shadow = isTickSelected ? theme.shadows.box : .none
         apply(shadow: shadow)
     }

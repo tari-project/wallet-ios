@@ -198,13 +198,13 @@ final class ContextualButtonsOverlay: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         contentView.backgroundColor = theme.components.overlay?.withAlphaComponent(0.9)
         updateElementsColors(theme: theme)
     }
 
-    private func updateElementsColors(theme: ColorTheme) {
+    private func updateElementsColors(theme: AppTheme) {
 
         stackView.arrangedSubviews
             .compactMap { $0 as? ContextualButton }

@@ -62,12 +62,14 @@ final class SendingTariView: DynamicThemeView {
     @View private var firstLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelFirst
+        view.label.textColor = .Text.primary
         return view
     }()
 
     @View private var secondLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelSecond
+        view.label.textColor = .Text.primary
         return view
     }()
 
@@ -91,6 +93,9 @@ final class SendingTariView: DynamicThemeView {
     }
 
     private func setupConstraints() {
+
+        firstLabel.label.textColor = .Text.primary
+        secondLabel.label.textColor = .Text.primary
 
         [videoBackgroundView, logoView, firstLabel, secondLabel, progressBar].forEach(addSubview)
 
@@ -146,9 +151,11 @@ final class SendingTariView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
+        firstLabel.label.textColor = .Text.primary
+        secondLabel.label.textColor = .Text.primary
     }
 
     func update(firstText: String?, secondText: String?, completion: (() -> Void)?) {

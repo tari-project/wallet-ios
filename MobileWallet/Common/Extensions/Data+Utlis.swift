@@ -39,36 +39,7 @@
 */
 
 extension Data {
-
-    enum BLEChunkType {
-        case normal
-        case last
-    }
-
     var string: String { String(decoding: self, as: UTF8.self) }
-
-    var isBLEChunk: Bool { bleChunkType != nil }
-
-    var bleChunkType: BLEChunkType? {
-        switch last {
-        case 0:
-            return .last
-        case 1:
-            return .normal
-        default:
-            return nil
-        }
-    }
-
-    var bleDataChunks: [Data] {
-        let rawChunks = split(chunkSize: BLEConstants.chunkSize)
-        return rawChunks
-            .enumerated()
-            .map {
-                let controlByte: UInt8 = $0 == rawChunks.count - 1 ? 0 : 1
-                return $1.appending(byte: controlByte)
-            }
-    }
 
     func split(chunkSize: Int) -> [Data] {
 
@@ -89,16 +60,5 @@ extension Data {
         var data = self
         data.append(contentsOf: [byte])
         return data
-    }
-}
-
-extension Array where Element == Data {
-
-    var stringFromBLEChunks: String? { dataFromBLEChunks?.string }
-
-    var dataFromBLEChunks: Data? {
-        guard first(where: { !$0.isBLEChunk }) == nil else { return nil }
-        return map { $0.dropLast() }
-            .reduce(into: Data()) { $0.append($1) }
     }
 }

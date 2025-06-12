@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>Tari</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
@@ -23,8 +23,6 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>com.tari.wallet</string>
 			<key>CFBundleURLSchemes</key>
@@ -50,8 +48,6 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>The App needs access to Bluetooth to share contacts with users nearby</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Tari needs access to the camera to scan the QR</string>
 	<key>NSContactsUsageDescription</key>
@@ -74,35 +70,24 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>AvenirLTStd-Black.otf</string>
-		<string>AvenirLTStd-BlackOblique.otf</string>
-		<string>AvenirLTStd-Book.otf</string>
-		<string>AvenirLTStd-BookOblique.otf</string>
-		<string>AvenirLTStd-Heavy.otf</string>
-		<string>AvenirLTStd-HeavyOblique.otf</string>
-		<string>AvenirLTStd-Light.otf</string>
-		<string>AvenirLTStd-LightOblique.otf</string>
-		<string>AvenirLTStd-Medium.otf</string>
-		<string>AvenirLTStd-MediumOblique.otf</string>
-		<string>AvenirLTStd-Oblique.otf</string>
-		<string>AvenirLTStd-Roman.otf</string>
-		<string>AvenirNextLTPro-Bold.otf</string>
-		<string>AvenirNextLTPro-BoldCn.otf</string>
-		<string>AvenirNextLTPro-BoldCnIt.otf</string>
-		<string>AvenirNextLTPro-Cn.otf</string>
-		<string>AvenirNextLTPro-CnIt.otf</string>
-		<string>AvenirNextLTPro-Demi.otf</string>
-		<string>AvenirNextLTPro-DemiCn.otf</string>
-		<string>AvenirNextLTPro-DemiCnIt.otf</string>
-		<string>AvenirNextLTPro-DemiIt.otf</string>
-		<string>AvenirNextLTPro-HeavyCn.otf</string>
-		<string>AvenirNextLTPro-HeavyCnIt.otf</string>
-		<string>AvenirNextLTPro-It.otf</string>
-		<string>AvenirNextLTPro-MediumCn.otf</string>
-		<string>AvenirNextLTPro-MediumCnIt.otf</string>
-		<string>AvenirNextLTPro-Regular.otf</string>
-		<string>AvenirNextLTPro-UltLtCn.otf</string>
-		<string>AvenirNextLTPro-UltLtCnIt.otf</string>
+		<string>Poppins Black Italic.ttf</string>
+		<string>Poppins Black.ttf</string>
+		<string>Poppins Bold Italic.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins ExtraBold.ttf</string>
+		<string>Poppins ExtraLight Italic.ttf</string>
+		<string>Poppins ExtraLight.ttf</string>
+		<string>Poppins Italic.ttf</string>
+		<string>Poppins Light Italic.ttf</string>
+		<string>Poppins Light.ttf</string>
+		<string>Poppins Medium Italic.ttf</string>
+		<string>Poppins Medium.ttf</string>
+		<string>Poppins Regular.ttf</string>
+		<string>Poppins SemiBold Italic.ttf</string>
+		<string>Poppins SemiBold.ttf</string>
+		<string>Poppins Thin Italic.ttf</string>
+		<string>Poppins Thin.ttf</string>
+		<string>DrukWideTrial-Bold.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -123,9 +108,8 @@
 	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>bluetooth-peripheral</string>
-		<string>fetch</string>
 		<string>remote-notification</string>
+		<string>fetch</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -149,10 +133,10 @@
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>

@@ -81,7 +81,7 @@ final class QRCodeScannerView: UIView {
         let view = UILabel()
         view.text = localized("qr_code_scanner.labels.title")
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(16.0)
+        view.font = .Poppins.Medium.withSize(16.0)
         view.numberOfLines = 0
         view.textColor = .Static.white
         return view
@@ -103,7 +103,7 @@ final class QRCodeScannerView: UIView {
         let view = UILabel()
         view.numberOfLines = 0
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 

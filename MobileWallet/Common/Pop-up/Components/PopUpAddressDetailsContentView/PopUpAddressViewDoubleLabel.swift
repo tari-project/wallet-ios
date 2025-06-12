@@ -53,13 +53,13 @@ final class PopUpAddressViewDoubleLabel: DynamicThemeView {
 
     @View private var leadingLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
     @View private var trailingLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0
         view.setContentCompressionResistancePriority(.required, for: .vertical)
         return view
@@ -95,7 +95,7 @@ final class PopUpAddressViewDoubleLabel: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         leadingLabel.textColor = theme.text.body
         trailingLabel.textColor = theme.text.body

@@ -77,7 +77,7 @@ final class TransactionDetailsSeparatorView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         separatorView.backgroundColor = theme.neutral.tertiary
     }

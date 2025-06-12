@@ -53,7 +53,7 @@ final class SelectNetworkModel {
     // MARK: - Properties
 
     let viewModel = ViewModel()
-    private let networks = TariNetwork.all
+    private let networks = [NetworkManager.defaultNetwork]
 
     // MARK: - Actions
 

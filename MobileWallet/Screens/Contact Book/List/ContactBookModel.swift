@@ -51,13 +51,6 @@ final class ContactBookModel {
     enum ShareType: Int, CaseIterable {
         case qr
         case link
-        case ble
-    }
-
-    enum DialogType {
-        case bleContactSharingWaitingForReceiverDialog
-        case bleContactSharingSuccessDialog
-        case bleFailureDialog(message: String?)
     }
 
     enum Action {
@@ -65,12 +58,10 @@ final class ContactBookModel {
         case showQRDialog
         case shareQR(image: UIImage)
         case shareLink(link: URL)
-        case show(dialog: DialogType)
     }
 
     fileprivate enum SectionType: Int {
         case internalContacts
-        case externalContacts
     }
 
     // MARK: - View Model
@@ -85,7 +76,7 @@ final class ContactBookModel {
     @Published private(set) var areFavoriteContactsAvailable: Bool = false
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var action: Action?
-    @Published private(set) var isPermissionGranted: Bool = false
+    @Published private(set) var isPermissionGranted: Bool = true
     @Published private(set) var isSharePossible: Bool = false
 
     // MARK: - Properties
@@ -94,7 +85,6 @@ final class ContactBookModel {
 
     private let contactsManager = ContactsManager()
 
-    private weak var bleTask: BLECentralTask?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -106,7 +96,6 @@ final class ContactBookModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         $contactModels
             .sink { [weak self] in self?.handle(contactModels: $0) }
             .store(in: &cancellables)
@@ -144,17 +133,14 @@ final class ContactBookModel {
             do {
                 try await contactsManager.fetchModels()
                 let tariContactModels = contactsManager.tariContactModels.filter { $0.internalModel?.addressComponents.isUnknownAddress == false }
-                contactModels = [tariContactModels, contactsManager.externalModels]
+                contactModels = [tariContactModels]
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
-
-            isPermissionGranted = contactsManager.isPermissionGranted
         }
     }
 
     func toggleSelection(contactID: UUID) {
-
         guard let model = contact(contactID: contactID), model.hasIntrenalModel else { return }
 
         guard selectedIDs.contains(contactID) else {
@@ -166,7 +152,6 @@ final class ContactBookModel {
     }
 
     func shareSelectedContacts(shareType: ShareType) {
-
         let deeplink: URL
 
         do {
@@ -182,15 +167,9 @@ final class ContactBookModel {
             shareQR(deeplink: deeplink)
         case .link:
             shareLink(deeplink: deeplink)
-        case .ble:
-            shareLinkViaBLE(deeplink: deeplink)
         }
 
         contentMode = .normal
-    }
-
-    func cancelBLETask() {
-        bleTask?.cancel()
     }
 
     func selectContact(contactID: UUID) {
@@ -201,7 +180,6 @@ final class ContactBookModel {
     // MARK: - Actions
 
     private func shareQR(deeplink: URL) {
-
         action = .showQRDialog
 
         Task {
@@ -214,45 +192,9 @@ final class ContactBookModel {
         action = .shareLink(link: deeplink)
     }
 
-    private func shareLinkViaBLE(deeplink: URL) {
-
-        guard let payload = deeplink.absoluteString.data(using: .utf8) else { return }
-
-        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.contactsShare)
-        self.bleTask?.cancel()
-        self.bleTask = bleTask
-
-        action = .show(dialog: .bleContactSharingWaitingForReceiverDialog)
-
-        Task {
-            do {
-                guard try await bleTask.findAndWrite(payload: payload) else { return }
-                action = .show(dialog: .bleContactSharingSuccessDialog)
-            } catch {
-                handle(bleError: error)
-            }
-        }
-    }
-
     // MARK: - Handlers
 
-    private func handle(bleError error: Error) {
-
-        Logger.log(message: "Unable to finish BLE task. Reason: \(error)", domain: .general, level: .error)
-
-        let message: String?
-
-        if let error = error as? BLECentralManager.BLECentralError {
-            message = error.errorMessage
-        } else {
-            message = ErrorMessageManager.errorMessage(forError: error)
-        }
-
-        action = .show(dialog: .bleFailureDialog(message: message))
-    }
-
     private func makeDeeplink() throws -> URL? {
-
         let allModels = contactModels.flatMap { $0 }
         let list = selectedIDs
             .compactMap { selectedID in allModels.first { $0.id == selectedID }}
@@ -260,12 +202,10 @@ final class ContactBookModel {
             .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", tariAddress: $0.addressComponents.fullRaw ) }
 
         let model = ContactListDeeplink(list: list)
-
         return try DeepLinkFormatter.deeplink(model: model)
     }
 
     private func filter(contactsSections: [[ContactsManager.Model]], searchText: String) -> [[ContactsManager.Model]] {
-
         guard !searchText.isEmpty else { return contactsSections }
 
         return contactsSections.map {
@@ -282,7 +222,6 @@ final class ContactBookModel {
         contactsSections
             .enumerated()
             .reduce(into: [ContactBookContactListView.Section]()) { result, data in
-
                 let section = SectionType(rawValue: data.offset)
                 guard !data.element.isEmpty else { return }
 
@@ -306,8 +245,6 @@ final class ContactBookModel {
         areFavoriteContactsAvailable = models.first { $0.isFavorite } != nil
     }
 
-    // MARK: - Helpers
-
     private func contact(contactID: UUID) -> ContactsManager.Model? {
         contactModels.flatMap { $0 }.first { $0.id == contactID }
     }
@@ -321,8 +258,6 @@ extension ContactBookModel.ShareType {
             return .Icons.General.QR
         case .link:
             return .Icons.General.link
-        case .ble:
-            return .Icons.General.bluetooth
         }
     }
 
@@ -332,22 +267,22 @@ extension ContactBookModel.ShareType {
             return localized("contact_book.share_bar.buttons.qr")
         case .link:
             return localized("contact_book.share_bar.buttons.link")
-        case .ble:
-            return localized("contact_book.share_bar.buttons.ble")
         }
     }
 }
 
-private extension ContactBookModel.SectionType {
-
+extension ContactBookModel.SectionType {
     var title: String? {
         switch self {
         case .internalContacts:
-            return nil
-        case .externalContacts:
-            return localized("contact_book.section.phone_contacts")
+            return localized("contact_book.section.internal.title")
         }
     }
 
-    var isSelectable: Bool { self == .internalContacts }
+    var isSelectable: Bool {
+        switch self {
+        case .internalContacts:
+            return true
+        }
+    }
 }

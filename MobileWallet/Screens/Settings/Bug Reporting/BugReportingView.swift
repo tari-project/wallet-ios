@@ -50,14 +50,14 @@ final class BugReportingView: BaseNavigationContentView {
     @View private var headerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.header")
-        view.font = .Avenir.medium.withSize(13.0)
+        view.font = .Poppins.Medium.withSize(13.0)
         view.numberOfLines = 0
         return view
     }()
 
     @View private var nameTextField: UITextField = {
         let view = UITextField()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.returnKeyType = .done
         return view
     }()
@@ -66,7 +66,7 @@ final class BugReportingView: BaseNavigationContentView {
 
     @View private var emailTextField: UITextField = {
         let view = UITextField()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.returnKeyType = .done
         return view
     }()
@@ -76,7 +76,7 @@ final class BugReportingView: BaseNavigationContentView {
     @View private var messageHeaderLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.message_header")
-        view.font = .Avenir.medium.withSize(13.0)
+        view.font = .Poppins.Medium.withSize(13.0)
         view.numberOfLines = 0
         return view
     }()
@@ -84,7 +84,7 @@ final class BugReportingView: BaseNavigationContentView {
     @View private var messageTextView: UITextView = {
         let view = UITextView()
         view.layer.cornerRadius = 10.0
-        view.font = .Avenir.medium.withSize(13.0)
+        view.font = .Poppins.Medium.withSize(13.0)
         view.textContainerInset = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
         view.returnKeyType = .done
         return view
@@ -93,7 +93,7 @@ final class BugReportingView: BaseNavigationContentView {
     @View private var footerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.footer")
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -215,7 +215,7 @@ final class BugReportingView: BaseNavigationContentView {
         sendButton.style = isProcessing ? .loading : .normal
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
 
         headerLabel.textColor = theme.text.heading

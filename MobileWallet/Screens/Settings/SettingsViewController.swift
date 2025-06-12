@@ -46,7 +46,6 @@ final class SettingsViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
 
     private enum Section: Int, CaseIterable {
-        case profile
         case security
         case more
         case advancedSettings
@@ -84,7 +83,6 @@ final class SettingsViewController: SettingsParentTableViewController {
 
         case selectTheme
         case screenRecording
-        case bluetoothConfiguration
         case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
@@ -97,7 +95,6 @@ final class SettingsViewController: SettingsParentTableViewController {
 
             case .selectTheme: return localized("settings.item.select_theme")
             case .screenRecording: return localized("settings.item.screen_recording_settings")
-            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
@@ -126,7 +123,6 @@ final class SettingsViewController: SettingsParentTableViewController {
     private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: .Icons.Settings.theme, title: SettingsItemTitle.selectTheme.rawValue),
         screenRecordingItem,
-        SystemMenuTableViewCellItem(icon: .Icons.Settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.bridgeConfig, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.network, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
@@ -159,8 +155,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         .disclaimer: URL(string: TariSettings.shared.disclaimer),
         .blockExplorer: NetworkManager.shared.selectedNetwork.blockExplorerURL
     ]
-
-    private let profileIndexPath = IndexPath(row: 0, section: 0)
+    
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -227,11 +222,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func onBluetoothSettingsAction() {
-        let controller = BluetoothSettingsConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
-    }
-
     private func onBridgeConfigurationAction() {
         let controller = TorBridgesConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
@@ -251,14 +241,14 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onLinkAction(indexPath: IndexPath) {
-        let item = SettingsItemTitle.allCases[indexPath.row + indexPath.section]
+        let item = SettingsItemTitle.allCases[indexPath.row + indexPath.section + 1]
 
         guard let link = links[item], let url = link else { return }
         WebBrowserPresenter.open(url: url)
     }
 
     private func onProfileAction() {
-        let controller = ProfileViewController(backButtonType: .back)
+        let controller = ProfileViewController()
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -292,7 +282,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
-        case .profile: return 1
         case .security: return securitySectionItems.count
         case .more: return moreSectionItems.count
         case .advancedSettings: return advancedSettingsSectionItems.count
@@ -301,26 +290,10 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        if indexPath == profileIndexPath {
-            let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
-            do {
-                let name = UserSettingsManager.name
-                let addressComponents = try Tari.shared.wallet(.main).address.components
-                let addressViewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false)
-                cell.update(name: name, addressViewModel: addressViewModel)
-            } catch {
-                let message = ErrorMessageManager.errorModel(forError: error)
-                PopUpPresenter.show(message: message)
-            }
-            return cell
-        }
-
         let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
 
         guard let section = Section(rawValue: indexPath.section) else { return cell }
         switch section {
-        case .profile:
-            break
         case .security:
             cell.configure(securitySectionItems[indexPath.row])
         case .more:
@@ -361,20 +334,12 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard indexPath == profileIndexPath else { return 65.0 }
         return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         guard let section = Section(rawValue: indexPath.section) else { return nil }
         switch section {
-        case .profile:
-            switch indexPath.row {
-            case 0:
-                onProfileAction()
-            default:
-                break
-            }
         case .security:
             switch indexPath.row {
             case 0:
@@ -385,13 +350,22 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 break
             }
         case .more:
-            switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
-            case .about:
+            let item = moreSectionItems[indexPath.row]
+            switch item.title {
+            case SettingsItemTitle.about.rawValue:
                 onAboutAction()
-            case .reportBug:
+            case SettingsItemTitle.reportBug.rawValue:
                 onReportBugAction()
-            default:
+            case SettingsItemTitle.visitTari.rawValue,
+                 SettingsItemTitle.contributeToTariAurora.rawValue,
+                 SettingsItemTitle.userAgreement.rawValue,
+                 SettingsItemTitle.privacyPolicy.rawValue,
+                 SettingsItemTitle.disclaimer.rawValue,
+                 SettingsItemTitle.blockExplorer.rawValue:
+                 
                 onLinkAction(indexPath: indexPath)
+            default:
+                break
             }
         case .advancedSettings:
             switch indexPath.row {
@@ -400,12 +374,10 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 1:
                 onScreenRecordingSettingsAction()
             case 2:
-                onBluetoothSettingsAction()
-            case 3:
                 onBridgeConfigurationAction()
-            case 4:
+            case 3:
                 onSelectNetworkAction()
-            case 5:
+            case 4:
                 onDeleteWalletAction()
             default:
                 break

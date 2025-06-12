@@ -45,7 +45,6 @@ class DeleteWalletViewController: SettingsParentTableViewController {
 
     let menuItem = SystemMenuTableViewCellItem(
         title: localized("settings.item.delete_wallet"),
-        hasArrow: false,
         isDestructive: true
     )
 
@@ -160,7 +159,7 @@ private final class DeleteWalletHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
     }

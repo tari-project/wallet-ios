@@ -41,7 +41,7 @@
 enum LinkContactsConstructor {
 
     static func buildScene(contactModel: ContactsManager.Model) -> LinkContactsViewController {
-        let model = LinkContactsModel(contactModel: contactModel)
+        let model = ContactSelectionModel(contactModel: contactModel)
         return LinkContactsViewController(model: model)
     }
 }

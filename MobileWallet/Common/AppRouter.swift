@@ -48,14 +48,32 @@ enum AppRouter {
         case none
     }
 
+    public enum WalletState {
+        case current
+        case newRestored
+        case newSynced
+    }
+
     static var isNavigationReady: Bool { tabBar != nil }
     private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
 
-    // MARK: - Transitions
+    enum TransitionFromRecovery {
+        case seedPhrase
+        case paperWallet
+        case none
+    }
 
-    static func transitionToSplashScreen(animated: Bool = true, isWalletConnected: Bool = false, paperWalletRecoveryData: PaperWalletRecoveryData? = nil) {
+    static func transitionToSplashScreen(animated: Bool = true, isWalletConnected: Bool = false, paperWalletRecoveryData: PaperWalletRecoveryData? = nil, transitionFrom: TransitionFromRecovery = .none) {
 
-        let controller = SplashViewConstructor.buildScene(isWalletConnected: isWalletConnected, paperWalletRecoveryData: paperWalletRecoveryData)
+        var recoveryMode = SplashViewModel.RecoveryMode.none
+
+        if transitionFrom == .seedPhrase {
+            recoveryMode = .seedPhrase
+        } else if transitionFrom == .paperWallet {
+            recoveryMode = .paperWallet
+        }
+
+        let controller = SplashViewConstructor.buildScene(isWalletConnected: isWalletConnected, paperWalletRecoveryData: paperWalletRecoveryData, recoveryMode: recoveryMode)
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.setNavigationBarHidden(true, animated: false)
 
@@ -70,9 +88,20 @@ enum AppRouter {
         transition(to: controller, type: .moveDown)
     }
 
-    static func transitionToHomeScreen() {
-
+    static func transitionToHomeScreen(state: WalletState) {
         let tabBarController = MenuTabBarController()
+
+        if state == .current {
+            UserDefaults.standard.set(false, forKey: "ShouldShowWelcomeOverlay")
+        }
+
+        if TariSettings.shared.walletSettings.configurationState == .ready ||
+           TariSettings.shared.walletSettings.configurationState == .authorized {
+            tabBarController.walletState = .newRestored
+        } else {
+            tabBarController.walletState = state
+        }
+
         let navigationController = AlwaysPoppableNavigationController(rootViewController: tabBarController)
 
         transition(to: navigationController, type: .crossDissolve)
@@ -114,11 +143,11 @@ enum AppRouter {
     // MARK: - TabBar Actions
 
     static func moveToContactBook() {
-        tabBar?.setTab(.contactBook)
+        tabBar?.setTab(.profile)
     }
 
     static func moveToProfile() {
-        let controller = ProfileViewController(backButtonType: .close)
+        let controller = ProfileViewController()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.isNavigationBarHidden = true
         tabBar?.presentOnFullScreen(navigationController)

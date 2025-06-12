@@ -46,12 +46,12 @@ class BaseToolbar: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         updateBackground(theme: theme)
     }
 
-    private func updateBackground(theme: ColorTheme? = nil) {
+    private func updateBackground(theme: AppTheme? = nil) {
         let theme = theme ?? self.theme
         backgroundColor = theme.backgrounds.primary?.withAlphaComponent(backgroundAlpha)
     }

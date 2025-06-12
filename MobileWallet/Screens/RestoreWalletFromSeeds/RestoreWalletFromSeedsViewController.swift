@@ -136,11 +136,14 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
     // MARK: - Actions
 
     @MainActor private func showProgressOverlay() {
-
         let overlay = SeedWordsRecoveryProgressViewController()
 
+        // Set flag to show welcome overlay for restored wallet
+        UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
+
         overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen(isWalletConnected: true)
+            // Always show the same wallet creation screens as for a new wallet
+            AppRouter.transitionToOnboardingScreen(startFromLocalAuth: false)
         }
 
         overlay.onFailure = { [weak self] in

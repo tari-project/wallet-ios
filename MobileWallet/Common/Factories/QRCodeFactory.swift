@@ -55,7 +55,7 @@ final class QRCodeFactory {
 
             filter.setValuesForKeys([
                 "inputMessage": data,
-                "inputCorrectionLevel": "L"
+                "inputCorrectionLevel": "Q"
             ])
 
             guard let outputImage = filter.outputImage else {

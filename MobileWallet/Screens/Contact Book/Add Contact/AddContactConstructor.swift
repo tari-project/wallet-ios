@@ -40,6 +40,11 @@
 
 enum AddContactConstructor {
 
+    static func bulidScene(onSuccess navigationActionType: AddContactViewController.NavigationActionType, address: TariAddress? = nil) -> AddContactViewController {
+        let model = AddContactModel(address: address)
+        return AddContactViewController(model: model, navigationActionType: navigationActionType)
+    }
+
     static func bulidScene(onSuccess navigationActionType: AddContactViewController.NavigationActionType) -> AddContactViewController {
         let model = AddContactModel()
         return AddContactViewController(model: model, navigationActionType: navigationActionType)

@@ -50,6 +50,7 @@ extension Animation {
         case faceID = "FaceID"
         case touchID = "TouchIdAnimation"
         case notification = "NotificationAnimation"
+        case notificationsSuccess = "NotificationSuccessAnimation"
         case emojiWheel = "EmojiWheel"
         case nerdEmoji = "NerdEmojiAnimation"
         case pendingCircleAnimation = "PendingCircleAnimation"

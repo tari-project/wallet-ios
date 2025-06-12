@@ -48,7 +48,7 @@ final class FormTextField: DynamicThemeView {
 
     @View private var textField: EmojiTextField = {
         let view = EmojiTextField()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
@@ -78,6 +78,11 @@ final class FormTextField: DynamicThemeView {
     var isEmojiKeyboardVisible: Bool {
         get { textField.isEmojiKeyboardVisible }
         set { textField.isEmojiKeyboardVisible = newValue }
+    }
+
+    var autocapitalizationType: UITextAutocapitalizationType {
+        get { textField.autocapitalizationType }
+        set { textField.autocapitalizationType = newValue }
     }
 
     var onReturnPressed: (() -> Void)?
@@ -120,10 +125,11 @@ final class FormTextField: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        textField.textColor = theme.text.heading
-        separator.backgroundColor = theme.neutral.secondary
+        backgroundColor = .Background.popup
+        textField.textColor = .Text.secondary
+        separator.backgroundColor = .Elevation.outlined
     }
 
     // MARK: - First Responder

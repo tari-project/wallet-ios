@@ -49,7 +49,7 @@ final class TokenInputView: DynamicThemeCollectionCell {
 
     @View var textField: ObservableTextField = {
         let view = ObservableTextField()
-        view.font = Theme.shared.fonts.restoreFromSeedWordsToken
+        view.font = .Poppins.Medium.withSize(12)
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.spellCheckingType = .no
@@ -120,7 +120,7 @@ final class TokenInputView: DynamicThemeCollectionCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         textField.textColor = theme.text.body
     }

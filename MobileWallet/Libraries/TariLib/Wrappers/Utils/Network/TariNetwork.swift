@@ -45,31 +45,36 @@ struct TariNetwork {
     let isRecommended: Bool
     let dnsPeer: String
     let blockExplorerURL: URL?
+    let currencySymbol: String
+    let minValidVersion: String
+    let version: String
 }
 
 extension TariNetwork {
 
-    static var all: [TariNetwork] { [nextnet].compactMap { $0 } }
-
-    static var stagenet: Self {
+    static var mainnet: Self {
         makeNetwork(
-            name: "stagenet",
-            presentedName: "StageNet",
-            isMainNet: false,
-            isRecommended: false,
-            dnsPeer: "seeds.stagenet.tari.com",
-            blockExplorerURL: nil
+            name: "mainnet",
+            presentedName: "Mainnet",
+            isRecommended: true,
+            dnsPeer: "seeds.tari.com",
+            blockExplorerURL: URL(string: "https://explore.tari.com"),
+            currencySymbol: "XTM",
+            minValidVersion: "2.0.0-alpha.1",
+            version: "4.4.0"
         )
     }
 
     static var nextnet: Self {
         makeNetwork(
             name: "nextnet",
-            presentedName: "NextNet",
-            isMainNet: false,
-            isRecommended: true,
-            dnsPeer: "seeds.nextnet.tari.com",
-            blockExplorerURL: URL(string: "https://explore-nextnet.tari.com")
+            presentedName: "Nextnet",
+            isRecommended: false,
+            dnsPeer: "aurora.nextnet.tari.com",
+            blockExplorerURL: URL(string: "https://explore-nextnet.tari.com"),
+            currencySymbol: "tXTM",
+            minValidVersion: "1.4.1-rc.0",
+            version: "1.18.0-rc.0"
         )
     }
 
@@ -77,10 +82,12 @@ extension TariNetwork {
         makeNetwork(
             name: "esmeralda",
             presentedName: "Esmeralda",
-            isMainNet: false,
             isRecommended: true,
             dnsPeer: "seeds.esmeralda.tari.com",
-            blockExplorerURL: nil
+            blockExplorerURL: nil,
+            currencySymbol: "tXTM",
+            minValidVersion: "1.6.0-pre.0",
+            version: "1.6.0"
         )
     }
 
@@ -105,8 +112,26 @@ extension TariNetwork {
         }
     }
 
-    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, isRecommended: Bool, dnsPeer: String, blockExplorerURL: URL?) -> Self {
-        let currencySymbol = isMainNet ? "XTR" : "tXTR"
-        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, isRecommended: isRecommended, dnsPeer: dnsPeer, blockExplorerURL: blockExplorerURL)
+    private static func makeNetwork(
+        name: String,
+        presentedName: String,
+        isRecommended: Bool,
+        dnsPeer: String,
+        blockExplorerURL: URL?,
+        currencySymbol: String,
+        minValidVersion: String,
+        version: String
+    ) -> Self {
+        return Self(
+            name: name,
+            presentedName: presentedName,
+            tickerSymbol: currencySymbol,
+            isRecommended: isRecommended,
+            dnsPeer: dnsPeer,
+            blockExplorerURL: blockExplorerURL,
+            currencySymbol: currencySymbol,
+            minValidVersion: minValidVersion,
+            version: version
+        )
     }
 }

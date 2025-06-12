@@ -59,7 +59,7 @@ final class CustomTorBridgesInputCell: UITableViewCell {
 
     @View private var textView: UITextView = {
         let view = UITextView()
-        view.font = .Avenir.medium.withSize(12.0)
+        view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
@@ -67,7 +67,7 @@ final class CustomTorBridgesInputCell: UITableViewCell {
         let view = UILabel()
         view.numberOfLines = 0
         view.text = CustomTorBridgesInputCell.placeholderText
-        view.font = .Avenir.medium.withSize(11.0)
+        view.font = .Poppins.Medium.withSize(11.0)
         return view
     }()
 

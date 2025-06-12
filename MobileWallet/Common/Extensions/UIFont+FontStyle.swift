@@ -41,18 +41,26 @@
 import UIKit
 
 extension UIFont {
-    enum Avenir: String {
-        case heavy
-        case medium
-        case light
-        case black
-        case roman
+    enum Poppins: String {
+        case Bold
+        case Medium
+        case Light
+        case Black
+        case SemiBold
+        case Regular
 
         func withSize(_ size: CGFloat) -> UIFont {
-            UIFont.init(name: self.fontName, size: size)!
+            UIFont(name: "Poppins " + self.rawValue, size: size)!
         }
-        private var fontName: String {
-            return "Avenir-\(self.rawValue.capitalized)"
+
+    }
+
+    enum DrukWideTrial: String {
+        case Bold
+
+        func withSize(_ size: CGFloat) -> UIFont {
+            UIFont(name: "DrukWideTrial-" + self.rawValue, size: size)!
         }
+
     }
 }

@@ -56,6 +56,15 @@ struct TariAddressComponents {
     let isUnknownAddress: Bool
     let isOnesidedAddress: Bool
     let isInteractiveAddress: Bool
+    let isPaymentIDAddress: Bool
+}
+
+extension TariAddressComponents: Equatable {
+    static func == (lhs: TariAddressComponents, rhs: TariAddressComponents) -> Bool {
+        lhs.isPaymentIDAddress || rhs.isPaymentIDAddress
+            ? lhs.fullRaw == rhs.fullRaw
+            : lhs.uniqueIdentifier == rhs.uniqueIdentifier
+    }
 }
 
 extension TariAddressComponents {
@@ -90,5 +99,6 @@ extension TariAddressComponents {
         isUnknownAddress = try address.spendKey.byteVector.bytes.first { $0 != 0 } == nil
         isOnesidedAddress = try address.features.isOnesided()
         isInteractiveAddress = try address.features.isInteractive()
+        isPaymentIDAddress = try address.features.isPaymentId()
     }
 }

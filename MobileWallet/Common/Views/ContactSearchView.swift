@@ -46,20 +46,11 @@ final class ContactSearchView: DynamicThemeView {
 
     @View private(set) var textField: UITextField = {
         let view = UITextField()
-        view.font = Theme.shared.fonts.searchContactsInputBoxText
+        view.font = .Poppins.Medium.withSize(14)
         view.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 11.0, height: 0.0))
         view.leftViewMode = .always
         return view
     }()
-
-    @View private var yatIconView: UIImageView = {
-        let view = UIImageView()
-        view.image = .Icons.Yat.logo.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
-        view.contentMode = .scaleAspectFit
-        return view
-    }()
-
-    @View private(set) var yatPreviewButton = PulseButton()
 
     @View private(set) var qrButton: PulseButton = {
         let view = PulseButton()
@@ -110,22 +101,25 @@ final class ContactSearchView: DynamicThemeView {
 
     private func setupViews() {
         backgroundColor = .clear
-        layer.cornerRadius = 6.0
-        layer.borderWidth = 2.0
+        layer.cornerRadius = 10
+        layer.borderWidth = 1
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
-        layer.borderColor = theme.backgrounds.secondary?.cgColor
-        previewView.backgroundColor = theme.backgrounds.primary
-        qrButton.tintColor = theme.brand.purple
-        yatIconView.tintColor = theme.icons.default
+
+        textField.backgroundColor = .Background.primary
+        backgroundColor = .Background.primary
+        contentView.backgroundColor = .clear
+        layer.borderColor = UIColor.Elevation.outlined.cgColor
+        layer.borderWidth = 1
+        previewView.backgroundColor = .clear
+        qrButton.tintColor = .Icons.default
     }
 
     private func setupConstraints() {
 
-        [yatIconView, textField, yatPreviewButton, qrButton].forEach(contentView.addArrangedSubview)
+        [textField, qrButton].forEach(contentView.addArrangedSubview)
         [contentView, previewView].forEach(addSubview)
 
         let constraints = [
@@ -133,9 +127,8 @@ final class ContactSearchView: DynamicThemeView {
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            yatPreviewButton.widthAnchor.constraint(equalToConstant: 44.0),
-            qrButton.widthAnchor.constraint(equalToConstant: 44.0),
-            yatIconView.widthAnchor.constraint(equalToConstant: 33.0),
+            qrButton.widthAnchor.constraint(equalToConstant: 24.0),
+            qrButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -10),
             previewView.topAnchor.constraint(equalTo: textField.topAnchor),
             previewView.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
             previewView.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
@@ -149,14 +142,10 @@ final class ContactSearchView: DynamicThemeView {
 
     private func updateViews() {
         qrButton.isHidden = !isQrButtonVisible
-        yatPreviewButton.isHidden = !isPreviewButtonVisible
-        yatIconView.isHidden = !isYatLogoVisible
     }
 
     private func updatePreview() {
         previewView.isHidden = previewText == nil
         previewView.label.text = previewText
-        let iconName = previewView.isHidden ? "eye.fill" : "eye.slash.fill"
-        yatPreviewButton.setImage(UIImage(systemName: iconName), for: .normal)
     }
 }

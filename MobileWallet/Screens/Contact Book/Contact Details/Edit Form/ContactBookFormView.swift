@@ -48,6 +48,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
         let placeholder: String?
         let text: String?
         let isEmojiKeyboardVisible: Bool
+        let autocapitalization: Bool
         let callback: ((String) -> Void)?
     }
 
@@ -122,9 +123,9 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        secureContentView.view.backgroundColor = theme.backgrounds.primary
+        secureContentView.view.backgroundColor = .Background.popup
     }
 
     private func update(textFieldsModels: [TextFieldViewModel]) {
@@ -141,6 +142,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
                 textField.placeholder = model.placeholder
                 textField.text = model.text
                 textField.isEmojiKeyboardVisible = model.isEmojiKeyboardVisible
+                textField.autocapitalizationType = model.autocapitalization ? .words : .none
                 textField.onReturnPressed = { [weak self] in
                     self?.handleOnReturnPressedAction(index: index)
                 }

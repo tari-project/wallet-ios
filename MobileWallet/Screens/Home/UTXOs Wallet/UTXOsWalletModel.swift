@@ -338,7 +338,7 @@ extension UtxoStatus {
         }
     }
 
-    func color(theme: ColorTheme) -> UIColor? {
+    func color(theme: AppTheme) -> UIColor? {
         switch self {
         case .mined:
             return theme.system.green

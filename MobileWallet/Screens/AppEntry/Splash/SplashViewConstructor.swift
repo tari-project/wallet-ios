@@ -40,8 +40,8 @@
 
 enum SplashViewConstructor {
 
-    static func buildScene(isWalletConnected: Bool, paperWalletRecoveryData: PaperWalletRecoveryData?) -> SplashViewController {
-        let model = SplashViewModel(isWalletConnected: isWalletConnected, paperWalletRecoveryData: paperWalletRecoveryData)
+    static func buildScene(isWalletConnected: Bool, paperWalletRecoveryData: PaperWalletRecoveryData?, recoveryMode: SplashViewModel.RecoveryMode = .none) -> SplashViewController {
+        let model = SplashViewModel(isWalletConnected: isWalletConnected, paperWalletRecoveryData: paperWalletRecoveryData, recoveryMode: recoveryMode)
         return SplashViewController(model: model)
     }
 }

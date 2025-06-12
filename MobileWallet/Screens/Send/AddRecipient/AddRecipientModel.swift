@@ -45,13 +45,6 @@ final class AddRecipientModel {
 
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
-        case show(dialog: DialogType)
-    }
-
-    enum DialogType {
-        case bleTransactionWaitingForReceiverDialog
-        case bleTransactionConfirmationDialog(receiverName: String)
-        case bleFailureDialog(message: String?)
     }
 
     fileprivate enum SectionType: Int {
@@ -82,8 +75,6 @@ final class AddRecipientModel {
     @Published private var address: TariAddress?
     @Published private var yatID: String?
     @Published private var contactModels: [ContactsManager.Model] = []
-
-    private weak var bleTask: BLECentralTask?
 
     private var incomingUserProfile: UserProfileDeeplink?
     private var contactDictornary: [UUID: ContactsManager.Model] = [:]
@@ -171,7 +162,7 @@ final class AddRecipientModel {
         let allContacts = contactsManager.tariContactModels
 
         do {
-            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents.uniqueIdentifier == address.components.uniqueIdentifier }}
+            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents == address.components }}
         } catch {
             return []
         }
@@ -180,19 +171,24 @@ final class AddRecipientModel {
     // MARK: - View Model Actions
 
     func handle(qrCodeData: QRCodeData) {
-
-        guard case let .deeplink(deeplink) = qrCodeData else { return }
-
-        if let deeplink = deeplink as? TransactionsSendDeeplink {
-            var amount: MicroTari?
-            if let rawAmount = deeplink.amount {
-                amount = MicroTari(rawAmount)
+        switch qrCodeData {
+        case let .deeplink(deeplink):
+            if let deeplink = deeplink as? TransactionsSendDeeplink {
+                var amount: MicroTari?
+                if let rawAmount = deeplink.amount {
+                    amount = MicroTari(rawAmount)
+                }
+                guard let addressComponents = try? TariAddress(base58: deeplink.receiverAddress).components else { return }
+                handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
+            } else if let deeplink = deeplink as? UserProfileDeeplink {
+                guard let addressComponents = try? TariAddress(base58: deeplink.tariAddress).components else { return }
+                handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
             }
-            guard let addressComponents = try? TariAddress(base58: deeplink.receiverAddress).components else { return }
-            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note))
-        } else if let deeplink = deeplink as? UserProfileDeeplink {
-            guard let addressComponents = try? TariAddress(base58: deeplink.tariAddress).components else { return }
-            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+        case let .base64Address(address):
+            guard let addressComponents = try? TariAddress(base58: address).components else { return }
+            handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil))
+        case .bridges:
+            break
         }
     }
 
@@ -201,34 +197,9 @@ final class AddRecipientModel {
         handleAddressSelection(paymentInfo: PaymentInfo(addressComponents: model.addressComponents, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil))
     }
 
-    func fetchTransactionDataViaBLE() {
-
-        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.transactionData)
-        self.bleTask?.cancel()
-        self.bleTask = bleTask
-
-        action = .show(dialog: .bleTransactionWaitingForReceiverDialog)
-
-        Task {
-            do {
-                guard let rawDeeplink = try await bleTask.findAndRead()?.string, let url = URL(string: rawDeeplink) else { return }
-                let deeplink = try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: url)
-                incomingUserProfile = deeplink
-                action = .show(dialog: .bleTransactionConfirmationDialog(receiverName: deeplink.alias))
-            } catch {
-                handle(bleError: error)
-            }
-        }
-    }
-
-    func cancelBLETask() {
-        bleTask?.cancel()
-    }
-
     func confirmIncomingTransaction() {
 
         guard let incomingUserProfile else {
-            action = .show(dialog: .bleFailureDialog(message: ErrorMessageManager.errorMessage(forError: nil)))
             return
         }
 
@@ -300,7 +271,7 @@ final class AddRecipientModel {
     private func map(contacts: [[ContactsManager.Model]]) -> [AddRecipientView.Section] {
 
         let contactDictornary = contacts.map { $0.map { (identifier: UUID(), model: $0) }}
-        var result: [AddRecipientView.Section] = [AddRecipientView.Section(title: nil, items: [.bluetooth])]
+        var result: [AddRecipientView.Section] = []
 
         result += contactDictornary
             .enumerated()
@@ -324,49 +295,54 @@ final class AddRecipientModel {
         return result
     }
 
-    private func handle(bleError error: Error) {
-
-        Logger.log(message: "Unable to finish BLE task. Reason: \(error)", domain: .general, level: .error)
-
-        let message: String?
-
-        if let error = error as? BLECentralManager.BLECentralError {
-            message = error.errorMessage
-        } else {
-            message = ErrorMessageManager.errorMessage(forError: error)
-        }
-
-        action = .show(dialog: .bleFailureDialog(message: message))
-    }
-
     // MARK: - Helpers
 
     private func generateAddress(text: String) {
+        // Clear previous state
+        address = nil
 
-        guard let address = try? makeAddress(text: text) else {
-            address = nil
+        // Skip empty text
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedText.isEmpty else {
             errorMessage = nil
             return
         }
 
-        let isValid = verify(address: address)
-        self.address = isValid ? address : nil
-    }
-
-    private func makeAddress(text: String) throws -> TariAddress {
-        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        return try TariAddress.makeTariAddress(input: trimmedText)
+        do {
+            let address = try TariAddress.makeTariAddress(input: trimmedText)
+            let isValid = verify(address: address)
+            if isValid {
+                self.address = address
+                errorMessage = nil
+            }
+        } catch {
+            // Only set error message if we don't already have one
+            if errorMessage == nil {
+                // Try to provide more specific error messages based on the input format
+                if trimmedText.containsOnlyEmoji {
+                    errorMessage = localized("add_recipient.error.invalid_emoji_id")
+                } else {
+                    errorMessage = localized("add_recipient.error.invalid_base_address")
+                }
+            }
+        }
     }
 
     private func verify(address: TariAddress) -> Bool {
+        do {
+            let uniqueAddress = try address.components
+            let userUniqueAddress = try Tari.shared.wallet(.main).address.components
 
-        guard let uniqueIdentifier = try? address.components.uniqueIdentifier, let userUniqueIdentifier = try? Tari.shared.wallet(.main).address.components.uniqueIdentifier, uniqueIdentifier != userUniqueIdentifier else {
-            errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
+            guard uniqueAddress != userUniqueAddress else {
+                errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
+                return false
+            }
+
+            return true
+        } catch {
+            errorMessage = localized("add_recipient.error.invalid_base_address")
             return false
         }
-
-        errorMessage = nil
-        return true
     }
 }
 

@@ -40,9 +40,13 @@
 
 struct PaperWalletDeeplink {
     let privateKey: String
+    let appId: String?
+    let balance: String?
 
     enum CodingKeys: String, CodingKey {
         case privateKey = "private_key"
+        case appId = "anon_id"
+        case balance = "balance"
     }
 }
 

@@ -54,7 +54,7 @@ final class TariContactsService: CoreTariService {
         try walletManager.remove(contact: contact)
     }
 
-    func findContact(uniqueIdentifier: String) throws -> Contact? {
-        try allContacts.first { try $0.address.components.uniqueIdentifier == uniqueIdentifier }
+    func findContact(components: TariAddressComponents) throws -> Contact? {
+        try allContacts.first { try $0.address.components == components }
     }
 }

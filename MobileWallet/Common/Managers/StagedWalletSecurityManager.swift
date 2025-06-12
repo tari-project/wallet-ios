@@ -180,7 +180,7 @@ final class StagedWalletSecurityManager {
             contentSection.label.text = message
         } else {
             let attributedMessage = NSMutableAttributedString(string: message)
-            messageBoldRanges.forEach { attributedMessage.addAttribute(.font, value: UIFont.Avenir.black.withSize(14.0), range: $0) }
+            messageBoldRanges.forEach { attributedMessage.addAttribute(.font, value: UIFont.Poppins.Black.withSize(14.0), range: $0) }
             contentSection.label.attributedText = attributedMessage
         }
 
@@ -220,9 +220,9 @@ final class StagedWalletSecurityManager {
         guard !isActionDiabled(securityStage: securityStage) else { return }
         guard securityStage != .stage3 else { return } // FIXME: Stage 3 is currently disabled
         updateTimestamp(securityStage: securityStage)
-        Task { @MainActor in
-            showPopUp(securityStage: securityStage)
-        }
+//        Task { @MainActor in
+//            showPopUp(securityStage: securityStage)
+//        }
     }
 
     private func updateTimestamp(securityStage: WalletSettings.WalletSecurityStage) {

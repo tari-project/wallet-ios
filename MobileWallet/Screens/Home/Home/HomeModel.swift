@@ -40,22 +40,32 @@
 
 import UIKit
 import Combine
+import TariCommon
 
 final class HomeModel {
 
     // MARK: - View Model
 
     @Published private(set) var connectionStatusIcon: UIImage?
-    @Published private(set) var balance: String = ""
+    @Published private(set) var totalBalance: String = ""
+    @Published private(set) var activeMiners: String = ""
     @Published private(set) var availableBalance: String = ""
     @Published private(set) var avatar: String = ""
     @Published private(set) var username: String = ""
     @Published private(set) var recentTransactions: [TransactionFormatter.Model] = []
     @Published private(set) var selectedTransaction: Transaction?
+    @Published private(set) var isMiningActive: Bool = false
+    @Published private(set) var isSyncInProgress: Bool = false
+
+    private var hasSyncedOnce: Bool {
+        get { GroupUserDefaults.hasSyncedOnce ?? false }
+        set { GroupUserDefaults.hasSyncedOnce = newValue }
+    }
 
     // MARK: - Properties
 
     private let onContactUpdated = PassthroughSubject<Void, Never>()
+    private var miningStatusTimer: Timer?
 
     private let contactsManager = ContactsManager()
     private let transactionFormatter = TransactionFormatter()
@@ -66,6 +76,12 @@ final class HomeModel {
 
     init() {
         setupCallbacks()
+        fetchMinerStats()
+        startMiningStatusTimer()
+    }
+
+    deinit {
+        miningStatusTimer?.invalidate()
     }
 
     // MARK: - Setups
@@ -103,12 +119,32 @@ final class HomeModel {
         }
     }
 
+    private func startMiningStatusTimer() {
+        // Initial check
+        fetchMiningStatus()
+
+        // Set up timer for periodic checks
+        miningStatusTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+            self?.fetchMiningStatus()
+        }
+    }
+
     // MARK: - Actions
 
     func runManagers() {
-        NotificationManager.shared.requestAuthorization()
         StagedWalletSecurityManager.shared.start()
-        BLEPeripheralManager.shared.isEnabled = true
+    }
+
+    func runNotifications(registerOnly: Bool, completion: @escaping () -> Void) {
+        if registerOnly {
+            NotificationManager.shared.registerPushToken { _ in
+                completion()
+            }
+        } else {
+            NotificationManager.shared.requestAuthorization { _ in
+                completion()
+            }
+        }
     }
 
     func executeQueuedShortcut() {
@@ -144,23 +180,96 @@ final class HomeModel {
             (.connected, .connected, .online, .synced):
             connectionStatusIcon = .Icons.Network.full
         }
+
+        // Update sync status
+        if !hasSyncedOnce {
+            print("sync status:", syncStatus)
+            isSyncInProgress = syncStatus != .synced
+            if syncStatus == .synced {
+                isSyncInProgress = false
+                hasSyncedOnce = true
+            }
+        }
     }
 
     private func handle(walletBalance: WalletBalance) {
-        balance = MicroTari(walletBalance.total).formatted
-        availableBalance = MicroTari(walletBalance.available).formatted
+        let totalMicroTari = MicroTari(walletBalance.total)
+        let availableMicroTari = MicroTari(walletBalance.available)
+        totalBalance = totalMicroTari.formatted
+        availableBalance = availableMicroTari.formatted
     }
 
     private func handle(transactions: [Transaction]) {
         Task {
             try? await transactionFormatter.updateContactsData()
             recentWalletTransactions = transactions
-            recentTransactions = transactions[0..<min(2, transactions.count)].compactMap { try? transactionFormatter.model(transaction: $0) }
+            recentTransactions = transactions.compactMap { try? transactionFormatter.model(transaction: $0) }
         }
     }
 
-    private func updateAvatar() {
+    struct MinerStats: Decodable {
+        let totalMiners: Int
+    }
 
+    func formatLargeNumber(_ value: Int) -> String {
+        if value >= 1_000_000 {
+            return String(format: "%.1fM", Double(value) / 1_000_000)
+        } else if value >= 1_000 {
+            return String(format: "%.1fK", Double(value) / 1_000)
+        } else {
+            return "\(value)"
+        }
+    }
+
+    func fetchMinerStats() {
+        APIService.shared.request(endpoint: "/miner/stats")
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Error fetching miner stats: \(error)")
+                }
+            }, receiveValue: { [weak self] (response: MinerStats) in
+                self?.activeMiners = self?.formatLargeNumber(response.totalMiners) ?? "0"
+            })
+            .store(in: &cancellables)
+    }
+
+    struct MiningStatusResponse: Decodable {
+        let mining: Bool?
+
+        enum CodingKeys: String, CodingKey {
+            case mining
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            mining = try? container.decode(Bool.self, forKey: .mining)
+        }
+    }
+
+    func fetchMiningStatus() {
+        guard let appId = NotificationManager.shared.appId else {
+            isMiningActive = false
+            return
+        }
+
+        print("Fetching mining status for appId: \(appId)")
+        APIService.shared.request(endpoint: "/miner/status/\(appId)")
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Error fetching mining status: \(error)")
+                    // If there's an error (including unauthorized), set mining to inactive
+                    self.isMiningActive = false
+                }
+            }, receiveValue: { [weak self] (response: MiningStatusResponse) in
+                print("Mining status response: \(response)")
+                self?.isMiningActive = response.mining ?? false
+            })
+            .store(in: &cancellables)
+    }
+
+    private func updateAvatar() {
         guard let addressComponents = try? Tari.shared.wallet(.main).address.components else {
             avatar = ""
             username = ""

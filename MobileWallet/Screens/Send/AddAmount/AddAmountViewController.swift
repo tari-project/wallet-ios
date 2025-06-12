@@ -89,7 +89,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @View private var feeButton: TextButton = {
         let view = TextButton()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.imageSpacing = 3.0
         view.image = .Icons.General.roundedQuestionMark
         return view
@@ -97,31 +97,25 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @View private var modifyFeeButton: TextButton = {
         let view = TextButton()
-        view.font = .Avenir.medium.withSize(14.0)
+        view.font = .Poppins.Medium.withSize(14.0)
         view.setTitle(localized("add_amount.label.button.adjust_fee"), for: .normal)
         view.setContentHuggingPriority(.required, for: .vertical)
         return view
     }()
 
-    @View private var oneSidedPaymentLabel: UILabel = {
-        let view = UILabel()
-        view.text = localized("add_amount.label.one_sided_payment")
-        view.font = .Avenir.medium.withSize(16.0)
-        return view
-    }()
-
-    @View private var oneSidedPaymentSwitch = UISwitch()
-
-    @View private var oneSidedPaymentHelpButton: BaseButton = {
-        let view = BaseButton()
-        view.setImage(.Icons.General.roundedQuestionMark, for: .normal)
-        return view
-    }()
-
-    @View private var oneSidedPaymentStackView: UIStackView = {
+    @View private var percentageButtonsStackView: UIStackView = {
         let view = UIStackView()
-        view.spacing = 18.0
-        view.alignment = .center
+        view.axis = .horizontal
+        view.spacing = 8.0
+        view.distribution = .fillEqually
+        return view
+    }()
+
+    @View private var percentageLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Poppins.Regular.withSize(14.0)
+        view.textColor = .white.withAlphaComponent(0.5)
+        view.text = "Amount:"
         return view
     }()
 
@@ -158,7 +152,6 @@ final class AddAmountViewController: DynamicThemeViewController {
             addCharacter(amount.formattedPrecise)
         }
 
-        setupOneSidedPaymentElements()
         setupCallbacks()
     }
 
@@ -170,12 +163,12 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias else {
+            guard let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(components: paymentInfo.addressComponents)?.alias else {
                 let addressComponents = paymentInfo.addressComponents
-                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: true))
+                addressView.update(viewModel: AddressView.ViewModel(prefix: addressComponents.networkAndFeatures, text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix), isDetailsButtonVisible: false))
                 return
             }
-            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))
+            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false))
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
         }
@@ -250,14 +243,11 @@ final class AddAmountViewController: DynamicThemeViewController {
         }
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        mainView.backgroundColor = theme.backgrounds.primary
-        oneSidedPaymentLabel.textColor = theme.text.heading
-        oneSidedPaymentSwitch.onTintColor = theme.brand.purple
-        oneSidedPaymentHelpButton.tintColor = theme.text.body
+        mainView.backgroundColor = .Background.secondary
         warningView.layer.borderColor = theme.system.red?.cgColor
-        walletBalanceTitleLabel.textColor = theme.text.body
+        walletBalanceTitleLabel.textColor = .Text.primary
         balanceExceededLabel.textColor = theme.system.red
         balancePendingLabel.textColor = theme.system.red
 
@@ -265,7 +255,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         updateWalletBalanceViews(theme: theme)
     }
 
-    private func updateAmountLabelColor(theme: ColorTheme) {
+    private func updateAmountLabelColor(theme: AppTheme) {
 
         guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
 
@@ -275,14 +265,14 @@ final class AddAmountViewController: DynamicThemeViewController {
         amountLabel.attributedText = amountText
     }
 
-    private func updateWalletBalanceViews(theme: ColorTheme) {
+    private func updateWalletBalanceViews(theme: AppTheme) {
         walletBalanceIcon.tintColor = isBalanceExceeded ? theme.system.red : theme.text.heading
         walletBalanceLabel.textColor = isBalanceExceeded ? theme.system.red : theme.text.heading
     }
 
     private func updateLabelText() {
 
-        let font: UIFont = isSmallScreen ? .Avenir.black.withSize(60.0) : .Avenir.black.withSize(90.0)
+        let font: UIFont = isSmallScreen ? .Poppins.Black.withSize(60.0) : .Poppins.Black.withSize(90.0)
 
         let amountAttributedText = NSMutableAttributedString(
             string: convertRawToFormattedString() ?? "0",
@@ -377,7 +367,15 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func showTransactionFeeInfo() {
-        PopUpPresenter.show(message: MessageModel(title: localized("common.fee_info.title"), message: localized("common.fee_info.description"), type: .normal))
+        let model = PopUpDialogModel(
+            title: localized("common.fee_info.title"),
+            message: localized("common.fee_info.description"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("common.close"), type: .text)
+            ],
+            hapticType: .none
+        )
+        PopUpPresenter.showPopUp(model: model)
     }
 
     private func showBalanceExceeded(balance: String) {
@@ -387,26 +385,17 @@ final class AddAmountViewController: DynamicThemeViewController {
         walletBalanceLabel.text = balance
         walletBalanceTitleLabel.isHidden = true
 
-        let animation = CABasicAnimation(keyPath: "position")
-        animation.duration = animationDuration / 4
-        animation.repeatCount = 2
-        animation.autoreverses = true
-        animation.fromValue = CGPoint(x: amountLabel.center.x - 10, y: amountLabel.center.y)
-        animation.toValue = CGPoint(x: amountLabel.center.x + 10, y: amountLabel.center.y)
-        amountLabel.layer.add(animation, forKey: "position")
-
         isBalanceExceeded = true
         updateWalletBalanceViews(theme: theme)
     }
 
     private func showAvailableBalance() {
-
-        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
+        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
 
         walletBalanceStackView.isHidden = false
         warningView.isHidden = false
         warningView.layer.borderWidth = 0
-        walletBalanceLabel.text = MicroTari(totalBalance).formatted
+        walletBalanceLabel.text = MicroTari(availableBalance).formatted
         balanceExceededLabel.isHidden = true
         balancePendingLabel.isHidden = true
         walletBalanceTitleLabel.isHidden = false
@@ -441,15 +430,10 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     @objc private func continueButtonTapped() {
-        guard let paymentInfo = updatedPaymentInfo() else { return }
+        guard let fetchedPaymentInfo = updatedPaymentInfo() else { return }
         
-        if paymentInfo.note != nil {
-            let paymentInfo = PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: paymentInfo.note)
-            TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: true)
-        }else {
-            let controller = AddNoteViewController(paymentInfo: paymentInfo, isOneSidedPayment: true)
-            navigationController?.pushViewController(controller, animated: true)
-        }
+        let controller = ConfirmationViewController(paymentInfo: fetchedPaymentInfo)
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 
     private func calculateAmount() -> MicroTari? {
@@ -475,7 +459,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         if amount.rawValue + fee > availableBalance {
             PopUpPresenter.show(message: MessageModel(
                 title: localized("add_amount.info.wait_completion_previous_tx.title"),
-                message: localized("add_amount.info.wait_completion_previous_tx.description"),
+                message: String(format: localized("add_amount.info.wait_completion_previous_tx.description"), NetworkManager.shared.currencySymbol),
                 type: .normal
             ))
             return nil
@@ -504,6 +488,94 @@ final class AddAmountViewController: DynamicThemeViewController {
         }
 
         feeButton.setTitle(text, for: .normal)
+    }
+
+    private func makePercentageButton(title: String) -> StylisedButton {
+        let button = StylisedButton(withStyle: .outlinedInverted, withSize: .subSmall)
+        button.setTitle(title, for: .normal)
+        return button
+    }
+
+    private func setupPercentageButtons() {
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        mainView.addSubview(containerView)
+        
+        containerView.addSubview(percentageButtonsStackView)
+        
+        let buttons = [
+            makePercentageButton(title: "25%"),
+            makePercentageButton(title: "50%"),
+            makePercentageButton(title: "75%"),
+            makePercentageButton(title: "MAX")
+        ]
+        
+        buttons.forEach { button in
+            percentageButtonsStackView.addArrangedSubview(button)
+            button.onTap = { [weak self] in
+                self?.handlePercentageButtonTap(title: button.title(for: .normal) ?? "")
+            }
+        }
+        
+//        containerView.backgroundColor = .blue
+//        percentageButtonsStackView.backgroundColor = .red
+        
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: txViewContainer.bottomAnchor, constant: -20),
+            containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
+            containerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
+            containerView.heightAnchor.constraint(equalToConstant: 40),
+            
+            percentageButtonsStackView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            percentageButtonsStackView.widthAnchor.constraint(lessThanOrEqualToConstant: 280),
+            percentageButtonsStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            percentageButtonsStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        ])
+    }
+
+    private func handlePercentageButtonTap(title: String) {
+        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
+        let microTariBalance = MicroTari(availableBalance)
+        
+        let percentage: Double
+        switch title {
+        case "25%": percentage = 0.25
+        case "50%": percentage = 0.5
+        case "75%": percentage = 0.75
+        case "MAX":
+            // For MAX, we need to estimate the fee and subtract it from the available balance
+            do {
+                // Get the current fee per gram from the selected fee option
+                guard let feePerGram = feePerGram?.rawValue else { return }
+                
+                // Estimate the fee for the available balance
+                let estimatedFee = try Tari.shared.wallet(.main).fees.estimateFee(
+                    amount: availableBalance,
+                    feePerGram: feePerGram
+                )
+                
+                // Calculate available amount by subtracting the fee
+                let availableAmount = availableBalance > estimatedFee ? availableBalance - estimatedFee : 0
+                let microTari = MicroTari(availableAmount)
+                rawInput = microTari.formatted
+                updateLabelText()
+                return
+            } catch {
+                // If fee estimation fails, fall back to using the current fee
+                let fee = self.fee ?? MicroTari()
+                let availableAmount = availableBalance > fee.rawValue ? availableBalance - fee.rawValue : 0
+                let microTari = MicroTari(availableAmount)
+                rawInput = microTari.formatted
+                updateLabelText()
+                return
+            }
+        default: return
+        }
+        
+        let amount = UInt64(Double(availableBalance) * percentage)
+        let microTari = MicroTari(amount)
+        rawInput = microTari.formatted
+        updateLabelText()
     }
 }
 
@@ -565,7 +637,7 @@ extension AddAmountViewController {
         amountContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         amountContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         amountContainer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        amountContainer.bottomAnchor.constraint(equalTo: amountKeyboardView.topAnchor).isActive = true
+        amountContainer.bottomAnchor.constraint(equalTo: amountKeyboardView.topAnchor, constant: -40).isActive = true
 
         let amountHeight: CGFloat = isSmallScreen ? 50.0 : 75.0
 
@@ -614,18 +686,18 @@ extension AddAmountViewController {
         walletBalanceIcon.contentMode = .scaleAspectFit
         walletBalanceStackView.addArrangedSubview(walletBalanceIcon)
         walletBalanceStackView.addArrangedSubview(walletBalanceLabel)
-        walletBalanceLabel.font = .Avenir.heavy.withSize(14.0)
+        walletBalanceLabel.font = .Poppins.Bold.withSize(14.0)
         walletBalanceLabel.text = "0.0"
 
         warningStackView.addArrangedSubview(walletBalanceTitleLabel)
         walletBalanceTitleLabel.font = Theme.shared.fonts.amountWarningLabel
-        walletBalanceTitleLabel.text = localized("common.wallet_balance")
+        walletBalanceTitleLabel.text = localized("common.available_balance")
         walletBalanceTitleLabel.numberOfLines = 1
         walletBalanceTitleLabel.textAlignment = .center
 
         warningStackView.addArrangedSubview(balanceExceededLabel)
         balanceExceededLabel.font = Theme.shared.fonts.amountWarningLabel
-        balanceExceededLabel.text = localized("add_amount.warning.not_enough_tari")
+        balanceExceededLabel.text = String(format: localized("add_amount.warning.not_enough_tari"), NetworkManager.shared.currencySymbol)
         balanceExceededLabel.numberOfLines = 0
         balanceExceededLabel.textAlignment = .center
         balanceExceededLabel.lineBreakMode = .byWordWrapping
@@ -635,7 +707,7 @@ extension AddAmountViewController {
         balancePendingLabel.numberOfLines = 0
         balancePendingLabel.textAlignment = .center
         balancePendingLabel.lineBreakMode = .byWordWrapping
-        balancePendingLabel.text = localized("add_amount.info.wait_completion_previous_tx.description")
+        balancePendingLabel.text = String(format: localized("add_amount.info.wait_completion_previous_tx.description"), NetworkManager.shared.currencySymbol)
         balancePendingLabel.sizeToFit()
 
         // tx fee
@@ -643,7 +715,7 @@ extension AddAmountViewController {
         mainView.addSubview(txViewContainer)
         txViewContainer.translatesAutoresizingMaskIntoConstraints = false
         txViewContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        txViewContainer.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 12).isActive = true
+        txViewContainer.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: -20).isActive = true
 
         txStackView.spacing = isSmallScreen ? 0.0 : 3.0
 
@@ -659,6 +731,8 @@ extension AddAmountViewController {
         updateNextStepElements(isEnabled: false)
 
         [networkTrafficView, feeButton, modifyFeeButton].forEach(txStackView.addArrangedSubview)
+
+        setupPercentageButtons()
     }
 
     private func setupKeypad() {
@@ -679,38 +753,6 @@ extension AddAmountViewController {
                 self?.deleteCharacter()
             }
         }
-    }
-
-    private func setupOneSidedPaymentElements() {
-
-        oneSidedPaymentLabel.minimumScaleFactor = 0.5
-        oneSidedPaymentLabel.adjustsFontSizeToFitWidth = true
-
-        mainView.addSubview(oneSidedPaymentStackView)
-        [oneSidedPaymentLabel, oneSidedPaymentSwitch, oneSidedPaymentHelpButton].forEach(oneSidedPaymentStackView.addArrangedSubview)
-
-        let margin = isSmallScreen ? 8.0 : 20.0
-
-        let constraints = [
-            oneSidedPaymentStackView.topAnchor.constraint(equalTo: amountKeyboardView.bottomAnchor, constant: margin),
-            oneSidedPaymentStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -margin),
-            oneSidedPaymentStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            oneSidedPaymentHelpButton.heightAnchor.constraint(equalToConstant: 44.0),
-            oneSidedPaymentHelpButton.widthAnchor.constraint(equalToConstant: 44.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-
-        oneSidedPaymentHelpButton.onTap = {
-            PopUpPresenter.show(message: MessageModel(title: localized("add_amount.pop_up.one_sided_payment.title"), message: localized("add_amount.pop_up.one_sided_payment.description"), type: .normal))
-        }
-        
-        if paymentInfo.addressComponents.isOnesidedAddress && !paymentInfo.addressComponents.isInteractiveAddress {
-            oneSidedPaymentSwitch.isUserInteractionEnabled = false
-            oneSidedPaymentSwitch.isOn = true
-        }
-        
-        oneSidedPaymentStackView.isHidden = true
     }
 
     private func setupCallbacks() {
@@ -854,7 +896,7 @@ extension AddAmountViewController {
     }
 
     private func fetchTotalBalance() -> MicroTari? {
-        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
+        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.available
         return MicroTari(totalBalance)
     }
 }

@@ -77,3 +77,4 @@ MobileWallet/Constants.plist
 .idea/
 fastlane/.env*
 env.json
+GoogleService-Info.plist

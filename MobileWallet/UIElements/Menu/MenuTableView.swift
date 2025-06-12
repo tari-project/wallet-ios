@@ -95,7 +95,7 @@ final class MenuTableView: DynamicThemeTableView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         backgroundColor = theme.backgrounds.secondary
         separatorColor = theme.neutral.secondary
     }

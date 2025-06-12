@@ -103,7 +103,7 @@ final class PageToolbarView: DynamicThemeView {
             .map { tab in
                 let button = BaseButton()
                 button.setTitle(tab.element, for: .normal)
-                button.titleLabel?.font = .Avenir.medium.withSize(16.0)
+                button.titleLabel?.font = .Poppins.Medium.withSize(16.0)
                 button.onTap = { [weak self] in self?.onTap?(tab.offset) }
                 return button
             }
@@ -120,14 +120,14 @@ final class PageToolbarView: DynamicThemeView {
         NSLayoutConstraint.activate(selectorLineConstraints)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         selectorLineView.backgroundColor = theme.brand.purple
         updateButtons(theme: theme)
     }
 
-    private func updateButtons(theme: ColorTheme) {
+    private func updateButtons(theme: AppTheme) {
         stackView.arrangedSubviews
             .compactMap { $0 as? BaseButton }
             .forEach { $0.setTitleColor(theme.text.heading, for: .normal) }

@@ -40,23 +40,36 @@
 
 import TariCommon
 
-final class HomeTransactionsPlaceholderView: HomeGlassView {
+final class HomeTransactionsPlaceholderView: DynamicThemeView {
 
+    var onStartMiningButtonTap: (() -> Void)? {
+        didSet {
+            mineButton.onTap = onStartMiningButtonTap
+        }
+    }
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .Static.white
-        view.font = .Avenir.medium.withSize(12.0)
+        view.textColor = .Text.primary
+        view.font = .Poppins.Medium.withSize(12.0)
         view.numberOfLines = 0
+        view.textAlignment = .center
+        view.text = String(format: localized("home.transaction_list.placeholder"), NetworkManager.shared.currencySymbol)
         return view
+    }()
+
+    @View private var mineButton: StylisedButton = {
+        let button = StylisedButton(withStyle: .primary, withSize: .small)
+        button.setTitle("Start Mining Tari", for: .normal)
+        return button
     }()
 
     // MARK: - Properties
 
     var text: String? {
-        get { label.text }
-        set { label.text = newValue }
+        get { titleLabel.text }
+        set { titleLabel.text = newValue }
     }
 
     // MARK: - Initialisers
@@ -70,17 +83,27 @@ final class HomeTransactionsPlaceholderView: HomeGlassView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func update(theme: AppTheme) {
+        super.update(theme: theme)
+
+        titleLabel.textColor = .Text.primary
+        backgroundColor = .clear
+    }
+
     // MARK: - Setups
 
     private func setupConstraints() {
 
-        addSubview(label)
+        addSubview(titleLabel)
+        addSubview(mineButton)
 
         let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
+            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -60),
+            mineButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            mineButton.widthAnchor.constraint(equalToConstant: 156),
+            mineButton.heightAnchor.constraint(equalToConstant: 36),
+            mineButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10)
         ]
 
         NSLayoutConstraint.activate(constraints)

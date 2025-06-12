@@ -162,9 +162,9 @@ final class ContactBookCell: DynamicThemeCell {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
+        backgroundColor = .clear
         favoriteView.tintColor = theme.brand.purple
         contactTypeBackgroundView.backgroundColor = theme.brand.purple
         contactTypeView.tintColor = theme.buttons.primaryText

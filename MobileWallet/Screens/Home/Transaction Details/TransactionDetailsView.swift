@@ -43,68 +43,16 @@ import TariCommon
 
 final class TransactionDetailsView: DynamicThemeView {
 
-    private enum NavigationBarState {
-        case normal
-        case transactionStatusVisible
-        case transactionStatusAndCancelButtonVisible
-    }
-
     // MARK: - Subviews
 
     @View private var navigationBar = NavigationBar()
 
-    @View private var subtitleLabel: UILabel = {
-        let view = UILabel()
-        view.numberOfLines = 0
-        view.font = .Avenir.medium.withSize(13.0)
-        view.textAlignment = .center
-        view.setContentCompressionResistancePriority(.required, for: .vertical)
-        return view
-    }()
-
-    @View private var transactionStateView = AnimatedRefreshingView()
-
-    @View private(set) var cancelButton: TextButton = {
-        let view = TextButton()
-        view.setTitle(localized("tx_detail.tx_cancellation.cancel"), for: .normal)
-        view.style = .warning
-        view.font = .Avenir.medium.withSize(12.0)
-        return view
-    }()
-
-    @View private var mainContentView = KeyboardAvoidingContentView()
-
-    @View private(set) var contentStackView: UIStackView = {
-        let view = UIStackView()
-        view.axis = .vertical
-        return view
-    }()
-
-    @View private(set) var valueView = TransactionDetailsValueView()
-    @View private(set) var contactView = TransactionDetailsSectionView<TransactionDetailsEmojiView>()
-    @View private(set) var contactNameView = TransactionDetailsSectionView<TransactionDetailsContactView>()
-    @View private(set) var noteSeparatorView = TransactionDetailsSeparatorView()
-    @View private(set) var noteView = TransactionDetailsSectionView<TransactionDetailsNoteView>()
-    @View private(set) var blockExplorerSeparatorView = TransactionDetailsSeparatorView()
-    @View private(set) var blockExplorerView = TransactionDetailsSectionView<TransactionDetailsBlockExplorerView>()
-
     // MARK: - Properties
-
-    var transactionState: AnimatedRefreshingViewState? {
-        didSet { updateNavigationBar() }
-    }
 
     var title: String? {
         get { navigationBar.title }
         set { navigationBar.title = newValue }
     }
-
-    var subtitle: String? {
-        get { subtitleLabel.text }
-        set { subtitleLabel.text = newValue }
-    }
-
-    private var stackViewBottomConstraints: NSLayoutConstraint?
 
     // MARK: - Initialisers
 
@@ -112,7 +60,6 @@ final class TransactionDetailsView: DynamicThemeView {
         super.init()
         setupViews()
         setupConstraints()
-        updateNavigationBar()
     }
 
     required init?(coder: NSCoder) {
@@ -122,50 +69,16 @@ final class TransactionDetailsView: DynamicThemeView {
     // MARK: - Setups
 
     private func setupViews() {
-        contactNameView.title = localized("tx_detail.contact_name")
-        noteView.title = localized("tx_detail.note")
-        blockExplorerView.title = localized("tx_detail.block_explorer.description")
-        transactionStateView.isHidden = true
+        backgroundColor = .Background.primary
     }
 
     private func setupConstraints() {
-
-        [mainContentView, navigationBar].forEach(addSubview)
-        mainContentView.contentView.addSubview(contentStackView)
-
-        @View var stackView = UIStackView()
-        stackView.axis = .vertical
-
-        [subtitleLabel, stackView].forEach(navigationBar.bottomContentView.addSubview)
-        [transactionStateView, cancelButton].forEach(stackView.addArrangedSubview)
-        [valueView, contactView, contactNameView, noteSeparatorView, noteView, blockExplorerSeparatorView, blockExplorerView].forEach(contentStackView.addArrangedSubview)
-
-        let stackViewBottomConstraints = stackView.bottomAnchor.constraint(equalTo: navigationBar.bottomContentView.bottomAnchor, constant: -8.0)
-        self.stackViewBottomConstraints = stackViewBottomConstraints
+        addSubview(navigationBar)
 
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            mainContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            mainContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            mainContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            mainContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentStackView.topAnchor.constraint(equalTo: mainContentView.contentView.topAnchor),
-            contentStackView.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: mainContentView.contentView.bottomAnchor),
-            subtitleLabel.topAnchor.constraint(equalTo: navigationBar.bottomContentView.topAnchor),
-            subtitleLabel.leadingAnchor.constraint(equalTo: navigationBar.bottomContentView.leadingAnchor, constant: 8.0),
-            subtitleLabel.trailingAnchor.constraint(equalTo: navigationBar.bottomContentView.trailingAnchor, constant: -8.0),
-            stackView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 8.0),
-            stackView.leadingAnchor.constraint(equalTo: navigationBar.bottomContentView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: navigationBar.bottomContentView.trailingAnchor),
-            stackViewBottomConstraints,
-            transactionStateView.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 22.0),
-            transactionStateView.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -22.0),
-            transactionStateView.heightAnchor.constraint(equalToConstant: 48.0),
-            cancelButton.heightAnchor.constraint(equalToConstant: 44.0)
+            navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -173,43 +86,8 @@ final class TransactionDetailsView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
-        subtitleLabel.textColor = theme.text.heading
-        backgroundColor = theme.backgrounds.primary
-    }
-
-    private func updateNavigationBar() {
-
-        guard let state = transactionState else {
-            updateNavigationBarElements(state: .normal)
-            return
-        }
-
-        transactionStateView.setupView(state, visible: true)
-
-        guard state == .txWaitingForRecipient else {
-            updateNavigationBarElements(state: .transactionStatusVisible)
-            return
-        }
-
-        updateNavigationBarElements(state: .transactionStatusAndCancelButtonVisible)
-    }
-
-    private func updateNavigationBarElements(state: NavigationBarState) {
-        switch state {
-        case .normal:
-            transactionStateView.isHidden = true
-            cancelButton.isHidden = true
-            stackViewBottomConstraints?.constant = -8.0
-        case .transactionStatusVisible:
-            transactionStateView.isHidden = false
-            cancelButton.isHidden = true
-            stackViewBottomConstraints?.constant = -8.0
-        case .transactionStatusAndCancelButtonVisible:
-            transactionStateView.isHidden = false
-            cancelButton.isHidden = false
-            stackViewBottomConstraints?.constant = 0.0
-        }
+        backgroundColor = .Background.secondary
     }
 }

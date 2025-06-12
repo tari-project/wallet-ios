@@ -42,6 +42,8 @@ import UIKit
 import CoreData
 import AVFoundation
 import GiphyUISDK
+import FirebaseCore
+import FirebaseMessaging
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -56,6 +58,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutsManager.configureShortcuts()
+
+        FirebaseApp.configure()
+        Messaging.messaging().delegate = NotificationManager.shared
 
         if let giphyApiKey = TariSettings.shared.giphyApiKey {
             Giphy.configure(apiKey: giphyApiKey)
@@ -100,7 +105,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     ) {
         let hexString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Logger.log(message: "Registered for push notifications with token \(hexString).", domain: .general, level: .info)
-        NotificationManager.shared.registerDeviceToken(deviceToken)
+        NotificationManager.shared.registerAPNSToken(deviceToken)
     }
 
     func application(
@@ -112,5 +117,24 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: UIApplication.ExtensionPointIdentifier) -> Bool {
         extensionPointIdentifier != .keyboard
+    }
+
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        print("Deep link opened: \(url.absoluteString)")
+
+        if url.scheme == "tari" {
+            handleDeepLink(url)
+            return true
+        }
+        return false
+    }
+
+    private func handleDeepLink(_ url: URL) {
+        print("Deep link opened: \(url.absoluteString)")
+        do {
+            try DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+        } catch {
+            print("Failed to handle deep link: \(error)")
+        }
     }
 }

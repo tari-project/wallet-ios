@@ -40,6 +40,11 @@
 
 import UIKit
 
+extension Notification.Name {
+    static let userDidLogin = Notification.Name("userDidLogin")
+    static let userDidLogout = Notification.Name("userDidLogout")
+}
+
 enum DeepLinkDefaultActionsHandler {
 
     enum ActionType {
@@ -90,6 +95,26 @@ enum DeepLinkDefaultActionsHandler {
     static func handle(paperWalletDeepLink: PaperWalletDeeplink) {
         Task { @MainActor in
             showPaperWalletDialog(privateKey: paperWalletDeepLink.privateKey)
+        }
+    }
+
+    static func handle(loginDeepLink: LoginDeeplink) {
+        Task { @MainActor in
+            // Set the access token
+            UserManager.shared.accessToken = loginDeepLink.token
+
+            // If we have a refresh token, store it
+            if let refreshToken = loginDeepLink.refreshToken {
+                UserManager.shared.refreshToken = refreshToken
+            }
+
+            // Update the app state to reflect logged in status
+            NotificationCenter.default.post(name: .userDidLogin, object: nil)
+
+            // If we're in the profile screen, refresh the state
+            if let topController = UIApplication.shared.topController as? ProfileViewController {
+                topController.updateData()
+            }
         }
     }
 

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Default network if not specified
+NETWORK=mainnet
+
 FILE=env.json
 WORKING_DIR=Temp
 FRAMEWORK_ZIP_FILE_NAME=libminotari_wallet_ffi.ios-xcframework.zip
@@ -13,11 +16,56 @@ if test ! -f "$FILE"; then
     echo "Please adjust env.json as needed."
 fi
 
-echo "\n\n***Pulling latest Tari lib build***"
+echo "\n\n***Pulling latest Tari lib build for $NETWORK network***"
 source dependencies.env
+
+# Determine which FFI version to use based on the network
+if [ "$NETWORK" = "mainnet" ]; then
+    FFI_VERSION=$FFI_MAINNET_VERSION
+else
+    FFI_VERSION=$FFI_NEXTNET_VERSION
+fi
+
+# Export network for use in build
+export NETWORK
+
+# Set MAINNET preprocessor macro in Xcode project
+PROJECT_FILE="./MobileWallet.xcodeproj/project.pbxproj"
+if [ "$NETWORK" = "mainnet" ]; then
+    # Add MAINNET to both Debug and Release configurations if it doesn't exist
+    if ! grep -q "MAINNET" "$PROJECT_FILE"; then
+        # Find the GCC_PREPROCESSOR_DEFINITIONS section and add MAINNET before the closing parenthesis
+        sed -i '' '/GCC_PREPROCESSOR_DEFINITIONS = (/ {
+            :a
+            N
+            /);/!ba
+            s/);/\t\t\t\t\t"MAINNET",\n\t\t\t\t);/
+        }' "$PROJECT_FILE"
+    fi
+else
+    # Remove MAINNET from both configurations if it exists
+    sed -i '' '/"MAINNET"/d' "$PROJECT_FILE"
+    # Fix any resulting double commas
+    sed -i '' 's/,,/,/g' "$PROJECT_FILE"
+    # Fix any resulting empty parentheses
+    sed -i '' 's/ = ();/ = ();/' "$PROJECT_FILE"
+fi
+
+# Also set SWIFT_ACTIVE_COMPILATION_CONDITIONS for Swift
+if [ "$NETWORK" = "mainnet" ]; then
+    # Add MAINNET to Swift compilation conditions
+    sed -i '' 's/SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;/SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG MAINNET";/' "$PROJECT_FILE"
+else
+    # Remove MAINNET from Swift compilation conditions
+    sed -i '' 's/SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG MAINNET";/SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;/' "$PROJECT_FILE"
+fi
 
 rm -rf $WORKING_DIR
 mkdir $WORKING_DIR
+
+# Show the full download URL
+DOWNLOAD_URL="https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME"
+echo "Downloading FFI library from: $DOWNLOAD_URL"
 
 curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME" -o "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
 unzip "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME" -d "./$WORKING_DIR"

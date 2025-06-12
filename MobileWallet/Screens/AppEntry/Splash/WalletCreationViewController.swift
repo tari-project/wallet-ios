@@ -100,6 +100,9 @@ final class WalletCreationViewController: DynamicThemeViewController {
         if startFromLocalAuth {
             startFromAuth()
         } else {
+            // Always start from the create emoji ID step for new/imported wallets
+            state = .createEmojiId
+            prepareSubviews(for: .createEmojiId)
             showInitialScreen()
         }
     }
@@ -205,17 +208,8 @@ final class WalletCreationViewController: DynamicThemeViewController {
             }
         case .localAuthentication:
             runAuth()
-        case .enableNotifications:
-            runNotificationRequest()
-        case .initial: break
-        }
-    }
-
-    private func runNotificationRequest() {
-        NotificationManager.shared.requestAuthorization { _ in
-            DispatchQueue.main.async {
-                AppRouter.transitionToHomeScreen()
-            }
+        case .enableNotifications, .initial:
+            break
         }
     }
 
@@ -224,14 +218,12 @@ final class WalletCreationViewController: DynamicThemeViewController {
     }
 
     private func successAuth() {
-        TariSettings.shared.walletSettings.configurationState = .authorized
-        hideSubviews { [weak self] in
-            self?.prepareSubviews(for: .enableNotifications)
-            self?.showEnableNotifications()
-        }
+        TariSettings.shared.walletSettings.configurationState = .ready
+        // Skip notifications step and go directly to home screen
+        AppRouter.transitionToHomeScreen(state: .current)
     }
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         mainView.backgroundColor = theme.backgrounds.secondary
         firstLabel.textColor = theme.text.heading
@@ -330,25 +322,6 @@ extension WalletCreationViewController {
         })
         state = .localAuthentication
     }
-
-    // MARK: - Show Enable Notifications
-    private func showEnableNotifications() {
-        playLottieAnimation(.notification)
-        firstLabel.showLabel(duration: 1.0)
-        secondLabel.showLabel(duration: 1.0)
-        view.layoutIfNeeded()
-
-        showContinueButton()
-
-        UIView.animate(withDuration: 1, animations: { [weak self] in
-            guard let self = self else { return }
-            self.radialGradient.alpha = 0.2
-            self.thirdLabel.alpha = 1.0
-            self.view.layoutIfNeeded()
-        })
-        state = .enableNotifications
-    }
-
 }
 
 // MARK: - Preparing subviews for next state
@@ -360,14 +333,14 @@ extension WalletCreationViewController {
         case .createEmojiId: prepareForCreateEmojiId()
         case .showEmojiId: prepareForShowEmojiID()
         case .localAuthentication: prepareForLocalAuthentication()
-        case .enableNotifications: prepareForEnableNotifications()
+        case .enableNotifications: break // Keep case but do nothing
         }
     }
 
     private func prepareForInitialState() {
         updateConstraintsAnimationView(animation: .none)
         firstLabel.text = localized("wallet_creation.initial_state.first_label")
-        secondLabel.text = localized("wallet_creation.initial_state.second_label")
+        secondLabel.text = String(format: localized("wallet_creation.initial_state.second_label"), NetworkManager.shared.currencySymbol)
         continueButton.setTitle(localized("wallet_creation.button.create"), for: .normal)
     }
 
@@ -441,22 +414,6 @@ extension WalletCreationViewController {
             stackView.setCustomSpacing(5, after: numpadImageView)
             self.continueButton.setTitle(localized("wallet_creation.button.secure_pin"), for: .normal)
         }
-    }
-
-    private func prepareForEnableNotifications() {
-        let secondLabelStringTop = localized("wallet_creation.notifications.title")
-        let secondLabelStringBottom = localized("wallet_creation.notifications.subtitle")
-        firstLabel.font = Theme.shared.fonts.createWalletNotificationsFirstLabel
-        secondLabel.font = Theme.shared.fonts.createWalletNotificationsSecondLabel
-        firstLabel.text = secondLabelStringTop
-        secondLabel.text = secondLabelStringBottom
-        thirdLabel.font = Theme.shared.fonts.createWalletNotificationsThirdLabel
-        thirdLabel.text = localized("wallet_creation.notifications.description")
-
-        continueButton.setTitle(localized("wallet_creation.button.turn_on_notifications"), for: .normal)
-
-        stackViewCenterYConstraint?.constant = -90
-        stackView.setCustomSpacing(16, after: secondLabel)
     }
 }
 
@@ -557,16 +514,12 @@ extension WalletCreationViewController {
         case .faceID, .touchID:
             animationViewWidthConstraint?.constant = 138
             animationViewHeightConstraint?.constant = 138
-        case .notification:
-            animationViewWidthConstraint?.constant = 220
-            animationViewHeightConstraint?.constant = 250
-        case .emojiWheel:
+        case .notification, .emojiWheel:
             animationViewWidthConstraint?.constant = stackView.bounds.width
             animationViewHeightConstraint?.constant = stackView.bounds.width
         case .nerdEmoji:
             animationViewWidthConstraint?.constant = 55.0
             animationViewHeightConstraint?.constant = 55.0
-
         default: break
         }
 

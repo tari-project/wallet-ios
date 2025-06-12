@@ -113,7 +113,7 @@ final class FFIWalletHandler {
         let wallet = try exisingWallet
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_tari_interactive_address(wallet.pointer, errorCodePointer)
+        let result = wallet_get_tari_one_sided_address(wallet.pointer, errorCodePointer)
         guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return TariAddress(pointer: result)
     }
@@ -359,6 +359,7 @@ final class FFIWalletHandler {
 
         let callback: @convention(c) (UnsafeMutableRawPointer?, UInt8, UInt64, UInt64) -> Void = { context, status, firstValue, secondValue in
             context?.walletCallbacks.walletRecoveryStatusSubject.send(RestoreWalletStatus(status: status, firstValue: firstValue, secondValue: secondValue))
+            Logger.log(message: "Recovery status: \(status)", domain: .debug, level: .verbose)
         }
 
         var errorCode: Int32 = -1

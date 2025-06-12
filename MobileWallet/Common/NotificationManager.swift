@@ -42,12 +42,16 @@ import UIKit
 import UserNotifications
 import Combine
 
+import Firebase
+import FirebaseMessaging
 private struct TokenRegistrationServerRequest: Encodable {
     let token: String
     let platform: String = "ios"
+    let appId: String?
+    let userId: String?
     let signature: String
     let public_nonce: String
-    let sandbox = TariSettings.shared.environment == .debug
+    let sandbox = false
 }
 
 private struct SendNotificationServerRequest: Encodable {
@@ -71,7 +75,7 @@ enum PushNotificationServerError: Error {
     case unknown
 }
 
-final class NotificationManager {
+final class NotificationManager: NSObject {
 
     enum NotificationIdentifier: String {
         case standard = "Local Notification"
@@ -86,8 +90,20 @@ final class NotificationManager {
 
     private var cancellables = Set<AnyCancellable>()
 
-    private init() {
-        setupWalletStateHandler()
+    private let defaults = UserDefaults.standard
+    private let appIdKey = "APP_ID"
+
+    var appId: String? {
+        get {
+            return defaults.string(forKey: appIdKey)
+        }
+        set {
+            defaults.set(newValue, forKey: appIdKey)
+        }
+    }
+
+    private override init() {
+        super.init()
     }
 
     func setupWalletStateHandler() {
@@ -97,8 +113,25 @@ final class NotificationManager {
             .store(in: &cancellables)
     }
 
-    func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
+    func shouldPromptForNotifications(completionHandler: @escaping (( Bool) -> Void)) {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            completionHandler(settings.authorizationStatus == .notDetermined)
+        }
+    }
 
+    func registerPushToken(completionHandler: ((Bool) -> Void)?) {
+        Messaging.messaging().token { token, error in
+            if let error = error {
+                print("Error fetching FCM registration token: \(error)")
+                completionHandler?(false)
+            } else if let token = token {
+                self.registerDeviceToken(token)
+                completionHandler?(true)
+            }
+        }
+    }
+
+    func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
         if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
             completionHandler?(true)
             return
@@ -114,7 +147,7 @@ final class NotificationManager {
         }
     }
 
-    private func registerWithAPNS(_ completionHandler: ((Bool) -> Void)? = nil) {
+    func registerWithAPNS(_ completionHandler: ((Bool) -> Void)? = nil) {
         Logger.log(message: "Checking notification settings", domain: .general, level: .info)
         notificationCenter.getNotificationSettings { (settings) in
             if settings.authorizationStatus == .authorized {
@@ -132,9 +165,7 @@ final class NotificationManager {
     }
 
     func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
-        if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {
-            completionHandler([.list, .banner, .badge, .sound])
-        }
+        completionHandler([.list, .banner, .badge, .sound])
     }
 
     func scheduleNotification(title: String, body: String, identifier: String = NotificationIdentifier.standard.rawValue, timeInterval: TimeInterval = 1, onCompletion: ((Bool) -> Void)? = nil) {
@@ -170,66 +201,116 @@ final class NotificationManager {
         notificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
     }
 
-    func registerDeviceToken(_ deviceToken: Data) {
-        let apnsDeviceToken = deviceToken.map {String(format: "%02.2hhx", $0)}.joined()
+    func registerAPNSToken(_ deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
+    }
 
+    func registerDeviceToken(_ fcmDeviceToken: String) {
         Logger.log(message: "Registering device token with public key", domain: .general, level: .verbose)
 
-        do {
-            let messageData = try sign(message: apnsDeviceToken)
+        Task {
+            do {
+                let messageData = try await sign(message: fcmDeviceToken)
 
-            let requestPayload = try JSONEncoder().encode(
-                TokenRegistrationServerRequest(
-                    token: apnsDeviceToken,
-                    signature: messageData.metadata.hex,
-                    public_nonce: messageData.metadata.nonce
+                let applicationId = appId
+                let requestPayload = try JSONEncoder().encode(
+                    TokenRegistrationServerRequest(
+                        token: fcmDeviceToken,
+                        appId: applicationId,
+                        userId: UserManager.shared.userId,
+                        signature: messageData.metadata.hex,
+                        public_nonce: messageData.metadata.nonce
+                    )
                 )
-            )
-            pushServerRequest(
-                path: "/register/\(messageData.hex)",
-                requestPayload: requestPayload,
-                onSuccess: {
-                    Logger.log(message: "Registered device token", domain: .general, level: .info)
-                }) { (error) in
-                    Logger.log(message: "Failed to register device token: \(error.localizedDescription)", domain: .general, level: .error)
-                }
-        } catch {
-            Logger.log(message: "Failed to register device token. Will attempt again later: \(error.localizedDescription)", domain: .general, level: .error)
+                pushServerRequest(
+                    path: "/register/\(messageData.hex)",
+                    requestPayload: requestPayload,
+                    onSuccess: {
+                        Logger.log(message: "Registered device token", domain: .general, level: .info)
+                    }) { (error) in
+                        Logger.log(message: "Failed to register device token: \(error.localizedDescription)", domain: .general, level: .error)
+                    }
+            } catch {
+                Logger.log(message: "Failed to register device token. Will attempt again later: \(error.localizedDescription)", domain: .general, level: .error)
+            }
         }
     }
 
     func sendToRecipient(publicKey: String, onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        let messageData = try sign(message: publicKey)
+        Task {
+            do {
+                let messageData = try await sign(message: publicKey)
 
-        let requestPayload = try JSONEncoder().encode(
-            SendNotificationServerRequest(
-                from_pub_key: messageData.hex,
-                signature: messageData.metadata.hex,
-                public_nonce: messageData.metadata.nonce
-            )
-        )
+                let requestPayload = try JSONEncoder().encode(
+                    SendNotificationServerRequest(
+                        from_pub_key: messageData.hex,
+                        signature: messageData.metadata.hex,
+                        public_nonce: messageData.metadata.nonce
+                    )
+                )
 
-        pushServerRequest(path: "/send/\(publicKey)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
+                pushServerRequest(path: "/send/\(publicKey)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
+            } catch {
+                onError(error)
+            }
+        }
     }
 
     // TODO remove this is local push notifications work better
     func cancelReminders(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        let messageData = try sign(message: "cancel-reminders")
-        let requestPayload = try JSONEncoder().encode(
-            CancelRemindersServerRequest(
-                pub_key: messageData.hex,
-                signature: messageData.metadata.hex,
-                public_nonce: messageData.metadata.nonce
-            )
-        )
+        Task {
+            do {
+                let messageData = try await sign(message: "cancel-reminders")
+                let requestPayload = try JSONEncoder().encode(
+                    CancelRemindersServerRequest(
+                        pub_key: messageData.hex,
+                        signature: messageData.metadata.hex,
+                        public_nonce: messageData.metadata.nonce
+                    )
+                )
 
-        pushServerRequest(path: "/cancel-reminders", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
+                pushServerRequest(path: "/cancel-reminders", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
+            } catch {
+                onError(error)
+            }
+        }
     }
 
-    private func sign(message: String) throws -> (hex: String, metadata: MessageMetadata) {
-        let hex = try Tari.shared.wallet(.main).address.spendKey.byteVector.hex
+    private func waitForWallet(timeout: TimeInterval = 30) async throws {
+        let wallet = Tari.shared.wallet(.main)
+        if wallet.isWalletRunning.value {
+            return
+        }
+
+        Logger.log(message: "Waiting for wallet to be running", domain: .general, level: .info)
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let startTime = Date()
+
+            // Run the check on a background thread
+            DispatchQueue.global().async {
+                while !wallet.isWalletRunning.value {
+                    if Date().timeIntervalSince(startTime) > timeout {
+                        Logger.log(message: "Timeout waiting for wallet to be running", domain: .general, level: .error)
+                        continuation.resume(throwing: PushNotificationServerError.unknown)
+                        return
+                    }
+                    Thread.sleep(forTimeInterval: 0.1)
+                }
+                continuation.resume()
+            }
+        }
+    }
+
+    private func sign(message: String) async throws -> (hex: String, metadata: MessageMetadata) {
+        // Wait for wallet to be running
+        try await waitForWallet()
+
+        // Now that wallet is running, proceed with signing
+        let wallet = Tari.shared.wallet(.main)
+        let hex = try wallet.address.spendKey.byteVector.hex
         guard let apiKey = TariSettings.shared.pushServerApiKey else { throw PushNotificationServerError.missingApiKey }
-        let metadata = try Tari.shared.wallet(.main).messageSign.sign(message: "\(apiKey)\(hex)\(message)")
+        let metadata = try wallet.messageSign.sign(message: "\(apiKey)\(hex)\(message)")
         return (hex: hex, metadata: metadata)
     }
 
@@ -282,5 +363,18 @@ final class NotificationManager {
         }
 
         task.resume()
+    }
+}
+
+extension NotificationManager: MessagingDelegate {
+    // Called whenever the FCM registration token is updated.
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let token = fcmToken else {
+                return
+        }
+
+        registerDeviceToken(token)
+        print("Firebase registration token: \(token)")
+        // Optionally, send the token to your application server.
     }
 }

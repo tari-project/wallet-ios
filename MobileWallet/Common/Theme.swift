@@ -76,103 +76,105 @@ struct Images {
 
     // Amount
     let delete = UIImage(named: "numpad-delete")
+
+    let splashScreen = UIImage(named: "staticSplash")
 }
 
 struct Fonts {
 
-    let actionButton = UIFont.Avenir.heavy.withSize(16.0)
-    let copiedLabel = UIFont.Avenir.black.withSize(13.0)
+    let actionButton = UIFont.Poppins.Bold.withSize(16.0)
+    let copiedLabel = UIFont.Poppins.Black.withSize(13.0)
 
     // SplashCreatingWallet
-    let createWalletSecondLabelFirstText = UIFont.Avenir.black.withSize(18.0)
-    let createWalletSecondLabelSecondText = UIFont.Avenir.roman.withSize(18.0)
-    let createWalletThirdLabel = UIFont.Avenir.medium.withSize(13.0)
-    let createWalletEmojiIDFirstText = UIFont.Avenir.light.withSize(18.0)
-    let createWalletEmojiIDSecondText = UIFont.Avenir.black.withSize(18.0)
-    let createWalletNotificationsFirstLabel = UIFont.Avenir.light.withSize(18.0)
-    let createWalletNotificationsSecondLabel = UIFont.Avenir.black.withSize(18.0)
-    let createWalletNotificationsThirdLabel = UIFont.Avenir.medium.withSize(14.0)
-    let tapToSeeFullEmojiLabel = UIFont.Avenir.heavy.withSize(12.0)
+    let createWalletSecondLabelFirstText = UIFont.Poppins.Black.withSize(18.0)
+    let createWalletSecondLabelSecondText = UIFont.Poppins.SemiBold.withSize(18.0)
+    let createWalletThirdLabel = UIFont.Poppins.Medium.withSize(13.0)
+    let createWalletEmojiIDFirstText = UIFont.Poppins.Light.withSize(18.0)
+    let createWalletEmojiIDSecondText = UIFont.Poppins.Black.withSize(18.0)
+    let createWalletNotificationsFirstLabel = UIFont.Poppins.Light.withSize(18.0)
+    let createWalletNotificationsSecondLabel = UIFont.Poppins.Black.withSize(18.0)
+    let createWalletNotificationsThirdLabel = UIFont.Poppins.Medium.withSize(14.0)
+    let tapToSeeFullEmojiLabel = UIFont.Poppins.Bold.withSize(12.0)
 
     // Profile
-    let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
+    let profileMiddleLabel = UIFont.Poppins.Medium.withSize(14.0)
 
     // Loadig gif button
-    let loadingGifButtonTitle = UIFont.Avenir.heavy.withSize(14.0)
+    let loadingGifButtonTitle = UIFont.Poppins.Bold.withSize(14.0)
 
     // Tx cell
-    let txCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
-    let txCellUsernameLabelHeavy = UIFont.Avenir.heavy.withSize(14.0)
-    let txCellDescriptionLabel = UIFont.Avenir.roman.withSize(15.0)
-    let txCellValueLabel = UIFont.Avenir.black.withSize(12.0)
-    let txDateValueLabel = UIFont.Avenir.medium.withSize(11.0)
-    let txCellStatusLabel = UIFont.Avenir.roman.withSize(12.0)
+    let txCellUsernameLabel = UIFont.Poppins.Light.withSize(14.0)
+    let txCellUsernameLabelHeavy = UIFont.Poppins.Bold.withSize(14.0)
+    let txCellDescriptionLabel = UIFont.Poppins.SemiBold.withSize(15.0)
+    let txCellValueLabel = UIFont.Poppins.Black.withSize(12.0)
+    let txDateValueLabel = UIFont.Poppins.Medium.withSize(11.0)
+    let txCellStatusLabel = UIFont.Poppins.SemiBold.withSize(12.0)
 
     // View tx screen
-    let txScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
-    let txScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
-    let txScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
-    let txFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
-    let txSectionTitleLabel = UIFont.Avenir.medium.withSize(16.0)
+    let txScreenCurrencyValueLabel = UIFont.Poppins.Black.withSize(90.0)
+    let txScreenSubheadingLabel = UIFont.Poppins.Medium.withSize(13.0)
+    let txScreenTextLabel = UIFont.Poppins.SemiBold.withSize(14.0)
+    let txFeeLabel = UIFont.Poppins.Bold.withSize(14.0)
+    let txSectionTitleLabel = UIFont.Poppins.Medium.withSize(16.0)
 
     // Sending tari screen
-    let sendingTariTitleLabelFirst = UIFont.Avenir.light.withSize(18.0)
-    let sendingTariTitleLabelSecond = UIFont.Avenir.black.withSize(18.0)
+    let sendingTariTitleLabelFirst = UIFont.Poppins.Light.withSize(18.0)
+    let sendingTariTitleLabelSecond = UIFont.Poppins.Black.withSize(18.0)
 
     // Navigation bar
-    let navigationBarTitle = UIFont.Avenir.heavy.withSize(16.0)
+    let navigationBarTitle = UIFont.Poppins.Bold.withSize(16.0)
 
     // Popup User feedback
-    let feedbackPopupTitle = UIFont.Avenir.light.withSize(18.0)
-    let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
+    let feedbackPopupTitle = UIFont.Poppins.Light.withSize(18.0)
+    let feedbackPopupDescription = UIFont.Poppins.Medium.withSize(14.0)
 
     // Simple text button
-    let copyButton = UIFont.Avenir.heavy.withSize(14.0)
+    let copyButton = UIFont.Poppins.Bold.withSize(14.0)
 
     // Add recipient view
-    let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
+    let searchContactsInputBoxText = UIFont.Poppins.SemiBold.withSize(14.0)
 
     // Add amount screen
-    let keypadButton = UIFont.Avenir.heavy.withSize(36.0)
-    let amountLabel = UIFont.Avenir.black.withSize(90.0)
-    let amountWarningLabel = UIFont.Avenir.roman.withSize(13.0)
+    let keypadButton = UIFont.Poppins.Bold.withSize(36.0)
+    let amountLabel = UIFont.Poppins.Black.withSize(90.0)
+    let amountWarningLabel = UIFont.Poppins.SemiBold.withSize(13.0)
 
     // Add note screen
-    let addNoteTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
-    let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
+    let addNoteTitleLabel = UIFont.Poppins.Bold.withSize(16.0)
+    let addNoteInputView = UIFont.Poppins.Medium.withSize(20.0)
 
     // Refresh view
-    let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
+    let refreshViewLabel = UIFont.Poppins.Bold.withSize(12.0)
 
     // App table view
-    let systemTableViewCellMarkDescription = UIFont.Avenir.medium.withSize(14.0)
+    let systemTableViewCellMarkDescription = UIFont.Poppins.Medium.withSize(14.0)
 
     // Restore pending view
-    let restorePendingViewTitle = UIFont.Avenir.light.withSize(18.0)
-    let restorePendingViewDescription = UIFont.Avenir.medium.withSize(14.0)
+    let restorePendingViewTitle = UIFont.Poppins.Light.withSize(18.0)
+    let restorePendingViewDescription = UIFont.Poppins.Medium.withSize(14.0)
 
     // Settings
-    let settingsDoneButton = UIFont.Avenir.medium.withSize(16.0)
-    let settingsViewHeader = UIFont.Avenir.black.withSize(17.0)
-    let settingsViewHeaderDescription = UIFont.Avenir.medium.withSize(14.0)
-    let settingsTableViewLastBackupDate = UIFont.Avenir.medium.withSize(14.0)
+    let settingsDoneButton = UIFont.Poppins.Medium.withSize(16.0)
+    let settingsViewHeader = UIFont.Poppins.Black.withSize(17.0)
+    let settingsViewHeaderDescription = UIFont.Poppins.Medium.withSize(14.0)
+    let settingsTableViewLastBackupDate = UIFont.Poppins.Medium.withSize(14.0)
 
-    let settingsSeedPhraseCellTitle = UIFont.Avenir.heavy.withSize(14.0)
-    let settingsSeedPhraseCellNumber = UIFont.Avenir.medium.withSize(14.0)
+    let settingsSeedPhraseCellTitle = UIFont.Poppins.Bold.withSize(14.0)
+    let settingsSeedPhraseCellNumber = UIFont.Poppins.Medium.withSize(14.0)
 
-    let settingsSeedPhraseDescription = UIFont.Avenir.medium.withSize(14.0)
-    let settingsSeedPhraseAgreement = UIFont.Avenir.medium.withSize(12.0)
-    let settingsFillablePhraseViewDescription = UIFont.Avenir.medium.withSize(12.0)
+    let settingsSeedPhraseDescription = UIFont.Poppins.Medium.withSize(14.0)
+    let settingsSeedPhraseAgreement = UIFont.Poppins.Medium.withSize(12.0)
+    let settingsFillablePhraseViewDescription = UIFont.Poppins.Medium.withSize(12.0)
 
-    let settingsPasswordTitle = UIFont.Avenir.medium.withSize(13.0)
-    let settingsPasswordPlaceholder = UIFont.Avenir.roman.withSize(14.0)
-    let settingsPasswordWarning = UIFont.Avenir.heavy.withSize(13.0)
+    let settingsPasswordTitle = UIFont.Poppins.Medium.withSize(13.0)
+    let settingsPasswordPlaceholder = UIFont.Poppins.SemiBold.withSize(14.0)
+    let settingsPasswordWarning = UIFont.Poppins.Bold.withSize(13.0)
 
     // Restore Wallet From Seed Words
-    let restoreFromSeedWordsToken = UIFont.Avenir.heavy.withSize(14.0)
-    let restoreFormSeedWordsDescription = UIFont.Avenir.medium.withSize(14.0)
-    let restoreFromSeedWordsProgressOverlayTitle = UIFont.Avenir.light.withSize(18.0)
-    let restoreFromSeedWordsProgressOverlayDescription = UIFont.Avenir.medium.withSize(14.0)
+    let restoreFromSeedWordsToken = UIFont.Poppins.Bold.withSize(14.0)
+    let restoreFormSeedWordsDescription = UIFont.Poppins.Medium.withSize(14.0)
+    let restoreFromSeedWordsProgressOverlayTitle = UIFont.Poppins.Light.withSize(18.0)
+    let restoreFromSeedWordsProgressOverlayDescription = UIFont.Poppins.Medium.withSize(14.0)
 }
 
 struct Sizes {

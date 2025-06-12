@@ -53,7 +53,7 @@ final class PopUpProfileShareContentView: DynamicThemeView {
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("profile_view.pop_up.share.message", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
-        view.font = .Avenir.medium.withSize(13.0)
+        view.font = .Poppins.Medium.withSize(13.0)
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -118,7 +118,7 @@ final class PopUpProfileShareContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
     }

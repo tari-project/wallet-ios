@@ -82,7 +82,7 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
     @View private var viewKeySection: PopUpAddressDetailsContentSectionView<UILabel> = {
         let view = PopUpAddressDetailsContentSectionView<UILabel>()
         view.title = localized("address_view.details.label.view_key.title")
-        view.contentView.font = .Avenir.medium.withSize(14.0)
+        view.contentView.font = .Poppins.Medium.withSize(14.0)
         view.contentView.numberOfLines = 0
         return view
     }()
@@ -90,7 +90,7 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
     @View private var coreAddressSection: PopUpAddressDetailsContentSectionView<UILabel> = {
         let view = PopUpAddressDetailsContentSectionView<UILabel>()
         view.title = localized("address_view.details.label.address.title")
-        view.contentView.font = .Avenir.medium.withSize(14.0)
+        view.contentView.font = .Poppins.Medium.withSize(14.0)
         view.contentView.numberOfLines = 0
         return view
     }()
@@ -98,7 +98,7 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
     @View private var checksumSection: PopUpAddressDetailsContentSectionView<UILabel> = {
         let view = PopUpAddressDetailsContentSectionView<UILabel>()
         view.title = localized("address_view.details.label.checksum.title")
-        view.contentView.font = .Avenir.medium.withSize(14.0)
+        view.contentView.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
@@ -172,7 +172,7 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         viewKeySection.contentView.textColor = theme.text.body
         coreAddressSection.contentView.textColor = theme.text.body

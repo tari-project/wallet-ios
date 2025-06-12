@@ -48,14 +48,14 @@ final class PopUpStagedWalletSecurityHeaderView: DynamicThemeView {
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(32.0)
+        view.font = .Poppins.Medium.withSize(32.0)
         return view
     }()
 
     @View private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(18.0)
+        view.font = .Poppins.Medium.withSize(18.0)
         return view
     }()
 
@@ -117,7 +117,7 @@ final class PopUpStagedWalletSecurityHeaderView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading
         subtitleLabel.textColor = theme.text.heading

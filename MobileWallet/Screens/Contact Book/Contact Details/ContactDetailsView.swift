@@ -55,7 +55,7 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     @View private var nameLabel: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(17.0)
+        view.font = .Poppins.Medium.withSize(17.0)
         view.textAlignment = .center
         return view
     }()
@@ -69,7 +69,7 @@ final class ContactDetailsView: BaseNavigationContentView {
     @View private var yatLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(20.0)
+        view.font = .Poppins.Medium.withSize(20.0)
         view.isHidden = true
         return view
     }()
@@ -176,7 +176,7 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         nameLabel.textColor = theme.text.heading
@@ -294,7 +294,7 @@ private final class ContactDetailsViewBottomView: DynamicThemeView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = .Avenir.medium.withSize(15.0)
+        view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
@@ -338,7 +338,7 @@ private final class ContactDetailsViewBottomView: DynamicThemeView {
 
     // MARK: - Updates
 
-    override func update(theme: ColorTheme) {
+    override func update(theme: AppTheme) {
         super.update(theme: theme)
         imageView.tintColor = theme.text.body
         label.textColor = theme.text.body

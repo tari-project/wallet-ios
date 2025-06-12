@@ -49,10 +49,16 @@ struct Shadow {
 
 extension UIView {
 
-    func apply(shadow: Shadow) {
-        layer.shadowColor = shadow.color?.cgColor
-        layer.shadowOpacity = shadow.opacity
-        layer.shadowRadius = shadow.radius
-        layer.shadowOffset = shadow.offset
+    func apply(shadow: Shadow?) {
+        guard let shadowConfig = shadow else {
+            layer.shadowRadius = 0
+            layer.shadowOpacity = 0
+            return
+        }
+
+        layer.shadowColor = shadowConfig.color?.cgColor
+        layer.shadowOpacity = shadowConfig.opacity
+        layer.shadowRadius = shadowConfig.radius
+        layer.shadowOffset = shadowConfig.offset
     }
 }

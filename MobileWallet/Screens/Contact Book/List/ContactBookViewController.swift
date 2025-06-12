@@ -259,8 +259,6 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
             showQrCodeInDialog(qrCode: image)
         case let .shareLink(link):
             showLinkShareDialog(link: link)
-        case let .show(dialog):
-            handle(dialog: dialog)
         }
     }
 
@@ -274,17 +272,6 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
             mainView.isInSelectionMode = true
             contactsPageViewController.isInSharingMode = true
             favoritesPageViewController.isInSharingMode = true
-        }
-    }
-
-    private func handle(dialog: ContactBookModel.DialogType) {
-        switch dialog {
-        case .bleContactSharingWaitingForReceiverDialog:
-            showBLEDialog(type: .scanForContactListReceiver(onCancel: { [weak self] in self?.model.cancelBLETask() }))
-        case .bleContactSharingSuccessDialog:
-            showBLEDialog(type: .successContactSharing)
-        case let .bleFailureDialog(message):
-            showBLEDialog(type: .failure(message: message))
         }
     }
 
@@ -324,9 +311,5 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
         let controller = UIActivityViewController(activityItems: [link], applicationActivities: nil)
         controller.popoverPresentationController?.sourceView = mainView.navigationBar
         present(controller, animated: true)
-    }
-
-    private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
-        PopUpPresenter.showBLEDialog(type: type)
     }
 }

@@ -41,14 +41,13 @@
 import UIKit
 import Combine
 
-final class AddRecipientViewController: UIViewController {
+final class AddRecipientViewController: SecureViewController<AddRecipientView> {
 
     // MARK: - Properties
 
     var onContactSelected: ((PaymentInfo) -> Void)?
 
     private let model: AddRecipientModel
-    private let mainView = AddRecipientView()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -63,15 +62,11 @@ final class AddRecipientViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCallbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
+        setupViews()
+        setupCallbacks()
     }
 
     // MARK: - Setups
@@ -91,7 +86,7 @@ final class AddRecipientViewController: UIViewController {
 
         model.$canMoveToNextStep
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.isContinueButtonEnabled = $0 }
+            .sink { [weak self] in self?.nextScreen(shouldContinue: $0) }
             .store(in: &cancellables)
 
         model.$isYatFound
@@ -123,51 +118,36 @@ final class AddRecipientViewController: UIViewController {
             self?.model.toogleYatPreview()
         }
 
-        mainView.onBluetoothRowTap = { [weak self] in
-            self?.model.fetchTransactionDataViaBLE()
-        }
-
         mainView.onRowTap = { [weak self] in
             self?.model.select(elementID: $0)
-        }
-
-        mainView.onContinueButtonTap = { [weak self] in
-            self?.model.requestContinue()
         }
 
         mainView.searchView.textField.bind(withSubject: model.searchText, storeIn: &cancellables)
     }
 
+    func setupViews() {
+        mainView.navigationBar.title = "Send"
+    }
     // MARK: - Handlers
+
+    private func nextScreen(shouldContinue: Bool) {
+        if shouldContinue {
+            self.model.requestContinue()
+        }
+    }
 
     private func handle(action: AddRecipientModel.Action) {
         switch action {
         case let .sendTokens(paymentInfo):
+            AppRouter.presentSendTransaction(paymentInfo: paymentInfo, presenter: self.navigationController)
             onContactSelected?(paymentInfo)
-        case let .show(dialog):
-            handle(dialog: dialog)
-        }
-    }
-
-    private func handle(dialog: AddRecipientModel.DialogType) {
-        switch dialog {
-        case .bleTransactionWaitingForReceiverDialog:
-            showBLEDialog(type: .scanForTransactionData(onCancel: { [weak self] in self?.model.cancelBLETask() }))
-        case let .bleTransactionConfirmationDialog(receiverName):
-            showBLEDialog(type: .confirmTransactionData(
-                receiverName: receiverName,
-                onConfirmation: { [weak self] in self?.model.confirmIncomingTransaction() },
-                onReject: { [weak self] in self?.model.cancelIncomingTransaction() }
-            ))
-        case let .bleFailureDialog(message):
-            showBLEDialog(type: .failure(message: message))
         }
     }
 
     // MARK: - Actions
 
     private func openScanner() {
-        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.transactionSend), .deeplink(.profile)], disabledDataTypes: []) { [weak self] in
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.transactionSend), .deeplink(.profile), .base64Address], disabledDataTypes: []) { [weak self] in
             self?.model.handle(qrCodeData: $0)
         }
     }

@@ -178,16 +178,7 @@ extension TariAddress {
 extension TariAddress.Network {
 
     var name: String {
-        switch value {
-        case 0:
-            return "MainNet"
-        case 1:
-            return "StageNet"
-        case 2:
-            return "NextNet"
-        default:
-            return "TestNet"
-        }
+        return NetworkManager.defaultNetwork.presentedName
     }
 }
 
@@ -196,6 +187,7 @@ extension TariAddress.Features {
     enum Feature: UInt8, CaseIterable {
         case oneSided = 0b00000001
         case interactive = 0b00000010
+        case paymentId = 0b00000100
     }
 
     var names: [String] {
@@ -211,6 +203,10 @@ extension TariAddress.Features {
     func isInteractive() -> Bool {
         return value.flag(bitmask: Feature.interactive.rawValue)
     }
+    
+    func isPaymentId() -> Bool {
+        return value.flag(bitmask: Feature.paymentId.rawValue)
+    }
 }
 
 extension TariAddress.Features.Feature {
@@ -221,6 +217,8 @@ extension TariAddress.Features.Feature {
             return localized("address_features.one_sided")
         case .interactive:
             return localized("address_features.interactive")
+        case .paymentId:
+            return "Payment ID" // TODO: Localise
         }
     }
 }

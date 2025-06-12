@@ -42,43 +42,64 @@ import Lottie
 import TariCommon
 import UIKit
 
-final class SplashView: UIView {
+final class SplashView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var animatedLogoView: AnimationView = {
-        let view = AnimationView()
-        view.animation = Animation.named(.splash)
-        view.backgroundBehavior = .pauseAndRestore
+//    @View private var animatedLogoView: AnimationView = {
+//        let view = AnimationView()
+//        view.animation = Animation.named(.splash)
+//        view.backgroundBehavior = .pauseAndRestore
+//        return view
+//    }()
+//
+//    @View private var videoView: VideoView = {
+//        let view = VideoView()
+//        view.url = Bundle.main.url(forResource: "purple_orb", withExtension: "mp4")
+//        return view
+//    }()
+
+    @View private var iconView: UIImageView = {
+        let image = UIImage(named: "GemBlackSmall")
+        let view = UIImageView(image: image?.withRenderingMode(.alwaysTemplate))
         return view
     }()
 
-    @View private var videoView: VideoView = {
-        let view = VideoView()
-        view.url = Bundle.main.url(forResource: "purple_orb", withExtension: "mp4")
+    @View private var staticSplashView: UIImageView = {
+        let view = UIImageView()
+        return view
+    }()
+
+    @View private var separatorView: UIView = {
+        let view = UIView()
         return view
     }()
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.text = localized("splash.title")
-        view.font = .Avenir.black.withSize(30.0)
-        view.interlineSpacing(spacingValue: 0)
-        view.textColor = .Static.white
+        view.font = Typography.appTitle
         view.textAlignment = .center
-        view.numberOfLines = 2
+        view.numberOfLines = 1
+        view.attributedText = NSMutableAttributedString(string: localized("splash.title"), attributes: [NSAttributedString.Key.kern: -1])
         view.adjustsFontSizeToFitWidth = true
         return view
     }()
 
-    @View private var createWalletButton = ActionButton()
-    @View private var selectNetworkButton = ActionButton()
+    @View private var importWalletLabel: StylisedLabel = {
+        let label = StylisedLabel(withStyle: .body2)
+        label.text = localized("splash.import_wallet_label")
+        return label
+    }()
 
-    @View private var restoreWalletButton: TextButton = {
-        let view = TextButton()
-        view.setTitle(localized("splash.restore_wallet"), for: .normal)
+    @View var importWalletLabelContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .Background.primary.withAlphaComponent(0.8)
+        view.layer.cornerRadius = 8
         return view
     }()
+
+    @View var importWallet = StylisedButton(withStyle: .primary, withSize: .large)
+    @View var createWallet = StylisedButton(withStyle: .outlined, withSize: .large)
 
     @View private var disclaimerTextView: UnselectableTextView = {
         let view = UnselectableTextView()
@@ -88,44 +109,33 @@ final class SplashView: UIView {
         return view
     }()
 
-    @View private var tariIconView: UIImageView = {
-        let view = UIImageView()
-        view.image = Theme.shared.images.currencySymbol
-        view.tintColor = .Static.white
-        return view
-    }()
-
-    @View private var versionLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Avenir.heavy.withSize(9.0)
-        view.textColor = .Static.mediumGrey
-        view.textAlignment = .center
+    @View private var versionLabel: StylisedLabel = {
+        let view = StylisedLabel(withStyle: .body2)
         return view
     }()
 
     // MARK: - Properties
 
+    var importWalletButtonTitle: String? {
+        get { importWallet.title(for: .normal) }
+        set { importWallet.setTitle(newValue, for: .normal) }
+    }
+
+//    var isCreateWalletButtonSpinnerVisible: Bool = false {
+//        didSet { importWallet.style = isCreateWalletButtonSpinnerVisible ? .loading : .normal }
+//    }
+
     var createWalletButtonTitle: String? {
-        get { createWalletButton.title(for: .normal) }
-        set { createWalletButton.setTitle(newValue, for: .normal) }
-    }
-
-    var isCreateWalletButtonSpinnerVisible: Bool = false {
-        didSet { createWalletButton.style = isCreateWalletButtonSpinnerVisible ? .loading : .normal }
-    }
-
-    var selectNetworkButtonTitle: String? {
-        get { selectNetworkButton.title(for: .normal) }
-        set { selectNetworkButton.setTitle(newValue, for: .normal) }
+        get { createWallet.title(for: .normal) }
+        set { createWallet.setTitle(newValue, for: .normal) }
     }
 
     var versionText: String? {
         get { versionLabel.text }
-        set { versionLabel.text = newValue }
+        set { versionLabel.text = newValue ?? "" }
     }
 
     var onCreateWalletButtonTap: (() -> Void)?
-    var onSelectNetworkButtonTap: (() -> Void)?
     var onRestoreWalletButtonTap: (() -> Void)?
 
     private var idleLogoConstraint: NSLayoutConstraint?
@@ -133,8 +143,8 @@ final class SplashView: UIView {
 
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupDisclamerView()
         setupConstraints()
@@ -147,53 +157,61 @@ final class SplashView: UIView {
 
     // MARK: - Setups
 
+    override func update(theme: AppTheme) {
+        setupViews()
+    }
+
     private func setupViews() {
-        backgroundColor = .Static.black
+        backgroundColor = theme.backgrounds.primary
+        separatorView.backgroundColor = theme.text.title?.withAlphaComponent(0.08)
+        titleLabel.textColor = theme.text.title
+        iconView.tintColor = theme.text.title
+        staticSplashView.image = theme.graphics.splashScreenImage
     }
 
     private func setupConstraints() {
+        [iconView, staticSplashView, titleLabel, importWalletLabelContainer, importWallet, createWallet, separatorView, disclaimerTextView, versionLabel].forEach(addSubview)
 
-        [videoView, titleLabel, createWalletButton, selectNetworkButton, restoreWalletButton, disclaimerTextView, tariIconView, versionLabel, animatedLogoView].forEach(addSubview)
-
-        let idleLogoConstraint = animatedLogoView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 19.0)
-        self.idleLogoConstraint = idleLogoConstraint
-        walletCreatedLogoConstraint = animatedLogoView.centerYAnchor.constraint(equalTo: centerYAnchor)
+        importWalletLabelContainer.addSubview(importWalletLabel)
 
         let constraints = [
-            idleLogoConstraint,
-            animatedLogoView.widthAnchor.constraint(equalToConstant: 145.0),
-            animatedLogoView.heightAnchor.constraint(equalToConstant: 30.0),
-            animatedLogoView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            videoView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 49.0),
-            videoView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            videoView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: 15.0),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            createWalletButton.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 5.0),
-            createWalletButton.topAnchor.constraint(lessThanOrEqualTo: titleLabel.bottomAnchor, constant: 25.0),
-            createWalletButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            createWalletButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            selectNetworkButton.topAnchor.constraint(equalTo: createWalletButton.bottomAnchor, constant: 12.0),
-            selectNetworkButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            selectNetworkButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            selectNetworkButton.heightAnchor.constraint(equalToConstant: 32.0),
-            restoreWalletButton.topAnchor.constraint(greaterThanOrEqualTo: selectNetworkButton.bottomAnchor, constant: 5.0),
-            restoreWalletButton.topAnchor.constraint(lessThanOrEqualTo: selectNetworkButton.bottomAnchor, constant: 22.0),
-            restoreWalletButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            restoreWalletButton.heightAnchor.constraint(equalToConstant: 25.0),
-            disclaimerTextView.topAnchor.constraint(greaterThanOrEqualTo: restoreWalletButton.bottomAnchor, constant: 0.0),
-            disclaimerTextView.topAnchor.constraint(lessThanOrEqualTo: restoreWalletButton.bottomAnchor, constant: 5.0),
-            disclaimerTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            disclaimerTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            tariIconView.topAnchor.constraint(greaterThanOrEqualTo: disclaimerTextView.bottomAnchor, constant: 0.0),
-            tariIconView.topAnchor.constraint(lessThanOrEqualTo: disclaimerTextView.bottomAnchor, constant: 12.0),
-            tariIconView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            tariIconView.widthAnchor.constraint(equalToConstant: 24.0),
-            tariIconView.heightAnchor.constraint(equalToConstant: 24.0),
-            versionLabel.topAnchor.constraint(equalTo: tariIconView.bottomAnchor, constant: 9.0),
+            titleLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 63),
+            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            iconView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            iconView.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -10),
+            staticSplashView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 103),
+            staticSplashView.heightAnchor.constraint(equalToConstant: 599),
+            staticSplashView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            staticSplashView.leftAnchor.constraint(greaterThanOrEqualTo: leftAnchor),
+            staticSplashView.rightAnchor.constraint(lessThanOrEqualTo: rightAnchor),
+            staticSplashView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            importWalletLabelContainer.centerXAnchor.constraint(equalTo: centerXAnchor),
+            importWalletLabelContainer.bottomAnchor.constraint(equalTo: importWallet.topAnchor, constant: -10),
+            importWalletLabelContainer.leadingAnchor.constraint(equalTo: importWalletLabel.leadingAnchor, constant: -12),
+            importWalletLabelContainer.trailingAnchor.constraint(equalTo: importWalletLabel.trailingAnchor, constant: 12),
+            importWalletLabelContainer.topAnchor.constraint(equalTo: importWalletLabel.topAnchor, constant: -6),
+            importWalletLabelContainer.bottomAnchor.constraint(equalTo: importWalletLabel.bottomAnchor, constant: 6),
+            importWalletLabel.centerXAnchor.constraint(equalTo: importWalletLabelContainer.centerXAnchor),
+            importWalletLabel.centerYAnchor.constraint(equalTo: importWalletLabelContainer.centerYAnchor),
+            importWallet.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 22.0),
+            importWallet.widthAnchor.constraint(lessThanOrEqualTo: staticSplashView.widthAnchor),
+            importWallet.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -22.0),
+            importWallet.centerXAnchor.constraint(equalTo: centerXAnchor),
+            createWallet.topAnchor.constraint(equalTo: importWallet.bottomAnchor, constant: 15.0),
+            createWallet.widthAnchor.constraint(lessThanOrEqualTo: staticSplashView.widthAnchor),
+            createWallet.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 22.0),
+            createWallet.centerXAnchor.constraint(equalTo: centerXAnchor),
+            createWallet.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -22.0),
+            separatorView.topAnchor.constraint(equalTo: createWallet.bottomAnchor, constant: 16),
+            separatorView.widthAnchor.constraint(equalTo: createWallet.widthAnchor),
+            separatorView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 1),
+            versionLabel.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: 16.0),
             versionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            versionLabel.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -12.0)
+            disclaimerTextView.topAnchor.constraint(equalTo: versionLabel.bottomAnchor, constant: -3.0),
+            disclaimerTextView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            disclaimerTextView.widthAnchor.constraint(equalToConstant: 275),
+            disclaimerTextView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -16.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -201,22 +219,17 @@ final class SplashView: UIView {
 
     private func setupCallbacks() {
 
-        createWalletButton.onTap = { [weak self] in
-            self?.onCreateWalletButtonTap?()
-        }
-
-        selectNetworkButton.onTap = { [weak self] in
-            self?.onSelectNetworkButtonTap?()
-        }
-
-        restoreWalletButton.onTap = { [weak self] in
+        importWallet.onTap = { [weak self] in
             self?.onRestoreWalletButtonTap?()
+        }
+
+        createWallet.onTap = { [weak self] in
+            self?.onCreateWalletButtonTap?()
         }
     }
 
     private func setupDisclamerView() {
-
-        let textColor = UIColor.Static.mediumGrey
+        let textColor: UIColor = .Text.body
 
         disclaimerTextView.linkTextAttributes = [
             NSAttributedString.Key.foregroundColor: textColor,
@@ -243,17 +256,16 @@ final class SplashView: UIView {
         disclaimerTextView.attributedText = attributedText
         disclaimerTextView.textColor = textColor
         disclaimerTextView.textAlignment = .center
-        disclaimerTextView.font = .Avenir.medium.withSize(12.0)
+        disclaimerTextView.font = Typography.body2
     }
 
     // MARK: - Actions
 
     func updateLayout(showInterface: Bool, animated: Bool, completion: (() -> Void)? = nil) {
-
         if showInterface {
             walletCreatedLogoConstraint?.isActive = false
             idleLogoConstraint?.isActive = true
-            videoView.startPlayer()
+//            videoView.startPlayer()
         } else {
             idleLogoConstraint?.isActive = false
             walletCreatedLogoConstraint?.isActive = true
@@ -261,18 +273,16 @@ final class SplashView: UIView {
 
         let alpha = showInterface ? 1.0 : 0.0
 
-        createWalletButton.isAnimated = showInterface
-        selectNetworkButton.isAnimated = showInterface
+        importWallet.isAnimated = showInterface
+        createWallet.isAnimated = showInterface
 
         let transition = {
             self.layoutIfNeeded()
-            self.videoView.alpha = alpha
+            self.staticSplashView.alpha = alpha
             self.titleLabel.alpha = alpha
-            self.createWalletButton.alpha = alpha
-            self.selectNetworkButton.alpha = alpha
-            self.restoreWalletButton.alpha = alpha
+            self.importWallet.alpha = alpha
+            self.createWallet.alpha = alpha
             self.disclaimerTextView.alpha = alpha
-            self.tariIconView.alpha = alpha
             self.versionLabel.alpha = alpha
         }
 
@@ -285,6 +295,7 @@ final class SplashView: UIView {
     }
 
     func playLogoAnimation(completion: @escaping () -> Void) {
-        animatedLogoView.play(completion: { _ in completion() })
+        completion()
+//        animatedLogoView.play(completion: { _ in completion() })
     }
 }
