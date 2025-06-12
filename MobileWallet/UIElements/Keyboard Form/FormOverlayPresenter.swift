@@ -74,69 +74,6 @@ extension FormOverlayPresenter {
         }
     }
 
-    static func showTwoFieldsContactEditForm(isContactExist: Bool, nameComponents: [String], presenter: UIViewController, onClose: ((_ nameComponents: [String]) -> Void)?) {
-
-        var nameComponents = nameComponents
-        let title = isContactExist ? localized("contact_book.details.edit_form.title.edit") : localized("contact_book.details.edit_form.title.add")
-
-        let models = [
-            ContactBookFormView.TextFieldViewModel(
-                placeholder: localized("contact_book.details.edit_form.text_field.first_name"),
-                text: nameComponents[0],
-                isEmojiKeyboardVisible: false,
-                autocapitalization: false,
-                callback: { nameComponents[0] = $0 }
-            ),
-            ContactBookFormView.TextFieldViewModel(
-                placeholder: localized("contact_book.details.edit_form.text_field.last_name"),
-                text: nameComponents[1],
-                isEmojiKeyboardVisible: false,
-                autocapitalization: false,
-                callback: { nameComponents[1] = $0 }
-            )
-        ]
-
-        showForm(title: title, textFieldModels: models, presenter: presenter) {
-            onClose?(nameComponents)
-        }
-    }
-
-    static func showFullContactEditForm(isContactExist: Bool, nameComponents: [String], yat: String, presenter: UIViewController, onClose: ((_ nameComponents: [String], _ yat: String) -> Void)?) {
-
-        var nameComponents = nameComponents
-        var yat = yat
-
-        let title = isContactExist ? localized("contact_book.details.edit_form.title.edit") : localized("contact_book.details.edit_form.title.add")
-
-        let models = [
-            ContactBookFormView.TextFieldViewModel(
-                placeholder: localized("contact_book.details.edit_form.text_field.first_name"),
-                text: nameComponents[0],
-                isEmojiKeyboardVisible: false,
-                autocapitalization: false,
-                callback: { nameComponents[0] = $0 }
-            ),
-            ContactBookFormView.TextFieldViewModel(
-                placeholder: localized("contact_book.details.edit_form.text_field.last_name"),
-                text: nameComponents[1],
-                isEmojiKeyboardVisible: false,
-                autocapitalization: false,
-                callback: { nameComponents[1] = $0 }
-            ),
-            ContactBookFormView.TextFieldViewModel(
-                placeholder: localized("contact_book.details.edit_form.text_field.yat"),
-                text: yat,
-                isEmojiKeyboardVisible: true,
-                autocapitalization: false,
-                callback: { yat = $0 }
-            )
-        ]
-
-        showForm(title: title, textFieldModels: models, presenter: presenter) {
-            onClose?(nameComponents, yat)
-        }
-    }
-
     static func showSelectCustomBaseNodeForm(hex: String?, address: String?, presenter: UIViewController, onClose: ((_ hex: String?, _ address: String?) -> Void)?) {
 
         var hex = hex

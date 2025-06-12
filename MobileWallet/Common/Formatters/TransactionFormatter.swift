@@ -81,13 +81,12 @@ final class TransactionFormatter {
         )
     }
 
-    func contact(uniqueIdentifier: String) -> ContactsManager.Model? {
-        contactsManager.tariContactModels.first { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }
+    func contact(components: TariAddressComponents) -> ContactsManager.Model? {
+        contactsManager.tariContactModels.first { $0.internalModel?.addressComponents == components }
     }
 
     private func contactName(transaction: Transaction) throws -> String {
-        let contact = try contact(transaction: transaction)
-        return contact?.name ?? localized("transaction.one_sided_payment.inbound_user_placeholder")
+        try contact(transaction: transaction)?.name ?? truncateEmojiAddress(transaction.address.emojis)
     }
 
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
@@ -99,7 +98,7 @@ final class TransactionFormatter {
 
         if try transaction.isOutboundTransaction {
             return [
-                StylizedLabel.StylizedText(text: "Sent", style: .normal),
+                StylizedLabel.StylizedText(text: "Paid", style: .normal),
                 StylizedLabel.StylizedText(text: " \(name)", style: .bold)
             ]
         } else {
@@ -165,6 +164,6 @@ final class TransactionFormatter {
     // MARK: - Helpers
 
     private func contact(transaction: Transaction) throws -> ContactsManager.Model? {
-        contact(uniqueIdentifier: try transaction.address.components.uniqueIdentifier)
+        contact(components: try transaction.address.components)
     }
 }

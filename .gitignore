@@ -23,6 +23,7 @@ xcuserdata/
 *.xccheckout
 *.xcscmblueprint
 *.hhea.xml
+GoogleService-Info.plist
 
 ## Obj-C/Swift specific
 *.hmap

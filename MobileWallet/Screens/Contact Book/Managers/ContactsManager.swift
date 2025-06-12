@@ -57,7 +57,6 @@ final class ContactsManager {
         let internalModel: InternalContactsManager.ContactModel?
         let name: String
         let alias: String?
-        let nameComponents: [String]
         var avatar: String
 
         var isFavorite: Bool { internalModel?.isFavorite ?? false }
@@ -76,7 +75,6 @@ final class ContactsManager {
 
             alias = internalModel?.alias ?? internalModel?.defaultAlias
             name = alias ?? internalModel?.addressComponents.formattedCoreAddress ?? ""
-            nameComponents = [name]
             avatar = internalModel?.addressComponents.spendKey.firstOrEmpty ?? ""
         }
     }
@@ -103,18 +101,19 @@ final class ContactsManager {
         return model
     }
 
-    func update(nameComponents: [String], isFavorite: Bool, yat: String, contact: Model) throws {
-        let name = nameComponents.joined(separator: " ")
-        guard !name.isEmpty else { throw InternalError.emptyContactName }
-
+    func update(alias: String?, isFavorite: Bool, contact: Model) throws {
         if let internalContact = contact.internalModel {
-            try internalContactsManager.update(name: name, isFavorite: isFavorite, base58: internalContact.addressComponents.fullRaw)
+            if let alias, !alias.isEmpty {
+                try internalContactsManager.update(alias: alias, isFavorite: isFavorite, base58: internalContact.addressComponents.fullRaw)
+            } else {
+                try internalContactsManager.remove(components: internalContact.addressComponents)
+            }
         }
     }
 
     func remove(contact: Model) throws {
-        if let internalContactUniqueIdentifier = contact.internalModel?.addressComponents.uniqueIdentifier {
-            try internalContactsManager.remove(uniqueIdentifier: internalContactUniqueIdentifier)
+        if let components = contact.internalModel?.addressComponents {
+            try internalContactsManager.remove(components: components)
         }
     }
 

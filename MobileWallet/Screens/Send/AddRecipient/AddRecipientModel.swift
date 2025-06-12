@@ -162,7 +162,7 @@ final class AddRecipientModel {
         let allContacts = contactsManager.tariContactModels
 
         do {
-            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents.uniqueIdentifier == address.components.uniqueIdentifier }}
+            return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents == address.components }}
         } catch {
             return []
         }
@@ -330,10 +330,10 @@ final class AddRecipientModel {
 
     private func verify(address: TariAddress) -> Bool {
         do {
-            let uniqueIdentifier = try address.components.uniqueIdentifier
-            let userUniqueIdentifier = try Tari.shared.wallet(.main).address.components.uniqueIdentifier
+            let uniqueAddress = try address.components
+            let userUniqueAddress = try Tari.shared.wallet(.main).address.components
 
-            guard uniqueIdentifier != userUniqueIdentifier else {
+            guard uniqueAddress != userUniqueAddress else {
                 errorMessage = localized("add_recipient.error.can_not_send_yourself", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
                 return false
             }

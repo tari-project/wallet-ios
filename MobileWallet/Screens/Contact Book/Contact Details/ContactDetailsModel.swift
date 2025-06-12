@@ -88,7 +88,7 @@ final class ContactDetailsModel {
     @Published private(set) var addressComponents: TariAddressComponents?
 
     var hasSplittedName: Bool { model.hasIntrenalModel }
-    var nameComponents: [String] { model.nameComponents }
+    var alias: String? { model.alias }
 
     // MARK: - Properties
 
@@ -172,8 +172,8 @@ final class ContactDetailsModel {
         }
     }
 
-    func update(nameComponents: [String], yat: String) {
-        update(nameComponents: nameComponents, isFavorite: model.isFavorite, yat: yat)
+    func update(alias: String?) {
+        update(alias: alias, isFavorite: model.isFavorite)
     }
 
     func unlinkContact() {
@@ -181,7 +181,7 @@ final class ContactDetailsModel {
         let name = model.name
 
         do {
-            try contactsManager.update(nameComponents: [name], isFavorite: model.isFavorite, yat: "", contact: model)
+            try contactsManager.update(alias: name, isFavorite: model.isFavorite, contact: model)
             action = .showUnlinkSuccessDialog(address: address, name: name)
             updateData()
         } catch {
@@ -199,12 +199,12 @@ final class ContactDetailsModel {
     }
 
     private func update(isFavorite: Bool) {
-        update(nameComponents: model.nameComponents, isFavorite: isFavorite, yat: yat ?? "")
+        update(alias: model.alias, isFavorite: isFavorite)
     }
 
-    private func update(nameComponents: [String], isFavorite: Bool, yat: String) {
+    private func update(alias: String?, isFavorite: Bool) {
         do {
-            try contactsManager.update(nameComponents: nameComponents, isFavorite: isFavorite, yat: yat, contact: model)
+            try contactsManager.update(alias: alias, isFavorite: isFavorite, contact: model)
             updateData()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)

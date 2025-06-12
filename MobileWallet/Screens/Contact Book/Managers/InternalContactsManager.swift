@@ -47,11 +47,12 @@ final class InternalContactsManager {
         let isFavorite: Bool
 
         static func == (lhs: InternalContactsManager.ContactModel, rhs: InternalContactsManager.ContactModel) -> Bool {
-            try lhs.addressComponents.uniqueIdentifier == rhs.addressComponents.uniqueIdentifier
+            lhs.addressComponents == rhs.addressComponents
         }
 
         func hash(into hasher: inout Hasher) {
-            try hasher.combine(addressComponents.uniqueIdentifier)
+            hasher.combine(addressComponents.uniqueIdentifier)
+            hasher.combine(addressComponents.fullRaw)
         }
     }
 
@@ -81,7 +82,7 @@ final class InternalContactsManager {
 
         return models
             .reduce(into: [ContactModel]()) { collection, model in
-                guard collection.first(where: {$0.addressComponents.uniqueIdentifier == model.addressComponents.uniqueIdentifier }) == nil else { return }
+                guard collection.first(where: { $0.addressComponents == model.addressComponents }) == nil else { return }
                 collection.append(model)
             }
             .sorted {
@@ -113,24 +114,24 @@ final class InternalContactsManager {
         return contactModel
     }
 
-    func update(name: String, isFavorite: Bool, base58: String) throws {
+    func update(alias: String?, isFavorite: Bool, base58: String) throws {
         let address = try TariAddress(base58: base58)
-        let updatedContact = ContactModel(alias: name, defaultAlias: nil, addressComponents: try address.components, isFavorite: isFavorite)
+        let updatedContact = ContactModel(alias: alias, defaultAlias: nil, addressComponents: try address.components, isFavorite: isFavorite)
         var contacts = try fetchWalletContacts()
 
-        let addressIdentifier = try address.components.uniqueIdentifier
-        if let index = try contacts.firstIndex(where: { contact in
-            contact.addressComponents.uniqueIdentifier == addressIdentifier
+        let components = try address.components
+        if let index = contacts.firstIndex(where: { contact in
+            contact.addressComponents == components
         }) {
             contacts[index] = updatedContact
             try saveContacts(contacts)
         }
     }
 
-    func remove(uniqueIdentifier: String) throws {
+    func remove(components: TariAddressComponents) throws {
         var contacts = try fetchWalletContacts()
-        try contacts.removeAll { contact in
-            contact.addressComponents.uniqueIdentifier == uniqueIdentifier
+        contacts.removeAll { contact in
+            contact.addressComponents == components
         }
         try saveContacts(contacts)
     }

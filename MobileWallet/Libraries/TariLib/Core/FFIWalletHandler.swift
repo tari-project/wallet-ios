@@ -359,6 +359,7 @@ final class FFIWalletHandler {
 
         let callback: @convention(c) (UnsafeMutableRawPointer?, UInt8, UInt64, UInt64) -> Void = { context, status, firstValue, secondValue in
             context?.walletCallbacks.walletRecoveryStatusSubject.send(RestoreWalletStatus(status: status, firstValue: firstValue, secondValue: secondValue))
+            Logger.log(message: "Recovery status: \(status)", domain: .debug, level: .verbose)
         }
 
         var errorCode: Int32 = -1

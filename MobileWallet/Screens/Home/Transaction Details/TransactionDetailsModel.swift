@@ -73,7 +73,7 @@ final class TransactionDetailsModel {
 
     var isContactExist: Bool { contactModel?.isFFIContact == true }
     var contactHaveSplittedName: Bool { contactModel?.hasIntrenalModel ?? false }
-    var contactNameComponents: [String] { contactModel?.nameComponents ?? ["", ""] }
+    var contactAlias: String? { contactModel?.alias }
 
     var userAliasUpdateSuccessCallback: (() -> Void)?
 
@@ -184,26 +184,16 @@ final class TransactionDetailsModel {
         guard let contactModel = contactModel,
               let presenter = presenter else { return }
 
-        if contactModel.hasIntrenalModel {
-            let nameComponents = contactModel.nameComponents
-            let yat = ""  // External model no longer exists, so we'll use empty string for yat
-            Task { @MainActor in
-                FormOverlayPresenter.showFullContactEditForm(isContactExist: true, nameComponents: nameComponents, yat: yat, presenter: presenter) { [weak self] nameComponents, yat in
-                    self?.update(nameComponents: nameComponents, yat: yat)
-                }
-            }
-        } else {
-            let alias = contactModel.name
-            Task { @MainActor in
-                FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: true, alias: alias, presenter: presenter) { [weak self] alias in
-                    self?.update(nameComponents: [alias], yat: "")
-                }
+        let alias = contactModel.name
+        Task { @MainActor in
+            FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: true, alias: alias, presenter: presenter) { [weak self] alias in
+                self?.update(alias: alias)
             }
         }
     }
 
     func handleRemoveContactRequest() {
-        guard let contactModel = contactModel else { return }
+        guard contactModel != nil else { return }
 
         let model = PopUpDialogModel(
             title: localized("contact_book.details.popup.delete_contact.title"),
@@ -233,12 +223,12 @@ final class TransactionDetailsModel {
         }
     }
 
-    func update(nameComponents: [String], yat: String = "") {
+    func update(alias: String?) {
 
         guard let contactModel else {
             do {
                 let address = try transaction.address
-                self.contactModel = try contactsManager.createInternalModel(name: nameComponents.joined(separator: " "), isFavorite: false, address: address)
+                self.contactModel = try contactsManager.createInternalModel(name: alias ?? "", isFavorite: false, address: address)
                 updateAlias()
                 userAliasUpdateSuccessCallback?()
             } catch {
@@ -249,7 +239,7 @@ final class TransactionDetailsModel {
         }
 
         do {
-            try contactsManager.update(nameComponents: nameComponents, isFavorite: contactModel.isFavorite, yat: yat, contact: contactModel)
+            try contactsManager.update(alias: alias, isFavorite: contactModel.isFavorite, contact: contactModel)
             updateContactData()
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.contact.title"), message: localized("tx_detail.error.save_contact.description"), type: .error)
@@ -378,7 +368,7 @@ final class TransactionDetailsModel {
 
     private func fetchContactModel() async throws -> ContactsManager.Model? {
         try await contactsManager.fetchModels()
-        return try contactsManager.tariContactModels.first { try $0.internalModel?.addressComponents.uniqueIdentifier == transaction.address.components.uniqueIdentifier }
+        return try contactsManager.tariContactModels.first { try $0.internalModel?.addressComponents == transaction.address.components }
     }
 
     private func fetchLinkToOpen() -> URL? {

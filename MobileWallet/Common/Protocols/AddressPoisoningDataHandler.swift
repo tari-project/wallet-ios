@@ -82,7 +82,7 @@ enum AddressPoisoningDataHandler {
             let addressComponents = try TariAddress(emojiID: emojiID).components
             updateSettings(uniqueIdentifier: addressComponents.uniqueIdentifier, isTrusted: isTrusted)
 
-            if addressComponents.uniqueIdentifier == originalPaymentInfo.addressComponents.uniqueIdentifier {
+            if addressComponents == originalPaymentInfo.addressComponents {
                 onContinue?(originalPaymentInfo)
             } else {
                 onContinue?(PaymentInfo(addressComponents: addressComponents, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil))

@@ -136,7 +136,7 @@ final class ContactSelectionModel {
         }
 
         do {
-            try contactsManager.update(nameComponents: [selectedContact.alias ?? ""], isFavorite: selectedContact.isFavorite, yat: "", contact: contactModel)
+            try contactsManager.update(alias: selectedContact.alias, isFavorite: selectedContact.isFavorite, contact: contactModel)
             action = .showSuccess(address: selectedContact.addressComponents.formattedCoreAddress, name: selectedContact.alias ?? "")
             cancelSelection()
         } catch {

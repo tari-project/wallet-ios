@@ -66,7 +66,7 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
 
     private func displayAliasOrEmojiId() {
         do {
-            if let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(uniqueIdentifier: paymentInfo.addressComponents.uniqueIdentifier)?.alias {
+            if let alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(components: paymentInfo.addressComponents)?.alias {
                 // Show contact name in the main address view
                 addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false))
                 mainView.userText = alias

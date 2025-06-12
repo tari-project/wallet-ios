@@ -59,6 +59,14 @@ struct TariAddressComponents {
     let isPaymentIDAddress: Bool
 }
 
+extension TariAddressComponents: Equatable {
+    static func == (lhs: TariAddressComponents, rhs: TariAddressComponents) -> Bool {
+        lhs.isPaymentIDAddress || rhs.isPaymentIDAddress
+            ? lhs.fullRaw == rhs.fullRaw
+            : lhs.uniqueIdentifier == rhs.uniqueIdentifier
+    }
+}
+
 extension TariAddressComponents {
 
     var networkAndFeatures: String { network + features }

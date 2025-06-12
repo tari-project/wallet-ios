@@ -91,8 +91,7 @@ final class AddressPoisoningManager {
     private func inputAddressData(address: TariAddress) throws -> SimilarAddressData {
         let addressComponents = try address.components
         let emojiID = addressComponents.fullEmoji
-        let uniqueIdentifier = addressComponents.uniqueIdentifier
-        guard let existingContact = contactsManager.tariContactModels.first(where: { $0.internalModel?.addressComponents.uniqueIdentifier == uniqueIdentifier }) else {
+        guard let existingContact = contactsManager.tariContactModels.first(where: { $0.internalModel?.addressComponents == addressComponents }) else {
             return data(address: addressComponents.fullRaw, emojiID: emojiID)
         }
         return try data(contact: existingContact) ?? data(address: addressComponents.fullRaw, emojiID: emojiID)
@@ -104,14 +103,14 @@ final class AddressPoisoningManager {
 
     private func data(contact: ContactsManager.Model) throws -> SimilarAddressData? {
         guard let internalModel = contact.internalModel else { return nil }
-        let transactions = try transactions(forUniqueIdentifier: internalModel.addressComponents.uniqueIdentifier)
+        let transactions = try transactions(for: internalModel.addressComponents)
         let lastTransaction = try formattedLastTransaction(transactions: transactions)
         return SimilarAddressData(address: internalModel.addressComponents.fullRaw, emojiID: internalModel.addressComponents.fullEmoji, alias: contact.name, transactionsCount: transactions.count, lastTransaction: lastTransaction)
     }
 
-    private func transactions(forUniqueIdentifier uniqueIdentifier: String) throws -> [Transaction] {
+    private func transactions(for components: TariAddressComponents) throws -> [Transaction] {
         try Tari.shared.wallet(.main).transactions.all
-            .filter { try $0.address.components.uniqueIdentifier == uniqueIdentifier }
+            .filter { try $0.address.components == components }
             .sorted { try $0.timestamp > $1.timestamp }
     }
 
