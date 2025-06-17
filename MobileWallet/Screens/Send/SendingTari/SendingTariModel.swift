@@ -46,7 +46,7 @@ final class SendingTariModel {
         let address: String
         let amount: MicroTari
         let feePerGram: MicroTari
-        let message: String
+        let paymentID: String
         let isOneSidedPayment: Bool
     }
 
@@ -121,7 +121,7 @@ final class SendingTariModel {
 
     private func sendTransactionToBlockchain() {
 
-        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
+        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, paymentID: inputData.paymentID, isOneSidedPayment: inputData.isOneSidedPayment)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:
