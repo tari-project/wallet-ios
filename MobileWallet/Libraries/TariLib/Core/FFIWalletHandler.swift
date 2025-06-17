@@ -58,7 +58,7 @@ final class FFIWalletHandler {
 
     private var exisingWallet: Wallet {
         get throws {
-            guard let wallet = wallet else { throw GeneralError.unableToCreateWallet }
+            guard let wallet else { throw GeneralError.unableToCreateWallet }
             return wallet
         }
     }
@@ -123,7 +123,7 @@ final class FFIWalletHandler {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_get_contacts(wallet.pointer, errorCodePointer)
-        guard let result = result else { throw WalletError(code: errorCode) }
+        guard let result else { throw WalletError(code: errorCode) }
         return Contacts(pointer: result)
     }
 
@@ -195,7 +195,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_cancel_pending_transaction(wallet.pointer, identifier, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -207,7 +207,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_upsert_contact(wallet.pointer, contact.pointer, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -219,7 +219,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_remove_contact(wallet.pointer, contact.pointer, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -231,7 +231,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_start_txo_validation(wallet.pointer, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -243,7 +243,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_start_transaction_validation(wallet.pointer, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -255,7 +255,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_get_fee_estimate(wallet.pointer, amount, nil, feePerGram, kernelsCount, outputsCount, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -279,7 +279,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_set_base_node_peer(wallet.pointer, baseNodePeer.pointer, address, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -304,7 +304,7 @@ final class FFIWalletHandler {
 
         let result = wallet_get_all_utxos(wallet.pointer, errorCodePointer)
 
-        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return result.array()
     }
 
@@ -320,7 +320,7 @@ final class FFIWalletHandler {
 
         let result = wallet_preview_coin_split(wallet.pointer, vector.pointer, splitsCount, feePerGram, errorCodePointer)
 
-        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return result.pointee
     }
 
@@ -336,21 +336,41 @@ final class FFIWalletHandler {
 
         let result = wallet_preview_coin_join(wallet.pointer, vector.pointer, feePerGram, errorCodePointer)
 
-        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return result.pointee
     }
 
-    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool, paymentID: String) throws -> UInt64 {
+    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, isOneSidedPayment: Bool, paymentID: String) throws -> UInt64 {
 
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, isOneSidedPayment, message, errorCodePointer)
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, isOneSidedPayment, paymentID, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
+    }
+    
+    func paymentReference(transaction: Transaction) throws -> PaymentReference? {
+        let wallet = try exisingWallet
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = try wallet_get_transaction_payrefs(wallet.pointer, transaction.identifier, errorCodePointer)
+        try checkError(errorCode)
+        guard let result else { throw WalletError(code: errorCode) }
+        
+        let references = PaymentReferences(pointer: result)
+        for i in try 0..<references.count {
+            let reference = try references.paymentReference(at: i)
+            if try reference.isOutbound && transaction.isOutboundTransaction
+                || reference.isInbound && !transaction.isOutboundTransaction
+            {
+                return reference
+            }
+        }
+        return nil
     }
 
     func startRecovery(recoveredOutputMessage: String) throws -> Bool {
@@ -367,7 +387,7 @@ final class FFIWalletHandler {
 
         let result = wallet_start_recovery(wallet.pointer, nil, callback, recoveredOutputMessage, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -395,7 +415,7 @@ final class FFIWalletHandler {
 
         let result = wallet_get_num_confirmations_required(wallet.pointer, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -407,7 +427,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_set_key_value(wallet.pointer, key, value, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -419,7 +439,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_clear_value(wallet.pointer, key, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -439,7 +459,8 @@ final class FFIWalletHandler {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_get_last_version(commsConfig.pointer, errorCodePointer)
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        
+        try checkError(errorCode)
         guard let result else { return nil }
         return String(cString: result)
     }
@@ -457,7 +478,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_coin_split(wallet.pointer, commitments.pointer, splitsCount, feePerGram, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -469,7 +490,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_coin_join(wallet.pointer, commitments.pointer, feePerGram, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -481,7 +502,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_restart_transaction_broadcast(wallet.pointer, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
     }
 
@@ -491,7 +512,7 @@ final class FFIWalletHandler {
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         log_debug_message(message, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
     }
 
     func unspentOutputs() throws -> UnblindedOutputs {
@@ -516,7 +537,13 @@ final class FFIWalletHandler {
 
         let result = wallet_import_external_utxo_as_non_rewindable(wallet.pointer, output.pointer, sourceAddress.pointer, message, errorCodePointer)
 
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        try checkError(errorCode)
         return result
+    }
+}
+
+private extension FFIWalletHandler {
+    func checkError(_ code: Int32) throws {
+        guard code == 0 else { throw WalletError(code: code) }
     }
 }

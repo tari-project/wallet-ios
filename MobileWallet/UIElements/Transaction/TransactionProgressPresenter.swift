@@ -59,7 +59,7 @@ enum TransactionProgressPresenter {
             controller = YatTransactionConstructor.buildScene(inputData: inputData)
             presenter.present(controller, animated: false)
         } else {
-            let inputData = SendingTariModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
+            let inputData = SendingTariModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, paymentID: message, isOneSidedPayment: isOneSidedPayment)
             controller = SendingTariConstructor.buildScene(inputData: inputData)
             presenter.navigationController?.pushViewController(controller, animated: false)
         }

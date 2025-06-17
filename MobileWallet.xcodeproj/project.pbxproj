@@ -594,6 +594,9 @@
 		BFF1EDA32408225900CC9EF6 /* sendingTariAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA22408225900CC9EF6 /* sendingTariAnimation.json */; };
 		BFF1EDA72408226200CC9EF6 /* sending-background.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA62408226200CC9EF6 /* sending-background.mp4 */; };
 		F8214FEB2DF6FA06003EBB25 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F8214FEA2DF6FA06003EBB25 /* GoogleService-Info.plist */; };
+		F8214FF02DFC1728003EBB25 /* PaymentReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */; };
+		F8214FF22DFC1BD2003EBB25 /* PaymentReferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */; };
+		F8214FF42DFC4E42003EBB25 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1216,6 +1219,9 @@
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
 		F4E5AB1EC7D42438C3CA62CF /* Pods-MobileWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.debug.xcconfig"; sourceTree = "<group>"; };
 		F8214FEA2DF6FA06003EBB25 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReference.swift; sourceTree = "<group>"; };
+		F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReferences.swift; sourceTree = "<group>"; };
+		F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1291,6 +1297,7 @@
 				0042780223E8421100AE7BD9 /* String.swift */,
 				37CB9F892451A2AD00C495F2 /* String+Emoji.swift */,
 				54621F8A29E00E78000E9659 /* String+Tools.swift */,
+				F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */,
 				549565DF2AA1D21E0092A10F /* Task+Utils.swift */,
 				37547D512460165500EB59CC /* UIApplication+Utils.swift */,
 				3A8826C427F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift */,
@@ -1877,6 +1884,8 @@
 				3A70434228E21D9400207D6F /* Completed */,
 				3A70434728E21F5600207D6F /* Transaction.swift */,
 				3A8005C528EAF0A50022A38A /* TransactionSendResult.swift */,
+				F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */,
+				F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */,
 			);
 			path = Transactions;
 			sourceTree = "<group>";
@@ -3830,6 +3839,8 @@
 				3A6A033E2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift in Sources */,
 				3ADEBF5D26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */,
 				540CB6F729C1DE83003FACEF /* AddContactConstructor.swift in Sources */,
+				F8214FF42DFC4E42003EBB25 /* String+Hex.swift in Sources */,
+				F8214FF22DFC1BD2003EBB25 /* PaymentReferences.swift in Sources */,
 				5488068929D4244800C2A0F9 /* ContactBookShareBar.swift in Sources */,
 				3A8005CB28EAF3A90022A38A /* TransactionValidationData.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
@@ -3873,6 +3884,7 @@
 				3AECD490284F3BB300D81C80 /* BaseNavigationContentView.swift in Sources */,
 				37547D522460165500EB59CC /* UIApplication+Utils.swift in Sources */,
 				3A87C3B727A9409E007A553F /* WalletError.swift in Sources */,
+				F8214FF02DFC1728003EBB25 /* PaymentReference.swift in Sources */,
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,
 				5460258629A74D8200CF5764 /* ContactDetailsModel.swift in Sources */,
 				545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */,

@@ -155,7 +155,7 @@ final class YatTransactionModel {
 
     private func sendTransactionToBlockchain() {
 
-        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
+        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, paymentID: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:
