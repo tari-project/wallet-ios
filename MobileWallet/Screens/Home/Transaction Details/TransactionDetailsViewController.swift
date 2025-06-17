@@ -414,10 +414,10 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.onCopyButtonTap = nil
                 cell.showCopyButton = false
             case 4: // Transaction ID
-                cell.titleText = "Transaction ID"
-                cell.valueText = model.identifier
+                cell.titleText = "Mined in Block Height"
+                cell.valueText = "\(model.minedBlockHeight)"
                 cell.isAddressCell = false
-                cell.showBlockExplorerButton = model.isBlockExplorerActionAvailable
+                cell.showBlockExplorerButton = 0 < model.minedBlockHeight && model.isBlockExplorerActionAvailable
                 cell.onBlockExplorerButtonTap = { [weak self] in
                     self?.model.requestLinkToBlockExplorer()
                 }
@@ -430,7 +430,7 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             case 6: // Note
                 if let note = model.note, !note.isEmpty {
                     cell.titleText = "Note"
-                    cell.valueText = note
+                    cell.valueText = truncated(note, to: 32)
                     cell.isAddressCell = false
                     cell.showAddContactButton = false
                     cell.showEditButton = false
@@ -443,19 +443,9 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.showEditButton = false
                 cell.showBlockExplorerButton = false
                 
-                if let reference = model.paymentReference {
-                    let requiredConfirmations: UInt64 = 5
-                    if let confirmations = model.paymentReferenceConfirmationCount, confirmations < requiredConfirmations {
-                        cell.valueText = "Waiting for \(requiredConfirmations) block confirmations (\(confirmations) of \(requiredConfirmations)"
-                        cell.showCopyButton = false
-                    } else if let paymentReference = reference.paymentReference {
-                        if 32 < paymentReference.lengthOfBytes(using: .utf8) {
-                            cell.valueText = paymentReference.prefix(16) + "..." + paymentReference.suffix(16)
-                        } else {
-                            cell.valueText = paymentReference
-                        }
-                        cell.showCopyButton = true
-                    }
+                if let paymentReferenceValue = paymentReferenceValue() {
+                    cell.valueText = paymentReferenceValue
+                    cell.showCopyButton = model.isPaymentReferenceConfirmed
                 } else {
                     cell.showCopyButton = false
                     cell.valueText = ""
@@ -465,20 +455,45 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             }
 
             cell.onCopyButtonTap = { [weak self] value in
-                if rowIndex == 1, let addressComponents = self?.model.addressComponents {
-                    // For address cell, copy the full address based on current format
-                    let fullAddress = self?.model.isEmojiFormat == true ? addressComponents.fullEmoji : addressComponents.fullRaw
-                    UIPasteboard.general.string = fullAddress
-                } else if rowIndex == 5, let paymentReference = self?.model.paymentReference?.paymentReference {
-                    UIPasteboard.general.string = paymentReference
-                } else {
-                    // For other cells, copy the displayed value
-                    UIPasteboard.general.string = value
-                }
-                self?.showToast()
+                self?.copyAction(value: value, at: rowIndex)
             }
-
             return cell
+        }
+    }
+}
+
+private extension TransactionDetailsViewController {
+    func paymentReferenceValue() -> String? {
+        guard let reference = model.paymentReference else { return nil }
+        let requiredConfirmations: UInt64 = 5
+        let confirmations = model.paymentReferenceConfirmationCount
+        if confirmations < requiredConfirmations {
+            return "Waiting for \(requiredConfirmations) block confirmations (\(confirmations) of \(requiredConfirmations))"
+        } else if let paymentReference = reference.paymentReference {
+            return truncated(paymentReference, to: 32)
+        }
+        return nil
+    }
+    
+    func copyAction(value: String?, at rowIndex: Int) {
+        if rowIndex == 1, let addressComponents = model.addressComponents {
+            // For address cell, copy the full address based on current format
+            let fullAddress = model.isEmojiFormat == true ? addressComponents.fullEmoji : addressComponents.fullRaw
+            UIPasteboard.general.string = fullAddress
+        } else if rowIndex == 5, let paymentReference = model.paymentReference?.paymentReference {
+            UIPasteboard.general.string = paymentReference
+        } else {
+            // For other cells, copy the displayed value
+            UIPasteboard.general.string = value
+        }
+        showToast()
+    }
+    
+    func truncated(_ value: String, to length: Int) -> String {
+        if length < value.lengthOfBytes(using: .utf8) {
+            value.prefix(length / 2) + "..." + value.suffix(length / 2)
+        } else {
+            value
         }
     }
 }

@@ -90,6 +90,10 @@ final class TransactionDetailsModel {
     private var transactionSignature: String?
 
     private var cancellables = Set<AnyCancellable>()
+    
+    var minedBlockHeight: UInt64 {
+        (try? (transaction as? CompletedTransaction)?.minedBlockHeight) ?? 0
+    }
 
     // MARK: - Initialisers
 
@@ -116,7 +120,10 @@ final class TransactionDetailsModel {
         Tari.shared.wallet(.main).connectionCallbacks
             .$blockHeight
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.walletBlockHeight = $0 }
+            .sink { [weak self] in
+                self?.walletBlockHeight = $0
+                self?.loadPaymentReference()
+            }
             .store(in: &cancellables)
         
         $userAlias
@@ -165,12 +172,18 @@ final class TransactionDetailsModel {
             }
 
             isInbound = (try? transaction.isOutboundTransaction) == false
-            paymentReference = try transactions().paymentReference(transaction: transaction)
+            loadPaymentReference()
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"), type: .error)
         }
 
         handleTransactionKernel()
+    }
+    
+    func loadPaymentReference() {
+        if let reference = try? transactions().paymentReference(transaction: transaction) {
+            paymentReference = reference
+        }
     }
 
     func cancelTransactionRequest() {
@@ -310,9 +323,15 @@ final class TransactionDetailsModel {
         }
     }
     
-    var paymentReferenceConfirmationCount: Int64? {
-        guard let paymentReference else { return nil }
-        return max(0, Int64(walletBlockHeight) - Int64(paymentReference.blockHeight))
+    var requiredPaymentReferenceConfirmationCount: UInt64 { 5 }
+    
+    var paymentReferenceConfirmationCount: UInt64 {
+        guard let paymentReference else { return 0 }
+        return UInt64(max(0, Int64(walletBlockHeight) - Int64(paymentReference.blockHeight)))
+    }
+    
+    var isPaymentReferenceConfirmed: Bool {
+        requiredPaymentReferenceConfirmationCount <= paymentReferenceConfirmationCount
     }
     
     var transactionConfirmationCount: UInt64? {
