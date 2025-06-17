@@ -335,7 +335,7 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
 extension TransactionDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let extraCellCount = model.paymentReference != nil ? 1 : 0
+        let extraCellCount = model.paymentReference?.paymentReference != nil ? 1 : 0
         // Hide Contact Name, Note, Address, and Fee rows for coinbase transactions
         if model.isCoinbase {
             return 4 + extraCellCount // Paid, Date, Txn ID, Status, Total (removed Fee)
@@ -415,7 +415,7 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.showCopyButton = false
             case 4: // Transaction ID
                 cell.titleText = "Mined in Block Height"
-                cell.valueText = "\(model.minedBlockHeight)"
+                cell.valueText = model.minedBlockHeight != 0 ? "\(model.minedBlockHeight)" : "-"
                 cell.isAddressCell = false
                 cell.showBlockExplorerButton = 0 < model.minedBlockHeight && model.isBlockExplorerActionAvailable
                 cell.onBlockExplorerButtonTap = { [weak self] in
@@ -472,7 +472,7 @@ private extension TransactionDetailsViewController {
         } else if let paymentReference = reference.paymentReference {
             return truncated(paymentReference, to: 32)
         }
-        return nil
+        return "-"
     }
     
     func copyAction(value: String?, at rowIndex: Int) {

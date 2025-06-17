@@ -112,14 +112,19 @@ final class TariTransactionsService: CoreTariService {
 
     private func fetchData() {
         do {
-            completed = try completedTransactions
-            cancelled = try cancelledTransactions
-            pendingInbound = try pendingInboundTransactions
-            pendingOutbound = try pendingOutboundTransactions
+            let completed = try completedTransactions
+            let cancelled = try cancelledTransactions
+            let pendingInbound = try pendingInboundTransactions
+            let pendingOutbound = try pendingOutboundTransactions
 
-            all = try (completed + cancelled + pendingInbound + pendingOutbound)
-                .sorted { try $0.timestamp > $1.timestamp }
-
+            Task { @MainActor in
+                self.completed = completed
+                self.cancelled = cancelled
+                self.pendingInbound = pendingInbound
+                self.pendingOutbound = pendingOutbound
+                self.all = try (completed + cancelled + pendingInbound + pendingOutbound)
+                    .sorted { try $0.timestamp > $1.timestamp }
+            }
         } catch {
             self.error = error
         }
