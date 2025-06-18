@@ -41,17 +41,17 @@ import TariCommon
 
 class MiningView: UIView {
 
-    @View private var containerView: UIView = {
+    @TariView private var containerView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var graphicView: UIImageView = {
+    @TariView private var graphicView: UIImageView = {
         let view = UIImageView(image: .welcomeGraphic)
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(24)
         label.textColor = .Text.primary
@@ -59,7 +59,7 @@ class MiningView: UIView {
         return label
     }()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         label.textColor = .Text.primary
@@ -69,7 +69,7 @@ class MiningView: UIView {
         return label
     }()
 
-    @View private var linkButton: StylisedButton = {
+    @TariView private var linkButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
         button.setTitle("Open Download Link", for: .normal)
         return button

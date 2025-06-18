@@ -51,7 +51,7 @@ final class ProgressBar: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var bar = UIView()
+    @TariView private var bar = UIView()
 
     // MARK: - Properties
 

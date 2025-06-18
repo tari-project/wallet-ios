@@ -61,23 +61,23 @@ final class QRCodeScannerView: UIView {
         return layer
     }()
 
-    @View private var closeButton: BaseButton = {
+    @TariView private var closeButton: BaseButton = {
         let view = BaseButton()
         view.setImage(.Icons.General.close, for: .normal)
         view.tintColor = .Static.white
         return view
     }()
 
-    @View private var topContentView = UIView()
+    @TariView private var topContentView = UIView()
 
-    @View private var titleContentView: UIView = {
+    @TariView private var titleContentView: UIView = {
         let view = UIView()
         view.backgroundColor = .Static.popupOverlay
         view.layer.cornerRadius = 10.0
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("qr_code_scanner.labels.title")
         view.textAlignment = .center
@@ -87,10 +87,10 @@ final class QRCodeScannerView: UIView {
         return view
     }()
 
-    @View private var boxView = QRCodeScannerBoxView()
-    @View private var bottomContentView = UIView()
+    @TariView private var boxView = QRCodeScannerBoxView()
+    @TariView private var bottomContentView = UIView()
 
-    @View private var actionStackView: UIStackView = {
+    @TariView private var actionStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 20.0
@@ -99,7 +99,7 @@ final class QRCodeScannerView: UIView {
         return view
     }()
 
-    @View private var actionLabel: UILabel = {
+    @TariView private var actionLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
         view.textAlignment = .center
@@ -107,13 +107,13 @@ final class QRCodeScannerView: UIView {
         return view
     }()
 
-    @View private var buttonsStackView: UIStackView = {
+    @TariView private var buttonsStackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 30.0
         return view
     }()
 
-    @View private var approveButton: RoundedButton = {
+    @TariView private var approveButton: RoundedButton = {
         let view = RoundedButton()
         view.setImage(.Icons.General.checkmark, for: .normal)
         view.backgroundColor = .Static.white
@@ -121,7 +121,7 @@ final class QRCodeScannerView: UIView {
         return view
     }()
 
-    @View private var cancelButton: RoundedButton = {
+    @TariView private var cancelButton: RoundedButton = {
         let view = RoundedButton()
         view.setImage(.Icons.General.close, for: .normal)
         view.backgroundColor = .Static.white
@@ -130,7 +130,7 @@ final class QRCodeScannerView: UIView {
         return view
     }()
 
-    @View private var bottomCenteredContentView: UIView = {
+    @TariView private var bottomCenteredContentView: UIView = {
         let view = UIView()
         view.backgroundColor = .Static.popupOverlay
         view.tintColor = .Static.black

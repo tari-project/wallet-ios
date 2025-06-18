@@ -44,6 +44,9 @@ import AVFoundation
 import GiphyUISDK
 import FirebaseCore
 import FirebaseMessaging
+import TariCommon
+
+typealias TariView = View
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {

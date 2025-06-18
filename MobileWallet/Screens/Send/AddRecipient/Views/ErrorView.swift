@@ -44,7 +44,7 @@ final class ErrorView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Bold.withSize(14.0)

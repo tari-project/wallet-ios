@@ -53,37 +53,37 @@ final class ContactBookCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var contactTypeBackgroundView: UIView = {
+    @TariView private var contactTypeBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8.0
         return view
     }()
 
-    @View private var contactTypeView: UIImageView = {
+    @TariView private var contactTypeView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var separatorView = UIView()
-    @View private var contectSectionView = UIView()
+    @TariView private var separatorView = UIView()
+    @TariView private var contectSectionView = UIView()
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 8.0
         return view
     }()
 
-    @View private var addressView = AddressView()
+    @TariView private var addressView = AddressView()
 
-    @View private var favoriteView: UIImageView = {
+    @TariView private var favoriteView: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.General.star
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var tickView: TickButton = {
+    @TariView private var tickView: TickButton = {
         let view = TickButton()
         view.alpha = 0.0
         return view

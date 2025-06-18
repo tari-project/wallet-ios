@@ -597,6 +597,10 @@
 		F8214FF02DFC1728003EBB25 /* PaymentReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */; };
 		F8214FF22DFC1BD2003EBB25 /* PaymentReferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */; };
 		F8214FF42DFC4E42003EBB25 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */; };
+		F82150012E02BF62003EBB25 /* DesignSystemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150002E02BF2A003EBB25 /* DesignSystemView.swift */; };
+		F82150052E02DEE6003EBB25 /* TariButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150042E02DEE6003EBB25 /* TariButton.swift */; };
+		F82150082E02ECFB003EBB25 /* Text+Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150072E02ECF4003EBB25 /* Text+Typography.swift */; };
+		F821500A2E030A71003EBB25 /* Font+Poppins.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150092E030A6C003EBB25 /* Font+Poppins.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1222,6 +1226,10 @@
 		F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReference.swift; sourceTree = "<group>"; };
 		F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReferences.swift; sourceTree = "<group>"; };
 		F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
+		F82150002E02BF2A003EBB25 /* DesignSystemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemView.swift; sourceTree = "<group>"; };
+		F82150042E02DEE6003EBB25 /* TariButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariButton.swift; sourceTree = "<group>"; };
+		F82150072E02ECF4003EBB25 /* Text+Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Typography.swift"; sourceTree = "<group>"; };
+		F82150092E030A6C003EBB25 /* Font+Poppins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Poppins.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1447,6 +1455,7 @@
 				3A7DAB8C28FDAF58002CC013 /* Logs */,
 				3ABC7E9428FECFB200EAC852 /* UIViewController+DebugMenu.swift */,
 				711D7FA12D511F760080A987 /* DesignSystemViewController.swift */,
+				F82150002E02BF2A003EBB25 /* DesignSystemView.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -1584,6 +1593,7 @@
 				00262EB2236F022000A6C8A0 /* Common */,
 				37098045249CD48A0004ED2E /* Localizable.strings */,
 				00E2BCB5236B469C00C2A105 /* Screens */,
+				F82150022E02DE4B003EBB25 /* SwiftUI */,
 				00E2BCAF236B44CE00C2A105 /* UIElements */,
 				54B3A5432AC2CB8600FDC578 /* Libraries */,
 			);
@@ -3302,6 +3312,32 @@
 			path = Video;
 			sourceTree = "<group>";
 		};
+		F82150022E02DE4B003EBB25 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				F82150062E02EBEF003EBB25 /* Typography */,
+				F82150032E02DE6A003EBB25 /* Buttons */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		F82150032E02DE6A003EBB25 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				F82150042E02DEE6003EBB25 /* TariButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		F82150062E02EBEF003EBB25 /* Typography */ = {
+			isa = PBXGroup;
+			children = (
+				F82150092E030A6C003EBB25 /* Font+Poppins.swift */,
+				F82150072E02ECF4003EBB25 /* Text+Typography.swift */,
+			);
+			path = Typography;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3605,6 +3641,7 @@
 				549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */,
 				375AFDCF2475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
 				3A8473D828EC56EF0015E63A /* TariKeyValueService.swift in Sources */,
+				F821500A2E030A71003EBB25 /* Font+Poppins.swift in Sources */,
 				3A874038278842F500D80823 /* TorManager.swift in Sources */,
 				54FCC36F2AA5F00900CA0025 /* CustomTorBridgesViewController.swift in Sources */,
 				37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
@@ -3686,6 +3723,7 @@
 				3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */,
+				F82150012E02BF62003EBB25 /* DesignSystemView.swift in Sources */,
 				5449192E2C9301A7008F1173 /* WalletContainer.swift in Sources */,
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				3A03682E27DF20E300F304A2 /* TransactionDetailsViewController.swift in Sources */,
@@ -3745,6 +3783,7 @@
 				54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */,
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
 				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
+				F82150082E02ECFB003EBB25 /* Text+Typography.swift in Sources */,
 				54FCC3732AA5FF1B00CA0025 /* CustomTorBridgesModel.swift in Sources */,
 				5495C4792B7B718E00BB9051 /* SecureWrapperView.swift in Sources */,
 				71F94EC72DA32E0200D3F2AC /* ReceiveConstructor.swift in Sources */,
@@ -3782,6 +3821,7 @@
 				3A87E57F28409D630099EA0E /* AddAmountSpinnerView.swift in Sources */,
 				3A01248327B3BD0700A481F4 /* ProgressBar.swift in Sources */,
 				5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */,
+				F82150052E02DEE6003EBB25 /* TariButton.swift in Sources */,
 				548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */,
 				54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */,
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,

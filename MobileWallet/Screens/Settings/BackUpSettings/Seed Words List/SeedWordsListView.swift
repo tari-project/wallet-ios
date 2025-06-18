@@ -45,7 +45,7 @@ final class SeedWordsListView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
         view.text = localized("seed_phrase.header")
@@ -53,34 +53,34 @@ final class SeedWordsListView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var seedWordsBackgroundView: UIView = {
+    @TariView private var seedWordsBackgroundView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         view.layer.cornerRadius = 10.0
         return view
     }()
 
-    @View private var seedWordsContentView = UIView()
-    @View private var firstSeedWordsContentView = UIView()
-    @View private var secondSeedWordsContentView = UIView()
+    @TariView private var seedWordsContentView = UIView()
+    @TariView private var firstSeedWordsContentView = UIView()
+    @TariView private var secondSeedWordsContentView = UIView()
 
-    @View private var firstSeedWordsStackView: UIStackView = {
+    @TariView private var firstSeedWordsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 5.0
         return view
     }()
 
-    @View private var secondSeedWordsStackView: UIStackView = {
+    @TariView private var secondSeedWordsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 5.0
         return view
     }()
 
-    @View private var checkBox = CheckBox()
+    @TariView private var checkBox = CheckBox()
 
-    @View private var agreementLabel: UILabel = {
+    @TariView private var agreementLabel: UILabel = {
         let view = UILabel()
         view.text = localized("seed_phrase.agreement")
         view.font = Theme.shared.fonts.settingsSeedPhraseAgreement
@@ -88,13 +88,13 @@ final class SeedWordsListView: BaseNavigationContentView {
         return view
     }()
 
-    @View private(set) var continueButton: ActionButton = {
+    @TariView private(set) var continueButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("seed_phrase.verify_seed_phrase"), for: .normal)
         return view
     }()
 
-    @View private var expandListButton = ExpandButton()
+    @TariView private var expandListButton = ExpandButton()
 
     private let fadeOutMask: CAGradientLayer = {
         let layer = CAGradientLayer()

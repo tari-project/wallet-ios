@@ -43,7 +43,7 @@ import TariCommon
 
 class SettingsParentViewController: DynamicThemeViewController {
 
-    @View private(set) var navigationBar: NavigationBar = {
+    @TariView private(set) var navigationBar: NavigationBar = {
         let view = NavigationBar()
         view.title = localized("settings.title")
         return view

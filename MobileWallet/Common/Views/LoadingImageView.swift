@@ -50,7 +50,7 @@ final class LoadingImageView: UIView {
 
     // MARK: - Subviews
 
-    @View private var loadingView: AnimationView = {
+    @TariView private var loadingView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
         view.animation = .named(.pendingCircleAnimation)
@@ -59,7 +59,7 @@ final class LoadingImageView: UIView {
         return view
     }()
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         view.alpha = 0.0

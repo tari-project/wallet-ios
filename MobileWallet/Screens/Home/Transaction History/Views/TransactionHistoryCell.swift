@@ -65,7 +65,7 @@ final class TransactionHistoryCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 4.0
@@ -73,7 +73,7 @@ final class TransactionHistoryCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var titleLabel: StylizedLabel = {
+    @TariView private var titleLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.normalFont = .Poppins.Medium.withSize(14.0)
         view.boldFont = .Poppins.Bold.withSize(14.0)
@@ -81,27 +81,27 @@ final class TransactionHistoryCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var timestampLabel: UILabel = {
+    @TariView private var timestampLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(11.0)
         return view
     }()
 
-    @View private var infoLabel: UILabel = {
+    @TariView private var infoLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
-    @View private var noteLabel: UILabel = {
+    @TariView private var noteLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         view.numberOfLines = 0
         return view
     }()
 
-    @View private var amountView = AmountBadge()
-    @View private var loadingGifButton = LoadingGIFButton()
+    @TariView private var amountView = AmountBadge()
+    @TariView private var loadingGifButton = LoadingGIFButton()
 
     private var gifView: GPHMediaView?
 

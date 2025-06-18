@@ -45,9 +45,9 @@ final class TransactionDetailsEmojiView: UIView {
 
     // MARK: - Subviews
 
-    @View private var addressView = AddressView()
+    @TariView private var addressView = AddressView()
 
-    @View private(set) var addContactButton: TextButton = {
+    @TariView private(set) var addContactButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.add_contact_name"), for: .normal)
         view.style = .secondary

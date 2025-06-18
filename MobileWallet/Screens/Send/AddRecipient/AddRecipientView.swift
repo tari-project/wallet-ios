@@ -53,21 +53,21 @@ final class AddRecipientView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private(set) var searchView: ContactSearchView = {
+    @TariView private(set) var searchView: ContactSearchView = {
         let view = ContactSearchView()
         view.textField.placeholder = localized("add_recipient.inputbox.placeholder")
         view.textField.returnKeyType = .done
         return view
     }()
 
-    @View private var errorMessageView: ErrorView = {
+    @TariView private var errorMessageView: ErrorView = {
         let view = ErrorView()
         view.isHidden = true
         view.alpha = 0.0
         return view
     }()
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension

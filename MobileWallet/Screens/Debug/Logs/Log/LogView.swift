@@ -46,20 +46,20 @@ final class LogView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private(set) var tableView: UITableView = {
+    @TariView private(set) var tableView: UITableView = {
         let view = UITableView()
         view.rowHeight = UITableView.automaticDimension
         view.backgroundColor = .clear
         return view
     }()
 
-    @View private var overlayBackgroundView: UIView = {
+    @TariView private var overlayBackgroundView: UIView = {
         let view = UIView()
         view.alpha = 0.0
         return view
     }()
 
-    @View private var spinnerView: AnimationView = {
+    @TariView private var spinnerView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
         view.animation = Animation.named(.pendingCircleAnimation)

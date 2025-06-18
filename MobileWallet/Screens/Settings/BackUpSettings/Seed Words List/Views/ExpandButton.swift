@@ -49,15 +49,15 @@ final class ExpandButton: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var button = BaseButton()
+    @TariView private var button = BaseButton()
 
-    @View private var topArrowView: UIImageView = {
+    @TariView private var topArrowView: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.SeedWordsList.expandButtonArrow
         return view
     }()
 
-    @View private var bottomArrowView: UIImageView = {
+    @TariView private var bottomArrowView: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.SeedWordsList.expandButtonArrow
         return view

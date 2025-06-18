@@ -7,14 +7,14 @@ final class TransactionTotalCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var totalLabel: UILabel = {
+    @TariView private var totalLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.text = "Total"
         return label
     }()
 
-    @View private var totalValueLabel: UILabel = {
+    @TariView private var totalValueLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         return label

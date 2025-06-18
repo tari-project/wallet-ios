@@ -45,7 +45,7 @@ class BaseNavigationContentView: DynamicThemeView {
 
     // MARK: - Subview
 
-    @View private(set) var navigationBar = NavigationBar()
+    @TariView private(set) var navigationBar = NavigationBar()
 
     // MARK: - Initialisers
 

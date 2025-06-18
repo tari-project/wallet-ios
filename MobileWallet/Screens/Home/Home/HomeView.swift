@@ -52,19 +52,19 @@ final class HomeView: DynamicThemeView {
         }
     }
 
-    @View private var titleLabel: StylisedLabel = {
+    @TariView private var titleLabel: StylisedLabel = {
         let view = StylisedLabel(withStyle: .heading2XL)
         view.text = "Tari Universe"
         return view
     }()
 
-    @View private var syncStatusView: SyncStatusView = {
+    @TariView private var syncStatusView: SyncStatusView = {
         let view = SyncStatusView()
         view.isHidden = true
         return view
     }()
 
-    @View private var balanceTitleLabel: UILabel = {
+    @TariView private var balanceTitleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Regular.withSize(17)
         view.textColor = .white
@@ -73,62 +73,62 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
-    @View var activeMinersView: MinersGradientView = {
+    @TariView var activeMinersView: MinersGradientView = {
         var view = MinersGradientView()
         return view
     }()
 
-    @View private var walletCardView: UIImageView = {
+    @TariView private var walletCardView: UIImageView = {
         var view = UIImageView(image: .walletCard)
         return view
     }()
 
-    @View private var discloseButton: DynamicThemeBaseButton = {
+    @TariView private var discloseButton: DynamicThemeBaseButton = {
         var button = DynamicThemeBaseButton()
         button.setImage(.discloseHide, for: .normal)
         return button
     }()
 
-    @View private var sendButton: StylisedButton = {
+    @TariView private var sendButton: StylisedButton = {
         var button = StylisedButton(withStyle: .outlinedInverted, withSize: .subSmall)
         button.setTitle("Send", for: .normal)
         return button
     }()
 
-    @View private var receiveButton: StylisedButton = {
+    @TariView private var receiveButton: StylisedButton = {
         var button = StylisedButton(withStyle: .outlinedInverted, withSize: .subSmall)
         button.setTitle("Receive", for: .normal)
         return button
     }()
 
-    @View private var activityLabel: StylisedLabel = {
+    @TariView private var activityLabel: StylisedLabel = {
         let view = StylisedLabel(withStyle: .headingXL)
         view.text = "Recent activity"
         return view
     }()
 
-    @View private var buttonsStackView: UIStackView = {
+    @TariView private var buttonsStackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 20.0
         return view
     }()
 
-    @View private var connectionStatusButton: BaseButton = {
+    @TariView private var connectionStatusButton: BaseButton = {
         let view = BaseButton()
         view.tintColor = .Static.white
         return view
     }()
 
-    @View private var qrCodeScannerButton: BaseButton = {
+    @TariView private var qrCodeScannerButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "qrcode"), for: .normal)
         view.tintColor = .Static.white
         return view
     }()
 
-    @View private var balanceContentView = UIView()
+    @TariView private var balanceContentView = UIView()
 
-    @View private var balanceHiddenLabel: UILabel = {
+    @TariView private var balanceHiddenLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.Poppins.SemiBold.withSize(56.0)
         label.textColor = .white
@@ -136,7 +136,7 @@ final class HomeView: DynamicThemeView {
         return label
     }()
 
-    @View private var balanceLabel: UILabel = {
+    @TariView private var balanceLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.SemiBold.withSize(56.0)
         view.textColor = .white
@@ -145,9 +145,9 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
-    @View private var availableBalanceContentView = UIView()
+    @TariView private var availableBalanceContentView = UIView()
 
-    @View private var availableBalanceTitleLabel: UILabel = {
+    @TariView private var availableBalanceTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("home.label.spendable")
         view.textColor = .Static.white
@@ -155,7 +155,7 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
-    @View private var availableBalanceLabel: UILabel = {
+    @TariView private var availableBalanceLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Regular.withSize(17)
         view.textColor = .white.withAlphaComponent(0.5)
@@ -164,7 +164,7 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
-    @View private var disclaimerButton: BaseButton = {
+    @TariView private var disclaimerButton: BaseButton = {
         let view = BaseButton()
         view.setTitle("?", for: .normal)
         view.titleLabel?.font = .Poppins.Regular.withSize(13)
@@ -176,21 +176,21 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
-    @View private var amountHelpButton: BaseButton = {
+    @TariView private var amountHelpButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
         view.tintColor = .Static.white
         return view
     }()
 
-    @View private var headerView: UIView = {
+    @TariView private var headerView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    @View private var transactionTableView: UITableView = {
+    @TariView private var transactionTableView: UITableView = {
         let view = UITableView()
         view.register(type: HomeViewTransactionCell.self)
         view.register(type: HomeTransactionsPlaceholderCell.self)
@@ -204,7 +204,7 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
-    @View private var versionBadgeView: VersionBadgeView = {
+    @TariView private var versionBadgeView: VersionBadgeView = {
         let view = VersionBadgeView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view

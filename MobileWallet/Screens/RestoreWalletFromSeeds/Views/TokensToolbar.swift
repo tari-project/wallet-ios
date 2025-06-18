@@ -45,14 +45,14 @@ final class TokensToolbar: DynamicThemeToolbar {
 
     // MARK: - Subviews
 
-    @View var collectionView: UICollectionView = {
+    @TariView var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: TokensToolbarFlowLayout())
         view.backgroundColor = .clear
         view.showsHorizontalScrollIndicator = false
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.Poppins.Medium.withSize(16.0)

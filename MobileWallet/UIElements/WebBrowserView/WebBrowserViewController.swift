@@ -55,7 +55,7 @@ class WebBrowserViewController: DynamicThemeViewController {
 
     private let webView = WKWebView()
 
-    @View private var navigationBar: NavigationBar = {
+    @TariView private var navigationBar: NavigationBar = {
         let view = NavigationBar()
         return view
     }()
@@ -64,7 +64,7 @@ class WebBrowserViewController: DynamicThemeViewController {
     private let backButton = UIButton()
     private let forwardButton = UIButton()
 
-    @View private var grabber: UIView = {
+    @TariView private var grabber: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 2.5
         return view

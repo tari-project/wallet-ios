@@ -45,13 +45,13 @@ final class PopUpImageHeaderView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var imageView: UIImageView = {
+    @TariView private(set) var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private(set) var label: UILabel = {
+    @TariView private(set) var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.feedbackPopupTitle
         view.textAlignment = .center

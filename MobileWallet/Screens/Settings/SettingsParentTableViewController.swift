@@ -42,7 +42,7 @@ import TariCommon
 
 class SettingsParentTableViewController: SettingsParentViewController {
 
-    @View private(set) var tableView = BaseMenuTableView()
+    @TariView private(set) var tableView = BaseMenuTableView()
 
     override func viewDidLoad() {
         super.viewDidLoad()

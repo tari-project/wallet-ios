@@ -44,7 +44,7 @@ final class HomeTransactionsPlaceholderCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Text.primary
         view.numberOfLines = 0
@@ -72,7 +72,7 @@ final class HomeTransactionsPlaceholderCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var mineButton: StylisedButton = {
+    @TariView private var mineButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .small)
         button.setTitle("Start Mining Tari", for: .normal)
         return button

@@ -122,7 +122,7 @@ private final class DeleteWalletHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subiews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsTableViewLastBackupDate
         view.text = localized("delete_wallet.warning")

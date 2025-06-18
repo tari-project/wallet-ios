@@ -45,13 +45,13 @@ final class TransactionDetailsSectionView<T: UIView>: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txScreenSubheadingLabel
         return view
     }()
 
-    @View private(set) var contentView = T()
+    @TariView private(set) var contentView = T()
 
     // MARK: - Properties
 

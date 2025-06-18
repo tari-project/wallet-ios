@@ -47,7 +47,7 @@ final class ContactTransactionListView: BaseNavigationContentView {
 
     private let headerView = ContactTransactionListHeaderView()
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.register(type: TxTableViewCell.self)
         view.estimatedRowHeight = 300.0
@@ -57,7 +57,7 @@ final class ContactTransactionListView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var placeholder = ContactTransactionListPlaceholder()
+    @TariView private var placeholder = ContactTransactionListPlaceholder()
 
     // MARK: - Properties
 

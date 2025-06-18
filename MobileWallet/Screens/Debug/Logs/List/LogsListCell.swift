@@ -45,13 +45,13 @@ final class LogsListCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
-    @View private var arrowImageView: UIImageView = {
+    @TariView private var arrowImageView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.forwardArrow
         view.contentMode = .scaleAspectFit

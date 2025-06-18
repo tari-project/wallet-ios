@@ -57,14 +57,14 @@ final class ContextualButtonsOverlay: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 0.0
         return view
     }()
 
-    @View private var contentView: UIView = {
+    @TariView private var contentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10.0
         return view

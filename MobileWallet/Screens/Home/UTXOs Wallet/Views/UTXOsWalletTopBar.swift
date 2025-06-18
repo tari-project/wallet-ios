@@ -44,7 +44,7 @@ final class UTXOsWalletTopBar: BaseToolbar {
 
     // MARK: - Subviews
 
-    @View private var filterButton: LeftImageButton = {
+    @TariView private var filterButton: LeftImageButton = {
         let view = LeftImageButton()
         view.iconView.image = .Icons.General.faucet
         view.label.font = .Poppins.SemiBold.withSize(14.0)
@@ -53,7 +53,7 @@ final class UTXOsWalletTopBar: BaseToolbar {
         return view
     }()
 
-    @View private var editButton: BaseButton = {
+    @TariView private var editButton: BaseButton = {
         let view = BaseButton()
         view.titleLabel?.font = .Poppins.SemiBold.withSize(14.0)
         return view

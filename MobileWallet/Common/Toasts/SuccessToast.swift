@@ -45,7 +45,7 @@ final class SuccessToast: UIView {
 
     // MARK: - Subviews
 
-    @View private(set) var label: UILabel = {
+    @TariView private(set) var label: UILabel = {
         let view = UILabel()
         view.textColor = .Static.white
         view.font = Theme.shared.fonts.feedbackPopupDescription

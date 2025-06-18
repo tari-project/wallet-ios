@@ -46,13 +46,13 @@ final class FormTextField: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var textField: EmojiTextField = {
+    @TariView private var textField: EmojiTextField = {
         let view = EmojiTextField()
         view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
-    @View private var separator = UIView()
+    @TariView private var separator = UIView()
 
     // MARK: - Properties
 
