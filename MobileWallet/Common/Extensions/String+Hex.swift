@@ -39,7 +39,7 @@
 extension String {
     func hex() -> String {
         unicodeScalars
-            .map { String($0.value, radix: 16, uppercase: false) }
+            .map { String($0.value, radix: 16, uppercase: true) }
             .joined()
     }
     

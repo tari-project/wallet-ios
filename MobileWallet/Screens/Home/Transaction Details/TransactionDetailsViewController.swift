@@ -427,16 +427,7 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.valueText = model.statusText ?? ""
                 cell.isAddressCell = false
                 cell.showCopyButton = false
-            case 6: // Note
-                if let note = model.note, !note.isEmpty {
-                    cell.titleText = "Note"
-                    cell.valueText = truncated(note, to: 32)
-                    cell.isAddressCell = false
-                    cell.showAddContactButton = false
-                    cell.showEditButton = false
-                    cell.showBlockExplorerButton = false
-                }
-            case 7: // Payment reference
+            case 6: // Payment reference
                 cell.titleText = "Payment Reference"
                 cell.isAddressCell = false
                 cell.showAddContactButton = false
@@ -449,6 +440,15 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 } else {
                     cell.showCopyButton = false
                     cell.valueText = ""
+                }
+            case 7: // Note
+                if let note = model.note, !note.isEmpty {
+                    cell.titleText = "Note"
+                    cell.valueText = truncated(note, to: 32)
+                    cell.isAddressCell = false
+                    cell.showAddContactButton = false
+                    cell.showEditButton = false
+                    cell.showBlockExplorerButton = false
                 }
             default:
                 break
