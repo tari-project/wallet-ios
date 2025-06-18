@@ -44,33 +44,33 @@ final class RequestTariAmountView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var amountLabel: AnimatedBalanceLabel = {
+    @TariView private var amountLabel: AnimatedBalanceLabel = {
         let view = AnimatedBalanceLabel()
         view.animation = .type
         view.textAlignment = .center(inset: -30)
         return view
     }()
 
-    @View var keyboard: AmountKeyboardView = {
+    @TariView var keyboard: AmountKeyboardView = {
         let view = AmountKeyboardView()
         view.setup(keys: .amountKeyboard)
         return view
     }()
 
-    @View var generateQrButton: ActionButton = {
+    @TariView var generateQrButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("request.buttons.generate_qr"), for: .normal)
         return view
     }()
 
-    @View var shareButton: ActionButton = {
+    @TariView var shareButton: ActionButton = {
         let view = ActionButton()
         view.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
         return view
     }()
 
-    @View var amountContentView = UIView()
-    @View var keyboardContentView = UIView()
+    @TariView var amountContentView = UIView()
+    @TariView var keyboardContentView = UIView()
 
     // MARK: - Properties
 

@@ -45,21 +45,21 @@ final class PopUpNetworkStatusContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var topRowStackView: UIStackView = {
+    @TariView private var topRowStackView: UIStackView = {
         let view = UIStackView()
         view.distribution = .equalSpacing
         view.spacing = 36.0
         return view
     }()
 
-    @View private var bottomRowStackView: UIStackView = {
+    @TariView private var bottomRowStackView: UIStackView = {
         let view = UIStackView()
         view.distribution = .equalSpacing
         view.spacing = 36.0
         return view
     }()
 
-    @View private var columnStackView: UIStackView = {
+    @TariView private var columnStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .equalSpacing
@@ -67,31 +67,31 @@ final class PopUpNetworkStatusContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var networkStatusView: StatusView = {
+    @TariView private var networkStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: .Icons.ConnectionDetails.internet)
         return view
     }()
 
-    @View private var torStatusView: StatusView = {
+    @TariView private var torStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: .Icons.ConnectionDetails.tor)
         return view
     }()
 
-    @View private var baseNodeConnectionStatusView: StatusView = {
+    @TariView private var baseNodeConnectionStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: .Icons.Settings.baseNode)
         return view
     }()
 
-    @View private var baseNodeSyncStatusView: StatusView = {
+    @TariView private var baseNodeSyncStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: .Icons.ConnectionDetails.sync)
         return view
     }()
 
-    @View private var chainTipLabel: StylizedLabel = {
+    @TariView private var chainTipLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.normalFont = .Poppins.Medium.withSize(14.0)
         view.boldFont = .Poppins.Bold.withSize(14.0)
@@ -175,25 +175,25 @@ final class StatusView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var iconViewBackgroundView: UIView = {
+    @TariView private var iconViewBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 24.0
         return view
     }()
 
-    @View private var iconView: UIImageView = {
+    @TariView private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var statusDotView: UIView = {
+    @TariView private var statusDotView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 7.0
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center

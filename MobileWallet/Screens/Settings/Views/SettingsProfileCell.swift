@@ -45,15 +45,15 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var nameLabel: UILabel = {
+    @TariView private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(16.0)
         return view
     }()
 
-    @View private var addressView = AddressView()
+    @TariView private var addressView = AddressView()
 
-    @View private var arrowView: UIImageView = {
+    @TariView private var arrowView: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.General.cellArrow
         return view

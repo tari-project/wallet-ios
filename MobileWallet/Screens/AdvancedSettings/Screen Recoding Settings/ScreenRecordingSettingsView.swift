@@ -45,7 +45,7 @@ final class ScreenRecordingSettingsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.text = localized("screen_recording.label.description")
         view.font = .Poppins.Medium.withSize(14.0)
@@ -53,7 +53,7 @@ final class ScreenRecordingSettingsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.backgroundColor = .clear
         view.register(type: SwitchMenuCell.self)

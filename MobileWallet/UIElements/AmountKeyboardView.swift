@@ -54,7 +54,7 @@ final class AmountKeyboardView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.distribution = .equalSpacing

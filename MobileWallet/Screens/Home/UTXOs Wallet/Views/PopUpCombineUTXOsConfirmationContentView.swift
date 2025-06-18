@@ -45,7 +45,7 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var messageLabel: UILabel = {
+    @TariView private var messageLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
@@ -53,7 +53,7 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var feeLabel = UTXOsEstimationLabel()
+    @TariView private var feeLabel = UTXOsEstimationLabel()
 
     // MARK: - Properties
 

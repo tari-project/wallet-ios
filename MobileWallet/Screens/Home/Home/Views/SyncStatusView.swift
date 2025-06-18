@@ -5,19 +5,19 @@ final class SyncStatusView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var containerView: UIView = {
+    @TariView private var containerView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(12)
         label.text = "Sync in progress ⌛️"
         return label
     }()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(12)
         label.text = "Some actions may be disabled until the sync is complete."

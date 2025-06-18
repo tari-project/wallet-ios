@@ -45,9 +45,9 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var segmentedControl = TariSegmentedControl(icons: [.Icons.Fees.Speedometer.low, .Icons.Fees.Speedometer.mid, .Icons.Fees.Speedometer.high])
+    @TariView private(set) var segmentedControl = TariSegmentedControl(icons: [.Icons.Fees.Speedometer.low, .Icons.Fees.Speedometer.mid, .Icons.Fees.Speedometer.high])
 
-    @View private var estimatedFeeTitleLabel: UILabel = {
+    @TariView private var estimatedFeeTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.pop_up.adjust_fee.label.estimated_fee")
         view.textAlignment = .center
@@ -55,7 +55,7 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var estimatedFeeValueLabel: CurrencyLabelView = {
+    @TariView private var estimatedFeeValueLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
         view.font = .Poppins.Medium.withSize(26.0)
         view.iconHeight = 13.0

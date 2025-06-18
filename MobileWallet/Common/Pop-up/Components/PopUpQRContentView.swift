@@ -45,7 +45,7 @@ final class PopUpQRContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var qrCodeView = QRCodeView()
+    @TariView private var qrCodeView = QRCodeView()
 
     // MARK: - Properties
 

@@ -45,14 +45,14 @@ final class TransactionDetailsValueView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var currencyImageView: UIImageView = {
+    @TariView private var currencyImageView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.currencySymbol
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private(set) var valueLabel: UILabel = {
+    @TariView private(set) var valueLabel: UILabel = {
         let view = UILabel()
         view.minimumScaleFactor = 0.2
         view.font = Theme.shared.fonts.txScreenCurrencyValueLabel
@@ -60,13 +60,13 @@ final class TransactionDetailsValueView: DynamicThemeView {
         return view
     }()
 
-    @View private var feeLabel: UILabel = {
+    @TariView private var feeLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txFeeLabel
         return view
     }()
 
-    @View private(set) var feeButton: TextButton = {
+    @TariView private(set) var feeButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("common.fee"), for: .normal)
         view.font = .Poppins.SemiBold.withSize(13.0)

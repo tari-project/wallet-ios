@@ -51,7 +51,7 @@ final class SecondaryActionButton: DynamicThemeBaseButton {
 
     // MARK: - Subviews
 
-    @View private var pendingAnimationView: AnimationView = {
+    @TariView private var pendingAnimationView: AnimationView = {
         let view = AnimationView()
         view.animation = .named(.pendingCircleAnimation)
         view.backgroundBehavior = .pauseAndRestore

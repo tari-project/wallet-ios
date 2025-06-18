@@ -45,14 +45,14 @@ final class CurrencyLabelView: UIView {
 
     // MARK: - Subviews
 
-    @View private var currencyIcon: UIImageView = {
+    @TariView private var currencyIcon: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.currencySymbol
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.numberOfLines = 1
         view.setContentHuggingPriority(.required, for: .vertical)

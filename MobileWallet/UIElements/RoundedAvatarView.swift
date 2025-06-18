@@ -56,14 +56,14 @@ final class RoundedAvatarView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.contentMode = .scaleAspectFit
         return label
     }()
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         return imageView

@@ -45,7 +45,7 @@ final class SettingsHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
         view.numberOfLines = 0

@@ -48,7 +48,7 @@ final class AccessoryImageMenuCell: MenuCell {
     }
     // MARK: - Subviews
 
-    @View private var accessoryImageView: UIImageView = {
+    @TariView private var accessoryImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view

@@ -26,7 +26,7 @@ class VersionBadgeView: DynamicThemeView {
         }
     }
 
-    @View private var statusCircle: UIView = {
+    @TariView private var statusCircle: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(hex: 0xFF3B30) // Default to red
         view.layer.cornerRadius = 4
@@ -34,14 +34,14 @@ class VersionBadgeView: DynamicThemeView {
         return view
     }()
 
-    @View private var verticalSeparator: UIView = {
+    @TariView private var verticalSeparator: UIView = {
         let view = UIView()
         view.backgroundColor = .divider
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    @View private var versionLabel: UILabel = {
+    @TariView private var versionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
 

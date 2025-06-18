@@ -60,34 +60,34 @@ final class AddressView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.alignment = .center
         return view
     }()
 
-    @View private var prefixLabel = UILabel()
-    @View private var firstSeparator = UIView()
+    @TariView private var prefixLabel = UILabel()
+    @TariView private var firstSeparator = UIView()
 
-    @View private var addressPrefixLabel = UILabel()
+    @TariView private var addressPrefixLabel = UILabel()
 
-    @View private var dotsView: UILabel = {
+    @TariView private var dotsView: UILabel = {
         let view = UILabel()
         view.text = .dots
         return view
     }()
 
-    @View private var addressSuffixLabel = UILabel()
-    @View private var secondSeparator = UIView()
+    @TariView private var addressSuffixLabel = UILabel()
+    @TariView private var secondSeparator = UIView()
 
-    @View private var viewDetailsButton: BaseButton = {
+    @TariView private var viewDetailsButton: BaseButton = {
         let view = BaseButton()
         view.setImage(.Icons.General.info, for: .normal)
         view.showsMenuAsPrimaryAction = true
         return view
     }()
 
-    @View private var singleLabel: UILabel = {
+    @TariView private var singleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(17.0)
         view.textAlignment = .center

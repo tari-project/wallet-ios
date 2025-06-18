@@ -45,13 +45,13 @@ final class ContactBookView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var shareBar: ContactBookShareBar = {
+    @TariView private var shareBar: ContactBookShareBar = {
         let view = ContactBookShareBar()
         view.alpha = 0.0
         return view
     }()
 
-    @View private var searchTextField: SearchField = {
+    @TariView private var searchTextField: SearchField = {
         let view = SearchField()
         view.placeholder = localized("contact_book.search_bar.placeholder")
         return view

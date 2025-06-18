@@ -44,7 +44,7 @@ final class RoundedAddressView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var addressView = AddressView()
+    @TariView private var addressView = AddressView()
 
     // MARK: - Properties
 

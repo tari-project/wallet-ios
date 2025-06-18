@@ -49,7 +49,7 @@ final class TransactionDetailsContactView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var textField: UITextField = {
+    @TariView private(set) var textField: UITextField = {
         let view = UITextField()
         view.font = Theme.shared.fonts.txScreenTextLabel
         view.placeholder = localized("tx_detail.contect_name_placeholder")
@@ -59,7 +59,7 @@ final class TransactionDetailsContactView: DynamicThemeView {
         return view
     }()
 
-    @View private(set) var editButton: TextButton = {
+    @TariView private(set) var editButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.edit"), for: .normal)
         view.style = .secondary

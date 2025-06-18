@@ -45,21 +45,21 @@ final class PopUpStagedWalletSecurityHeaderView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Medium.withSize(32.0)
         return view
     }()
 
-    @View private var subtitleLabel: UILabel = {
+    @TariView private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Medium.withSize(18.0)
         return view
     }()
 
-    @View private var helpButton: BaseButton = {
+    @TariView private var helpButton: BaseButton = {
         let view = BaseButton()
         let imageConfiguration = UIImage.SymbolConfiguration(pointSize: 22.0)
         let image = UIImage(systemName: "questionmark.circle", withConfiguration: imageConfiguration)

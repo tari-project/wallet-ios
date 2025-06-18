@@ -44,7 +44,7 @@ import TariCommon
 class ConfirmationViewController: SecureViewController<ConfirmationView> {
 
     private let navigationBar = NavigationBar()
-    @View private var addressView = AddressView()
+    @TariView private var addressView = AddressView()
 
     private let paymentInfo: PaymentInfo
 

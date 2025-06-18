@@ -45,21 +45,21 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 10.0
         return view
     }()
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let view = UIImageView()
         view.image = .Images.UTXO.placeholder
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.title")
         view.textAlignment = .center
@@ -67,7 +67,7 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
         return view
     }()
 
-    @View private var subtitleLabel: UILabel = {
+    @TariView private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.subtitle")
         view.textAlignment = .center

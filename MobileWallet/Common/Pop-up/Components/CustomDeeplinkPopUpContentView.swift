@@ -45,13 +45,13 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var backgroundView: UIView = {
+    @TariView private var backgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10.0
         return view
     }()
 
-    @View private var nameLabel: UILabel = {
+    @TariView private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
@@ -59,7 +59,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var peerTitleLabel: UILabel = {
+    @TariView private var peerTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_base_node_overlay.label.peer")
         view.font = .Poppins.Black.withSize(14.0)
@@ -67,7 +67,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var peerAddressLabel: UILabel = {
+    @TariView private var peerAddressLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center
@@ -75,7 +75,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var showHideButton: TextButton = {
+    @TariView private var showHideButton: TextButton = {
         let view = TextButton()
         view.style = .secondary
         return view

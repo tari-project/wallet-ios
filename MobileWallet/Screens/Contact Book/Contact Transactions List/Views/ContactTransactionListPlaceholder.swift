@@ -44,13 +44,13 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var imageView: PaintBackgroundImageView = {
+    @TariView private var imageView: PaintBackgroundImageView = {
         let view = PaintBackgroundImageView()
         view.image = .Images.ContactBook.Placeholders.transactionList
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("contact_book.transaction_list.placeholder.label.title")
         view.textAlignment = .center
@@ -58,7 +58,7 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
         return view
     }()
 
-    @View private var messageLabel: StylizedLabel = {
+    @TariView private var messageLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
         view.numberOfLines = 0
@@ -68,7 +68,7 @@ final class ContactTransactionListPlaceholder: DynamicThemeView {
         return view
     }()
 
-    @View private var sendButton: TextButton = {
+    @TariView private var sendButton: TextButton = {
         let view = TextButton()
         view.style = .secondary
         view.setTitle(localized("contact_book.transaction_list.placeholder.button.send"), for: .normal)
@@ -146,14 +146,14 @@ final class PaintBackgroundImageView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var backgroundView: UIImageView = {
+    @TariView private var backgroundView: UIImageView = {
         let view = UIImageView()
         view.image = .Images.Security.Onboarding.background
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view

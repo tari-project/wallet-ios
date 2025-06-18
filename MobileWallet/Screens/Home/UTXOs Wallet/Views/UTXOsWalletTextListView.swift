@@ -46,7 +46,7 @@ final class UTXOsWalletTextListView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 30.0, bottom: 0.0, right: 30.0)
         view.backgroundColor = .clear

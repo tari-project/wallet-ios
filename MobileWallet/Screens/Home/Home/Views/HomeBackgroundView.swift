@@ -44,8 +44,8 @@ final class HomeBackgroundView: UIView {
 
     // MARK: - Subviews
 
-    @View private var topView = TariGradientView()
-    @View private var bottomView = WaveView()
+    @TariView private var topView = TariGradientView()
+    @TariView private var bottomView = WaveView()
 
     // MARK: - Initialisers
 

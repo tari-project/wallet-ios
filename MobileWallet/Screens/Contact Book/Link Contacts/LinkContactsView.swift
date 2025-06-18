@@ -46,7 +46,7 @@ final class LinkContactsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private(set) var infoLabel: StylizedLabel = {
+    @TariView private(set) var infoLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
         view.normalFont = .Poppins.Medium.withSize(14.0)
@@ -55,13 +55,13 @@ final class LinkContactsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private(set) var searchTextField: SearchTextField = {
+    @TariView private(set) var searchTextField: SearchTextField = {
         let view = SearchTextField()
         view.placeholder = localized("contact_book.link_contacts.text_field.search")
         return view
     }()
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
@@ -71,7 +71,7 @@ final class LinkContactsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var placeholderView: ContactBookListPlaceholder = {
+    @TariView private var placeholderView: ContactBookListPlaceholder = {
         let view = ContactBookListPlaceholder()
         view.isHidden = true
         return view

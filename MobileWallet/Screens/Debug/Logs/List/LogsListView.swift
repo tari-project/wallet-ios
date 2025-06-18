@@ -45,7 +45,7 @@ final class LogsListView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private(set) var tableView: UITableView = {
+    @TariView private(set) var tableView: UITableView = {
         let view = UITableView()
         view.rowHeight = UITableView.automaticDimension
         view.backgroundColor = .clear

@@ -92,7 +92,7 @@ final class SlideView: DynamicThemeView {
         return view
     }()
 
-    @View private var gradientBackgroundView = GradientView()
+    @TariView private var gradientBackgroundView = GradientView()
 
     // MARK: properties
 

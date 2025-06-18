@@ -63,7 +63,7 @@ final class InviteView: DynamicThemeView {
         setupViews()
     }
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(20)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -73,7 +73,7 @@ final class InviteView: DynamicThemeView {
         return label
     }()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Regular.withSize(14)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -83,7 +83,7 @@ final class InviteView: DynamicThemeView {
         return label
     }()
 
-    @View private var outlineView: UIView = {
+    @TariView private var outlineView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 25
         view.backgroundColor = .black
@@ -91,7 +91,7 @@ final class InviteView: DynamicThemeView {
         return view
     }()
 
-    @View public var linkLabel: UILabel = {
+    @TariView public var linkLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(14)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -100,7 +100,7 @@ final class InviteView: DynamicThemeView {
         return label
     }()
 
-    @View public var shareButton: UIButton = {
+    @TariView public var shareButton: UIButton = {
         let button = UIButton()
         button.setTitle("SHARE", for: .normal)
         button.setImage(.copy, for: .normal)
@@ -177,12 +177,12 @@ final class GaugeView: DynamicThemeView {
         setupViews()
     }
 
-    @View private var minedIconView: UIImageView = {
+    @TariView private var minedIconView: UIImageView = {
         let view = UIImageView()
         return view
     }()
 
-    @View private var amountLabel: UILabel = {
+    @TariView private var amountLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(22)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -190,7 +190,7 @@ final class GaugeView: DynamicThemeView {
         return label
     }()
 
-    @View private var unitLabel: UILabel = {
+    @TariView private var unitLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(15)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -198,7 +198,7 @@ final class GaugeView: DynamicThemeView {
         return label
     }()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(12)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -285,19 +285,19 @@ final class NewProfileView: DynamicThemeView {
         update(theme: theme)
     }
 
-    @View public var containerView: UIView = {
+    @TariView public var containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
 
-    @View public var loginView: UIView = {
+    @TariView public var loginView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
 
-    @View private var usernameLabel: UILabel = {
+    @TariView private var usernameLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.SemiBold.withSize(24)
         view.textAlignment = .center
@@ -306,29 +306,29 @@ final class NewProfileView: DynamicThemeView {
         return view
     }()
 
-    @View private var gaugesContainerView: UIView = {
+    @TariView private var gaugesContainerView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var minedGaugeView: GaugeView = {
+    @TariView private var minedGaugeView: GaugeView = {
         let view = GaugeView()
         view.setIcon(image: .mined)
         return view
     }()
 
-    @View private var gemsGaugeView: GaugeView = {
+    @TariView private var gemsGaugeView: GaugeView = {
         let view = GaugeView()
         view.setIcon(image: .gems)
         return view
     }()
 
-    @View public var inviteView: InviteView = {
+    @TariView public var inviteView: InviteView = {
         let view = InviteView()
         return view
     }()
 
-    @View private var invitedLabel: UILabel = {
+    @TariView private var invitedLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(18)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -336,13 +336,13 @@ final class NewProfileView: DynamicThemeView {
         return label
     }()
 
-    @View private var noInvitesImageView: UIImageView = {
+    @TariView private var noInvitesImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = .turtle
         return imageView
     }()
 
-    @View private var noInvitesTitleLabel: UILabel = {
+    @TariView private var noInvitesTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -350,7 +350,7 @@ final class NewProfileView: DynamicThemeView {
         return label
     }()
 
-    @View private var noInvitesDescriptionLabel: UILabel = {
+    @TariView private var noInvitesDescriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(12)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -359,17 +359,17 @@ final class NewProfileView: DynamicThemeView {
         return label
     }()
 
-    @View private var noInvitesView: UIView = {
+    @TariView private var noInvitesView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View public var loginBanner: UIImageView = {
+    @TariView public var loginBanner: UIImageView = {
         let view = UIImageView(image: .loginBanner)
         return view
     }()
 
-    @View private var loginTitleLabel: UILabel = {
+    @TariView private var loginTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(24)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -379,7 +379,7 @@ final class NewProfileView: DynamicThemeView {
         return label
     }()
 
-    @View private var loginDescriptionLabel: UILabel = {
+    @TariView private var loginDescriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -389,26 +389,26 @@ final class NewProfileView: DynamicThemeView {
         return label
     }()
 
-    @View private var logoutButton: StylisedButton = {
+    @TariView private var logoutButton: StylisedButton = {
         let button = StylisedButton(withStyle: .outlinedInverted, withSize: .large)
         button.setTitle("Disconnect Airdrop Account", for: .normal)
         return button
     }()
 
-    @View public var loginButton: StylisedButton = {
+    @TariView public var loginButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
         button.setTitle("Connect my airdrop account", for: .normal)
         return button
     }()
 
-    @View private var loadingIndicator: UIActivityIndicatorView = {
+    @TariView private var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         indicator.hidesWhenStopped = true
         return indicator
     }()
 
-    @View private var loadingLabel: UILabel = {
+    @TariView private var loadingLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         label.translatesAutoresizingMaskIntoConstraints = false

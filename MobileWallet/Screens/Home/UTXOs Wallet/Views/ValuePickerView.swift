@@ -45,32 +45,32 @@ final class ValuePickerView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var minusButtonBackgroundView: UIView = {
+    @TariView private var minusButtonBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 9.0
         return view
     }()
 
-    @View private var minusButton: BaseButton = {
+    @TariView private var minusButton: BaseButton = {
         let view = BaseButton()
         view.setImage(.Icons.UTXO.valuePickerMinus, for: .normal)
         return view
     }()
 
-    @View private var valueLabel: UILabel = {
+    @TariView private var valueLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Bold.withSize(22.0)
         return view
     }()
 
-    @View private var plusButtonBackgroundView: UIView = {
+    @TariView private var plusButtonBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 9.0
         return view
     }()
 
-    @View private var plusButton: BaseButton = {
+    @TariView private var plusButton: BaseButton = {
         let view = BaseButton()
         view.setImage(.Icons.UTXO.valuePickerPlus, for: .normal)
         return view

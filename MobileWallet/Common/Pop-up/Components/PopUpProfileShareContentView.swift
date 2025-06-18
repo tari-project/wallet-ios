@@ -44,13 +44,13 @@ final class PopUpProfileShareContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 40.0
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.text = localized("profile_view.pop_up.share.message", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
         view.font = .Poppins.Medium.withSize(13.0)
@@ -59,7 +59,7 @@ final class PopUpProfileShareContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var linkCodeButton: RoundedLabeledButton = {
+    @TariView private var linkCodeButton: RoundedLabeledButton = {
         let view = RoundedLabeledButton()
         view.update(image: .Icons.General.link, text: localized("profile_view.button.share.link"))
         view.buttonSize = 46.0
@@ -67,7 +67,7 @@ final class PopUpProfileShareContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var bleCodeButton: RoundedLabeledButton = {
+    @TariView private var bleCodeButton: RoundedLabeledButton = {
         let view = RoundedLabeledButton()
         view.update(image: .Icons.General.bluetooth, text: localized("profile_view.button.share.ble"))
         view.buttonSize = 46.0

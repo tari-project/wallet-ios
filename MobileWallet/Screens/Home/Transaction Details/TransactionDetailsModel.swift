@@ -303,7 +303,6 @@ final class TransactionDetailsModel {
     }
     
     var rawDetails: String {
-        // TODO: Add paymentId
         get throws {
             try """
             {

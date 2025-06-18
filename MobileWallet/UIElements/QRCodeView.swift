@@ -45,7 +45,7 @@ final class QRCodeView: UIView {
 
     // MARK: - Subviews
 
-    @View private var imageView = LoadingImageView()
+    @TariView private var imageView = LoadingImageView()
 
     // MARK: - Properties
 

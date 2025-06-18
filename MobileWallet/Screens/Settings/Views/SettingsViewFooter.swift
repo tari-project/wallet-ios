@@ -43,7 +43,7 @@ import TariCommon
 
 final class SettingsViewFooter: DynamicThemeView {
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         view.text = AppVersionFormatter.version

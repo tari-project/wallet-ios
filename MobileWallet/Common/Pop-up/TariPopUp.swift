@@ -44,9 +44,9 @@ final class TariPopUp: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var secureContentView = SecureWrapperView<UIView>()
+    @TariView private var secureContentView = SecureWrapperView<UIView>()
 
-    @View private var backgroundView: UIView = {
+    @TariView private var backgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 26.0
         return view
@@ -75,7 +75,7 @@ final class TariPopUp: DynamicThemeView {
 
     private func setupConstraints(headerSection: UIView?, contentSection: UIView?, buttonsSection: UIView?) {
 
-        @View var spacingView = UIView()
+        @TariView var spacingView = UIView()
 
         [spacingView, secureContentView].forEach(addSubview)
         secureContentView.view.addSubview(backgroundView)

@@ -45,8 +45,8 @@ final class TariPagerView: UIView {
 
    // MARK: - Subviews
 
-   @View private(set) var toolbar = PageToolbarView()
-   @View private(set) var contentView = UIView()
+   @TariView private(set) var toolbar = PageToolbarView()
+   @TariView private(set) var contentView = UIView()
 
    // MARK: - Initialisers
 

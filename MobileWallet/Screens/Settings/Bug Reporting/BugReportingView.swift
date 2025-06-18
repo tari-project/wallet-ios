@@ -45,9 +45,9 @@ final class BugReportingView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var mainContentView = KeyboardAvoidingContentView()
+    @TariView private var mainContentView = KeyboardAvoidingContentView()
 
-    @View private var headerLabel: UILabel = {
+    @TariView private var headerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.header")
         view.font = .Poppins.Medium.withSize(13.0)
@@ -55,25 +55,25 @@ final class BugReportingView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var nameTextField: UITextField = {
+    @TariView private var nameTextField: UITextField = {
         let view = UITextField()
         view.font = .Poppins.Medium.withSize(14.0)
         view.returnKeyType = .done
         return view
     }()
 
-    @View private var nameTextFieldSeparator = UIView()
+    @TariView private var nameTextFieldSeparator = UIView()
 
-    @View private var emailTextField: UITextField = {
+    @TariView private var emailTextField: UITextField = {
         let view = UITextField()
         view.font = .Poppins.Medium.withSize(14.0)
         view.returnKeyType = .done
         return view
     }()
 
-    @View private var emailTextFieldSeparator = UIView()
+    @TariView private var emailTextFieldSeparator = UIView()
 
-    @View private var messageHeaderLabel: UILabel = {
+    @TariView private var messageHeaderLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.message_header")
         view.font = .Poppins.Medium.withSize(13.0)
@@ -81,7 +81,7 @@ final class BugReportingView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var messageTextView: UITextView = {
+    @TariView private var messageTextView: UITextView = {
         let view = UITextView()
         view.layer.cornerRadius = 10.0
         view.font = .Poppins.Medium.withSize(13.0)
@@ -90,7 +90,7 @@ final class BugReportingView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var footerLabel: UILabel = {
+    @TariView private var footerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.footer")
         view.font = .Poppins.Medium.withSize(14.0)
@@ -98,13 +98,13 @@ final class BugReportingView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var sendButton: ActionButton = {
+    @TariView private var sendButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("bug_reporting.button.send"), for: .normal)
         return view
     }()
 
-    @View private var logsButton: TextButton = {
+    @TariView private var logsButton: TextButton = {
         let view = TextButton()
         view.style = .secondary
         view.setTitle(localized("bug_reporting.button.view_logs"), for: .normal)

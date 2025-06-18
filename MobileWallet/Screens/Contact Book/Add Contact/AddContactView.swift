@@ -44,24 +44,24 @@ final class AddContactView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var searchViewBackgroundView = UIView()
+    @TariView private var searchViewBackgroundView = UIView()
 
-    @View private(set) var searchView: ContactSearchView = {
+    @TariView private(set) var searchView: ContactSearchView = {
         let view = ContactSearchView()
         view.textField.placeholder = localized("contact_book.add_contact.text_field.search.placeholder")
         view.previewText = nil
         return view
     }()
 
-    @View private(set) var nameTextField: UITextField = {
+    @TariView private(set) var nameTextField: UITextField = {
         let view = UITextField()
         view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
-    @View private var nameTextFieldSeparator = UIView()
+    @TariView private var nameTextFieldSeparator = UIView()
 
-    @View private var errorLabel: UILabel = {
+    @TariView private var errorLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Medium.withSize(14.0)

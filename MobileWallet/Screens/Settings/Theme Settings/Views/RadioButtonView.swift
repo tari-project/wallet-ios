@@ -45,7 +45,7 @@ final class RadioButtonView: UIView {
 
     // MARK: - Subviews
 
-    @View private var dotView: UIView = {
+    @TariView private var dotView: UIView = {
         let view = UIView()
         view.isHidden = true
         return view

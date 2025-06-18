@@ -51,7 +51,7 @@ final class PopUpUTXOsBreakContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.pop_up.break.description")
         view.textAlignment = .center
@@ -60,21 +60,21 @@ final class PopUpUTXOsBreakContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var valuePicker: ValuePickerView = {
+    @TariView private var valuePicker: ValuePickerView = {
         let view = ValuePickerView()
         view.minValue = minimumValue
         view.maxValue = maximumValue
         return view
     }()
 
-    @View private var valueSlider: UISlider = {
+    @TariView private var valueSlider: UISlider = {
         let view = UISlider()
         view.minimumValue = Float(minimumValue)
         view.maximumValue = Float(maximumValue)
         return view
     }()
 
-    @View private var estimationLabel = UTXOsEstimationLabel()
+    @TariView private var estimationLabel = UTXOsEstimationLabel()
 
     // MARK: - Properties
 

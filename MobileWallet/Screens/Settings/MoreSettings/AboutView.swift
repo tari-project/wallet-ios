@@ -60,7 +60,7 @@ final class AboutView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var tableView: BaseMenuTableView = {
+    @TariView private var tableView: BaseMenuTableView = {
         let view = BaseMenuTableView()
         view.register(type: AboutViewCell.self)
         view.separatorStyle = .none

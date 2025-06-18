@@ -44,9 +44,9 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var mainContentView = KeyboardAvoidingContentView()
+    @TariView private var mainContentView = KeyboardAvoidingContentView()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14)
         view.text = localized("restore_from_seed_words.label.description")
@@ -55,16 +55,16 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
         return view
     }()
 
-    @View var tokenView = TokenCollectionView()
+    @TariView var tokenView = TokenCollectionView()
 
-    @View private(set) var selectBaseNodeButton: TextButton = {
+    @TariView private(set) var selectBaseNodeButton: TextButton = {
         let view = TextButton()
         view.style = .secondary
         view.isHidden = !TariSettings.showDisabledFeatures
         return view
     }()
 
-    @View private(set) var submitButton: StylisedButton = {
+    @TariView private(set) var submitButton: StylisedButton = {
         let view = StylisedButton(withStyle: .primary, withSize: .large)
         view.setTitle(localized("restore_from_seed_words.button.submit"), for: .normal)
         return view

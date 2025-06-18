@@ -45,7 +45,7 @@ final class BackupWalletSettingsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var tableView: BaseMenuTableView = {
+    @TariView private var tableView: BaseMenuTableView = {
         let view = BaseMenuTableView()
         view.register(type: SystemMenuTableViewCell.self)
         return view
