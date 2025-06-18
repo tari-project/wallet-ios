@@ -61,7 +61,7 @@ extension TariNetwork {
             blockExplorerURL: URL(string: "https://explore.tari.com"),
             currencySymbol: "XTM",
             minValidVersion: "2.0.0-alpha.1",
-            version: "4.4.0"
+            version: "4.5.0"
         )
     }
 
