@@ -113,8 +113,8 @@ extension UIViewController {
     }
     
     private func moveToNewDesignsScene() {
-        if navigationController?.topViewController is UIHostingController<DesignSystemView> { return }
-        let designViewController = UIHostingController(rootView: DesignSystemView())
+        if navigationController?.topViewController is UIHostingController<NewDesignSystem> { return }
+        let designViewController = UIHostingController(rootView: NewDesignSystem())
         let navigationController = AlwaysPoppableNavigationController(rootViewController: designViewController)
         navigationController.setNavigationBarHidden(true, animated: false)
         present(navigationController, animated: true)

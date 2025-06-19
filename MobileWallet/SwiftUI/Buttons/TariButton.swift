@@ -49,6 +49,7 @@ enum TariButtonSize {
 }
 
 struct TariButton: View {
+    @Environment(\.isEnabled) var isEnabled
     let text: String
     let style: TariButtonStyle
     let size: TariButtonSize
@@ -65,16 +66,18 @@ struct TariButton: View {
         Button(action: action) {
             Text(text)
                 .font(size.font)
-                .foregroundStyle(style.textColor)
+                .foregroundStyle(isEnabled ? style.textColor : .Action.disabled)
                 .padding(size.horizontalPadding)
                 .frame(maxWidth: size.width, maxHeight: size.height)
                 .background {
                     ZStack {
-                        Capsule()
-                            .fill(style.backgroundColor)
+                        if let background = style.backgroundColor {
+                            Capsule()
+                                .fill(isEnabled ? background : .Action.disabledBackground)
+                        }
                         if let stroke = style.strokeColor {
                             Capsule()
-                                .stroke(stroke, lineWidth: 1)
+                                .stroke(isEnabled ? stroke : .Action.disabledBackground, lineWidth: 1)
                         }
                     }
                 }
@@ -91,11 +94,11 @@ private extension TariButtonStyle {
         }
     }
     
-    var backgroundColor: Color {
+    var backgroundColor: Color? {
         switch self {
         case .primary: .Text.primary
         case .secondary: .Primary.main
-        case .outlined, .text: .clear
+        case .outlined, .text: nil
         }
     }
     
@@ -144,6 +147,8 @@ private extension TariButtonSize {
         TariButton("Tap me!", style: .primary, size: .large) { }
         TariButton("No me!", style: .secondary, size: .medium) { }
         TariButton("Button", style: .outlined, size: .small) { }
+        TariButton("Disabled", style: .secondary, size: .medium) { }
+            .disabled(true)
     }
     .padding()
 }
