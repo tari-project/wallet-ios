@@ -480,8 +480,10 @@ private extension TransactionDetailsViewController {
             // For address cell, copy the full address based on current format
             let fullAddress = model.isEmojiFormat == true ? addressComponents.fullEmoji : addressComponents.fullRaw
             UIPasteboard.general.string = fullAddress
-        } else if rowIndex == 5, let paymentReference = model.paymentReference?.paymentReference {
+        } else if rowIndex == 6, let paymentReference = model.paymentReference?.paymentReference {
             UIPasteboard.general.string = paymentReference
+        } else if rowIndex == 7, let note = model.note {
+            UIPasteboard.general.string = note
         } else {
             // For other cells, copy the displayed value
             UIPasteboard.general.string = value
