@@ -1,10 +1,10 @@
-//  UIFont+FontStyle.swift
-
+//  PaymentReferences.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 18.06.2020
-	Using Swift 5.0
-	Running on macOS 10.15
+	Created by Tomas Hakel on 13.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,29 +38,32 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-
-extension UIFont {
-    enum Poppins: String {
-        case Bold
-        case Medium
-        case Light
-        case Black
-        case SemiBold
-        case Regular
-
-        func withSize(_ size: CGFloat) -> UIFont {
-            UIFont(name: "Poppins-" + self.rawValue, size: size)!
+final class PaymentReferences {
+    var count: UInt32 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = payment_records_get_length(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
         }
-
     }
+    
+    private let pointer: OpaquePointer
 
-    enum DrukWideTrial: String {
-        case Bold
-
-        func withSize(_ size: CGFloat) -> UIFont {
-            UIFont(name: "DrukWideTrial-" + self.rawValue, size: size)!
-        }
-
+    init(pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
+    
+    func paymentReference(at index: UInt32) throws -> PaymentReference {
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = payment_records_get_at(pointer, index, errorCodePointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return PaymentReference(pointer: result)
+    }
+    
+    deinit {
+        payment_records_destroy(pointer)
     }
 }

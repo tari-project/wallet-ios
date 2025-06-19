@@ -52,6 +52,7 @@ final class TransactionDetailsModel {
     @Published private(set) var fee: String?
     @Published private(set) var total: String?
     @Published private(set) var transactionDirection: String?
+    @Published private(set) var paymentReference: PaymentReference?
     @Published private(set) var addressComponents: TariAddressComponents?
     @Published private(set) var userAlias: String?
     @Published private(set) var isContactSectionVisible: Bool = true
@@ -70,6 +71,7 @@ final class TransactionDetailsModel {
     @Published private(set) var isCoinbase: Bool = false
     @Published private(set) var isEmojiFormat: Bool = true
     @Published private(set) var isInbound: Bool = false
+    @Published private(set) var walletBlockHeight: UInt64 = 0
 
     var isContactExist: Bool { contactModel?.isFFIContact == true }
     var contactHaveSplittedName: Bool { contactModel?.hasIntrenalModel ?? false }
@@ -88,6 +90,10 @@ final class TransactionDetailsModel {
     private var transactionSignature: String?
 
     private var cancellables = Set<AnyCancellable>()
+    
+    var minedBlockHeight: UInt64 {
+        (try? (transaction as? CompletedTransaction)?.minedBlockHeight) ?? 0
+    }
 
     // MARK: - Initialisers
 
@@ -98,17 +104,28 @@ final class TransactionDetailsModel {
     }
 
     // MARK: - Setups
+    private func transactions() -> TariTransactionsService {
+        Tari.shared.wallet(.main).transactions
+    }
 
     private func setupCallbacks() {
-
-        let service = Tari.shared.wallet(.main).transactions
+        let service = transactions()
 
         Publishers.Merge5(service.$receivedTransactionReply, service.$receivedFinalizedTransaction, service.$transactionBroadcast, service.$unconfirmedTransactionMined, service.$transactionMined)
             .compactMap { $0 }
-            .filter { [unowned self] in (try? $0.identifier) == (try? self.transaction.identifier) }
+            .filter { [weak self] in (try? $0.identifier) == (try? self?.transaction.identifier) }
             .sink { [weak self] in self?.handle(transaction: $0) }
             .store(in: &cancellables)
-
+        
+        Tari.shared.wallet(.main).connectionCallbacks
+            .$blockHeight
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.walletBlockHeight = $0
+                self?.loadPaymentReference()
+            }
+            .store(in: &cancellables)
+        
         $userAlias
             .map { $0 != nil }
             .sink { [weak self] in self?.handle(isUserAliasExist: $0) }
@@ -155,11 +172,18 @@ final class TransactionDetailsModel {
             }
 
             isInbound = (try? transaction.isOutboundTransaction) == false
+            loadPaymentReference()
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"), type: .error)
         }
 
         handleTransactionKernel()
+    }
+    
+    func loadPaymentReference() {
+        if let reference = try? transactions().paymentReference(transaction: transaction) {
+            paymentReference = reference
+        }
     }
 
     func cancelTransactionRequest() {
@@ -169,7 +193,7 @@ final class TransactionDetailsModel {
                 errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"), type: .error)
                 return
             }
-            wasTransactionCanceled = try Tari.shared.wallet(.main).transactions.cancelPendingTransaction(identifier: transaction.identifier)
+            wasTransactionCanceled = try transactions().cancelPendingTransaction(identifier: transaction.identifier)
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: nil, type: .error)
         }
@@ -277,6 +301,42 @@ final class TransactionDetailsModel {
     func requestLinkToBlockExplorer() {
         linkToOpen = fetchLinkToOpen()
     }
+    
+    var rawDetails: String {
+        // TODO: Add paymentId
+        get throws {
+            try """
+            {
+            "id": "\(identifier ?? "-")",
+            "direction": "\(isInbound ? "INBOUND" : "OUTBOUND")",
+            "amount": "\(amount ?? "-")",
+            "timestamp": "\(timestamp ?? 0)",
+            "status": "\(fetchStatusText() ?? "-")",
+            "fee": "\(fee ?? "-")",
+            "paymentID": "\(transactionMessage ?? "-")"
+            "confirmationCount": "\(transactionConfirmationCount ?? 0)",
+            "minedHeight": "\(walletBlockHeight)",
+            "nounce": "\(transactionNounce ?? "-")",
+            "signature": "\(transactionSignature ?? "-")"
+            }
+            """
+        }
+    }
+    
+    var requiredPaymentReferenceConfirmationCount: UInt64 { 5 }
+    
+    var paymentReferenceConfirmationCount: UInt64 {
+        guard let paymentReference else { return 0 }
+        return UInt64(max(0, Int64(walletBlockHeight) - Int64(paymentReference.blockHeight)))
+    }
+    
+    var isPaymentReferenceConfirmed: Bool {
+        requiredPaymentReferenceConfirmationCount <= paymentReferenceConfirmationCount
+    }
+    
+    var transactionConfirmationCount: UInt64? {
+        try? (transaction as? CompletedTransaction)?.confirmationCount
+    }
 
     // MARK: - Helpers
 
@@ -317,7 +377,7 @@ final class TransactionDetailsModel {
             return nil
         }
 
-        let requiredConfirmationCount = try Tari.shared.wallet(.main).transactions.requiredConfirmationsCount
+        let requiredConfirmationCount = try transactions().requiredConfirmationsCount
 
         switch try transaction.status {
         case .pending:
@@ -380,43 +440,43 @@ final class TransactionDetailsModel {
         guard !transaction.isCancelled else {
             return "Payment Cancelled"
         }
+        let requiredConfirmationCount = try transactions().requiredConfirmationsCount
 
-        let requiredConfirmationCount = try Tari.shared.wallet(.main).transactions.requiredConfirmationsCount
-
-        switch try transaction.status {
+        return switch try transaction.status {
         case .pending:
-            return try transaction.isOutboundTransaction ? "Waiting for recipient" : "Waiting for sender"
+            try transaction.isOutboundTransaction ? "Waiting for recipient" : "Waiting for sender"
         case .broadcast, .completed:
-            return "Final processing (1/\(requiredConfirmationCount + 1))"
+            "Final processing (1/\(requiredConfirmationCount + 1))"
         case .minedUnconfirmed:
-            guard let confirmationCount = try (transaction as? CompletedTransaction)?.confirmationCount else {
-                return "Final processing (1/\(requiredConfirmationCount + 1))"
+            if let confirmationCount = transactionConfirmationCount {
+                "Final processing (\(confirmationCount + 1)/\(requiredConfirmationCount + 1))"
+            } else {
+                "Final processing (1/\(requiredConfirmationCount + 1))"
             }
-            return "Final processing (\(confirmationCount + 1)/\(requiredConfirmationCount + 1))"
         case .txNullError:
-            return "Transaction Error"
+            "Transaction Error"
         case .imported:
-            return "Imported"
+            "Imported"
         case .minedConfirmed:
-            return "Mined (Confirmed)"
+            "Mined (Confirmed)"
         case .unknown:
-            return "Unknown"
+            "Unknown"
         case .rejected:
-            return "Rejected"
+            "Rejected"
         case .oneSidedUnconfirmed:
-            return "One-Sided (Unconfirmed)"
+            "One-Sided (Unconfirmed)"
         case .oneSidedConfirmed:
-            return "One-Sided (Confirmed)"
+            "One-Sided (Confirmed)"
         case .queued:
-            return "Queued"
+            "Queued"
         case .coinbase:
-            return "Coinbase"
+            "Coinbase"
         case .coinbaseUnconfirmed:
-            return "Coinbase (Unconfirmed)"
+            "Coinbase (Unconfirmed)"
         case .coinbaseConfirmed:
-            return "Coinbase (Confirmed)"
+            "Coinbase (Confirmed)"
         case .coinbaseNotInBlockChain:
-            return "Coinbase (Not in Blockchain)"
+            "Coinbase (Not in Blockchain)"
         }
     }
 
@@ -426,10 +486,14 @@ final class TransactionDetailsModel {
     }
 
     private func handleMessage() throws {
-        let message = try transaction.message
-        // If note is "None", show empty string
-        note = message == "None" ? "" : message
+        note = transactionMessage
         gifMedia = nil
+    }
+    
+    var transactionMessage: String? {
+        guard let message = try? transaction.message else { return nil }
+        // If note is "None", show empty string
+        return message == "None" ? "" : message.hex()
     }
 
     private func handleTransactionKernel() {

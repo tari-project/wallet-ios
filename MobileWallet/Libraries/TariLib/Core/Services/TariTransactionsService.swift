@@ -112,14 +112,19 @@ final class TariTransactionsService: CoreTariService {
 
     private func fetchData() {
         do {
-            completed = try completedTransactions
-            cancelled = try cancelledTransactions
-            pendingInbound = try pendingInboundTransactions
-            pendingOutbound = try pendingOutboundTransactions
+            let completed = try completedTransactions
+            let cancelled = try cancelledTransactions
+            let pendingInbound = try pendingInboundTransactions
+            let pendingOutbound = try pendingOutboundTransactions
 
-            all = try (completed + cancelled + pendingInbound + pendingOutbound)
-                .sorted { try $0.timestamp > $1.timestamp }
-
+            Task { @MainActor in
+                self.completed = completed
+                self.cancelled = cancelled
+                self.pendingInbound = pendingInbound
+                self.pendingOutbound = pendingOutbound
+                self.all = try (completed + cancelled + pendingInbound + pendingOutbound)
+                    .sorted { try $0.timestamp > $1.timestamp }
+            }
         } catch {
             self.error = error
         }
@@ -196,7 +201,7 @@ final class TariTransactionsService: CoreTariService {
         try walletManager.cancelPendingTransaction(identifier: identifier)
     }
 
-    func send(toAddress address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool, paymentID: String,
+    func send(toAddress address: TariAddress, amount: UInt64, feePerGram: UInt64, isOneSidedPayment: Bool, paymentID: String,
               kernelsCount: UInt32 = TariConstants.defaultKernelCount, outputsCount: UInt32 = TariConstants.defaultOutputCount) throws -> UInt64 {
 
         let estimatedFee = try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
@@ -207,7 +212,11 @@ final class TariTransactionsService: CoreTariService {
             throw InternalError.insufficientFunds(spendableMicroTari: availableBalance)
         }
 
-        return try walletManager.sendTransaction(address: address, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment, paymentID: paymentID)
+        return try walletManager.sendTransaction(address: address, amount: amount, feePerGram: feePerGram, isOneSidedPayment: isOneSidedPayment, paymentID: paymentID)
+    }
+    
+    func paymentReference(transaction: Transaction) throws -> PaymentReference? {
+        try walletManager.paymentReference(transaction: transaction)
     }
 }
 

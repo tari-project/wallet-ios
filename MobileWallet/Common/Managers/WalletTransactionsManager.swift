@@ -62,7 +62,7 @@ final class WalletTransactionsManager {
 
     // MARK: - Actions
 
-    func performTransactionPublisher(address: String, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
+    func performTransactionPublisher(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
 
         let subject = CurrentValueSubject<State, TransactionError>(.connectionCheck)
 
@@ -72,7 +72,7 @@ final class WalletTransactionsManager {
                 if !isOneSidedPayment {
                     subject.send(.transaction)
                 }
-                self?.sendTransactionToBlockchain(address: address, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment) { result in
+                self?.sendTransactionToBlockchain(address: address, amount: amount, feePerGram: feePerGram, paymentID: paymentID, isOneSidedPayment: isOneSidedPayment) { result in
                     switch result {
                     case .success:
                         subject.send(completion: .finished)
@@ -109,7 +109,7 @@ final class WalletTransactionsManager {
             .store(in: &cancellables)
     }
 
-    private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
         do {
             let tariAddress = try TariAddress(base58: address)
@@ -117,9 +117,8 @@ final class WalletTransactionsManager {
                 toAddress: tariAddress,
                 amount: amount.rawValue,
                 feePerGram: feePerGram.rawValue,
-                message: message,
                 isOneSidedPayment: isOneSidedPayment,
-                paymentID: message
+                paymentID: paymentID
             )
 
             guard !isOneSidedPayment else {

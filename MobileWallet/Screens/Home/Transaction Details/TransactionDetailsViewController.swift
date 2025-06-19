@@ -67,6 +67,13 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         view.alpha = 0
         return view
     }()
+    
+    @View public var copyDetailsButton: StylisedButton = {
+        let button = StylisedButton(withStyle: .outlined, withSize: .large)
+        button.setTitle("Copy Raw Details", for: .normal)
+        button.setImage(.sendCopy.withRenderingMode(.alwaysTemplate), for: .normal)
+        return button
+    }()
 
     @View private var toastLabel: UILabel = {
         let view = UILabel()
@@ -116,6 +123,7 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
     private func setupViews() {
         view.backgroundColor = .Background.primary
         view.addSubview(tableView)
+        view.addSubview(copyDetailsButton)
         view.addSubview(toastView)
         toastView.addSubview(toastLabel)
     }
@@ -130,6 +138,12 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
             toastView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             toastView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             toastView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -40),
+            
+            copyDetailsButton.topAnchor.constraint(equalTo: toastView.topAnchor, constant: 8),
+            copyDetailsButton.leadingAnchor.constraint(equalTo: toastView.leadingAnchor, constant: 16),
+            copyDetailsButton.trailingAnchor.constraint(equalTo: toastView.trailingAnchor, constant: -16),
+            copyDetailsButton.bottomAnchor.constraint(equalTo: toastView.bottomAnchor, constant: -8),
+            
             toastLabel.topAnchor.constraint(equalTo: toastView.topAnchor, constant: 8),
             toastLabel.leadingAnchor.constraint(equalTo: toastView.leadingAnchor, constant: 16),
             toastLabel.trailingAnchor.constraint(equalTo: toastView.trailingAnchor, constant: -16),
@@ -195,6 +209,14 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
                 self?.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
             }
             .store(in: &cancellables)
+        
+        model.$paymentReference
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                // Only reload the direction cell
+                self?.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+            }
+            .store(in: &cancellables)
 
         model.$note
             .receive(on: DispatchQueue.main)
@@ -245,6 +267,12 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.userAliasUpdateSuccessCallback = {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
+        
+        copyDetailsButton.onTap = { [weak self] in
+            if let details = try? self?.model.rawDetails {
+                UIPasteboard.general.string = details
+            }
+        }
     }
 
     private func findContactNameCellIndexPath() -> IndexPath? {
@@ -277,43 +305,6 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         model.resetAlias()
     }
 
-    private func statusText(for status: TransactionStatus) -> String {
-        switch status {
-        case .unknown:
-            return "Unknown"
-        case .txNullError:
-            return "Transaction Error"
-        case .completed:
-            return "Completed"
-        case .broadcast:
-            return "Broadcast"
-        case .minedUnconfirmed:
-            return "Mined (Unconfirmed)"
-        case .imported:
-            return "Imported"
-        case .pending:
-            return "Pending"
-        case .coinbase:
-            return "Coinbase"
-        case .minedConfirmed:
-            return "Mined (Confirmed)"
-        case .rejected:
-            return "Rejected"
-        case .oneSidedUnconfirmed:
-            return "One-Sided (Unconfirmed)"
-        case .oneSidedConfirmed:
-            return "One-Sided (Confirmed)"
-        case .queued:
-            return "Queued"
-        case .coinbaseUnconfirmed:
-            return "Coinbase (Unconfirmed)"
-        case .coinbaseConfirmed:
-            return "Coinbase (Confirmed)"
-        case .coinbaseNotInBlockChain:
-            return "Coinbase (Not in Blockchain)"
-        }
-    }
-
     private func truncateEmojiAddress(_ address: String) -> String {
         guard address.count > 8 else { return address }
         let start = address.prefix(4)
@@ -344,18 +335,19 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
 extension TransactionDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let extraCellCount = model.paymentReference?.paymentReference != nil ? 1 : 0
         // Hide Contact Name, Note, Address, and Fee rows for coinbase transactions
         if model.isCoinbase {
-            return 4 // Paid, Date, Txn ID, Status, Total (removed Fee)
+            return 4 + extraCellCount // Paid, Date, Txn ID, Status, Total (removed Fee)
         }
         // Add note row only if there's a non-empty note
-        let baseRows = 7 // Paid, To/From, Contact Name, Date, Txn ID, Status, Total (removed Fee)
+        let baseRows = 7 + extraCellCount // Paid, To/From, Contact Name, Date, Txn ID, Status, Total (removed Fee)
         return (model.note?.isEmpty == false) ? baseRows : baseRows - 1
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
-        case 7:
+        case model.paymentReference != nil ? 8 : 7:
             let cell = tableView.dequeueReusableCell(type: TransactionTotalCell.self, indexPath: indexPath)
             cell.totalText = model.total
             return cell
@@ -380,18 +372,18 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.isAddressCell = false
             case 1:
                 cell.titleText = model.transactionDirection
-                if let emojiAddress = model.addressComponents?.fullEmoji {
+//                if let emojiAddress = model.addressComponents?.fullEmoji {
 //                    if model.isEmojiFormat {
 //                        cell.valueText = truncateEmojiAddress(emojiAddress)
-//                    } else
-                    if let baseAddress = model.addressComponents?.fullRaw {
-                        cell.valueText = baseAddress.shortenedMiddle(to: 20)
-                    }
-                    cell.isAddressCell = true
-                    cell.isEmojiFormat = model.isEmojiFormat
-                    cell.onAddressFormatToggle = { [weak self] _ in
-                        self?.model.toggleAddressFormat()
-                    }
+//                    }
+                // TODO: Add emoji/base58 address toggle
+                if let baseAddress = model.addressComponents?.fullRaw {
+                    cell.valueText = baseAddress.shortenedMiddle(to: 20)
+                }
+                cell.isAddressCell = true
+                cell.isEmojiFormat = model.isEmojiFormat
+                cell.onAddressFormatToggle = { [weak self] _ in
+                    self?.model.toggleAddressFormat()
                 }
             case 2:
                 cell.titleText = "Contact Name"
@@ -422,22 +414,37 @@ extension TransactionDetailsViewController: UITableViewDataSource {
                 cell.onCopyButtonTap = nil
                 cell.showCopyButton = false
             case 4: // Transaction ID
-                cell.titleText = "Transaction ID"
-                cell.valueText = model.identifier
+                cell.titleText = "Mined in Block Height"
+                cell.valueText = model.minedBlockHeight != 0 ? "\(model.minedBlockHeight)" : "-"
                 cell.isAddressCell = false
-                cell.showBlockExplorerButton = model.isBlockExplorerActionAvailable
+                cell.showBlockExplorerButton = 0 < model.minedBlockHeight && model.isBlockExplorerActionAvailable
                 cell.onBlockExplorerButtonTap = { [weak self] in
                     self?.model.requestLinkToBlockExplorer()
                 }
+                cell.showCopyButton = false
             case 5: // Status
                 cell.titleText = "Status"
                 cell.valueText = model.statusText ?? ""
                 cell.isAddressCell = false
                 cell.showCopyButton = false
-            case 6: // Note
+            case 6: // Payment reference
+                cell.titleText = "Payment Reference"
+                cell.isAddressCell = false
+                cell.showAddContactButton = false
+                cell.showEditButton = false
+                cell.showBlockExplorerButton = false
+                
+                if let paymentReferenceValue = paymentReferenceValue() {
+                    cell.valueText = paymentReferenceValue
+                    cell.showCopyButton = model.isPaymentReferenceConfirmed
+                } else {
+                    cell.showCopyButton = false
+                    cell.valueText = ""
+                }
+            case 7: // Note
                 if let note = model.note, !note.isEmpty {
                     cell.titleText = "Note"
-                    cell.valueText = note
+                    cell.valueText = truncated(note, to: 32)
                     cell.isAddressCell = false
                     cell.showAddContactButton = false
                     cell.showEditButton = false
@@ -448,18 +455,45 @@ extension TransactionDetailsViewController: UITableViewDataSource {
             }
 
             cell.onCopyButtonTap = { [weak self] value in
-                if rowIndex == 1, let addressComponents = self?.model.addressComponents {
-                    // For address cell, copy the full address based on current format
-                    let fullAddress = self?.model.isEmojiFormat == true ? addressComponents.fullEmoji : addressComponents.fullRaw
-                    UIPasteboard.general.string = fullAddress
-                } else {
-                    // For other cells, copy the displayed value
-                    UIPasteboard.general.string = value
-                }
-                self?.showToast()
+                self?.copyAction(value: value, at: rowIndex)
             }
-
             return cell
+        }
+    }
+}
+
+private extension TransactionDetailsViewController {
+    func paymentReferenceValue() -> String? {
+        guard let reference = model.paymentReference else { return nil }
+        let requiredConfirmations: UInt64 = 5
+        let confirmations = model.paymentReferenceConfirmationCount
+        if confirmations < requiredConfirmations {
+            return "Waiting for \(requiredConfirmations) block confirmations (\(confirmations) of \(requiredConfirmations))"
+        } else if let paymentReference = reference.paymentReference {
+            return truncated(paymentReference, to: 32)
+        }
+        return "-"
+    }
+    
+    func copyAction(value: String?, at rowIndex: Int) {
+        if rowIndex == 1, let addressComponents = model.addressComponents {
+            // For address cell, copy the full address based on current format
+            let fullAddress = model.isEmojiFormat == true ? addressComponents.fullEmoji : addressComponents.fullRaw
+            UIPasteboard.general.string = fullAddress
+        } else if rowIndex == 5, let paymentReference = model.paymentReference?.paymentReference {
+            UIPasteboard.general.string = paymentReference
+        } else {
+            // For other cells, copy the displayed value
+            UIPasteboard.general.string = value
+        }
+        showToast()
+    }
+    
+    func truncated(_ value: String, to length: Int) -> String {
+        if length < value.lengthOfBytes(using: .utf8) {
+            value.prefix(length / 2) + "..." + value.suffix(length / 2)
+        } else {
+            value
         }
     }
 }
