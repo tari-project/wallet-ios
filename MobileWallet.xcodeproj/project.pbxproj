@@ -597,7 +597,7 @@
 		F8214FF02DFC1728003EBB25 /* PaymentReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */; };
 		F8214FF22DFC1BD2003EBB25 /* PaymentReferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */; };
 		F8214FF42DFC4E42003EBB25 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */; };
-		F82150012E02BF62003EBB25 /* DesignSystemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150002E02BF2A003EBB25 /* DesignSystemView.swift */; };
+		F82150012E02BF62003EBB25 /* NewDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150002E02BF2A003EBB25 /* NewDesignSystem.swift */; };
 		F82150052E02DEE6003EBB25 /* TariButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150042E02DEE6003EBB25 /* TariButton.swift */; };
 		F82150082E02ECFB003EBB25 /* Text+Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150072E02ECF4003EBB25 /* Text+Typography.swift */; };
 		F821500A2E030A71003EBB25 /* Font+Poppins.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150092E030A6C003EBB25 /* Font+Poppins.swift */; };
@@ -1226,7 +1226,7 @@
 		F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReference.swift; sourceTree = "<group>"; };
 		F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReferences.swift; sourceTree = "<group>"; };
 		F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
-		F82150002E02BF2A003EBB25 /* DesignSystemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemView.swift; sourceTree = "<group>"; };
+		F82150002E02BF2A003EBB25 /* NewDesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDesignSystem.swift; sourceTree = "<group>"; };
 		F82150042E02DEE6003EBB25 /* TariButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariButton.swift; sourceTree = "<group>"; };
 		F82150072E02ECF4003EBB25 /* Text+Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Typography.swift"; sourceTree = "<group>"; };
 		F82150092E030A6C003EBB25 /* Font+Poppins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Poppins.swift"; sourceTree = "<group>"; };
@@ -1455,7 +1455,7 @@
 				3A7DAB8C28FDAF58002CC013 /* Logs */,
 				3ABC7E9428FECFB200EAC852 /* UIViewController+DebugMenu.swift */,
 				711D7FA12D511F760080A987 /* DesignSystemViewController.swift */,
-				F82150002E02BF2A003EBB25 /* DesignSystemView.swift */,
+				F82150002E02BF2A003EBB25 /* NewDesignSystem.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -3723,7 +3723,7 @@
 				3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */,
-				F82150012E02BF62003EBB25 /* DesignSystemView.swift in Sources */,
+				F82150012E02BF62003EBB25 /* NewDesignSystem.swift in Sources */,
 				5449192E2C9301A7008F1173 /* WalletContainer.swift in Sources */,
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				3A03682E27DF20E300F304A2 /* TransactionDetailsViewController.swift in Sources */,

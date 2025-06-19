@@ -47,15 +47,11 @@ final class DesignSystemViewController: DynamicThemeViewController {
     // MARK: - Properties
 
     @TariView private var scrollView: UIScrollView = {
-        return UIScrollView()
+        UIScrollView()
     }()
 
     @TariView private var contentView: UIView = {
-        return UIView()
-    }()
-    
-    @TariView private var swiftUIDS: UIView = {
-        UIHostingController(rootView: DesignSystemView()).view
+        UIView()
     }()
 
     @TariView private var largePrimaryButton: StylisedButton = {
@@ -193,9 +189,7 @@ final class DesignSystemViewController: DynamicThemeViewController {
 
     private func setupViews() {
         view.addSubview(scrollView)
-//        scrollView.addSubview(contentView)
-        scrollView.addSubview(swiftUIDS)
-
+        scrollView.addSubview(contentView)
         update(theme: theme)
     }
 
@@ -297,48 +291,43 @@ final class DesignSystemViewController: DynamicThemeViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
-            swiftUIDS.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            swiftUIDS.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            swiftUIDS.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            swiftUIDS.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            
-//            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-//            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-//            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-//            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-//            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
        ])
 
-//        let elements = uiElements()
-//
-//        elements.forEach{contentView.addSubview($0)}
-//
-//        let spacing = 30.0
-//
-//        var constraints: [NSLayoutConstraint] = []
-//
-//        for (index, view) in elements.enumerated() {
-//
-//            if index == 0 {
-//                constraints.append(contentsOf: [
-//                    view.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-//                    view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: spacing)
-//                ])
-//            } else {
-//                let previousView = elements[index-1]
-//
-//                constraints.append(contentsOf: [
-//                    view.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-//                    view.topAnchor.constraint(equalTo: previousView.bottomAnchor, constant: spacing)
-//                ])
-//
-//                if index == elements.count-1 {
-//                    constraints.append(view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -spacing))
-//                }
-//            }
-//        }
-//
-//        NSLayoutConstraint.activate(constraints)
+        let elements = uiElements()
+
+        elements.forEach{contentView.addSubview($0)}
+
+        let spacing = 30.0
+
+        var constraints: [NSLayoutConstraint] = []
+
+        for (index, view) in elements.enumerated() {
+
+            if index == 0 {
+                constraints.append(contentsOf: [
+                    view.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+                    view.topAnchor.constraint(equalTo: contentView.topAnchor, constant: spacing)
+                ])
+            } else {
+                let previousView = elements[index-1]
+
+                constraints.append(contentsOf: [
+                    view.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+                    view.topAnchor.constraint(equalTo: previousView.bottomAnchor, constant: spacing)
+                ])
+
+                if index == elements.count-1 {
+                    constraints.append(view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -spacing))
+                }
+            }
+        }
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupCallbacks() {
