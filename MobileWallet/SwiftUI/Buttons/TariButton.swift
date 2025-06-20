@@ -66,18 +66,18 @@ struct TariButton: View {
         Button(action: action) {
             Text(text)
                 .font(size.font)
-                .foregroundStyle(isEnabled ? style.textColor : .Action.disabled)
+                .foregroundStyle(isEnabled ? style.textColor : .disabled)
                 .padding(size.horizontalPadding)
                 .frame(maxWidth: size.width, maxHeight: size.height)
                 .background {
                     ZStack {
                         if let background = style.backgroundColor {
                             Capsule()
-                                .fill(isEnabled ? background : .Action.disabledBackground)
+                                .fill(isEnabled ? background : .disabledBackground)
                         }
                         if let stroke = style.strokeColor {
                             Capsule()
-                                .stroke(isEnabled ? stroke : .Action.disabledBackground, lineWidth: 1)
+                                .stroke(isEnabled ? stroke : .disabledBackground, lineWidth: 1)
                         }
                     }
                 }
@@ -88,23 +88,23 @@ struct TariButton: View {
 private extension TariButtonStyle {
     var textColor: Color {
         switch self {
-        case .primary: .Button.primaryText
+        case .primary: .primaryButtonText
         case .secondary: .Common.blackmain
-        case .outlined, .text: .Text.primary
+        case .outlined, .text: .primaryText
         }
     }
     
     var backgroundColor: Color? {
         switch self {
-        case .primary: .Text.primary
-        case .secondary: .Primary.main
+        case .primary: .primaryText
+        case .secondary: .primaryMain
         case .outlined, .text: nil
         }
     }
     
     var strokeColor: Color? {
         switch self {
-        case .outlined: .Button.outlined
+        case .outlined: .buttonOutline
         case .primary, .secondary, .text: nil
         }
     }

@@ -603,6 +603,7 @@
 		F821500A2E030A71003EBB25 /* Font+Poppins.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150092E030A6C003EBB25 /* Font+Poppins.swift */; };
 		F821500D2E04871C003EBB25 /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821500C2E048718003EBB25 /* SettingsItem.swift */; };
 		F821500F2E048AB3003EBB25 /* TransactionDetailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821500E2E048AB3003EBB25 /* TransactionDetailItem.swift */; };
+		F82150182E058216003EBB25 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F82150172E058216003EBB25 /* Colors.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1234,6 +1235,7 @@
 		F82150092E030A6C003EBB25 /* Font+Poppins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Poppins.swift"; sourceTree = "<group>"; };
 		F821500C2E048718003EBB25 /* SettingsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
 		F821500E2E048AB3003EBB25 /* TransactionDetailItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailItem.swift; sourceTree = "<group>"; };
+		F82150172E058216003EBB25 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1592,6 +1594,7 @@
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
+				F82150172E058216003EBB25 /* Colors.xcassets */,
 				37B4449C24890F3000592D92 /* Backup */,
 				001256432371EBAA00A9C067 /* Boards */,
 				00262EB2236F022000A6C8A0 /* Common */,
@@ -3469,6 +3472,7 @@
 				711D7F832D50E0540080A987 /* Poppins-Black.ttf in Resources */,
 				711D7F892D50E0540080A987 /* Poppins-Bold.ttf in Resources */,
 				711D7F8D2D50E0540080A987 /* Poppins-Light.ttf in Resources */,
+				F82150182E058216003EBB25 /* Colors.xcassets in Resources */,
 				711D7F8E2D50E0540080A987 /* Poppins-Regular.ttf in Resources */,
 				711D7F902D50E0540080A987 /* fontExporter.sh in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,

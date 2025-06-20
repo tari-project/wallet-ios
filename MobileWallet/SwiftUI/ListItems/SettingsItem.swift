@@ -52,7 +52,7 @@ struct SettingsItem: View {
                     .foregroundStyle(Color.Icons.default)
                 Text(title)
                     .menuItem()
-                    .foregroundStyle(Color.Text.primary)
+                    .foregroundStyle(.primaryText)
                 Spacer()
             }
             .padding(.vertical, 24)

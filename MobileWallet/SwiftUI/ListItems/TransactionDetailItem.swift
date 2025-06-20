@@ -43,14 +43,14 @@ import SwiftUI
 struct TransactionDetailItem<Actions: View>: View {
     let label: String
     let value: String
-    var valueColor = Color.Text.primary
+    var valueColor: Color = .primaryText
     @ViewBuilder let actions: Actions?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(label)
                 .body2()
-                .foregroundStyle(Color.Text.secondary)
+                .foregroundStyle(.secondaryText)
             HStack(spacing: 8) {
                 Text(value)
                     .body()
@@ -69,7 +69,7 @@ struct TransactionDetailItem<Actions: View>: View {
 }
 
 extension TransactionDetailItem where Actions == EmptyView {
-    init(label: String, value: String, valueColor: Color = Color.Text.primary) {
+    init(label: String, value: String, valueColor: Color = .primaryText) {
         self.label = label
         self.value = value
         self.valueColor = valueColor
@@ -82,7 +82,7 @@ extension TransactionDetailItem where Actions == EmptyView {
         TransactionDetailItem(label: "Paid", value: "150 XTM") {
             Circle().frame(width: 20, height: 20)
         }
-        TransactionDetailItem(label: "Status", value: "In progress", valueColor: Color.Warning.main)
+        TransactionDetailItem(label: "Status", value: "In progress", valueColor: .warningMain)
     }
     .padding()
 }
