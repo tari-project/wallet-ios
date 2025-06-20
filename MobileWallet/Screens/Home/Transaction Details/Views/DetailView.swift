@@ -116,24 +116,24 @@ class DetailView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(12)
         return label
     }()
 
-    @View private var valueLabel: UILabel = {
+    @TariView private var valueLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         return label
     }()
 
-    @View private var separatorView: UIView = {
+    @TariView private var separatorView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var copyButton: UIButton = {
+    @TariView private var copyButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(.sendCopy.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary
@@ -144,7 +144,7 @@ class DetailView: DynamicThemeView {
         return button
     }()
 
-    @View private var addressTypeButton: UIButton = {
+    @TariView private var addressTypeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(.emojiAddress.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary
@@ -154,7 +154,7 @@ class DetailView: DynamicThemeView {
         return button
     }()
 
-    @View private var addContactButton: UIButton = {
+    @TariView private var addContactButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(.editContact.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary
@@ -164,7 +164,7 @@ class DetailView: DynamicThemeView {
         return button
     }()
 
-    @View private var editButton: UIButton = {
+    @TariView private var editButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(.editContact.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary
@@ -173,7 +173,7 @@ class DetailView: DynamicThemeView {
         return button
     }()
 
-    @View private var blockExplorerButton: UIButton = {
+    @TariView private var blockExplorerButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(.openExplorer.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .Text.primary

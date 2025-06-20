@@ -45,7 +45,7 @@ final class PopUpHeaderView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var label: StylizedLabel = {
+    @TariView private(set) var label: StylizedLabel = {
         let view = StylizedLabel()
         view.font = .Poppins.SemiBold.withSize(16)
         view.normalFont = .Poppins.SemiBold.withSize(16)

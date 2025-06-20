@@ -41,17 +41,17 @@ import TariCommon
 
 class NotificationsView: UIView {
 
-    @View private var containerView: UIView = {
+    @TariView private var containerView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var graphicView: UIImageView = {
+    @TariView private var graphicView: UIImageView = {
         let view = UIImageView(image: .notificationsGraphic)
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(24)
         label.textColor = .Text.primary
@@ -59,7 +59,7 @@ class NotificationsView: UIView {
         return label
     }()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         label.textColor = .Text.primary
@@ -69,13 +69,13 @@ class NotificationsView: UIView {
         return label
     }()
 
-    @View private var promptButton: StylisedButton = {
+    @TariView private var promptButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
         button.setTitle("Allow notifications", for: .normal)
         return button
     }()
 
-    @View private var closeButton: StylisedButton = {
+    @TariView private var closeButton: StylisedButton = {
         let button = StylisedButton(withStyle: .text, withSize: .large)
         button.setTitle("Maybe later", for: .normal)
         return button

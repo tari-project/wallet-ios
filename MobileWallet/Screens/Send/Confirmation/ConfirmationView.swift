@@ -69,7 +69,7 @@ class ConfirmationView: DynamicThemeView {
         setupViews()
     }
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
 
         label.text = "You are about to send"
@@ -77,40 +77,40 @@ class ConfirmationView: DynamicThemeView {
         return label
     }()
 
-    @View private var amountContainerView: UIView = {
+    @TariView private var amountContainerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         return view
     }()
 
-    @View private var amountLabel: UILabel = {
+    @TariView private var amountLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(18)
         return label
     }()
 
-    @View private var userLabel: UILabel = {
+    @TariView private var userLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(18)
         return label
     }()
 
-    @View private var addressContainerView: UIView = {
+    @TariView private var addressContainerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
         return view
     }()
 
-    @View private var separatorView: UIView = {
+    @TariView private var separatorView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var sendFundsImageView = UIImageView(image: .sendFundsSeparator)
-    @View private var tariIconView = UIImageView(image: .sendTariIcon)
-    @View private var userIconView = UIImageView(image: .sendTariIcon)
+    @TariView private var sendFundsImageView = UIImageView(image: .sendFundsSeparator)
+    @TariView private var tariIconView = UIImageView(image: .sendTariIcon)
+    @TariView private var userIconView = UIImageView(image: .sendTariIcon)
 
-    @View private var feeView: DetailView = {
+    @TariView private var feeView: DetailView = {
         let view = DetailView()
         view.titleText = "Transaction Fee"
         view.onCopyButonTap = nil
@@ -120,7 +120,7 @@ class ConfirmationView: DynamicThemeView {
         return view
     }()
 
-    @View public var recipientView: DetailView = {
+    @TariView public var recipientView: DetailView = {
         let view = DetailView()
         view.titleText = "Recipient Address"
         view.isAddressCell = true
@@ -130,26 +130,26 @@ class ConfirmationView: DynamicThemeView {
         return view
     }()
 
-    @View private var sendButton: StylisedButton = {
+    @TariView private var sendButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
         button.setTitle("Confirm & Send", for: .normal)
         return button
     }()
 
-    @View private var cancelButton: StylisedButton = {
+    @TariView private var cancelButton: StylisedButton = {
         let button = StylisedButton(withStyle: .text, withSize: .large)
         button.setTitle("Cancel", for: .normal)
         return button
     }()
 
-    @View private var totalLabel: UILabel = {
+    @TariView private var totalLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.text = "Total"
         return label
     }()
 
-    @View private var totalValueLabel: UILabel = {
+    @TariView private var totalValueLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         return label

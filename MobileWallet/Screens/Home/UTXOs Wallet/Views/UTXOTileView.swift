@@ -59,22 +59,22 @@ final class UTXOTileView: DynamicThemeCollectionCell {
 
     // MARK: - Subviews
 
-    @View private var backgroundContentView: UIView = {
+    @TariView private var backgroundContentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10.0
         view.clipsToBounds = true
         return view
     }()
 
-    @View private var amountContentView = UIView()
+    @TariView private var amountContentView = UIView()
 
-    @View private var tickView: TickButton = {
+    @TariView private var tickView: TickButton = {
         let view = TickButton()
         view.alpha = 0.0
         return view
     }()
 
-    @View private var amountLabel: CurrencyLabelView = {
+    @TariView private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
         view.textColor = .Static.white
         view.font = .Poppins.Black.withSize(30.0)
@@ -84,14 +84,14 @@ final class UTXOTileView: DynamicThemeCollectionCell {
         return view
     }()
 
-    @View private var dateLabel: UILabel = {
+    @TariView private var dateLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Static.white
         view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
-    @View private var statusIcon: UIImageView = {
+    @TariView private var statusIcon: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         view.tintColor = .Static.white

@@ -44,13 +44,13 @@ final class ScrollableLabel: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View var label: UILabel = {
+    @TariView var label: UILabel = {
         let view = UILabel()
         view.font =  UIFont.Poppins.SemiBold.withSize(14.0)
         return view
     }()
 
-    @View var scrollView: UIScrollView = {
+    @TariView var scrollView: UIScrollView = {
         let view = UIScrollView()
         view.showsHorizontalScrollIndicator = false
         return view

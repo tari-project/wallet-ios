@@ -56,7 +56,7 @@ final class AddAmountSpinnerView: DynamicThemeView {
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.spinner_view.label.calculating")
         view.textAlignment = .center

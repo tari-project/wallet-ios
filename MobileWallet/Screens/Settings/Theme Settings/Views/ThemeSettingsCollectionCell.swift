@@ -45,20 +45,20 @@ final class ThemeSettingsCollectionCell: DynamicThemeCollectionCell {
 
     // MARK: - Subviews
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         view.textAlignment = .center
         return view
     }()
 
-    @View private var radioButton = RadioButtonView()
+    @TariView private var radioButton = RadioButtonView()
 
     // MARK: - Properties
 

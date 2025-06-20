@@ -44,7 +44,7 @@ final class ContactTransactionListHeaderView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var label: StylizedLabel = {
+    @TariView private var label: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
         view.normalFont = .Poppins.Medium.withSize(14.0)
@@ -54,7 +54,7 @@ final class ContactTransactionListHeaderView: DynamicThemeView {
         return view
     }()
 
-    @View private var placeholder = UIView()
+    @TariView private var placeholder = UIView()
 
     // MARK: - Properties
 

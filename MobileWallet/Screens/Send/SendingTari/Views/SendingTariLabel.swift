@@ -45,7 +45,7 @@ final class SendingTariLabel: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View var label: UILabel = {
+    @TariView var label: UILabel = {
         let view = UILabel()
         view.text = " "
         view.textAlignment = .center

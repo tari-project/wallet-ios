@@ -44,7 +44,7 @@ final class RoundedGlassContentView<Subview: UIView>: UIView {
 
     // MARK: - Subviews
 
-    @View private(set) var subview: Subview = Subview()
+    @TariView private(set) var subview: Subview = Subview()
 
     // MARK: - Properties
 

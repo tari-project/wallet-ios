@@ -54,20 +54,20 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     // MARK: - Subviews
 
-    @View private var titleBar: NavigationBar = {
+    @TariView private var titleBar: NavigationBar = {
         let view = NavigationBar()
         view.backButtonType = .none
         return view
     }()
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 20.0
         return view
     }()
 
-    @View private var secureContentView = SecureWrapperView<UIView>()
+    @TariView private var secureContentView = SecureWrapperView<UIView>()
 
     // MARK: - Properties
 

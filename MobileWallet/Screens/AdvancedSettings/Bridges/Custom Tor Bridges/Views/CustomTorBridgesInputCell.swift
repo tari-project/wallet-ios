@@ -57,13 +57,13 @@ final class CustomTorBridgesInputCell: UITableViewCell {
 
     // MARK: - Subviews
 
-    @View private var textView: UITextView = {
+    @TariView private var textView: UITextView = {
         let view = UITextView()
         view.font = .Poppins.Medium.withSize(12.0)
         return view
     }()
 
-    @View private var placeholderLabel: UILabel = {
+    @TariView private var placeholderLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
         view.text = CustomTorBridgesInputCell.placeholderText

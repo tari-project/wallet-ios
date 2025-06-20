@@ -45,18 +45,18 @@ final class VerifySeedWordsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var scrollView = ContentScrollView()
+    @TariView private var scrollView = ContentScrollView()
 
-    @View private var headerLabel: UILabel = {
+    @TariView private var headerLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
         view.text = localized("verify_phrase.header")
         return view
     }()
 
-    @View private(set) var tokensView = TokenCollectionView()
+    @TariView private(set) var tokensView = TokenCollectionView()
 
-    @View private var errorLabel: UILabel = {
+    @TariView private var errorLabel: UILabel = {
         let view = UILabel()
         view.text = localized("verify_phrase.warning")
         view.font = .Poppins.Bold.withSize(14.0)
@@ -67,14 +67,14 @@ final class VerifySeedWordsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var successImageView: UIImageView = {
+    @TariView private var successImageView: UIImageView = {
         let view = UIImageView()
         view.image =  Theme.shared.images.successIcon
         view.transform = CGAffineTransform(scaleX: 0.0001, y: 0.0001)
         return view
     }()
 
-    @View private(set) var tokensViewInfoLabel: UILabel = {
+    @TariView private(set) var tokensViewInfoLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
         view.text = localized("verify_phrase.container_description")
@@ -83,9 +83,9 @@ final class VerifySeedWordsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private(set) var selectableTokensView = TokenCollectionView()
+    @TariView private(set) var selectableTokensView = TokenCollectionView()
 
-    @View private(set) var continueButton: ActionButton = {
+    @TariView private(set) var continueButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("verify_phrase.complete"), for: .normal)
         return view
@@ -125,7 +125,7 @@ final class VerifySeedWordsView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        @View var spacerView = UIView()
+        @TariView var spacerView = UIView()
 
         addSubview(scrollView)
         [headerLabel, tokensView, tokensViewInfoLabel, successImageView, errorLabel, spacerView, selectableTokensView, continueButton].forEach(scrollView.contentView.addSubview)

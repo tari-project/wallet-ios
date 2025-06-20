@@ -44,7 +44,7 @@
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
         view.font = Theme.shared.fonts.settingsTableViewLastBackupDate

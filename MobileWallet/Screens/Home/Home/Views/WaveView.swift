@@ -50,7 +50,7 @@ final class WaveView: UIView {
     // MARK: - Subviews
 
     private let shapeLayer = CAShapeLayer()
-    @View private var gradientView = TariGradientView()
+    @TariView private var gradientView = TariGradientView()
 
     // MARK: - Properties
 

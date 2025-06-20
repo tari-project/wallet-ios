@@ -51,8 +51,8 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     private let isOneSidedPayment: Bool
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
-    @View private var navigationBar = NavigationBar()
-    @View private var addressView = AddressView()
+    @TariView private var navigationBar = NavigationBar()
+    @TariView private var addressView = AddressView()
     fileprivate let scrollView = UIScrollView()
     fileprivate let stackView = UIStackView()
     fileprivate let sendButton = SlideView()

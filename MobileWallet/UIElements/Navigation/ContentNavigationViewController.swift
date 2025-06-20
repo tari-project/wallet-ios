@@ -45,7 +45,7 @@ final class ContentNavigationViewController: UIViewController {
 
     private let mainView = BaseNavigationContentView()
 
-    @View private(set) var contentView = UIView()
+    @TariView private(set) var contentView = UIView()
     var navigationBar: NavigationBar { mainView.navigationBar }
 
     var onLayoutChange: (() -> Void)?

@@ -45,13 +45,13 @@ final class AboutViewCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var iconView: UIImageView = {
+    @TariView private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Light.withSize(14.0)
         view.numberOfLines = 2

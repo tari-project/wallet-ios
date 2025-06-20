@@ -82,6 +82,7 @@ final class TransactionFormatter {
     }
 
     func contact(components: TariAddressComponents) -> ContactsManager.Model? {
+        // TODO: fix concurrent crash
         contactsManager.tariContactModels.first { $0.internalModel?.addressComponents == components }
     }
 

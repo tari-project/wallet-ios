@@ -45,9 +45,9 @@ final class OnboardingView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private(set) var contentView = UIView()
+    @TariView private(set) var contentView = UIView()
 
-    @View private(set) var pagerView: OnboardingPagerView = {
+    @TariView private(set) var pagerView: OnboardingPagerView = {
         let view = OnboardingPagerView(elementsCount: 4)
         view.isUserInteractionEnabled = false
         return view

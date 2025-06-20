@@ -40,38 +40,39 @@
 
 import Combine
 import TariCommon
+import SwiftUI
 
 final class DesignSystemViewController: DynamicThemeViewController {
 
     // MARK: - Properties
 
-    @View private var scrollView: UIScrollView = {
-        return UIScrollView()
+    @TariView private var scrollView: UIScrollView = {
+        UIScrollView()
     }()
 
-    @View private var contentView: UIView = {
-        return UIView()
+    @TariView private var contentView: UIView = {
+        UIView()
     }()
 
-    @View private var largePrimaryButton: StylisedButton = {
+    @TariView private var largePrimaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
         button.setTitle("Primary button Large", for: .normal)
         return button
     }()
 
-    @View private var mediumPrimaryButton: StylisedButton = {
+    @TariView private var mediumPrimaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .medium)
         button.setTitle("Primary button medium", for: .normal)
         return button
     }()
 
-    @View private var smallPrimaryButton: StylisedButton = {
+    @TariView private var smallPrimaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .small)
         button.setTitle("Primary button small", for: .normal)
         return button
     }()
 
-    @View private var disabledPrimaryButton: StylisedButton = {
+    @TariView private var disabledPrimaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .medium)
 
         button.isEnabled = false
@@ -79,28 +80,28 @@ final class DesignSystemViewController: DynamicThemeViewController {
         return button
     }()
 
-    @View private var largeSecondaryButton: StylisedButton = {
+    @TariView private var largeSecondaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .secondary, withSize: .large)
 
         button.setTitle("Secondary button large", for: .normal)
         return button
     }()
 
-    @View private var mediumSecondaryButton: StylisedButton = {
+    @TariView private var mediumSecondaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .secondary, withSize: .medium)
 
         button.setTitle("Secondary button medium", for: .normal)
         return button
     }()
 
-    @View private var smallSecondaryButton: StylisedButton = {
+    @TariView private var smallSecondaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .secondary, withSize: .small)
 
         button.setTitle("Secondary button small", for: .normal)
         return button
     }()
 
-    @View private var disabledSecondaryButton: StylisedButton = {
+    @TariView private var disabledSecondaryButton: StylisedButton = {
         let button = StylisedButton(withStyle: .secondary, withSize: .medium)
 
         button.isEnabled = false
@@ -108,28 +109,28 @@ final class DesignSystemViewController: DynamicThemeViewController {
         return button
     }()
 
-    @View private var largeOutlinedButton: StylisedButton = {
+    @TariView private var largeOutlinedButton: StylisedButton = {
         let button = StylisedButton(withStyle: .outlined, withSize: .large)
 
         button.setTitle("Outlined button large", for: .normal)
         return button
     }()
 
-    @View private var mediumOutlinedButton: StylisedButton = {
+    @TariView private var mediumOutlinedButton: StylisedButton = {
         let button = StylisedButton(withStyle: .outlined, withSize: .medium)
 
         button.setTitle("Outlined button medium", for: .normal)
         return button
     }()
 
-    @View private var smallOutlinedButton: StylisedButton = {
+    @TariView private var smallOutlinedButton: StylisedButton = {
         let button = StylisedButton(withStyle: .outlined, withSize: .small)
 
         button.setTitle("Outlined button small", for: .normal)
         return button
     }()
 
-    @View private var disabledOutlinedButton: StylisedButton = {
+    @TariView private var disabledOutlinedButton: StylisedButton = {
         let button = StylisedButton(withStyle: .outlined, withSize: .medium)
 
         button.isEnabled = false
@@ -137,14 +138,14 @@ final class DesignSystemViewController: DynamicThemeViewController {
         return button
     }()
 
-    @View private var inheritButton: StylisedButton = {
+    @TariView private var inheritButton: StylisedButton = {
         let button = StylisedButton(withStyle: .inherit, withSize: .medium)
 
         button.setTitle("Inherit medium button", for: .normal)
         return button
     }()
 
-    @View private var disabledInheritButton: StylisedButton = {
+    @TariView private var disabledInheritButton: StylisedButton = {
         let button = StylisedButton(withStyle: .inherit, withSize: .medium)
 
         button.isEnabled = false
@@ -152,14 +153,14 @@ final class DesignSystemViewController: DynamicThemeViewController {
         return button
     }()
 
-    @View private var textButton: StylisedButton = {
+    @TariView private var textButton: StylisedButton = {
         let button = StylisedButton(withStyle: .text, withSize: .medium)
 
         button.setTitle("Text medium button", for: .normal)
         return button
     }()
 
-    @View private var disabledTextButton: StylisedButton = {
+    @TariView private var disabledTextButton: StylisedButton = {
         let button = StylisedButton(withStyle: .text, withSize: .medium)
 
         button.isEnabled = false
@@ -167,7 +168,7 @@ final class DesignSystemViewController: DynamicThemeViewController {
         return button
     }()
 
-    @View private var label: StylisedLabel = {
+    @TariView private var label: StylisedLabel = {
         let label = StylisedLabel(withStyle: .body1)
         label.text = "Body 1"
         return label
@@ -189,7 +190,6 @@ final class DesignSystemViewController: DynamicThemeViewController {
     private func setupViews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-
         update(theme: theme)
     }
 
@@ -286,17 +286,16 @@ final class DesignSystemViewController: DynamicThemeViewController {
         contentView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-                   scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                   scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                   scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                   scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
-                   contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-                   contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-                   contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-                   contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-
-                   contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
        ])
 
         let elements = uiElements()

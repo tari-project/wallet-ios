@@ -44,7 +44,7 @@ final class PopUpButtonsView: UIView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 13.0

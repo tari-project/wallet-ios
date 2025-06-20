@@ -43,14 +43,14 @@ import TariCommon
 
 final class BackupWalletSettingsHeaderView: DynamicThemeView {
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsViewHeader
         view.text = localized("backup_wallet_settings.header.title")
         return view
     }()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription

@@ -3,18 +3,18 @@ import TariCommon
 
 class DisclaimerView: UIView {
 
-    @View private var containerView: UIView = {
+    @TariView private var containerView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var balanceContainer: UIView = {
+    @TariView private var balanceContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
 
-    @View private var balanceLabel: UILabel = {
+    @TariView private var balanceLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(32)
         label.textColor = .Text.primary
@@ -22,7 +22,7 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var unitLabel: UILabel = {
+    @TariView private var unitLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(32)
         label.textColor = .Text.primary
@@ -30,13 +30,13 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var separator1: UIView = {
+    @TariView private var separator1: UIView = {
         let view = UIView()
         view.backgroundColor = .Text.primary.withAlphaComponent(0.1)
         return view
     }()
 
-    @View private var totalBalanceTitle: UILabel = {
+    @TariView private var totalBalanceTitle: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary
@@ -44,7 +44,7 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var totalBalanceDescription: UILabel = {
+    @TariView private var totalBalanceDescription: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         label.textColor = .Text.secondary
@@ -54,13 +54,13 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var separator2: UIView = {
+    @TariView private var separator2: UIView = {
         let view = UIView()
         view.backgroundColor = .Text.primary.withAlphaComponent(0.1)
         return view
     }()
 
-    @View private var availableToSpendTitle: UILabel = {
+    @TariView private var availableToSpendTitle: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary
@@ -68,7 +68,7 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var availableToSpendDescription: UILabel = {
+    @TariView private var availableToSpendDescription: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         label.textColor = .Text.secondary
@@ -78,7 +78,7 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var totalBalanceValue: UILabel = {
+    @TariView private var totalBalanceValue: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary
@@ -86,7 +86,7 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var availableBalanceValue: UILabel = {
+    @TariView private var availableBalanceValue: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary
@@ -107,7 +107,7 @@ class DisclaimerView: UIView {
         }
     }
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(24)
         label.textColor = .Text.primary
@@ -115,7 +115,7 @@ class DisclaimerView: UIView {
         return label
     }()
 
-    @View private var descriptionLabel: UILabel = {
+    @TariView private var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Regular.withSize(16)
         label.textColor = .Text.primary

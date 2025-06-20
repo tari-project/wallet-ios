@@ -44,20 +44,20 @@ final class PopUpAddressViewDoubleLabel: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 10.0
         view.alignment = .top
         return view
     }()
 
-    @View private var leadingLabel: UILabel = {
+    @TariView private var leadingLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
-    @View private var trailingLabel: UILabel = {
+    @TariView private var trailingLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0

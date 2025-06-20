@@ -48,33 +48,33 @@ final class SelectBaseNodeCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
        let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
-    @View private var subtitleLabel: UILabel = {
+    @TariView private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(11.0)
         view.numberOfLines = 0
         return view
     }()
 
-    @View private var labelsStackView: UIStackView = {
+    @TariView private var labelsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 4.0
         return view
     }()
 
-    @View private var tickView: UIImageView = {
+    @TariView private var tickView: UIImageView = {
         let view = UIImageView(image: Theme.shared.images.scheduledIcon)
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var deleteButton: UIButton = {
+    @TariView private var deleteButton: UIButton = {
         let view = UIButton()
         view.titleLabel?.font = .Poppins.Bold.withSize(14.0)
         view.setTitle(localized("select_base_node.cell.delete"), for: .normal)

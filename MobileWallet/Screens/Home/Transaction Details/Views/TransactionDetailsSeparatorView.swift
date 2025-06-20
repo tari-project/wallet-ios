@@ -45,7 +45,7 @@ final class TransactionDetailsSeparatorView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var separatorView = UIView()
+    @TariView private var separatorView = UIView()
 
     // MARK: - Initialisers
 

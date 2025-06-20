@@ -51,9 +51,9 @@ final class SecureWrapperView<MainView: UIView>: UIView {
 
     // MARK: - Subviews
 
-    @View private(set) var view: MainView
+    @TariView private(set) var view: MainView
 
-    @View private var textField: UITextField = {
+    @TariView private var textField: UITextField = {
         let view = UITextField()
         view.isUserInteractionEnabled = false
         view.backgroundColor = .clear

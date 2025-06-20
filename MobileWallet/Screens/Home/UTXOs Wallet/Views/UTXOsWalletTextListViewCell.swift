@@ -54,33 +54,33 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var backgroundContentView: UIView = {
+    @TariView private var backgroundContentView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
 
-    @View private var amountLabel: UILabel = {
+    @TariView private var amountLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Bold.withSize(15.0)
         return view
     }()
 
-    @View private var hashLabel: UILabel = {
+    @TariView private var hashLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.SemiBold.withSize(12.0)
         return view
     }()
 
-    @View private var statusCircleView: UIView = UIView()
+    @TariView private var statusCircleView: UIView = UIView()
 
-    @View private var statusLabel: UILabel = {
+    @TariView private var statusLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.SemiBold.withSize(12.0)
         return view
     }()
 
-    @View private var tickView = TickButton()
+    @TariView private var tickView = TickButton()
 
     // MARK: - Properties
 

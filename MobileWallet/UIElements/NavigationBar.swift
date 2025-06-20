@@ -71,31 +71,31 @@ final class NavigationBar: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var contentView = UIView()
+    @TariView private(set) var contentView = UIView()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.SemiBold.withSize(16)
         view.textAlignment = .center
         return view
     }()
 
-    @View private var backButton: StylisedButton = {
+    @TariView private var backButton: StylisedButton = {
         let view = StylisedButton(withStyle: .text, withSize: .small)
         return view
     }()
 
-    @View private var separator = UIView()
+    @TariView private var separator = UIView()
 
-    @View private var rightStackView: UIStackView = {
+    @TariView private var rightStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         return view
     }()
 
-    @View private(set) var bottomContentView = UIView()
+    @TariView private(set) var bottomContentView = UIView()
 
-    @View private var progressView: UIProgressView = {
+    @TariView private var progressView: UIProgressView = {
         let view = UIProgressView()
         view.isHidden = true
         return view
@@ -284,7 +284,7 @@ final class NavigationBar: DynamicThemeView {
     // MARK: - Factories
 
     private func makeButton(model: ButtonModel) -> BaseButton {
-        @View var button = BaseButton()
+        @TariView var button = BaseButton()
         button.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
         button.setTitle(model.title, for: .normal)
         button.setImage(model.image, for: .normal)

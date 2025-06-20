@@ -49,7 +49,7 @@ final class SwitchMenuCell: MenuCell {
 
     // MARK: - Subviews
 
-    @View private var switchView = UISwitch()
+    @TariView private var switchView = UISwitch()
 
     // MARK: - Properties
 

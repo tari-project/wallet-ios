@@ -72,20 +72,20 @@ final class HomeViewTransactionCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var glassBackgroundView = HomeGlassView()
-    @View private var labelsContentView = UIView()
+    @TariView private var glassBackgroundView = HomeGlassView()
+    @TariView private var labelsContentView = UIView()
 
-    @View private var iconView: UIImageView = {
+    @TariView private var iconView: UIImageView = {
         let imageView = UIImageView(image: .gem.withRenderingMode(.alwaysTemplate))
         return imageView
     }()
 
-    @View private var iconViewOutline: UIView = {
+    @TariView private var iconViewOutline: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var containerView: UIView = {
+    @TariView private var containerView: UIView = {
         let container = UIView()
         container.clipsToBounds = true
         container.layer.cornerRadius = 16
@@ -94,7 +94,7 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         return container
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Text.primary
         view.font = .Poppins.Medium.withSize(13)
@@ -103,14 +103,14 @@ final class HomeViewTransactionCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var timestampLabel: UILabel = {
+    @TariView private var timestampLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Text.secondary
         view.font = .Poppins.Regular.withSize(11.0)
         return view
     }()
 
-    @View private var amountLabel: UILabel = {
+    @TariView private var amountLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(16)
         label.textColor = .Text.primary

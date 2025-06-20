@@ -45,13 +45,13 @@ final class TokenView: DynamicThemeCollectionCell {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(12)
         return view
     }()
 
-    @View private var deleteIconView: UIImageView = {
+    @TariView private var deleteIconView: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.General.roundedCancelButton
         return view

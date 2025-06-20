@@ -45,19 +45,19 @@ final class AboutViewHeader: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
-    @View private var tintedBackgroundView: UIView = {
+    @TariView private var tintedBackgroundView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.text = localized("about.label.creative_commons")
         view.font = .Poppins.Light.withSize(14.0)
         return view
     }()
 
-    @View private var button: TextButton = {
+    @TariView private var button: TextButton = {
         let view = TextButton()
         view.setTitle(localized("about.button.creative_commons"), for: .normal)
         view.style = .secondary

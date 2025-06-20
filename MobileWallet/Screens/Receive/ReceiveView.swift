@@ -60,74 +60,74 @@ class ReceiveView: BaseNavigationContentView {
         }
     }
 
-    @View private var qrCodeView = QRCodeView()
-    @View private var qrCodeIconViewOutline = UIImageView(image: .elipse)
-    @View private var qrCodeIconImageView = UIImageView(image: .gem.withRenderingMode(.alwaysTemplate))
+    @TariView private var qrCodeView = QRCodeView()
+    @TariView private var qrCodeIconViewOutline = UIImageView(image: .elipse)
+    @TariView private var qrCodeIconImageView = UIImageView(image: .gem.withRenderingMode(.alwaysTemplate))
 
-    @View private var iconImageView = UIImageView(image: .gem.withRenderingMode(.alwaysTemplate))
+    @TariView private var iconImageView = UIImageView(image: .gem.withRenderingMode(.alwaysTemplate))
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(28)
         label.text = NetworkManager.shared.currencySymbol
         return label
     }()
 
-    @View private var yourAddressLabel: UILabel = {
+    @TariView private var yourAddressLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         label.text = "Your Address"
         return label
     }()
 
-    @View var emojiAddressLabel: UILabel = {
+    @TariView var emojiAddressLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         return label
     }()
 
-    @View var baseAddressLabel: UILabel = {
+    @TariView var baseAddressLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(14)
         return label
     }()
 
-    @View var copyEmojiButton: StylisedButton = {
+    @TariView var copyEmojiButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .small)
         button.setTitle("Copy", for: .normal)
         return button
     }()
 
-    @View var copyBaseButton: StylisedButton = {
+    @TariView var copyBaseButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .small)
         button.setTitle("Copy", for: .normal)
         return button
     }()
 
-    @View private var networkLabel: UILabel = {
+    @TariView private var networkLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.Medium.withSize(12)
         label.text = "Tari " + NetworkManager.shared.selectedNetwork.presentedName
         return label
     }()
 
-    @View private var separatorView: UIView = {
+    @TariView private var separatorView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var addressContainerView: UIView = {
+    @TariView private var addressContainerView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View var shareButton: StylisedButton = {
+    @TariView var shareButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .large)
         button.setTitle("Share", for: .normal)
         return button
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.text = NetworkManager.shared.currencySymbol
         view.font = .Poppins.Medium.withSize(14)

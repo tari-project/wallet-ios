@@ -53,24 +53,24 @@ final class PopUpUtxoDetailsContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var amountLabel: CurrencyLabelView = {
+    @TariView private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
         view.font = .Poppins.Bold.withSize(26.0)
         view.iconHeight = 13.0
         return view
     }()
 
-    @View private var rowsStackView: UIStackView = {
+    @TariView private var rowsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 10.0
         return view
     }()
 
-    @View private var statusRow = PopUpUtxoContentRowView()
-    @View private var commitmentRow = PopUpUtxoContentRowView()
-    @View private var blockHeightRow = PopUpUtxoContentRowView()
-    @View private var dateRow = PopUpUtxoContentRowView()
+    @TariView private var statusRow = PopUpUtxoContentRowView()
+    @TariView private var commitmentRow = PopUpUtxoContentRowView()
+    @TariView private var blockHeightRow = PopUpUtxoContentRowView()
+    @TariView private var dateRow = PopUpUtxoContentRowView()
 
     // MARK: - Status
 
@@ -139,13 +139,13 @@ private class PopUpUtxoContentRowView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Bold.withSize(12.0)
         return view
     }()
 
-    @View private var valueRowStackView: UIStackView = {
+    @TariView private var valueRowStackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 4.0
         view.alignment = .center
@@ -153,14 +153,14 @@ private class PopUpUtxoContentRowView: DynamicThemeView {
         return view
     }()
 
-    @View private var statusView: UIView = {
+    @TariView private var statusView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 5.0
         view.isHidden = true
         return view
     }()
 
-    @View private var valueLabel: UILabel = {
+    @TariView private var valueLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(12.0)
         view.numberOfLines = 2

@@ -45,14 +45,14 @@ final class ContextualButton: BaseButton {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.textAlignment = .right
         view.font = .Poppins.Medium.withSize(17.0)
         return view
     }()
 
-    @View private var iconView: UIImageView = {
+    @TariView private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view

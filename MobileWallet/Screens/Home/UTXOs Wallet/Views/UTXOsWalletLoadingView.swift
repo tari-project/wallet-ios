@@ -46,14 +46,14 @@ final class UTXOsWalletLoadingView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 4.0
         return view
     }()
 
-    @View private var spinnerView: AnimationView = {
+    @TariView private var spinnerView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
         view.animation = Animation.named(.pendingCircleAnimation)
@@ -62,7 +62,7 @@ final class UTXOsWalletLoadingView: DynamicThemeView {
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.spinner.label.title")
         view.textAlignment = .center

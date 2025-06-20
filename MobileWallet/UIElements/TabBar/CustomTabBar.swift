@@ -75,7 +75,7 @@ class RoundedShadowView: UIView {
 }
 
 final class CustomTabBar: DynamicThemeTabBar {
-    @View private var secureContentView = SecureWrapperView<UIView>()
+    @TariView private var secureContentView = SecureWrapperView<UIView>()
 
     override init() {
         super.init()

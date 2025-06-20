@@ -45,7 +45,7 @@ final class LogCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.numberOfLines = 0

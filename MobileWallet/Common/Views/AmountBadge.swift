@@ -60,7 +60,7 @@ final class AmountBadge: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Black.withSize(12.0)
         view.setContentHuggingPriority(.required, for: .horizontal)

@@ -45,7 +45,7 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
 
     // MARK: - Subview
 
-    @View private(set) var titleLabel: UILabel = {
+    @TariView private(set) var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Light.withSize(18.0)
         view.textAlignment = .center
@@ -53,7 +53,7 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
         return view
     }()
 
-    @View private(set) var subtitleLabel: UILabel = {
+    @TariView private(set) var subtitleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center

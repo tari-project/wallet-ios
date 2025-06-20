@@ -3,13 +3,13 @@ import TariCommon
 class MinersGradientView: UIView {
     private let gradientLayer = CAGradientLayer()
 
-    @View private var startMiningButton: StylisedButton = {
+    @TariView private var startMiningButton: StylisedButton = {
         let startMiningButton = StylisedButton(withStyle: .mining, withSize: .xsmall)
         startMiningButton.setTitle("Start mining", for: .normal)
         return startMiningButton
     }()
 
-    @View private var miningStatusLabel: UILabel = {
+    @TariView private var miningStatusLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(12)
         label.textColor = UIColor(hex: 0x02FE63)
@@ -18,7 +18,7 @@ class MinersGradientView: UIView {
         return label
     }()
 
-    @View private var notMiningLabel: UILabel = {
+    @TariView private var notMiningLabel: UILabel = {
         let label = UILabel()
         label.font = .Poppins.SemiBold.withSize(12)
         label.textColor = .System.red
@@ -65,7 +65,7 @@ class MinersGradientView: UIView {
         setupSubviews()
     }
 
-    @View private var minersLabel: UILabel = {
+    @TariView private var minersLabel: UILabel = {
         let minersLabel = UILabel()
         minersLabel.font = .Poppins.SemiBold.withSize(24)
         minersLabel.textColor = .white

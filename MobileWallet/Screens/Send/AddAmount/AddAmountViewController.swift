@@ -47,7 +47,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     private let paymentInfo: PaymentInfo
 
     private let navigationBar = NavigationBar()
-    @View private var addressView = AddressView()
+    @TariView private var addressView = AddressView()
     private let continueButton = ActionButton()
     private let amountLabel = AnimatedBalanceLabel()
     private let warningView = UIView()
@@ -69,15 +69,15 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private let isSmallScreen: Bool = UIScreen.main.nativeBounds.height <= 1334.0
 
-    @View var amountKeyboardView: AmountKeyboardView = {
+    @TariView var amountKeyboardView: AmountKeyboardView = {
         let view = AmountKeyboardView()
         view.setup(keys: .amountKeyboard)
         return view
     }()
 
-    @View private var feeSpinnerView: AddAmountSpinnerView = AddAmountSpinnerView()
+    @TariView private var feeSpinnerView: AddAmountSpinnerView = AddAmountSpinnerView()
 
-    @View private var txStackView: UIStackView = {
+    @TariView private var txStackView: UIStackView = {
         let view = UIStackView()
         view.alpha = 0.0
         view.alignment = .center
@@ -85,9 +85,9 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @View private var networkTrafficView = NetworkTrafficView()
+    @TariView private var networkTrafficView = NetworkTrafficView()
 
-    @View private var feeButton: TextButton = {
+    @TariView private var feeButton: TextButton = {
         let view = TextButton()
         view.font = .Poppins.Medium.withSize(14.0)
         view.imageSpacing = 3.0
@@ -95,7 +95,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @View private var modifyFeeButton: TextButton = {
+    @TariView private var modifyFeeButton: TextButton = {
         let view = TextButton()
         view.font = .Poppins.Medium.withSize(14.0)
         view.setTitle(localized("add_amount.label.button.adjust_fee"), for: .normal)
@@ -103,7 +103,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @View private var percentageButtonsStackView: UIStackView = {
+    @TariView private var percentageButtonsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         view.spacing = 8.0
@@ -111,7 +111,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @View private var percentageLabel: UILabel = {
+    @TariView private var percentageLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Regular.withSize(14.0)
         view.textColor = .white.withAlphaComponent(0.5)
