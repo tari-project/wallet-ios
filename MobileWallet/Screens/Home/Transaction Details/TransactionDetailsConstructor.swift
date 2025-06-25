@@ -47,6 +47,6 @@ enum TransactionDetailsConstructor {
 //        let model = TransactionDetailsModel(transaction: transaction)
 //        return TransactionDetailsViewController(model: model)
         
-        UIHostingController(rootView: TransactionDetails(transaction: transaction))
+        UIHostingController(rootView: TransactionDetails(transaction))
     }
 }

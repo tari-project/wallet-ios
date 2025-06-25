@@ -39,8 +39,17 @@
 */
 
 import SwiftUI
+import Combine
 
 extension TransactionDetails {
+    var transaction: Transaction {
+        latestTransaction ?? initialTransaction
+    }
+    
+    var completedTransaction: CompletedTransaction? {
+        transaction as? CompletedTransaction
+    }
+    
     var isOutbound: Bool {
         (try? transaction.isOutboundTransaction) ?? false
     }
@@ -65,7 +74,7 @@ extension TransactionDetails {
     }
     
     var minedBlockHeight: UInt64 {
-        (try? (transaction as? CompletedTransaction)?.minedBlockHeight) ?? 0
+        (try? completedTransaction?.minedBlockHeight) ?? 0
     }
     
     var isConfirmed: Bool {
@@ -82,14 +91,17 @@ extension TransactionDetails {
     }
     
     var transactionMessage: String? {
+        if let message = try? completedTransaction?.message {
+            return "PaymentID bytes: \n" + message
+        }
         guard let message = try? transaction.message else { return nil }
         // If note is "None", show empty string
-        return message == "None" ? "" : message.hex()
+        return message == "None" ? "" : message
     }
     
     var status: (String, Color)? {
         if transaction.isCancelled {
-            if let transaction = transaction as? CompletedTransaction, let reason = try? transaction.rejectionReason {
+            if let reason = try? completedTransaction?.rejectionReason {
                 let value = switch reason {
                 case .unknown: "The transaction failed for an unknown reason."
                 case .userCancelled: "The transaction was canceled by the sender."
@@ -155,6 +167,14 @@ extension TransactionDetails {
             }
             """
     }
+    
+    var transactionUpdatePublisher: AnyPublisher<Transaction, Never> {
+        let service = transactions()
+        return Publishers.Merge5(service.$receivedTransactionReply, service.$receivedFinalizedTransaction, service.$transactionBroadcast, service.$unconfirmedTransactionMined, service.$transactionMined)
+            .compactMap { $0 }
+            .filter { (try? $0.identifier) == (try? transaction.identifier) }
+            .eraseToAnyPublisher()
+    }
 }
 
 private extension TransactionDetails {
@@ -163,7 +183,7 @@ private extension TransactionDetails {
     }
     
     func transactions() -> TariTransactionsService {
-        Tari.shared.wallet(.main).transactions
+        Tari.mainWallet.transactions
     }
 
     func fetchTitle() throws -> String {

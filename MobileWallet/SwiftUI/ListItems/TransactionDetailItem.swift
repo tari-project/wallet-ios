@@ -45,6 +45,7 @@ struct TransactionDetailItem<Actions: View>: View {
     let value: String
     var valueColor: Color = .primaryText
     @ViewBuilder let actions: Actions?
+    var valueAction: (() -> Void)?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -55,6 +56,7 @@ struct TransactionDetailItem<Actions: View>: View {
                 Text(value)
                     .body()
                     .foregroundStyle(valueColor)
+                    .onTapGesture { valueAction?() }
                 Spacer()
                 if let actions {
                     actions

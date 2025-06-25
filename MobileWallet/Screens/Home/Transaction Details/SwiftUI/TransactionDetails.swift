@@ -42,18 +42,24 @@ import SwiftUI
 
 struct TransactionDetails: View {
     @Environment(\.dismiss) var dismiss
+    @State var latestTransaction: Transaction?
     @State var title: String?
     @State var amount: String?
     @State var addressComponents: TariAddressComponents?
     @State var contact: ContactsManager.Model?
     @State var paymentReference: PaymentReference?
     @State var walletBlockHeight: UInt64 = 0
+    @State var blockExplorerLink: URL?
     @State var isEmojiAddress = false
+    @State var showsFullTextAddress = false
     @State var isPresentingEditName = false
     @State var isPresentingPaymentReferenceInfo = false
-    @State var blockExplorerLink: URL?
     
-    let transaction: Transaction
+    let initialTransaction: Transaction
+    
+    init(_ transaction: Transaction) {
+        initialTransaction = transaction
+    }
     
     var body: some View {
         NavigationStack {
@@ -83,10 +89,13 @@ struct TransactionDetails: View {
                 PaymentReferenceInfoSheet()
             }
             .onAppear { load() }
-            .onReceive(Tari.mainWallet.connectionCallbacks.$blockHeight) {
-                walletBlockHeight = $0
-                loadPaymentReference()
-            }
+        }
+        .onReceive(Tari.mainWallet.connectionCallbacks.$blockHeight) {
+            walletBlockHeight = $0
+            loadPaymentReference()
+        }
+        .onReceive(transactionUpdatePublisher) {
+            latestTransaction = $0
         }
     }
 }
@@ -98,10 +107,19 @@ private extension TransactionDetails {
                 TransactionDetailItem(label: isOutbound ? "Send" : "Received", value: amount)
             }
             if let address {
-                TransactionDetailItem(label: isOutbound ? "To" : "From", value: address.truncated(to: isEmojiAddress ? 10 : 20)) {
+                TransactionDetailItem(
+                    label: isOutbound ? "To" : "From",
+                    value: showsFullTextAddress && !isEmojiAddress ? address : address.truncated(to: 12)
+                ) {
                     HStack {
                         EmojiToggle(isOn: $isEmojiAddress)
                         copyButton(address)
+                    }
+                } valueAction: {
+                    if !isEmojiAddress {
+                        withAnimation {
+                            showsFullTextAddress.toggle()
+                        }
                     }
                 }
             }
@@ -138,7 +156,6 @@ private extension TransactionDetails {
                     }
                 }
             }
-            
             if let status {
                 TransactionDetailItem(label: "Status", value: status.0, valueColor: status.1)
             }

@@ -117,21 +117,8 @@ final class CompletedTransaction: Transaction {
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = completed_transaction_get_payment_id_as_bytes(pointer, errorCodePointer)
 
-            /** ## Returns
-            * `*mut ByteVector` - Pointer to the created ByteVector. Note that it will be ptr::null_mut()
-            * if the byte_array pointer was null or if the elements in the byte_vector don't match
-            * element_count when it is created
-            *
-            * # Safety
-            * The ```byte_vector_destroy``` function must be called when finished with a ByteVector to prevent a memory leak
-            */
             guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
-
-            // Create a ByteVector instance that will handle memory management
-            let byteVector = ByteVector(pointer: result)
-
-            // Convert the bytes to a string
-            return try byteVector.data.string
+            return try ByteVector(pointer: result).hex
         }
     }
 
