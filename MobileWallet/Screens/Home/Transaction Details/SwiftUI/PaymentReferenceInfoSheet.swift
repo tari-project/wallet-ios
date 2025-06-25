@@ -1,10 +1,10 @@
-//  TransactionDetailsConstructor.swift
-
+//  PaymentReferenceInfoSheet.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 15/03/2022
-	Using Swift 5.0
-	Running on macOS 12.2
+	Created by Tomas Hakel on 24.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -40,13 +40,28 @@
 
 import SwiftUI
 
-enum TransactionDetailsConstructor {
-
-    static func buildScene(transaction: Transaction) -> UIHostingController<TransactionDetails> {
-        // TODO: Remove UIKit TransactionDetail once the redesign is properly tested
-//        let model = TransactionDetailsModel(transaction: transaction)
-//        return TransactionDetailsViewController(model: model)
-        
-        UIHostingController(rootView: TransactionDetails(transaction: transaction))
+struct PaymentReferenceInfoSheet: View {
+    @Environment(\.dismiss) var dismiss
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            Text("Your unique payment ID!")
+                .modalTitle()
+                .foregroundStyle(.primaryText)
+            Text("Share this with anyone who needs to confirm your payment - they can look it up on a block explorer while your privacy stays protected.")
+                .body()
+                .foregroundStyle(.secondaryText)
+                .multilineTextAlignment(.center)
+            
+            TariButton("Close", style: .text, size: .medium) {
+                dismiss()
+            }
+        }
+        .padding()
+        .presentationDetents([.height(220)])
     }
+}
+
+#Preview {
+    PaymentReferenceInfoSheet()
 }

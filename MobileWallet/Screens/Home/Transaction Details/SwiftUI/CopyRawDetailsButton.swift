@@ -1,10 +1,10 @@
-//  TransactionDetailsConstructor.swift
-
+//  CopyRawDetailsButton.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 15/03/2022
-	Using Swift 5.0
-	Running on macOS 12.2
+	Created by Tomas Hakel on 25.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -40,13 +40,23 @@
 
 import SwiftUI
 
-enum TransactionDetailsConstructor {
+struct CopyRawDetailsButton: View, Copying {
+    @State var isCopied = false
+    
+    let action: () -> Void
+    
+    var body: some View {
+        TariButton("Copy Raw Details", style: .outlined, size: .medium, leadingIcon: icon) {
+            action()
+            showCoppiedFeedback()
+        }
+    }
+}
 
-    static func buildScene(transaction: Transaction) -> UIHostingController<TransactionDetails> {
-        // TODO: Remove UIKit TransactionDetail once the redesign is properly tested
-//        let model = TransactionDetailsModel(transaction: transaction)
-//        return TransactionDetailsViewController(model: model)
-        
-        UIHostingController(rootView: TransactionDetails(transaction: transaction))
+private extension CopyRawDetailsButton {
+    var icon: some View {
+        Image(uiImage: isCopied ? .Icons.General.checkmark : .sendCopy)
+            .templateStyle(.primaryText)
+            .frame(width: 24, height: 24)
     }
 }

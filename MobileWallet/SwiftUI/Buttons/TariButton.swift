@@ -48,40 +48,63 @@ enum TariButtonSize {
     case large, medium, small
 }
 
-struct TariButton: View {
+struct TariButton<LeadingIcon: View>: View {
     @Environment(\.isEnabled) var isEnabled
     let text: String
     let style: TariButtonStyle
     let size: TariButtonSize
+    let leadingIcon: LeadingIcon?
     let action: () -> Void
     
+    init(
+        _ text: String,
+        style: TariButtonStyle,
+        size: TariButtonSize,
+        leadingIcon: LeadingIcon,
+        action: @escaping () -> Void
+    ) {
+        self.text = text
+        self.style = style
+        self.size = size
+        self.action = action
+        self.leadingIcon = leadingIcon
+    }
+    
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 2) {
+                if let leadingIcon {
+                    leadingIcon
+                }
+                Text(text)
+                    .font(size.font)
+                    .foregroundStyle(isEnabled ? style.textColor : .disabled)
+            }
+            .padding(size.horizontalPadding)
+            .frame(maxWidth: size.width, maxHeight: size.height)
+            .background {
+                ZStack {
+                    if let background = style.backgroundColor {
+                        Capsule()
+                            .fill(isEnabled ? background : .disabledBackground)
+                    }
+                    if let stroke = style.strokeColor {
+                        Capsule()
+                            .stroke(isEnabled ? stroke : .disabledBackground, lineWidth: 1)
+                    }
+                }
+            }
+        }
+    }
+}
+
+extension TariButton where LeadingIcon == EmptyView {
     init(_ text: String, style: TariButtonStyle, size: TariButtonSize, action: @escaping () -> Void) {
         self.text = text
         self.style = style
         self.size = size
         self.action = action
-    }
-    
-    var body: some View {
-        Button(action: action) {
-            Text(text)
-                .font(size.font)
-                .foregroundStyle(isEnabled ? style.textColor : .disabled)
-                .padding(size.horizontalPadding)
-                .frame(maxWidth: size.width, maxHeight: size.height)
-                .background {
-                    ZStack {
-                        if let background = style.backgroundColor {
-                            Capsule()
-                                .fill(isEnabled ? background : .disabledBackground)
-                        }
-                        if let stroke = style.strokeColor {
-                            Capsule()
-                                .stroke(isEnabled ? stroke : .disabledBackground, lineWidth: 1)
-                        }
-                    }
-                }
-        }
+        self.leadingIcon = nil
     }
 }
 
@@ -98,7 +121,8 @@ private extension TariButtonStyle {
         switch self {
         case .primary: .primaryText
         case .secondary: .primaryMain
-        case .outlined, .text: nil
+        case .outlined: .primaryBackground
+        case .text: nil
         }
     }
     

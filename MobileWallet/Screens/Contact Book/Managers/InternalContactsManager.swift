@@ -106,8 +106,8 @@ final class InternalContactsManager {
             }
     }
 
-    func create(name: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
-        let contactModel = ContactModel(alias: name, defaultAlias: nil, addressComponents: try address.components, isFavorite: isFavorite)
+    func create(alias: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
+        let contactModel = ContactModel(alias: alias, defaultAlias: nil, addressComponents: try address.components, isFavorite: isFavorite)
         var contacts = try fetchWalletContacts()
         contacts.append(contactModel)
         try saveContacts(contacts)
@@ -125,6 +125,8 @@ final class InternalContactsManager {
         }) {
             contacts[index] = updatedContact
             try saveContacts(contacts)
+        } else if let alias {
+            _ = try create(alias: alias, isFavorite: isFavorite, address: address)
         }
     }
 

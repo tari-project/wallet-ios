@@ -1,10 +1,10 @@
-//  TransactionDetailsConstructor.swift
-
+//  EmojiToggle.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 15/03/2022
-	Using Swift 5.0
-	Running on macOS 12.2
+	Created by Tomas Hakel on 24.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -40,13 +40,18 @@
 
 import SwiftUI
 
-enum TransactionDetailsConstructor {
+struct EmojiToggle: View {
+    @Binding var isOn: Bool
+    
+    var body: some View {
+        Button(action: { withAnimation { isOn.toggle() } }) {
+            icon.templateStyle(.primaryText)
+        }
+    }
+}
 
-    static func buildScene(transaction: Transaction) -> UIHostingController<TransactionDetails> {
-        // TODO: Remove UIKit TransactionDetail once the redesign is properly tested
-//        let model = TransactionDetailsModel(transaction: transaction)
-//        return TransactionDetailsViewController(model: model)
-        
-        UIHostingController(rootView: TransactionDetails(transaction: transaction))
+private extension EmojiToggle {
+    var icon: Image {
+        isOn ? Image(uiImage: .emojiAddress) : Image(uiImage: .textAddress)
     }
 }

@@ -38,10 +38,27 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension Task where Failure == Never, Success == Never {
-
-    static func sleep(seconds: Double) async throws {
-        let nanoseconds = UInt64(1000000000 * seconds)
-        try await Task.sleep(nanoseconds: nanoseconds)
+public extension Task where Success == Void, Failure == Error {
+    @discardableResult
+    init(after seconds: Double, operation: @MainActor @escaping @Sendable () -> Void) {
+        self.init { @MainActor in
+            await Task<Never, Never>.sleep(seconds: seconds)
+            operation()
+        }
+    }
+    
+    @discardableResult
+    init(after seconds: Double, operation: @escaping @Sendable () async -> Void) {
+        self.init {
+            await Task<Never, Never>.sleep(seconds: seconds)
+            await operation()
+        }
     }
 }
+
+public extension Task where Success == Never, Failure == Never {
+    static func sleep(seconds: Double) async {
+        try? await Task.sleep(for: .seconds(seconds))
+    }
+}
+
