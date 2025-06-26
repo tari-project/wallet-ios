@@ -91,10 +91,10 @@ extension TransactionDetails {
     }
     
     var transactionMessage: String? {
-        if let message = try? completedTransaction?.message {
+        if let message = try? completedTransaction?.paymentId, !message.isEmpty {
             return "PaymentID bytes: \n" + message
         }
-        guard let message = try? transaction.message else { return nil }
+        guard let message = try? transaction.paymentId else { return nil }
         // If note is "None", show empty string
         return message == "None" ? "" : message
     }

@@ -159,7 +159,7 @@ final class TransactionFormatter {
     }
 
     private func messageComponents(transaction: Transaction) throws -> (note: String, giphyID: String?) {
-        return (try transaction.message, nil)
+        return (try transaction.paymentId, nil)
     }
 
     // MARK: - Helpers

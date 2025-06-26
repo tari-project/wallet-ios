@@ -490,7 +490,7 @@ final class TransactionDetailsModel {
     }
     
     var transactionMessage: String? {
-        guard let message = try? transaction.message else { return nil }
+        guard let message = try? transaction.paymentId else { return nil }
         // If note is "None", show empty string
         return message == "None" ? "" : message.hex()
     }

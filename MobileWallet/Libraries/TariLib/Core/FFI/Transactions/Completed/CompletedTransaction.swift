@@ -111,14 +111,13 @@ final class CompletedTransaction: Transaction {
         }
     }
 
-    var message: String {
+    var paymentId: String {
         get throws {
-            var errorCode: Int32 = -1
-            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = completed_transaction_get_payment_id_as_bytes(pointer, errorCodePointer)
-
-            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
-            return try ByteVector(pointer: result).hex
+            try paymentId(
+                getUserPaymentId: completed_transaction_get_user_payment_id,
+                getPaymentIdAsBytes: completed_transaction_get_payment_id_as_bytes,
+                getUserPaymentIdAsBytes: completed_transaction_get_user_payment_id_as_bytes
+            )
         }
     }
 
@@ -210,7 +209,7 @@ final class CompletedTransaction: Transaction {
         }
     }
 
-    private let pointer: OpaquePointer
+    let pointer: OpaquePointer
 
     // MARK: - Initialiser
 

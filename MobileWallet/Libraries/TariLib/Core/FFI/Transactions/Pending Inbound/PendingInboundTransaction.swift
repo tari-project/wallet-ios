@@ -69,14 +69,13 @@ final class PendingInboundTransaction: Transaction {
         }
     }
     
-    var message: String {
+    var paymentId: String {
         get throws {
-            var errorCode: Int32 = -1
-            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = pending_inbound_transaction_get_payment_id(pointer, errorCodePointer)
-            
-            guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
-            return String(cString: cString)
+            try paymentId(
+                getPaymentId: pending_inbound_transaction_get_payment_id,
+                getPaymentIdAsBytes: pending_inbound_transaction_get_payment_id_as_bytes,
+                getUserPaymentIdAsBytes: pending_inbound_transaction_get_user_payment_id_as_bytes
+            )
         }
     }
     
@@ -113,7 +112,7 @@ final class PendingInboundTransaction: Transaction {
         }
     }
 
-    private let pointer: OpaquePointer
+    let pointer: OpaquePointer
 
     // MARK: - Initialiser
 

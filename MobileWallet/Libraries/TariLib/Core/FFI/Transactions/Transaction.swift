@@ -58,11 +58,12 @@ enum TransactionStatus: Int32 {
 }
 
 protocol Transaction {
+    var pointer: OpaquePointer { get }
     var identifier: UInt64 { get throws }
     var amount: UInt64 { get throws }
     var isOutboundTransaction: Bool { get throws }
     var status: TransactionStatus { get throws }
-    var message: String { get throws }
+    var paymentId: String { get throws }
     var timestamp: UInt64 { get throws }
     var address: TariAddress { get throws }
     var isCancelled: Bool { get }
@@ -70,7 +71,6 @@ protocol Transaction {
 }
 
 extension Transaction {
-
     var isOneSidedPayment: Bool {
         get throws {
             let status = try status
@@ -87,6 +87,39 @@ extension Transaction {
 
     var formattedTimestamp: String {
         get throws { Date(timeIntervalSince1970: Double(try timestamp)).relativeDayFromToday() ?? "" }
+    }
+    
+    func paymentId(
+        getPaymentId: ((OpaquePointer, UnsafeMutablePointer<Int32>) -> UnsafePointer<CChar>?)? = nil,
+        getUserPaymentId: ((OpaquePointer, UnsafeMutablePointer<Int32>) -> UnsafeMutablePointer<CChar>?)? = nil,
+        getPaymentIdAsBytes: (OpaquePointer, UnsafeMutablePointer<Int32>) -> OpaquePointer?,
+        getUserPaymentIdAsBytes: (OpaquePointer, UnsafeMutablePointer<Int32>) -> OpaquePointer?
+    ) throws -> String {
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        if let result = getPaymentId?(pointer, errorCodePointer), errorCode == 0 {
+            let paymentId = String(cString: result)
+            if !paymentId.isEmpty {
+                return paymentId
+            }
+        }
+        if let result = getUserPaymentId?(pointer, errorCodePointer), errorCode == 0 {
+            let paymentId = String(cString: result)
+            if !paymentId.isEmpty {
+                return paymentId
+            }
+        }
+        if let result = getPaymentIdAsBytes(pointer, errorCodePointer), errorCode == 0 {
+            let paymentId = ByteVector(pointer: result)
+            if try 0 < paymentId.count {
+                return try paymentId.hex
+            }
+        }
+        if let result = getUserPaymentIdAsBytes(pointer, errorCodePointer), errorCode == 0 {
+            return try ByteVector(pointer: result).hex
+        }
+        throw WalletError(code: errorCode)
     }
 }
 
