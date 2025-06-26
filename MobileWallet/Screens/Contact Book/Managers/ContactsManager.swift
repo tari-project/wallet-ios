@@ -41,7 +41,6 @@
 import UIKit
 
 final class ContactsManager {
-
     enum ContactType {
         case internalOrEmojiID
         case empty
@@ -51,9 +50,8 @@ final class ContactsManager {
         case emptyContactName
     }
 
-    struct Model: Identifiable {
-
-        let id: UUID = UUID()
+    struct Model: Identifiable, Hashable {
+        let id = UUID()
         let internalModel: InternalContactsManager.ContactModel?
         let name: String
         let alias: String?
@@ -78,7 +76,6 @@ final class ContactsManager {
             avatar = internalModel?.addressComponents.spendKey.firstOrEmpty ?? ""
         }
     }
-
     var isPermissionGranted: Bool { true }
 
     // MARK: - Properties
@@ -87,6 +84,13 @@ final class ContactsManager {
     private let internalContactsManager = InternalContactsManager()
 
     // MARK: - Actions
+    
+    func contact(for address: TariAddress) async throws -> ContactsManager.Model? {
+        try await fetchModels()
+        return try tariContactModels.first {
+            try $0.internalModel?.addressComponents == address.components
+        }
+    }
 
     func fetchModels() async throws {
         let internalContacts = try internalContactsManager.fetchAllModels()
@@ -118,7 +122,7 @@ final class ContactsManager {
     }
 
     func createInternalModel(name: String, isFavorite: Bool, address: TariAddress) throws -> Model {
-        let internalModel = try internalContactsManager.create(name: name, isFavorite: isFavorite, address: address)
+        let internalModel = try internalContactsManager.create(alias: name, isFavorite: isFavorite, address: address)
         return Model(internalModel: internalModel)
     }
 

@@ -121,7 +121,7 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
     // MARK: - Setups
 
     private func setupViews() {
-        view.backgroundColor = .Background.primary
+        view.backgroundColor = .primaryBackground
         view.addSubview(tableView)
         view.addSubview(copyDetailsButton)
         view.addSubview(toastView)

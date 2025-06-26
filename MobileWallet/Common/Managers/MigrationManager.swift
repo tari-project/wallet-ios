@@ -80,7 +80,7 @@ enum MigrationManager {
         } catch {
             guard retryCount < maxRetryCount else { return nil }
             Logger.log(message: "Waiting for cookies: Retry Count: \(retryCount)", domain: .general, level: .info)
-            try? await Task.sleep(seconds: 1)
+            await Task.sleep(seconds: 1)
             return await fetchDBVersion(retryCount: retryCount + 1)
         }
     }

@@ -1,10 +1,10 @@
-//  Task+Utils.swift
-
+//  IconButton.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 01/09/2023
-	Using Swift 5.0
-	Running on macOS 13.4
+	Created by Tomas Hakel on 25.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,27 +38,21 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public extension Task where Success == Void, Failure == Error {
-    @discardableResult
-    init(after seconds: Double, operation: @MainActor @escaping @Sendable () -> Void) {
-        self.init { @MainActor in
-            await Task<Never, Never>.sleep(seconds: seconds)
-            operation()
-        }
+import SwiftUI
+
+struct IconButton: View {
+    let icon: UIImage
+    let action: () -> Void
+    
+    init(_ icon: UIImage, action: @escaping () -> Void) {
+        self.icon = icon
+        self.action = action
     }
     
-    @discardableResult
-    init(after seconds: Double, operation: @escaping @Sendable () async -> Void) {
-        self.init {
-            await Task<Never, Never>.sleep(seconds: seconds)
-            await operation()
+    var body: some View {
+        Button(action: action) {
+            Image(uiImage: icon)
+                .templateStyle(.primaryText)
         }
     }
 }
-
-public extension Task where Success == Never, Failure == Never {
-    static func sleep(seconds: Double) async {
-        try? await Task.sleep(for: .seconds(seconds))
-    }
-}
-
