@@ -45,19 +45,19 @@ final class YatTransactionView: UIView {
 
     // MARK: - Subviews
 
-    @View private var transactionLabel: UILabel = {
+    @TariView private var transactionLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
         return view
     }()
 
-    @View private var videoView: VideoView = {
+    @TariView private var videoView: VideoView = {
         let view = VideoView()
         view.alpha = 0.0
         return view
     }()
 
-    @View private var spinnerView: AnimationView = {
+    @TariView private var spinnerView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
         view.animation = Animation.named(.pendingCircleAnimation)
@@ -66,7 +66,7 @@ final class YatTransactionView: UIView {
         return view
     }()
 
-    @View private var completionLabel: UILabel = {
+    @TariView private var completionLabel: UILabel = {
         let view = UILabel()
         view.textColor = .white
         view.font = .Poppins.Bold.withSize(30.0)

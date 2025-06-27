@@ -50,7 +50,7 @@ final class PopUpSelectionView: UIView {
 
     // MARK: - Subviews
 
-    @View private var tableView: PopUpTableView = {
+    @TariView private var tableView: PopUpTableView = {
         let view = PopUpTableView()
         view.register(type: PopUpSelectionCell.self)
         return view
@@ -128,13 +128,13 @@ private class PopUpSelectionCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
-    @View private var tickIcon: UIImageView = {
+    @TariView private var tickIcon: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.General.tick
         view.contentMode = .scaleAspectFit

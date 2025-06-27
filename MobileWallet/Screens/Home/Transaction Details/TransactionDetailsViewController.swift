@@ -51,14 +51,14 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
 
     // MARK: - Subviews
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.separatorStyle = .none
         view.backgroundColor = .clear
         return view
     }()
 
-    @View private var toastView: UIView = {
+    @TariView private var toastView: UIView = {
         let view = UIView()
         view.backgroundColor = .Background.primary
         view.layer.cornerRadius = 10
@@ -68,14 +68,14 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
         return view
     }()
     
-    @View public var copyDetailsButton: StylisedButton = {
+    @TariView public var copyDetailsButton: StylisedButton = {
         let button = StylisedButton(withStyle: .outlined, withSize: .large)
         button.setTitle("Copy Raw Details", for: .normal)
         button.setImage(.sendCopy.withRenderingMode(.alwaysTemplate), for: .normal)
         return button
     }()
 
-    @View private var toastLabel: UILabel = {
+    @TariView private var toastLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Text.primary
         view.font = .Poppins.Medium.withSize(14)
@@ -121,7 +121,7 @@ final class TransactionDetailsViewController: SecureViewController<TransactionDe
     // MARK: - Setups
 
     private func setupViews() {
-        view.backgroundColor = .Background.primary
+        view.backgroundColor = .primaryBackground
         view.addSubview(tableView)
         view.addSubview(copyDetailsButton)
         view.addSubview(toastView)

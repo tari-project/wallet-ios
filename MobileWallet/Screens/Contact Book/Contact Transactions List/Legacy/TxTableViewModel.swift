@@ -79,7 +79,7 @@ class TxTableViewModel: NSObject {
             message = localized("transaction.one_sided_payment.note.normal")
             gifID = nil
         } else {
-            let (msg, giphyId) = TxTableViewModel.extractNote(from: try transaction.message)
+            let (msg, giphyId) = TxTableViewModel.extractNote(from: try transaction.paymentId)
             message = msg
             gifID = giphyId
         }

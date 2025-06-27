@@ -45,13 +45,13 @@ final class SeedWordListElementView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var indexLabel: UILabel = {
+    @TariView private var indexLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseCellNumber
         return view
     }()
 
-    @View private var textLabel: UILabel = {
+    @TariView private var textLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseCellTitle
         return view

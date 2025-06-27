@@ -145,7 +145,7 @@ private final class PopUpSwitchListView: UIView {
 
     // MARK: - Subviews
 
-    @View private var tableView: PopUpTableView = {
+    @TariView private var tableView: PopUpTableView = {
         let view = PopUpTableView()
         view.register(type: PopUpSwitchListViewCell.self)
         return view
@@ -228,13 +228,13 @@ private class PopUpSwitchListViewCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
-    @View private var switchView = UISwitch()
+    @TariView private var switchView = UISwitch()
 
     // MARK: - Properties
 

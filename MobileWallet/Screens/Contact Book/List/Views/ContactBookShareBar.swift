@@ -51,7 +51,7 @@ final class ContactBookShareBar: UIView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.distribution = .fillEqually
         view.spacing = 44.0
@@ -108,7 +108,7 @@ final class ContactBookShareBar: UIView {
     }
 
     private func makeButton(model: ViewModel, isSelected: Bool) -> RoundedLabeledButton {
-        @View var button = RoundedLabeledButton()
+        @TariView var button = RoundedLabeledButton()
         button.buttonSize = 46.0
         button.padding = 10.0
         button.isSelected = isSelected

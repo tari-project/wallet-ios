@@ -46,36 +46,36 @@ final class SplashView: DynamicThemeView {
 
     // MARK: - Subviews
 
-//    @View private var animatedLogoView: AnimationView = {
+//    @TariView private var animatedLogoView: AnimationView = {
 //        let view = AnimationView()
 //        view.animation = Animation.named(.splash)
 //        view.backgroundBehavior = .pauseAndRestore
 //        return view
 //    }()
 //
-//    @View private var videoView: VideoView = {
+//    @TariView private var videoView: VideoView = {
 //        let view = VideoView()
 //        view.url = Bundle.main.url(forResource: "purple_orb", withExtension: "mp4")
 //        return view
 //    }()
 
-    @View private var iconView: UIImageView = {
+    @TariView private var iconView: UIImageView = {
         let image = UIImage(named: "GemBlackSmall")
         let view = UIImageView(image: image?.withRenderingMode(.alwaysTemplate))
         return view
     }()
 
-    @View private var staticSplashView: UIImageView = {
+    @TariView private var staticSplashView: UIImageView = {
         let view = UIImageView()
         return view
     }()
 
-    @View private var separatorView: UIView = {
+    @TariView private var separatorView: UIView = {
         let view = UIView()
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = Typography.appTitle
         view.textAlignment = .center
@@ -85,23 +85,23 @@ final class SplashView: DynamicThemeView {
         return view
     }()
 
-    @View private var importWalletLabel: StylisedLabel = {
+    @TariView private var importWalletLabel: StylisedLabel = {
         let label = StylisedLabel(withStyle: .body2)
         label.text = localized("splash.import_wallet_label")
         return label
     }()
 
-    @View var importWalletLabelContainer: UIView = {
+    @TariView var importWalletLabelContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .Background.primary.withAlphaComponent(0.8)
         view.layer.cornerRadius = 8
         return view
     }()
 
-    @View var importWallet = StylisedButton(withStyle: .primary, withSize: .large)
-    @View var createWallet = StylisedButton(withStyle: .outlined, withSize: .large)
+    @TariView var importWallet = StylisedButton(withStyle: .primary, withSize: .large)
+    @TariView var createWallet = StylisedButton(withStyle: .outlined, withSize: .large)
 
-    @View private var disclaimerTextView: UnselectableTextView = {
+    @TariView private var disclaimerTextView: UnselectableTextView = {
         let view = UnselectableTextView()
         view.backgroundColor = .clear
         view.isScrollEnabled = false
@@ -109,7 +109,7 @@ final class SplashView: DynamicThemeView {
         return view
     }()
 
-    @View private var versionLabel: StylisedLabel = {
+    @TariView private var versionLabel: StylisedLabel = {
         let view = StylisedLabel(withStyle: .body2)
         return view
     }()

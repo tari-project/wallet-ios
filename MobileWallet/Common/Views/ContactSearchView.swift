@@ -44,7 +44,7 @@ final class ContactSearchView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var textField: UITextField = {
+    @TariView private(set) var textField: UITextField = {
         let view = UITextField()
         view.font = .Poppins.Medium.withSize(14)
         view.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 11.0, height: 0.0))
@@ -52,20 +52,20 @@ final class ContactSearchView: DynamicThemeView {
         return view
     }()
 
-    @View private(set) var qrButton: PulseButton = {
+    @TariView private(set) var qrButton: PulseButton = {
         let view = PulseButton()
         view.setImage(.Icons.General.QR, for: .normal)
         view.imageView?.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var contentView: UIStackView = {
+    @TariView private var contentView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         return view
     }()
 
-    @View private var previewView = ScrollableLabel()
+    @TariView private var previewView = ScrollableLabel()
 
     // MARK: - Properties
 

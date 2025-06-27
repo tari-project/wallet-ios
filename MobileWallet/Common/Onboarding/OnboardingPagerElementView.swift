@@ -45,7 +45,7 @@ final class OnboardingPagerElementView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var progressView = UIView()
+    @TariView private var progressView = UIView()
 
     // MARK: - Properties
 

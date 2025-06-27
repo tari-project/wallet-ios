@@ -45,7 +45,7 @@ final class TransactionDetailsView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var navigationBar = NavigationBar()
+    @TariView private var navigationBar = NavigationBar()
 
     // MARK: - Properties
 

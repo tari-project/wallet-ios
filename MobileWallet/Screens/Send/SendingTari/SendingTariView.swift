@@ -50,30 +50,30 @@ final class SendingTariView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var videoBackgroundView: VideoView = {
+    @TariView private(set) var videoBackgroundView: VideoView = {
         let view = VideoView()
         view.url = Bundle.main.url(forResource: "sending-background", withExtension: "mp4")
         view.videoGravity = .resizeAspectFill
         return view
     }()
 
-    @View private var logoView = AnimationView(name: "sendingTariAnimation")
+    @TariView private var logoView = AnimationView(name: "sendingTariAnimation")
 
-    @View private var firstLabel: SendingTariLabel = {
+    @TariView private var firstLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelFirst
         view.label.textColor = .Text.primary
         return view
     }()
 
-    @View private var secondLabel: SendingTariLabel = {
+    @TariView private var secondLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelSecond
         view.label.textColor = .Text.primary
         return view
     }()
 
-    @View private(set) var progressBar = SendingTariProgressBar()
+    @TariView private(set) var progressBar = SendingTariProgressBar()
 
     // MARK: - Initialisers
 

@@ -45,9 +45,9 @@ final class PageToolbarView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var selectorLineView = UIView()
+    @TariView private var selectorLineView = UIView()
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.distribution = .fillEqually
         view.alignment = .fill

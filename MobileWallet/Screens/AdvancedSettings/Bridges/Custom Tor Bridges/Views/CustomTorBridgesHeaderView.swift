@@ -44,7 +44,7 @@ final class CustomTorBridgesHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.text = localized("custom_bridges.item.paste_bridges")

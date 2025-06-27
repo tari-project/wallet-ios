@@ -53,20 +53,20 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var nameLabel: UILabel = {
+    @TariView private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(17.0)
         view.textAlignment = .center
         return view
     }()
 
-    @View private var addressView: RoundedAddressView = {
+    @TariView private var addressView: RoundedAddressView = {
         let view = RoundedAddressView()
         view.isHidden = true
         return view
     }()
 
-    @View private var yatLabel: UILabel = {
+    @TariView private var yatLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Medium.withSize(20.0)
@@ -74,13 +74,13 @@ final class ContactDetailsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var yatButton: BaseButton = {
+    @TariView private var yatButton: BaseButton = {
         let view = BaseButton()
         view.setImage(.Icons.Yat.buttonOn, for: .disabled)
         return view
     }()
 
-    @View private var tableView = MenuTableView()
+    @TariView private var tableView = MenuTableView()
     private var footer = ContactDetailsViewBottomView()
 
     // MARK: - Properties
@@ -284,15 +284,15 @@ private final class ContactDetailsViewBottomView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var contentView = UIView()
+    @TariView private var contentView = UIView()
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         return view

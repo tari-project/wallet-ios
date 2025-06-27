@@ -67,23 +67,23 @@ final class UTXOsWalletView: BaseNavigationContentView {
 
     // MARK: - Suviews
 
-    @View private var contextualButtonsOverlay = ContextualButtonsOverlay()
-    @View private var topToolbar = UTXOsWalletTopBar()
-    @View private var tileList = UTXOsWalletTileListView()
+    @TariView private var contextualButtonsOverlay = ContextualButtonsOverlay()
+    @TariView private var topToolbar = UTXOsWalletTopBar()
+    @TariView private var tileList = UTXOsWalletTileListView()
 
-    @View private var textList: UTXOsWalletTextListView = {
+    @TariView private var textList: UTXOsWalletTextListView = {
         let view = UTXOsWalletTextListView()
         view.alpha = 0.0
         return view
     }()
 
-    @View private var placeholderView: UTXOsWalletPlaceholderView = {
+    @TariView private var placeholderView: UTXOsWalletPlaceholderView = {
         let view = UTXOsWalletPlaceholderView()
         view.alpha = 0.0
         return view
     }()
 
-    @View private var loadingView: UTXOsWalletLoadingView = {
+    @TariView private var loadingView: UTXOsWalletLoadingView = {
         let view = UTXOsWalletLoadingView()
         view.alpha = 0.0
         return view

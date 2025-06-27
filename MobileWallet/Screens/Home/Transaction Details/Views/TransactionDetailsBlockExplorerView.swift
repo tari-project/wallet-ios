@@ -45,14 +45,14 @@ final class TransactionDetailsBlockExplorerView: DynamicThemeBaseButton {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.text = localized("tx_detail.block_explorer.description")
         view.font = Theme.shared.fonts.txScreenTextLabel
         return view
     }()
 
-    @View private var accessoryView: UIImageView = {
+    @TariView private var accessoryView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.forwardArrow
         view.contentMode = .scaleAspectFit

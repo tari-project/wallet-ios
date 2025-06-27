@@ -52,7 +52,6 @@ extension UIFont {
         func withSize(_ size: CGFloat) -> UIFont {
             UIFont(name: "Poppins-" + self.rawValue, size: size)!
         }
-
     }
 
     enum DrukWideTrial: String {

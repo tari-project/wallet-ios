@@ -38,10 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import SwiftUI
+
 enum TransactionDetailsConstructor {
 
-    static func buildScene(transaction: Transaction) -> TransactionDetailsViewController {
-        let model = TransactionDetailsModel(transaction: transaction)
-        return TransactionDetailsViewController(model: model)
+    static func buildScene(transaction: Transaction) -> UIHostingController<TransactionDetails> {
+        // TODO: Remove UIKit TransactionDetail once the redesign is properly tested
+//        let model = TransactionDetailsModel(transaction: transaction)
+//        return TransactionDetailsViewController(model: model)
+        
+        UIHostingController(rootView: TransactionDetails(transaction))
     }
 }

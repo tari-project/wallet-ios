@@ -246,7 +246,7 @@ final class TorManager {
     private func waitingForThread() async throws {
         guard isThreadRunning else { return }
         Logger.log(message: "Waiting for thread", domain: .tor, level: .info)
-        try await Task.sleep(seconds: 0.5)
+        await Task.sleep(seconds: 0.5)
         try await waitingForThread()
     }
 
@@ -290,7 +290,7 @@ final class TorManager {
                 throw TorError.connectionFailed(error: posixError)
             }
 
-            try await Task.sleep(seconds: 0.5)
+            await Task.sleep(seconds: 0.5)
             try await startController(retryCount: retryCount)
         }
     }

@@ -50,13 +50,13 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var searchTextField: SearchField = {
+    @TariView private var searchTextField: SearchField = {
         let view = SearchField()
         view.placeholder = localized("transaction_history.search_field.placeholder")
         return view
     }()
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.showsVerticalScrollIndicator = false
         view.estimatedRowHeight = 44.0

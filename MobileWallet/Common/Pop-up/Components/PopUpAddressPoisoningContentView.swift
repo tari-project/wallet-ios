@@ -44,7 +44,7 @@ final class PopUpAddressPoisoningContentView: DynamicThemeView {
 
     // MARK: - Subiews
 
-    @View private var tableView: PopUpTableView = {
+    @TariView private var tableView: PopUpTableView = {
         let view = PopUpTableView()
         view.register(type: PopUpAddressPoisoningContentCell.self)
         view.layer.cornerRadius = 10.0
@@ -52,28 +52,28 @@ final class PopUpAddressPoisoningContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var tickView: TickButton = {
+    @TariView private var tickView: TickButton = {
         let view = TickButton()
         view.isUserInteractionEnabled = true
         return view
     }()
 
-    @View private var tickMessageLabel: UILabel = {
+    @TariView private var tickMessageLabel: UILabel = {
         let view = UILabel()
         view.text = localized("address_poisoning.pop_up.label.tick_message")
         view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
-    @View private var tickMessageButton = BaseButton()
+    @TariView private var tickMessageButton = BaseButton()
 
-    @View private var shieldIconView: UIImageView = {
+    @TariView private var shieldIconView: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.General.shieldCheckmark
         return view
     }()
 
-    @View private var infoLabel: UILabel = {
+    @TariView private var infoLabel: UILabel = {
         let view = UILabel()
         view.text = localized("address_poisoning.pop_up.label.trusted_info")
         view.font = .Poppins.Medium.withSize(11.0)
@@ -208,47 +208,47 @@ final class PopUpAddressPoisoningContentCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var floatingContentView: UIView = {
+    @TariView private var floatingContentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 4.0
         view.layer.borderWidth = 2.0
         return view
     }()
 
-    @View private var emojiView: ScrollableLabel = {
+    @TariView private var emojiView: ScrollableLabel = {
         let view = ScrollableLabel()
         view.label.font = .Poppins.Medium.withSize(17.0)
         view.margin = 10.0
         return view
     }()
 
-    @View private var labelsStackView: UIStackView = {
+    @TariView private var labelsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         return view
     }()
 
-    @View private var bottomStackView = UIStackView()
+    @TariView private var bottomStackView = UIStackView()
 
-    @View private var nameLabel: UILabel = {
+    @TariView private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Bold.withSize(14.0)
         return view
     }()
 
-    @View private var transactionCountLabel: UILabel = {
+    @TariView private var transactionCountLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
-    @View private var lastTransactionLabel: UILabel = {
+    @TariView private var lastTransactionLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
-    @View private var shieldIconView: UIImageView = {
+    @TariView private var shieldIconView: UIImageView = {
         let view = UIImageView()
         view.image = .Icons.General.shieldCheckmark
         view.isHidden = true

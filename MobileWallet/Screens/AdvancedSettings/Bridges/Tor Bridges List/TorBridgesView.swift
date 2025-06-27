@@ -49,7 +49,7 @@ final class TorBridgesView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var tableView: BaseMenuTableView = {
+    @TariView private var tableView: BaseMenuTableView = {
         let view = BaseMenuTableView()
         view.register(type: AccessoryImageMenuCell.self)
         view.register(headerFooterType: TorBridgesFooterView.self)

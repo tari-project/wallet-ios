@@ -45,9 +45,9 @@ final class TokenInputView: DynamicThemeCollectionCell {
 
     // MARK: - Subviews
 
-    @View var toolbar = TokensToolbar()
+    @TariView var toolbar = TokensToolbar()
 
-    @View var textField: ObservableTextField = {
+    @TariView var textField: ObservableTextField = {
         let view = ObservableTextField()
         view.font = .Poppins.Medium.withSize(12)
         view.autocorrectionType = .no

@@ -597,6 +597,24 @@
 		F8214FF02DFC1728003EBB25 /* PaymentReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */; };
 		F8214FF22DFC1BD2003EBB25 /* PaymentReferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */; };
 		F8214FF42DFC4E42003EBB25 /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */; };
+		F82150012E02BF62003EBB25 /* NewDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150002E02BF2A003EBB25 /* NewDesignSystem.swift */; };
+		F82150052E02DEE6003EBB25 /* TariButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150042E02DEE6003EBB25 /* TariButton.swift */; };
+		F82150082E02ECFB003EBB25 /* Text+Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150072E02ECF4003EBB25 /* Text+Typography.swift */; };
+		F821500A2E030A71003EBB25 /* Font+Poppins.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150092E030A6C003EBB25 /* Font+Poppins.swift */; };
+		F821500D2E04871C003EBB25 /* SettingsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821500C2E048718003EBB25 /* SettingsItem.swift */; };
+		F821500F2E048AB3003EBB25 /* TransactionDetailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821500E2E048AB3003EBB25 /* TransactionDetailItem.swift */; };
+		F82150182E058216003EBB25 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F82150172E058216003EBB25 /* Colors.xcassets */; };
+		F821501B2E05B8D1003EBB25 /* TransactionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821501A2E05B8D1003EBB25 /* TransactionDetails.swift */; };
+		F821501D2E05BB83003EBB25 /* TransactionDetails+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821501C2E05BB74003EBB25 /* TransactionDetails+Actions.swift */; };
+		F82150212E060229003EBB25 /* View+Backgrount.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150202E060217003EBB25 /* View+Backgrount.swift */; };
+		F82150232E060249003EBB25 /* Toolbar+Items.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150222E060240003EBB25 /* Toolbar+Items.swift */; };
+		F821502C2E0945CF003EBB25 /* EditContactNameSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821502B2E0945CF003EBB25 /* EditContactNameSheet.swift */; };
+		F82150312E0A76DA003EBB25 /* EmojiToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150302E0A76D8003EBB25 /* EmojiToggle.swift */; };
+		F82150332E0A7714003EBB25 /* CopyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150322E0A7710003EBB25 /* CopyButton.swift */; };
+		F82150352E0A7798003EBB25 /* Image+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150342E0A7791003EBB25 /* Image+Style.swift */; };
+		F82150372E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150362E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift */; };
+		F821503F2E0BE369003EBB25 /* CopyRawDetailsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821503E2E0BE361003EBB25 /* CopyRawDetailsButton.swift */; };
+		F82150412E0BF1C2003EBB25 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150402E0BF1C2003EBB25 /* IconButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1222,6 +1240,24 @@
 		F8214FEF2DFC1722003EBB25 /* PaymentReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReference.swift; sourceTree = "<group>"; };
 		F8214FF12DFC1BCF003EBB25 /* PaymentReferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReferences.swift; sourceTree = "<group>"; };
 		F8214FF32DFC4E3D003EBB25 /* String+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Hex.swift"; sourceTree = "<group>"; };
+		F82150002E02BF2A003EBB25 /* NewDesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDesignSystem.swift; sourceTree = "<group>"; };
+		F82150042E02DEE6003EBB25 /* TariButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariButton.swift; sourceTree = "<group>"; };
+		F82150072E02ECF4003EBB25 /* Text+Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Typography.swift"; sourceTree = "<group>"; };
+		F82150092E030A6C003EBB25 /* Font+Poppins.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Poppins.swift"; sourceTree = "<group>"; };
+		F821500C2E048718003EBB25 /* SettingsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItem.swift; sourceTree = "<group>"; };
+		F821500E2E048AB3003EBB25 /* TransactionDetailItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailItem.swift; sourceTree = "<group>"; };
+		F82150172E058216003EBB25 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		F821501A2E05B8D1003EBB25 /* TransactionDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetails.swift; sourceTree = "<group>"; };
+		F821501C2E05BB74003EBB25 /* TransactionDetails+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TransactionDetails+Actions.swift"; sourceTree = "<group>"; };
+		F82150202E060217003EBB25 /* View+Backgrount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Backgrount.swift"; sourceTree = "<group>"; };
+		F82150222E060240003EBB25 /* Toolbar+Items.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Toolbar+Items.swift"; sourceTree = "<group>"; };
+		F821502B2E0945CF003EBB25 /* EditContactNameSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditContactNameSheet.swift; sourceTree = "<group>"; };
+		F82150302E0A76D8003EBB25 /* EmojiToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiToggle.swift; sourceTree = "<group>"; };
+		F82150322E0A7710003EBB25 /* CopyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyButton.swift; sourceTree = "<group>"; };
+		F82150342E0A7791003EBB25 /* Image+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Style.swift"; sourceTree = "<group>"; };
+		F82150362E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReferenceInfoSheet.swift; sourceTree = "<group>"; };
+		F821503E2E0BE361003EBB25 /* CopyRawDetailsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyRawDetailsButton.swift; sourceTree = "<group>"; };
+		F82150402E0BF1C2003EBB25 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1411,6 +1447,7 @@
 		00A6779C23743674001A853E /* Transaction Details */ = {
 			isa = PBXGroup;
 			children = (
+				F82150192E05B8C3003EBB25 /* SwiftUI */,
 				3A82455227E1EDA6003B6B59 /* Views */,
 				37C8BA332480F575005BBC05 /* WaveEmojiAnimation */,
 				3A03682D27DF20E300F304A2 /* TransactionDetailsViewController.swift */,
@@ -1447,6 +1484,7 @@
 				3A7DAB8C28FDAF58002CC013 /* Logs */,
 				3ABC7E9428FECFB200EAC852 /* UIViewController+DebugMenu.swift */,
 				711D7FA12D511F760080A987 /* DesignSystemViewController.swift */,
+				F82150002E02BF2A003EBB25 /* NewDesignSystem.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -1579,11 +1617,13 @@
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
+				F82150172E058216003EBB25 /* Colors.xcassets */,
 				37B4449C24890F3000592D92 /* Backup */,
 				001256432371EBAA00A9C067 /* Boards */,
 				00262EB2236F022000A6C8A0 /* Common */,
 				37098045249CD48A0004ED2E /* Localizable.strings */,
 				00E2BCB5236B469C00C2A105 /* Screens */,
+				F82150022E02DE4B003EBB25 /* SwiftUI */,
 				00E2BCAF236B44CE00C2A105 /* UIElements */,
 				54B3A5432AC2CB8600FDC578 /* Libraries */,
 			);
@@ -2992,6 +3032,7 @@
 		54D419B12995091B00D496B4 /* Contact Book */ = {
 			isa = PBXGroup;
 			children = (
+				F821502A2E0945BC003EBB25 /* SwiftUI */,
 				540CB6EF29C1DDBF003FACEF /* Add Contact */,
 				5460258429A74D6C00CF5764 /* Contact Details */,
 				54F2E34129EE6B6300A7A15A /* Contact Transactions List */,
@@ -3302,6 +3343,83 @@
 			path = Video;
 			sourceTree = "<group>";
 		};
+		F82150022E02DE4B003EBB25 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				F821501F2E060207003EBB25 /* Extensions */,
+				F821500B2E048709003EBB25 /* ListItems */,
+				F82150062E02EBEF003EBB25 /* Typography */,
+				F82150032E02DE6A003EBB25 /* Buttons */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		F82150032E02DE6A003EBB25 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				F82150042E02DEE6003EBB25 /* TariButton.swift */,
+				F82150322E0A7710003EBB25 /* CopyButton.swift */,
+				F82150402E0BF1C2003EBB25 /* IconButton.swift */,
+				F82150302E0A76D8003EBB25 /* EmojiToggle.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		F82150062E02EBEF003EBB25 /* Typography */ = {
+			isa = PBXGroup;
+			children = (
+				F82150092E030A6C003EBB25 /* Font+Poppins.swift */,
+				F82150072E02ECF4003EBB25 /* Text+Typography.swift */,
+			);
+			path = Typography;
+			sourceTree = "<group>";
+		};
+		F821500B2E048709003EBB25 /* ListItems */ = {
+			isa = PBXGroup;
+			children = (
+				F821500C2E048718003EBB25 /* SettingsItem.swift */,
+				F821500E2E048AB3003EBB25 /* TransactionDetailItem.swift */,
+			);
+			path = ListItems;
+			sourceTree = "<group>";
+		};
+		F82150192E05B8C3003EBB25 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				F821501A2E05B8D1003EBB25 /* TransactionDetails.swift */,
+				F821501C2E05BB74003EBB25 /* TransactionDetails+Actions.swift */,
+				F82150362E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift */,
+				F821503E2E0BE361003EBB25 /* CopyRawDetailsButton.swift */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		F821501F2E060207003EBB25 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F82150342E0A7791003EBB25 /* Image+Style.swift */,
+				F82150222E060240003EBB25 /* Toolbar+Items.swift */,
+				F82150202E060217003EBB25 /* View+Backgrount.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F82150292E0945AE003EBB25 /* EditContactSheet */ = {
+			isa = PBXGroup;
+			children = (
+				F821502B2E0945CF003EBB25 /* EditContactNameSheet.swift */,
+			);
+			path = EditContactSheet;
+			sourceTree = "<group>";
+		};
+		F821502A2E0945BC003EBB25 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				F82150292E0945AE003EBB25 /* EditContactSheet */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3419,6 +3537,7 @@
 				711D7F832D50E0540080A987 /* Poppins-Black.ttf in Resources */,
 				711D7F892D50E0540080A987 /* Poppins-Bold.ttf in Resources */,
 				711D7F8D2D50E0540080A987 /* Poppins-Light.ttf in Resources */,
+				F82150182E058216003EBB25 /* Colors.xcassets in Resources */,
 				711D7F8E2D50E0540080A987 /* Poppins-Regular.ttf in Resources */,
 				711D7F902D50E0540080A987 /* fontExporter.sh in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
@@ -3513,6 +3632,7 @@
 				3A7DABA028FDC9F3002CC013 /* LogConstructor.swift in Sources */,
 				54103CDC2A555A3100C456B4 /* TransactionHistoryModel.swift in Sources */,
 				540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */,
+				F82150212E060229003EBB25 /* View+Backgrount.swift in Sources */,
 				3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */,
 				54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */,
 				5460258C29A74DC100CF5764 /* ContactDetailsConstructor.swift in Sources */,
@@ -3605,6 +3725,8 @@
 				549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */,
 				375AFDCF2475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
 				3A8473D828EC56EF0015E63A /* TariKeyValueService.swift in Sources */,
+				F821500A2E030A71003EBB25 /* Font+Poppins.swift in Sources */,
+				F821501D2E05BB83003EBB25 /* TransactionDetails+Actions.swift in Sources */,
 				3A874038278842F500D80823 /* TorManager.swift in Sources */,
 				54FCC36F2AA5F00900CA0025 /* CustomTorBridgesViewController.swift in Sources */,
 				37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
@@ -3625,8 +3747,10 @@
 				54103CDA2A555A1A00C456B4 /* TransactionHistoryConstructor.swift in Sources */,
 				54D782F62BA8616F00DD3BFE /* BaseNodeState.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
+				F82150232E060249003EBB25 /* Toolbar+Items.swift in Sources */,
 				3A82455627E1EE0D003B6B59 /* TransactionDetailsSectionView.swift in Sources */,
 				54516C0C2CAE851D00A8A2FB /* SeedWordsWalletRecoveryManager.swift in Sources */,
+				F821502C2E0945CF003EBB25 /* EditContactNameSheet.swift in Sources */,
 				54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */,
 				54621F9029E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift in Sources */,
 				3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */,
@@ -3686,6 +3810,7 @@
 				3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */,
+				F82150012E02BF62003EBB25 /* NewDesignSystem.swift in Sources */,
 				5449192E2C9301A7008F1173 /* WalletContainer.swift in Sources */,
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				3A03682E27DF20E300F304A2 /* TransactionDetailsViewController.swift in Sources */,
@@ -3745,6 +3870,7 @@
 				54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */,
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
 				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
+				F82150082E02ECFB003EBB25 /* Text+Typography.swift in Sources */,
 				54FCC3732AA5FF1B00CA0025 /* CustomTorBridgesModel.swift in Sources */,
 				5495C4792B7B718E00BB9051 /* SecureWrapperView.swift in Sources */,
 				71F94EC72DA32E0200D3F2AC /* ReceiveConstructor.swift in Sources */,
@@ -3773,6 +3899,7 @@
 				3A793BF128031F540094DF23 /* PopUpImageHeaderView.swift in Sources */,
 				54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
+				F821500D2E04871C003EBB25 /* SettingsItem.swift in Sources */,
 				543537AD2C2E97190005B2B1 /* AddressView.swift in Sources */,
 				37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				54D46A922CA6904800E554C0 /* TariConstants.swift in Sources */,
@@ -3782,6 +3909,7 @@
 				3A87E57F28409D630099EA0E /* AddAmountSpinnerView.swift in Sources */,
 				3A01248327B3BD0700A481F4 /* ProgressBar.swift in Sources */,
 				5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */,
+				F82150052E02DEE6003EBB25 /* TariButton.swift in Sources */,
 				548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */,
 				54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */,
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,
@@ -3792,6 +3920,7 @@
 				714103CE2DC4628500D4D452 /* SyncStatusView.swift in Sources */,
 				54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */,
 				3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */,
+				F82150372E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift in Sources */,
 				3AF56BBB28B774C0004E8E43 /* PendingInboundTransactions.swift in Sources */,
 				547A85D329ACF2D100D94985 /* MenuCell.swift in Sources */,
 				5482C8CE2A70F66300C2C80A /* PulseView.swift in Sources */,
@@ -3812,6 +3941,7 @@
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				3A983A5A27C62A3900F0AB61 /* VerifySeedWordsViewController.swift in Sources */,
 				54A6E9F2297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift in Sources */,
+				F82150332E0A7714003EBB25 /* CopyButton.swift in Sources */,
 				540F02302A6A67DA00691FF5 /* AddRecipientViewController.swift in Sources */,
 				54D419B52995093800D496B4 /* ContactBookViewController.swift in Sources */,
 				54103CDE2A555A3D00C456B4 /* TransactionHistoryViewController.swift in Sources */,
@@ -3825,6 +3955,7 @@
 				3ACDA85A2721578700F08C70 /* YatTransactionViewController.swift in Sources */,
 				3ABC7E9328FE864100EAC852 /* PopUpButtonsTableView.swift in Sources */,
 				540CB6F129C1DDCC003FACEF /* AddContactModel.swift in Sources */,
+				F821501B2E05B8D1003EBB25 /* TransactionDetails.swift in Sources */,
 				3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */,
 				5422CBFC2B88C79200428394 /* ScreenRecordingSettingsView.swift in Sources */,
 				711F28EB2DA3322D00751986 /* ReceiveViewController.swift in Sources */,
@@ -3855,6 +3986,7 @@
 				54A0903829E553A900D1CDDE /* PopUpQRContentView.swift in Sources */,
 				3AE8850A28378B8C0070D1AC /* NetworkTrafficView.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
+				F82150412E0BF1C2003EBB25 /* IconButton.swift in Sources */,
 				3A93159B286C30AA0001660E /* LeftImageButton.swift in Sources */,
 				54DF83C12A4C22C30040E3F4 /* HomeViewTransactionCell.swift in Sources */,
 				3AC8C25D27999CAC00334F26 /* PageViewController.swift in Sources */,
@@ -3984,12 +4116,14 @@
 				54D1E1A72ABD92420021A365 /* DataCollectionSettingsViewController.swift in Sources */,
 				3A6A033A2802DCE7000432B4 /* TariPopUp.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
+				F82150312E0A76DA003EBB25 /* EmojiToggle.swift in Sources */,
 				717B28A52DB8622200EDD05A /* APIService.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
 				54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */,
 				711D7FB02D5532DC0080A987 /* StylisedLabel.swift in Sources */,
 				3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */,
 				3A312FEE28B6316D00A290D3 /* CompletedTransactions.swift in Sources */,
+				F82150352E0A7798003EBB25 /* Image+Style.swift in Sources */,
 				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
 				54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */,
@@ -4022,6 +4156,7 @@
 				3A13260327EDE42A00289C8C /* GradientView.swift in Sources */,
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				54FCC3692AA5C2DB00CA0025 /* TorBridgesView.swift in Sources */,
+				F821503F2E0BE369003EBB25 /* CopyRawDetailsButton.swift in Sources */,
 				54D88EA42A5AEAEC0075DBC1 /* TransactionDynamicModel.swift in Sources */,
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
@@ -4031,6 +4166,7 @@
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,
 				3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */,
 				3A420594279802E500A8D49C /* BaseButton.swift in Sources */,
+				F821500F2E048AB3003EBB25 /* TransactionDetailItem.swift in Sources */,
 				714A904E2D7686910010B087 /* MiningView.swift in Sources */,
 				54150C312CAD3132005B2C9D /* RestoreWalletModel.swift in Sources */,
 				3ABBBA7E2850815C00A3108D /* UTXOsWalletTileListView.swift in Sources */,
@@ -4236,13 +4372,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.1.2;
+				MARKETING_VERSION = 1.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4271,13 +4407,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.1.2;
+				MARKETING_VERSION = 1.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

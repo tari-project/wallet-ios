@@ -82,6 +82,7 @@ final class TransactionFormatter {
     }
 
     func contact(components: TariAddressComponents) -> ContactsManager.Model? {
+        // TODO: fix concurrent crash
         contactsManager.tariContactModels.first { $0.internalModel?.addressComponents == components }
     }
 
@@ -158,7 +159,7 @@ final class TransactionFormatter {
     }
 
     private func messageComponents(transaction: Transaction) throws -> (note: String, giphyID: String?) {
-        return (try transaction.message, nil)
+        return (try transaction.paymentId, nil)
     }
 
     // MARK: - Helpers

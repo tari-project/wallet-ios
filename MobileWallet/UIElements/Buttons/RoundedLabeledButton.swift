@@ -44,7 +44,7 @@ final class RoundedLabeledButton: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var roundedView: RoundedButton = {
+    @TariView private var roundedView: RoundedButton = {
         let view = RoundedButton()
         view.contentVerticalAlignment = .fill
         view.contentHorizontalAlignment = .fill
@@ -52,13 +52,13 @@ final class RoundedLabeledButton: DynamicThemeView {
         return view
     }()
 
-    @View private var iconView: UIImageView = {
+    @TariView private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(14.0)
         view.textAlignment = .center

@@ -49,7 +49,7 @@ final class HomeTransactionsPlaceholderView: DynamicThemeView {
     }
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.textColor = .Text.primary
         view.font = .Poppins.Medium.withSize(12.0)
@@ -59,7 +59,7 @@ final class HomeTransactionsPlaceholderView: DynamicThemeView {
         return view
     }()
 
-    @View private var mineButton: StylisedButton = {
+    @TariView private var mineButton: StylisedButton = {
         let button = StylisedButton(withStyle: .primary, withSize: .small)
         button.setTitle("Start Mining Tari", for: .normal)
         return button

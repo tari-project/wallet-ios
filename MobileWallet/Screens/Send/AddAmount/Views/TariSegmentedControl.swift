@@ -51,13 +51,13 @@ final class TariSegmentedControl: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var selectionView: UIView = {
+    @TariView private var selectionView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 7.0
         return view
     }()
 
-    @View private var stackView = UIStackView()
+    @TariView private var stackView = UIStackView()
 
     // MARK: - Properties
 

@@ -7,7 +7,7 @@ final class TransactionDetailsCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var detailView: DetailView = {
+    @TariView private var detailView: DetailView = {
         let view = DetailView()
         return view
     }()

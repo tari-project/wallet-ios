@@ -46,14 +46,14 @@ final class TransactionDetailsNoteView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var noteLabel: UILabel = {
+    @TariView private var noteLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txScreenTextLabel
         view.numberOfLines = 0
         return view
     }()
 
-    @View private var gifView: GPHMediaView = {
+    @TariView private var gifView: GPHMediaView = {
         let view = GPHMediaView()
         view.layer.cornerRadius = 20.0
         view.clipsToBounds = true

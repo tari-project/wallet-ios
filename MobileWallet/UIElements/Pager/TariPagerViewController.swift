@@ -50,7 +50,7 @@ final class TariPagerViewController: UIViewController {
 
     // MARK: - Subviews
 
-    @View private var mainView = TariPagerView()
+    @TariView private var mainView = TariPagerView()
     private lazy var pageViewController = PageViewController()
 
     // MARK: - Properties

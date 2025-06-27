@@ -50,13 +50,13 @@ final class PopUpButtonsTableView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var tableView: PopUpTableView = {
+    @TariView private var tableView: PopUpTableView = {
         let view = PopUpTableView()
         view.register(type: PopUpButtonCell.self)
         return view
     }()
 
-    @View private var footerLabel: UILabel = {
+    @TariView private var footerLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Medium.withSize(15.0)
@@ -139,7 +139,7 @@ private final class PopUpButtonCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Poppins.Medium.withSize(15.0)

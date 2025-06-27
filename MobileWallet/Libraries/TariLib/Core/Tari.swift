@@ -50,6 +50,7 @@ final class Tari {
     // MARK: - Properties
 
     static let shared = Tari()
+    static let mainWallet = shared.wallet(.main)
 
     private(set) lazy var logFilePath: String = {
         let timestamp = DateFormatter.logTimestamp.string(from: Date())

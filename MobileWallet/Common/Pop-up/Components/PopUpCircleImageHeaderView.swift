@@ -49,19 +49,19 @@ final class PopUpCircleImageHeaderView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var circleBackgroundView: UIView = {
+    @TariView private var circleBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 40.0
         return view
     }()
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Light.withSize(18.0)
         view.textAlignment = .center

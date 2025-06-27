@@ -45,13 +45,13 @@ final class LeftImageButton: BaseButton {
 
     // MARK: - Subviews
 
-    @View private(set) var iconView: UIImageView = {
+    @TariView private(set) var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private(set) var label: UILabel = {
+    @TariView private(set) var label: UILabel = {
         let view = UILabel()
         return view
     }()

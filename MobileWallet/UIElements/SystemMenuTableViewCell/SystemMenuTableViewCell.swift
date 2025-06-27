@@ -89,8 +89,8 @@ class SystemMenuTableViewCell: DynamicThemeCell {
 
     private weak var item: SystemMenuTableViewCellItem?
 
-    @View private var iconImageView = UIImageView()
-    @View private var labelsStackView = UIStackView()
+    @TariView private var iconImageView = UIImageView()
+    @TariView private var labelsStackView = UIStackView()
 
     private let markImageView = UIImageView()
     private var markImageViewTrailingConstraint: NSLayoutConstraint?

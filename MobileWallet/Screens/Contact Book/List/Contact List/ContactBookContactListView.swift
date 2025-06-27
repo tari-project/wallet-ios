@@ -49,7 +49,7 @@ final class ContactBookContactListView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var tableView: UITableView = {
+    @TariView private var tableView: UITableView = {
         let view = UITableView()
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
@@ -62,7 +62,7 @@ final class ContactBookContactListView: DynamicThemeView {
         return view
     }()
 
-    @View private var placeholderView = ContactBookListPlaceholder()
+    @TariView private var placeholderView = ContactBookListPlaceholder()
 
     private let tableFooterView = ContactBookContactListFooter()
 
@@ -254,7 +254,7 @@ private class ContactBookContactListFooter: UIView {
 
     // MARK: - Subiews
 
-    @View private var button: TextButton = {
+    @TariView private var button: TextButton = {
         let view = TextButton()
         view.style = .secondary
         view.setTitle(localized("contact_book.section.list.placeholder.button"), for: .normal)

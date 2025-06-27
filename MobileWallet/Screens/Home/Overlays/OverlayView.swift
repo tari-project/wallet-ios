@@ -72,7 +72,7 @@ class OverlayView: UIView {
         }
     }
 
-    @View private var blurrView: UIView = {
+    @TariView private var blurrView: UIView = {
         let blurEffect = UIBlurEffect(style: .dark)
         let blurView = UIVisualEffectView(effect: blurEffect)
         blurView.translatesAutoresizingMaskIntoConstraints = false
@@ -88,19 +88,19 @@ class OverlayView: UIView {
         onCloseButtonTap?()
     }
 
-    @View private var welcomeView: WelcomeView = {
+    @TariView private var welcomeView: WelcomeView = {
         return WelcomeView()
     }()
 
-    @View private var notificationView: NotificationsView = {
+    @TariView private var notificationView: NotificationsView = {
         return NotificationsView()
     }()
 
-    @View private var miningView: MiningView = {
+    @TariView private var miningView: MiningView = {
         return MiningView()
     }()
 
-    @View var disclaimerView: DisclaimerView = {
+    @TariView var disclaimerView: DisclaimerView = {
         return DisclaimerView()
     }()
 

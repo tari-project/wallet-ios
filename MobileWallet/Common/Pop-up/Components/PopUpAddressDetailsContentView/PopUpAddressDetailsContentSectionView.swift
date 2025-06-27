@@ -44,19 +44,19 @@ final class PopUpAddressDetailsContentSectionView<T: UIView>: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Bold.withSize(15.0)
         return view
     }()
 
-    @View private var contentBackgroundView: UIView = {
+    @TariView private var contentBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 4.0
         return view
     }()
 
-    @View private(set) var contentView = T()
+    @TariView private(set) var contentView = T()
 
     // MARK: - Properties
 

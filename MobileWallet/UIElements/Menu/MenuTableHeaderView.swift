@@ -44,13 +44,13 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
-    @View private var label: UILabel = {
+    @TariView private var label: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Bold.withSize(15.0)
         return view
     }()
 
-    @View private var backgroundContentView = UIView()
+    @TariView private var backgroundContentView = UIView()
 
     // MARK: - Properties
 

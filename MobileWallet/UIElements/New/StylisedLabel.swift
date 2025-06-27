@@ -64,7 +64,7 @@ final class StylisedLabel: DynamicThemeView {
     }
 
     // MARK: - Subviews
-    @View private var labelView: UILabel = {
+    @TariView private var labelView: UILabel = {
         let label = UILabel()
         return label
     }()

@@ -39,6 +39,7 @@
 */
 
 import UIKit
+import SwiftUI
 
 extension UIViewController {
 
@@ -62,6 +63,7 @@ extension UIViewController {
 
         contentSection.update(options: [
             localized("debug.popup.options.designs"),
+            "New Design System",
             localized("debug.popup.options.logs"),
             localized("debug.popup.options.bug_report"),
             localized("debug.popup.options.connection_status")
@@ -82,10 +84,12 @@ extension UIViewController {
         case 0:
             moveToDesignsScene()
         case 1:
-            moveToLogsScene()
+            moveToNewDesignsScene()
         case 2:
-            moveToReportBugScene()
+            moveToLogsScene()
         case 3:
+            moveToReportBugScene()
+        case 4:
             showConnectionStatus()
         default:
             break
@@ -103,6 +107,14 @@ extension UIViewController {
     private func moveToDesignsScene() {
         if navigationController?.topViewController is DesignSystemViewController { return }
         let designViewController = DesignSystemViewController()
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: designViewController)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        present(navigationController, animated: true)
+    }
+    
+    private func moveToNewDesignsScene() {
+        if navigationController?.topViewController is UIHostingController<NewDesignSystem> { return }
+        let designViewController = UIHostingController(rootView: NewDesignSystem())
         let navigationController = AlwaysPoppableNavigationController(rootViewController: designViewController)
         navigationController.setNavigationBarHidden(true, animated: false)
         present(navigationController, animated: true)

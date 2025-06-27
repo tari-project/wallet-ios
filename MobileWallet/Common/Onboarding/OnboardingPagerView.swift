@@ -45,7 +45,7 @@ final class OnboardingPagerView: UIView {
 
     // MARK: - Subviews
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 10.0
         view.distribution = .fillEqually

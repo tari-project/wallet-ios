@@ -43,12 +43,16 @@ extension String {
             .joined()
     }
     
-    init<T: ~Copyable>(cHexTuple: borrowing T) {
+    init<T: ~Copyable>(cHexTuple: borrowing T, count: Int) {
         self = withUnsafePointer(to: cHexTuple) {
-            $0.withMemoryRebound(to: UInt8.self, capacity: MemoryLayout.size(ofValue: $0)) {
-                String(cString: $0)
-            }
+            Data(bytes: $0, count: count)
         }
-        .hex()
+        .hex
+    }
+}
+
+extension Data {
+    var hex: String {
+        reduce("") { $0 + String(format: "%02X", $1) }
     }
 }

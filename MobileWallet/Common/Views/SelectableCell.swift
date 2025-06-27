@@ -50,13 +50,13 @@ final class SelectableCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var titleLabel: UILabel = {
+    @TariView private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Poppins.Medium.withSize(15.0)
         return view
     }()
 
-    @View private var tickView: UIImageView = {
+    @TariView private var tickView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.scheduledIcon
         view.contentMode = .scaleAspectFit

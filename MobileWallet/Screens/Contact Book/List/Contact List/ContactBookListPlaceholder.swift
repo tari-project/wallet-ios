@@ -53,20 +53,20 @@ final class ContactBookListPlaceholder: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var backgroundImageView: UIImageView = {
+    @TariView private var backgroundImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         view.image = .Images.Security.Onboarding.background
         return view
     }()
 
-    @View private var imageView: UIImageView = {
+    @TariView private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    @View private var titleLabel: StylizedLabel = {
+    @TariView private var titleLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
         view.normalFont = .Poppins.Medium.withSize(18.0)
@@ -76,7 +76,7 @@ final class ContactBookListPlaceholder: DynamicThemeView {
         return view
     }()
 
-    @View private var messageLabel: StylizedLabel = {
+    @TariView private var messageLabel: StylizedLabel = {
         let view = StylizedLabel()
         view.textAlignment = .center
         view.normalFont = .Poppins.Medium.withSize(14.0)
@@ -86,7 +86,7 @@ final class ContactBookListPlaceholder: DynamicThemeView {
         return view
     }()
 
-    @View private var actionButton: TextButton = {
+    @TariView private var actionButton: TextButton = {
         let view = TextButton()
         view.style = .secondary
         return view

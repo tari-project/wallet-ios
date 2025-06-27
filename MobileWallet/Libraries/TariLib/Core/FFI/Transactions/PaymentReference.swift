@@ -47,7 +47,7 @@ final class PaymentReference {
     }
     
     var paymentReference: String? {
-        String(cHexTuple: record.payment_reference)
+        String(cHexTuple: record.payment_reference, count: 32)
     }
     
     var isInbound: Bool {

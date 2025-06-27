@@ -54,32 +54,32 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var scrollView: ContentScrollView = {
+    @TariView private var scrollView: ContentScrollView = {
         let view = ContentScrollView()
         view.alwaysBounceVertical = false
         return view
     }()
 
-    @View private var stackView: UIStackView = {
+    @TariView private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 20.0
         return view
     }()
 
-    @View private var networkSection: PopUpAddressDetailsContentSectionView<PopUpAddressViewDoubleLabel> = {
+    @TariView private var networkSection: PopUpAddressDetailsContentSectionView<PopUpAddressViewDoubleLabel> = {
         let view = PopUpAddressDetailsContentSectionView<PopUpAddressViewDoubleLabel>()
         view.title = localized("address_view.details.label.network.title")
         return view
     }()
 
-    @View private var featuresSection: PopUpAddressDetailsContentSectionView<PopUpAddressViewDoubleLabel> = {
+    @TariView private var featuresSection: PopUpAddressDetailsContentSectionView<PopUpAddressViewDoubleLabel> = {
         let view = PopUpAddressDetailsContentSectionView<PopUpAddressViewDoubleLabel>()
         view.title = localized("address_view.details.label.features.title")
         return view
     }()
 
-    @View private var viewKeySection: PopUpAddressDetailsContentSectionView<UILabel> = {
+    @TariView private var viewKeySection: PopUpAddressDetailsContentSectionView<UILabel> = {
         let view = PopUpAddressDetailsContentSectionView<UILabel>()
         view.title = localized("address_view.details.label.view_key.title")
         view.contentView.font = .Poppins.Medium.withSize(14.0)
@@ -87,7 +87,7 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var coreAddressSection: PopUpAddressDetailsContentSectionView<UILabel> = {
+    @TariView private var coreAddressSection: PopUpAddressDetailsContentSectionView<UILabel> = {
         let view = PopUpAddressDetailsContentSectionView<UILabel>()
         view.title = localized("address_view.details.label.address.title")
         view.contentView.font = .Poppins.Medium.withSize(14.0)
@@ -95,27 +95,27 @@ final class PopUpAddressDetailsContentView: DynamicThemeView {
         return view
     }()
 
-    @View private var checksumSection: PopUpAddressDetailsContentSectionView<UILabel> = {
+    @TariView private var checksumSection: PopUpAddressDetailsContentSectionView<UILabel> = {
         let view = PopUpAddressDetailsContentSectionView<UILabel>()
         view.title = localized("address_view.details.label.checksum.title")
         view.contentView.font = .Poppins.Medium.withSize(14.0)
         return view
     }()
 
-    @View private var buttonsSectionStackView: UIStackView = {
+    @TariView private var buttonsSectionStackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 10.0
         view.distribution = .fillEqually
         return view
     }()
 
-    @View private var copyRawAddressButton: ActionButton = {
+    @TariView private var copyRawAddressButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("address_view.details.button.copy.base58"), for: .normal)
         return view
     }()
 
-    @View private var copyEmojiAddressButton: ActionButton = {
+    @TariView private var copyEmojiAddressButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("address_view.details.button.copy.emojis"), for: .normal)
         return view
