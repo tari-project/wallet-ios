@@ -1,10 +1,10 @@
-//  HomeConstructor.swift
-
+//  TransactionItem.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 22/06/2023
-	Using Swift 5.0
-	Running on macOS 13.4
+	Created by Tomas Hakel on 26.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -40,14 +40,39 @@
 
 import SwiftUI
 
-enum HomeConstructor {
-//    static func buildScene() -> UIHostingController<Home> {
-//        UIHostingController(rootView: Home())
-//    }
-
-    // TODO: Remove UIKit HomeViewController once the redesign is properly tested
-    static func buildScene() -> HomeViewController {
-        let model = HomeModel()
-        return HomeViewController(model: model)
+struct TransactionItem: View {
+    
+    
+    var body: some View {
+        HStack(spacing: 10) {
+            ZStack {
+                Circle()
+                    .fill(.primaryText)
+                    .frame(width: 34, height: 34)
+                Image(uiImage: .gemBlackSmall)
+                    .resizable()
+                    .templateStyle(.primaryBackground)
+                    .frame(width: 16, height: 15)
+            }
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Block #1")
+                    .body()
+                    .foregroundStyle(.primaryText)
+                Text("April 27th")
+                    .body2()
+                    .foregroundStyle(.secondaryText)
+            }
+            Spacer()
+            Text("9 tXTM")
+        }
+        .padding(16)
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.primaryBackground, stroke: .outlined)
+        }
     }
+}
+
+#Preview {
+    TransactionItem()
 }

@@ -1,10 +1,10 @@
-//  HomeConstructor.swift
-
+//  ScalingButtonStyle.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 22/06/2023
-	Using Swift 5.0
-	Running on macOS 13.4
+	Created by Tomas Hakel on 27.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -40,14 +40,49 @@
 
 import SwiftUI
 
-enum HomeConstructor {
-//    static func buildScene() -> UIHostingController<Home> {
-//        UIHostingController(rootView: Home())
-//    }
+extension ButtonStyle where Self == ScalingButtonStyle {
+    static var scaling: ScalingButtonStyle {
+        ScalingButtonStyle()
+    }
+}
 
-    // TODO: Remove UIKit HomeViewController once the redesign is properly tested
-    static func buildScene() -> HomeViewController {
-        let model = HomeModel()
-        return HomeViewController(model: model)
+struct ScalingButtonStyle: ButtonStyle {
+    @State var scale: CGFloat = 1
+    @State var lastPress: Date?
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration
+            .label
+            .scaleEffect(scale)
+            .onChange(of: configuration.isPressed) {
+                animateScale(isPressed: $0)
+            }
+    }
+}
+
+private extension ScalingButtonStyle {
+    func animateScale(isPressed: Bool) {
+        if isPressed {
+            animated {
+                scale = 0.95
+            }
+            lastPress = Date()
+        } else if let lastPress, lastPress < Date().advanced(by: -0.15) {
+            animated {
+                scale = 1
+            }
+        } else {
+            Task(after: 0.3) {
+                animated {
+                    scale = 1
+                }
+            }
+        }
+    }
+    
+    func animated(action: () -> Void) {
+        withAnimation(.easeInOut(duration: 0.15)) {
+            action()
+        }
     }
 }

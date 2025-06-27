@@ -95,6 +95,7 @@ struct TariButton<LeadingIcon: View>: View {
                 }
             }
         }
+        .buttonStyle(.scaling)
     }
 }
 

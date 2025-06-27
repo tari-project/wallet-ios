@@ -615,6 +615,11 @@
 		F82150372E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150362E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift */; };
 		F821503F2E0BE369003EBB25 /* CopyRawDetailsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821503E2E0BE361003EBB25 /* CopyRawDetailsButton.swift */; };
 		F82150412E0BF1C2003EBB25 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150402E0BF1C2003EBB25 /* IconButton.swift */; };
+		F82150442E0D52A6003EBB25 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150432E0D52A6003EBB25 /* Home.swift */; };
+		F82150462E0D5348003EBB25 /* Home+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150452E0D5348003EBB25 /* Home+Actions.swift */; };
+		F82150482E0D78F4003EBB25 /* TransactionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150472E0D78F4003EBB25 /* TransactionItem.swift */; };
+		F821504B2E0E8D7C003EBB25 /* ScalingButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821504A2E0E8D7C003EBB25 /* ScalingButtonStyle.swift */; };
+		F82150502E0EA9BA003EBB25 /* Shape+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821504F2E0EA9B5003EBB25 /* Shape+Style.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1258,6 +1263,11 @@
 		F82150362E0ACFF9003EBB25 /* PaymentReferenceInfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReferenceInfoSheet.swift; sourceTree = "<group>"; };
 		F821503E2E0BE361003EBB25 /* CopyRawDetailsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyRawDetailsButton.swift; sourceTree = "<group>"; };
 		F82150402E0BF1C2003EBB25 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
+		F82150432E0D52A6003EBB25 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		F82150452E0D5348003EBB25 /* Home+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Home+Actions.swift"; sourceTree = "<group>"; };
+		F82150472E0D78F4003EBB25 /* TransactionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionItem.swift; sourceTree = "<group>"; };
+		F821504A2E0E8D7C003EBB25 /* ScalingButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalingButtonStyle.swift; sourceTree = "<group>"; };
+		F821504F2E0EA9B5003EBB25 /* Shape+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shape+Style.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2339,6 +2349,7 @@
 		3A860BD0287DA2A200FC4F76 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				F82150422E0D528C003EBB25 /* SwiftUI */,
 				3A7A38D12881688800D7E8BD /* Views */,
 				5419AA782A4473F90079E745 /* HomeViewController.swift */,
 				71C10D182DD17D4600C165ED /* VersionBadgeView.swift */,
@@ -3361,6 +3372,7 @@
 				F82150322E0A7710003EBB25 /* CopyButton.swift */,
 				F82150402E0BF1C2003EBB25 /* IconButton.swift */,
 				F82150302E0A76D8003EBB25 /* EmojiToggle.swift */,
+				F821504A2E0E8D7C003EBB25 /* ScalingButtonStyle.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -3398,6 +3410,7 @@
 			isa = PBXGroup;
 			children = (
 				F82150342E0A7791003EBB25 /* Image+Style.swift */,
+				F821504F2E0EA9B5003EBB25 /* Shape+Style.swift */,
 				F82150222E060240003EBB25 /* Toolbar+Items.swift */,
 				F82150202E060217003EBB25 /* View+Backgrount.swift */,
 			);
@@ -3416,6 +3429,16 @@
 			isa = PBXGroup;
 			children = (
 				F82150292E0945AE003EBB25 /* EditContactSheet */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
+		F82150422E0D528C003EBB25 /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				F82150432E0D52A6003EBB25 /* Home.swift */,
+				F82150452E0D5348003EBB25 /* Home+Actions.swift */,
+				F82150472E0D78F4003EBB25 /* TransactionItem.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -3639,6 +3662,7 @@
 				3A90653A29001D830084EE66 /* AppValues.swift in Sources */,
 				3A7E06DC287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift in Sources */,
 				3A6CD3B5279194980034DF81 /* RequestTariAmountView.swift in Sources */,
+				F821504B2E0E8D7C003EBB25 /* ScalingButtonStyle.swift in Sources */,
 				5421551429A4AE92000A3F49 /* SearchTextField.swift in Sources */,
 				54F2E34929EE6BE900A7A15A /* ContactTransactionListConstructor.swift in Sources */,
 				3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */,
@@ -3866,6 +3890,7 @@
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				3A62674626D76E6B007F9895 /* SelectNetworkViewController.swift in Sources */,
 				3AEDBE4F27CE46D6006B0166 /* DeepLinkDecoder.swift in Sources */,
+				F82150462E0D5348003EBB25 /* Home+Actions.swift in Sources */,
 				3AD1306A27D62918003EC7FA /* SeedWordsListView.swift in Sources */,
 				54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */,
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
@@ -3908,6 +3933,7 @@
 				3A7DAB9C28FDC9D8002CC013 /* LogView.swift in Sources */,
 				3A87E57F28409D630099EA0E /* AddAmountSpinnerView.swift in Sources */,
 				3A01248327B3BD0700A481F4 /* ProgressBar.swift in Sources */,
+				F82150482E0D78F4003EBB25 /* TransactionItem.swift in Sources */,
 				5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */,
 				F82150052E02DEE6003EBB25 /* TariButton.swift in Sources */,
 				548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */,
@@ -3916,6 +3942,7 @@
 				54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */,
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
 				546B270D2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift in Sources */,
+				F82150502E0EA9BA003EBB25 /* Shape+Style.swift in Sources */,
 				3A1D8E4B28400AB8004129D5 /* AboutViewHeader.swift in Sources */,
 				714103CE2DC4628500D4D452 /* SyncStatusView.swift in Sources */,
 				54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */,
@@ -4108,6 +4135,7 @@
 				3A7DAB8F28FDAF9A002CC013 /* LogsListViewController.swift in Sources */,
 				3A5A3D55290152E300B689C6 /* BackupManager.swift in Sources */,
 				3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */,
+				F82150442E0D52A6003EBB25 /* Home.swift in Sources */,
 				549E1A032A5EC2260063022C /* VideoCaptureManager.swift in Sources */,
 				3AE138D52804ACE100443D34 /* WebBrowserPresenter.swift in Sources */,
 				714A904A2D7659650010B087 /* OverlayViewController.swift in Sources */,

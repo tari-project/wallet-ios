@@ -1,10 +1,10 @@
-//  HomeConstructor.swift
-
+//  Shape+Style.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 22/06/2023
-	Using Swift 5.0
-	Running on macOS 13.4
+	Created by Tomas Hakel on 27.06.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -40,14 +40,11 @@
 
 import SwiftUI
 
-enum HomeConstructor {
-//    static func buildScene() -> UIHostingController<Home> {
-//        UIHostingController(rootView: Home())
-//    }
-
-    // TODO: Remove UIKit HomeViewController once the redesign is properly tested
-    static func buildScene() -> HomeViewController {
-        let model = HomeModel()
-        return HomeViewController(model: model)
+extension Shape {
+    func fill<Fill: ShapeStyle, Stroke: ShapeStyle>(_ fill: Fill, stroke: Stroke, lineWidth: CGFloat = 1) -> some View {
+        ZStack {
+            self.fill(fill)
+            self.stroke(stroke, lineWidth: lineWidth)
+        }
     }
 }

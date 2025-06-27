@@ -9,11 +9,11 @@ enum NetworkStatus {
     var color: UIColor {
         switch self {
         case .connected:
-            return .System.green
+            .System.green
         case .connectedWithIssues:
-            return .System.yellow
+            .System.yellow
         case .disconnected:
-            return .System.red
+            .System.red
         }
     }
 }
