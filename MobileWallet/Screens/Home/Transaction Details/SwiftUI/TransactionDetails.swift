@@ -159,7 +159,7 @@ private extension TransactionDetails {
             if let status {
                 TransactionDetailItem(label: "Status", value: status.0, valueColor: status.1)
             }
-            if let transactionMessage {
+            if let transactionMessage, !transactionMessage.isEmpty {
                 TransactionDetailItem(label: "Note", value: transactionMessage) {
                     copyButton(transactionMessage)
                 }
