@@ -98,26 +98,29 @@ extension Transaction {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         
-        if let result = getPaymentId?(pointer, errorCodePointer), errorCode == 0 {
-            let paymentId = String(cString: result)
-            if !paymentId.isEmpty {
-                return paymentId
+        if let getPaymentId {
+            let result = getPaymentId(pointer, errorCodePointer)
+            if errorCode == 0 {
+                guard let result else { return "" }
+                return String(cString: result)
             }
         }
-        if let result = getUserPaymentId?(pointer, errorCodePointer), errorCode == 0 {
-            let paymentId = String(cString: result)
-            if !paymentId.isEmpty {
-                return paymentId
+        if let getUserPaymentId {
+            let result = getUserPaymentId(pointer, errorCodePointer)
+            if errorCode == 0 {
+                guard let result else { return "" }
+                return String(cString: result)
             }
         }
-        if let result = getPaymentIdAsBytes(pointer, errorCodePointer), errorCode == 0 {
-            let paymentId = ByteVector(pointer: result)
-            if try 0 < paymentId.count {
-                return try paymentId.hex
-            }
-        }
-        if let result = getUserPaymentIdAsBytes(pointer, errorCodePointer), errorCode == 0 {
+        let result = getPaymentIdAsBytes(pointer, errorCodePointer)
+        if errorCode == 0 {
+            guard let result else { return "" }
             return try ByteVector(pointer: result).hex
+        }
+        let resultBytes = getUserPaymentIdAsBytes(pointer, errorCodePointer)
+        if errorCode == 0 {
+            guard let resultBytes else { return "" }
+            return try ByteVector(pointer: resultBytes).hex
         }
         throw WalletError(code: errorCode)
     }
