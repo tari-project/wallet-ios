@@ -157,7 +157,7 @@ final class TransactionFeesManager {
         case 3...UInt32.max: .high
         default: throw InternalError.unexpectedBlockCount
         }
-        return (traffic, MicroTari(feePerGram))
+        return (traffic, MicroTari(max(1, feePerGram)))
     }
 
     private func calculateFee(amount: MicroTari, feePerGram: MicroTari) throws -> MicroTari {
@@ -165,6 +165,6 @@ final class TransactionFeesManager {
         let maxAmountRaw = totalBalance > rawMaxAmountBuffer ? totalBalance - rawMaxAmountBuffer : 0
         let amount = min(amount.rawValue, maxAmountRaw)
         let option = try Tari.mainWallet.fees.estimateFee(amount: amount, feePerGram: feePerGram.rawValue)
-        return MicroTari(max(1, option))
+        return MicroTari(option)
     }
 }
