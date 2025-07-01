@@ -294,7 +294,6 @@
 		3AE5E5682874696E00D3AF85 /* ValuePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */; };
 		3AE88506283785100070D1AC /* PopUpModifyFeeContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE88505283785100070D1AC /* PopUpModifyFeeContentView.swift */; };
 		3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE885072837857B0070D1AC /* CurrencyLabelView.swift */; };
-		3AE8850A28378B8C0070D1AC /* NetworkTrafficView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE8850928378B8C0070D1AC /* NetworkTrafficView.swift */; };
 		3AE8850C28378BF20070D1AC /* TariSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE8850B28378BF20070D1AC /* TariSegmentedControl.swift */; };
 		3AE9F4E42795A260006101D1 /* RequestTariAmountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE9F4E32795A260006101D1 /* RequestTariAmountModel.swift */; };
 		3AECD490284F3BB300D81C80 /* BaseNavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AECD48F284F3BB300D81C80 /* BaseNavigationContentView.swift */; };
@@ -934,7 +933,6 @@
 		3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValuePickerView.swift; sourceTree = "<group>"; };
 		3AE88505283785100070D1AC /* PopUpModifyFeeContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpModifyFeeContentView.swift; sourceTree = "<group>"; };
 		3AE885072837857B0070D1AC /* CurrencyLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyLabelView.swift; sourceTree = "<group>"; };
-		3AE8850928378B8C0070D1AC /* NetworkTrafficView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTrafficView.swift; sourceTree = "<group>"; };
 		3AE8850B28378BF20070D1AC /* TariSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariSegmentedControl.swift; sourceTree = "<group>"; };
 		3AE9F4E32795A260006101D1 /* RequestTariAmountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTariAmountModel.swift; sourceTree = "<group>"; };
 		3AECD48F284F3BB300D81C80 /* BaseNavigationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationContentView.swift; sourceTree = "<group>"; };
@@ -2551,7 +2549,6 @@
 			children = (
 				3AE88505283785100070D1AC /* PopUpModifyFeeContentView.swift */,
 				3AE885072837857B0070D1AC /* CurrencyLabelView.swift */,
-				3AE8850928378B8C0070D1AC /* NetworkTrafficView.swift */,
 				3AE8850B28378BF20070D1AC /* TariSegmentedControl.swift */,
 				3A87E57E28409D630099EA0E /* AddAmountSpinnerView.swift */,
 			);
@@ -3984,7 +3981,6 @@
 				540CEA862A540D6500BD26C7 /* PulseLayer.swift in Sources */,
 				54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */,
 				54A0903829E553A900D1CDDE /* PopUpQRContentView.swift in Sources */,
-				3AE8850A28378B8C0070D1AC /* NetworkTrafficView.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				F82150412E0BF1C2003EBB25 /* IconButton.swift in Sources */,
 				3A93159B286C30AA0001660E /* LeftImageButton.swift in Sources */,

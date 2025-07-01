@@ -44,9 +44,6 @@ import TariCommon
 final class PopUpModifyFeeContentView: DynamicThemeView {
 
     // MARK: - Subviews
-
-    @TariView private(set) var segmentedControl = TariSegmentedControl(icons: [.Icons.Fees.Speedometer.low, .Icons.Fees.Speedometer.mid, .Icons.Fees.Speedometer.high])
-
     @TariView private var estimatedFeeTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.pop_up.adjust_fee.label.estimated_fee")
@@ -83,13 +80,10 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
     // MARK: - Setups
 
     private func setupConstraints() {
-
-        [segmentedControl, estimatedFeeTitleLabel, estimatedFeeValueLabel].forEach(addSubview)
+        [estimatedFeeTitleLabel, estimatedFeeValueLabel].forEach(addSubview)
 
         let constraints = [
-            segmentedControl.topAnchor.constraint(equalTo: topAnchor),
-            segmentedControl.centerXAnchor.constraint(equalTo: centerXAnchor),
-            estimatedFeeTitleLabel.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 21.0),
+            estimatedFeeTitleLabel.topAnchor.constraint(equalTo: topAnchor),
             estimatedFeeTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             estimatedFeeTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             estimatedFeeValueLabel.topAnchor.constraint(equalTo: estimatedFeeTitleLabel.bottomAnchor),

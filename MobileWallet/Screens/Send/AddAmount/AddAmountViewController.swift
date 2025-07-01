@@ -85,8 +85,6 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @TariView private var networkTrafficView = NetworkTrafficView()
-
     @TariView private var feeButton: TextButton = {
         let view = TextButton()
         view.font = .Poppins.Medium.withSize(14.0)
@@ -95,38 +93,11 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @TariView private var modifyFeeButton: TextButton = {
-        let view = TextButton()
-        view.font = .Poppins.Medium.withSize(14.0)
-        view.setTitle(localized("add_amount.label.button.adjust_fee"), for: .normal)
-        view.setContentHuggingPriority(.required, for: .vertical)
-        return view
-    }()
-
-    @TariView private var percentageButtonsStackView: UIStackView = {
-        let view = UIStackView()
-        view.axis = .horizontal
-        view.spacing = 8.0
-        view.distribution = .fillEqually
-        return view
-    }()
-
-    @TariView private var percentageLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Poppins.Regular.withSize(14.0)
-        view.textColor = .white.withAlphaComponent(0.5)
-        view.text = "Amount:"
-        return view
-    }()
-
     var rawInput = ""
     private var txFeeIsVisible = false
 
     private let transactionFeesManager = TransactionFeesManager()
-    private var selectedFeeIndex = 1 {
-        didSet { updateFee(selectedIndex: selectedFeeIndex) }
-    }
-    private var feePerGram: MicroTari? { transactionFeesManager.feesData?.feesPerGram.fee(forIndex: selectedFeeIndex) }
+    private var feePerGram: MicroTari? { transactionFeesManager.feeData?.feePerGram }
     @Published private var fee: MicroTari?
 
     private var isBalanceExceeded = false
@@ -256,7 +227,6 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func updateAmountLabelColor(theme: AppTheme) {
-
         guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
 
         let amountText = NSMutableAttributedString(attributedString: attributedText)
@@ -271,7 +241,6 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func updateLabelText() {
-
         let font: UIFont = isSmallScreen ? .Poppins.Black.withSize(60.0) : .Poppins.Black.withSize(90.0)
 
         let amountAttributedText = NSMutableAttributedString(
@@ -414,7 +383,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         moveAnimation.subtype = .fromTop
         moveAnimation.duration = animationDuration
         UIView.animate(withDuration: animationDuration) { [weak self] in
-            guard let self = self else {return}
+            guard let self else { return }
             self.txViewContainer.alpha = 1.0
             self.txViewContainer.layer.add(moveAnimation, forKey: CATransitionType.push.rawValue)
         }
@@ -423,7 +392,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func hideTxFee() {
         UIView.animate(withDuration: animationDuration) { [weak self] in
-            guard let self = self else {return}
+            guard let self else { return }
             self.txViewContainer.alpha = 0.0
         }
         self.txFeeIsVisible = false
@@ -437,8 +406,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func calculateAmount() -> MicroTari? {
-
-        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
+        let availableBalance = Tari.mainWallet.walletBalance.balance.available
         var tariAmount: MicroTari?
 
         do {
@@ -451,7 +419,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
         let fee: UInt64
         do {
-            fee = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount.rawValue)
+            fee = try Tari.mainWallet.fees.estimateFee(amount: amount.rawValue)
         } catch {
             return nil
         }
@@ -478,104 +446,12 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func updateFeeButtonText(fee: MicroTari?) {
-
-        let text: String
-
-        if let fee = fee {
-            text = "+ \(fee.formattedPrecise) \(localized("common.fee"))"
+        let text = if let fee {
+            "+ \(fee.formattedPrecise) \(localized("common.fee"))"
         } else {
-            text = "+ \(localized("common.fee"))"
+            "+ \(localized("common.fee"))"
         }
-
         feeButton.setTitle(text, for: .normal)
-    }
-
-    private func makePercentageButton(title: String) -> StylisedButton {
-        let button = StylisedButton(withStyle: .outlinedInverted, withSize: .subSmall)
-        button.setTitle(title, for: .normal)
-        return button
-    }
-
-    private func setupPercentageButtons() {
-        let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        mainView.addSubview(containerView)
-        
-        containerView.addSubview(percentageButtonsStackView)
-        
-        let buttons = [
-            makePercentageButton(title: "25%"),
-            makePercentageButton(title: "50%"),
-            makePercentageButton(title: "75%"),
-            makePercentageButton(title: "MAX")
-        ]
-        
-        buttons.forEach { button in
-            percentageButtonsStackView.addArrangedSubview(button)
-            button.onTap = { [weak self] in
-                self?.handlePercentageButtonTap(title: button.title(for: .normal) ?? "")
-            }
-        }
-        
-//        containerView.backgroundColor = .blue
-//        percentageButtonsStackView.backgroundColor = .red
-        
-        NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: txViewContainer.bottomAnchor, constant: -20),
-            containerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            containerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25),
-            containerView.heightAnchor.constraint(equalToConstant: 40),
-            
-            percentageButtonsStackView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            percentageButtonsStackView.widthAnchor.constraint(lessThanOrEqualToConstant: 280),
-            percentageButtonsStackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            percentageButtonsStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
-        ])
-    }
-
-    private func handlePercentageButtonTap(title: String) {
-        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
-        let microTariBalance = MicroTari(availableBalance)
-        
-        let percentage: Double
-        switch title {
-        case "25%": percentage = 0.25
-        case "50%": percentage = 0.5
-        case "75%": percentage = 0.75
-        case "MAX":
-            // For MAX, we need to estimate the fee and subtract it from the available balance
-            do {
-                // Get the current fee per gram from the selected fee option
-                guard let feePerGram = feePerGram?.rawValue else { return }
-                
-                // Estimate the fee for the available balance
-                let estimatedFee = try Tari.shared.wallet(.main).fees.estimateFee(
-                    amount: availableBalance,
-                    feePerGram: feePerGram
-                )
-                
-                // Calculate available amount by subtracting the fee
-                let availableAmount = availableBalance > estimatedFee ? availableBalance - estimatedFee : 0
-                let microTari = MicroTari(availableAmount)
-                rawInput = microTari.formatted
-                updateLabelText()
-                return
-            } catch {
-                // If fee estimation fails, fall back to using the current fee
-                let fee = self.fee ?? MicroTari()
-                let availableAmount = availableBalance > fee.rawValue ? availableBalance - fee.rawValue : 0
-                let microTari = MicroTari(availableAmount)
-                rawInput = microTari.formatted
-                updateLabelText()
-                return
-            }
-        default: return
-        }
-        
-        let amount = UInt64(Double(availableBalance) * percentage)
-        let microTari = MicroTari(amount)
-        rawInput = microTari.formatted
-        updateLabelText()
     }
 }
 
@@ -730,9 +606,7 @@ extension AddAmountViewController {
 
         updateNextStepElements(isEnabled: false)
 
-        [networkTrafficView, feeButton, modifyFeeButton].forEach(txStackView.addArrangedSubview)
-
-        setupPercentageButtons()
+        txStackView.addArrangedSubview(feeButton)
     }
 
     private func setupKeypad() {
@@ -756,13 +630,8 @@ extension AddAmountViewController {
     }
 
     private func setupCallbacks() {
-
         feeButton.onTap = { [weak self] in
             self?.showTransactionFeeInfo()
-        }
-
-        modifyFeeButton.onTap = { [weak self] in
-            self?.showModifyFeeDialog()
         }
 
         addressView.onViewDetailsButtonTap = AddressViewDefaultActions.showDetailsAction(addressComponents: paymentInfo.addressComponents)
@@ -791,72 +660,7 @@ extension AddAmountViewController {
         }
     }
 
-    private func showModifyFeeDialog() {
-
-        guard let fees = transactionFeesManager.feesData?.fees else { return }
-
-        let headerSection = PopUpHeaderWithSubtitle()
-        let contentSection = PopUpModifyFeeContentView()
-        let buttonsSection = PopUpButtonsView()
-
-        headerSection.titleLabel.text = localized("add_amount.pop_up.adjust_fee.title")
-        headerSection.subtitleLabel.text = localized("add_amount.pop_up.adjust_fee.description")
-
-        contentSection.segmentedControl.selectedIndex = selectedFeeIndex
-
-        contentSection.segmentedControl.$selectedIndex
-            .sink { [weak contentSection] in
-                guard let index = $0 else { return }
-                contentSection?.estimatedFee = fees.fee(forIndex: index)?.formattedPrecise
-            }
-            .store(in: &cancellables)
-
-        buttonsSection.addButton(
-            model: PopUpDialogButtonModel(
-                title: localized("add_amount.pop_up.adjust_fee.button.approve"),
-                type: .normal,
-                callback: { [weak self] in
-                    guard let index = contentSection.segmentedControl.selectedIndex, let fee = fees.fee(forIndex: index) else { return }
-                    self?.selectedFeeIndex = index
-                    self?.fee = fee
-                    PopUpPresenter.dismissPopup()
-                }
-            )
-        )
-        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
-
-        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
-
-        PopUpPresenter.show(popUp: popUp)
-    }
-
-    private func updateTransactionViews(networkTraffic: TransactionFeesManager.NetworkTraffic) {
-
-        switch networkTraffic {
-        case .low:
-            networkTrafficView.variant = .lowTraffic
-            networkTrafficView.alpha = 0.0
-            modifyFeeButton.alpha = 0.0
-        case .medium:
-            networkTrafficView.variant = .mediumTraffic
-            networkTrafficView.alpha = 1.0
-            modifyFeeButton.alpha = 1.0
-        case .high:
-            networkTrafficView.variant = .highTraffic
-            networkTrafficView.alpha = 1.0
-            modifyFeeButton.alpha = 1.0
-        case .unknown:
-            networkTrafficView.alpha = 0.0
-            modifyFeeButton.alpha = 0.0
-        }
-    }
-
-    private func updateFee(selectedIndex: Int) {
-        fee = transactionFeesManager.feesData?.fees.fee(forIndex: selectedIndex)
-    }
-
     private func handle(error: Error) {
-
         switch error {
         case WalletError.notEnoughFunds:
             guard let totalBalance = fetchTotalBalance() else { return }
@@ -880,40 +684,19 @@ extension AddAmountViewController {
     }
 
     private func handle(feeCalculationStatus: TransactionFeesManager.Status) {
-
         switch feeCalculationStatus {
         case .calculating:
             updateTransactionViews(isDataVisible: false)
-        case let .data(feesData):
-            fee = feesData.fees.fee(forIndex: selectedFeeIndex)
+        case let .data(feeData):
+            fee = feeData.fee
             updateTransactionViews(isDataVisible: true)
-            updateTransactionViews(networkTraffic: feesData.networkTraffic)
         case .dataUnavailable:
             fee = nil
             updateTransactionViews(isDataVisible: true)
-            updateTransactionViews(networkTraffic: .unknown)
         }
     }
 
     private func fetchTotalBalance() -> MicroTari? {
-        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.available
-        return MicroTari(totalBalance)
-    }
-}
-
-extension TransactionFeesManager.FeeOptions {
-
-    func fee(forIndex index: Int) -> MicroTari? {
-
-        switch index {
-        case 0:
-            return slow
-        case 1:
-            return medium
-        case 2:
-            return fast
-        default:
-            return nil
-        }
+        MicroTari(Tari.mainWallet.walletBalance.balance.available)
     }
 }
