@@ -106,7 +106,7 @@ final class TransactionFeesManager {
 
     private func updateFee(networkTraffic: NetworkTraffic, feePerGram: MicroTari) {
         do {
-            let fee = try calculateFees(amount: amount, feePerGram: feePerGram)
+            let fee = try calculateFee(amount: amount, feePerGram: feePerGram)
             let feeData = FeeData(networkTraffic: networkTraffic, feePerGram: feePerGram, fee: fee)
             self.feeData = feeData
             feesStatus = .data(feeData)
@@ -160,11 +160,11 @@ final class TransactionFeesManager {
         return (traffic, MicroTari(feePerGram))
     }
 
-    private func calculateFees(amount: MicroTari, feePerGram: MicroTari) throws -> MicroTari {
+    private func calculateFee(amount: MicroTari, feePerGram: MicroTari) throws -> MicroTari {
         let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
         let maxAmountRaw = totalBalance > rawMaxAmountBuffer ? totalBalance - rawMaxAmountBuffer : 0
         let amount = min(amount.rawValue, maxAmountRaw)
         let option = try Tari.mainWallet.fees.estimateFee(amount: amount, feePerGram: feePerGram.rawValue)
-        return MicroTari(option)
+        return MicroTari(max(1, option))
     }
 }

@@ -101,36 +101,31 @@ struct MicroTari {
     var rawValue: UInt64
 
     var taris: Double {
-        return Double(self.rawValue) / Double(MicroTari.conversion)
+        Double(rawValue) / Double(MicroTari.conversion)
     }
 
     var formatted: String {
-        return MicroTari.defaultFormatter.string(from: NSNumber(value: self.taris)) ?? "0"
+        MicroTari.defaultFormatter.string(from: NSNumber(value: taris)) ?? "0"
     }
 
     var formattedWithOperator: String {
-        if self.taris < 0 {
-            return formatted
-        }
-        return "+ " + formatted
+        taris < 0 ? formatted : "+ " + formatted
     }
 
     var formattedWithNegativeOperator: String {
-        if self.taris < 0 {
-            return "- " + formatted.replacingOccurrences(of: "-", with: "")
-        }
-        return formatted
+        taris < 0
+            ? "- " + formatted.replacingOccurrences(of: "-", with: "")
+            : formatted
     }
 
     var formattedPrecise: String {
-        MicroTari.preciseFormatter.string(from: NSNumber(value: self.taris)) ?? "0"
+        MicroTari.preciseFormatter.string(from: NSNumber(value: taris)) ?? "0"
     }
 
     var formattedForHomeTransactionCell: String {
-        if abs(self.taris) < MicroTari.smallValueThreshold {
-            return self.taris < 0 ? "- <0.01" : "<0.01"
-        }
-        return formatted
+        abs(taris) < MicroTari.smallValueThreshold
+            ? taris < 0 ? "- <0.01" : "<0.01"
+            : formatted
     }
 
     var isGreaterThanZero: Bool { rawValue > 0 }
@@ -145,11 +140,9 @@ struct MicroTari {
         guard let tariNumber = MicroTari.defaultFormatter.number(from: tariValue) else {
             throw MicroTariErrors.invalidStringFormat
         }
-
         guard MicroTari.checkValue(tariValue) else {
             throw MicroTariErrors.invalidStringFormat
         }
-
         self.rawValue = UInt64(tariNumber.floatValue * Float(MicroTari.conversion))
     }
 
@@ -161,12 +154,11 @@ struct MicroTari {
         guard let rawVal = UInt64(exactly: decimalValue * Double(MicroTari.conversion)) else {
             throw MicroTariErrors.invalidStringFormat
         }
-
         self.rawValue = rawVal
     }
 
     static func toTariNumber(_ number: NSNumber) -> UInt64 {
-        return number.uint64Value * UInt64(conversion)
+        number.uint64Value * UInt64(conversion)
     }
 }
 

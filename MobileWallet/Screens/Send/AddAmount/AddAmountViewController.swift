@@ -85,21 +85,11 @@ final class AddAmountViewController: DynamicThemeViewController {
         return view
     }()
 
-    @TariView private var networkTrafficView = NetworkTrafficView()
-
     @TariView private var feeButton: TextButton = {
         let view = TextButton()
         view.font = .Poppins.Medium.withSize(14.0)
         view.imageSpacing = 3.0
         view.image = .Icons.General.roundedQuestionMark
-        return view
-    }()
-
-    @TariView private var percentageLabel: UILabel = {
-        let view = UILabel()
-        view.font = .Poppins.Regular.withSize(14.0)
-        view.textColor = .white.withAlphaComponent(0.5)
-        view.text = "Amount:"
         return view
     }()
 
@@ -237,7 +227,6 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func updateAmountLabelColor(theme: AppTheme) {
-
         guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
 
         let amountText = NSMutableAttributedString(attributedString: attributedText)
@@ -252,7 +241,6 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func updateLabelText() {
-
         let font: UIFont = isSmallScreen ? .Poppins.Black.withSize(60.0) : .Poppins.Black.withSize(90.0)
 
         let amountAttributedText = NSMutableAttributedString(
@@ -395,7 +383,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         moveAnimation.subtype = .fromTop
         moveAnimation.duration = animationDuration
         UIView.animate(withDuration: animationDuration) { [weak self] in
-            guard let self = self else {return}
+            guard let self else { return }
             self.txViewContainer.alpha = 1.0
             self.txViewContainer.layer.add(moveAnimation, forKey: CATransitionType.push.rawValue)
         }
@@ -404,7 +392,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func hideTxFee() {
         UIView.animate(withDuration: animationDuration) { [weak self] in
-            guard let self = self else {return}
+            guard let self else { return }
             self.txViewContainer.alpha = 0.0
         }
         self.txFeeIsVisible = false
@@ -418,8 +406,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func calculateAmount() -> MicroTari? {
-
-        let availableBalance = Tari.shared.wallet(.main).walletBalance.balance.available
+        let availableBalance = Tari.mainWallet.walletBalance.balance.available
         var tariAmount: MicroTari?
 
         do {
@@ -432,7 +419,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
         let fee: UInt64
         do {
-            fee = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount.rawValue)
+            fee = try Tari.mainWallet.fees.estimateFee(amount: amount.rawValue)
         } catch {
             return nil
         }
@@ -619,7 +606,7 @@ extension AddAmountViewController {
 
         updateNextStepElements(isEnabled: false)
 
-        [networkTrafficView, feeButton].forEach(txStackView.addArrangedSubview)
+        txStackView.addArrangedSubview(feeButton)
     }
 
     private func setupKeypad() {
@@ -673,22 +660,6 @@ extension AddAmountViewController {
         }
     }
 
-    private func updateTransactionViews(networkTraffic: TransactionFeesManager.NetworkTraffic) {
-        switch networkTraffic {
-        case .low:
-            networkTrafficView.variant = .lowTraffic
-            networkTrafficView.alpha = 0.0
-        case .medium:
-            networkTrafficView.variant = .mediumTraffic
-            networkTrafficView.alpha = 1.0
-        case .high:
-            networkTrafficView.variant = .highTraffic
-            networkTrafficView.alpha = 1.0
-        case .unknown:
-            networkTrafficView.alpha = 0.0
-        }
-    }
-
     private func handle(error: Error) {
         switch error {
         case WalletError.notEnoughFunds:
@@ -719,11 +690,9 @@ extension AddAmountViewController {
         case let .data(feeData):
             fee = feeData.fee
             updateTransactionViews(isDataVisible: true)
-            updateTransactionViews(networkTraffic: feeData.networkTraffic)
         case .dataUnavailable:
             fee = nil
             updateTransactionViews(isDataVisible: true)
-            updateTransactionViews(networkTraffic: .unknown)
         }
     }
 
