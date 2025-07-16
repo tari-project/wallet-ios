@@ -188,7 +188,6 @@ final class HomeModel {
         }
     }
 
-    // --------
     func formatLargeNumber(_ value: Int) -> String {
         if value >= 1_000_000 {
             return String(format: "%.1fM", Double(value) / 1_000_000)
