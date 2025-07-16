@@ -41,7 +41,8 @@
 import SwiftUI
 
 struct TransactionItem: View {
-    
+    let transaction: FormattedTransaction
+    let isBalanceHidden: Bool
     
     var body: some View {
         HStack(spacing: 10) {
@@ -49,23 +50,34 @@ struct TransactionItem: View {
                 Circle()
                     .fill(.primaryText)
                     .frame(width: 34, height: 34)
-                Image(uiImage: .gemBlackSmall)
+                Image(.gemBlackSmall)
                     .resizable()
                     .templateStyle(.primaryBackground)
                     .frame(width: 16, height: 15)
             }
             VStack(alignment: .leading, spacing: 0) {
-                Text("Block #1")
+                Text(transaction.title)
                     .body()
                     .foregroundStyle(.primaryText)
-                Text("April 27th")
+                    .multilineTextAlignment(.leading)
+                Text(transaction.formattedTimestamp)
                     .body2()
                     .foregroundStyle(.secondaryText)
             }
-            Spacer()
-            Text("9 tXTM")
+            Spacer(minLength: 4)
+            Group {
+                if isBalanceHidden {
+                    Text("****** XTM")
+                } else {
+                    Text(.init(transaction.formattedAmount))
+                }
+            }
+            .headingLarge()
+            .foregroundStyle(.primaryText)
         }
-        .padding(16)
+        .padding(.vertical, 5)
+        .padding(.horizontal, 16)
+        .frame(height: 80)
         .background {
             RoundedRectangle(cornerRadius: 16)
                 .fill(.primaryBackground, stroke: .outlined)
@@ -73,6 +85,7 @@ struct TransactionItem: View {
     }
 }
 
-#Preview {
-    TransactionItem()
-}
+// TODO: setup mocks
+//#Preview {
+//    TransactionItem(transaction: .mock)
+//}

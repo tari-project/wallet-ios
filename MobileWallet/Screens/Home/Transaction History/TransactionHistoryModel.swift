@@ -44,7 +44,7 @@ final class TransactionHistoryModel {
 
     struct TransactionsSection {
         let title: String?
-        let transactions: [TransactionFormatter.Model]
+        let transactions: [FormattedTransaction]
     }
 
     // MARK: - View Model
@@ -121,7 +121,7 @@ final class TransactionHistoryModel {
         }
     }
 
-    private func map(transactions: [Transaction], searchText: String) -> [TransactionFormatter.Model] {
+    private func map(transactions: [Transaction], searchText: String) -> [FormattedTransaction] {
         transactions.compactMap { [weak self] in try? self?.transactionFormatter.model(transaction: $0, filter: searchText) }
     }
 }

@@ -152,7 +152,7 @@ class UserManager: NSObject {
     }
 
     private func attemptFetchUserDetails(accessToken: String) {
-        APIService.shared.request(endpoint: "/user/details")
+        API.service.request(endpoint: "/user/details")
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {

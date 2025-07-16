@@ -39,23 +39,24 @@
 */
 
 import UIKit
+import SwiftUI
+
+public enum WalletState {
+    case current
+    case newRestored
+    case newSynced
+}
 
 enum AppRouter {
-
     private enum TransitionType {
         case moveDown
         case crossDissolve
         case none
     }
 
-    public enum WalletState {
-        case current
-        case newRestored
-        case newSynced
-    }
-
-    static var isNavigationReady: Bool { tabBar != nil }
-    private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
+    // TODO: refactor navigation ready with SwiftUI approach
+    static var isNavigationReady: Bool { true }
+    private static var root: UIViewController? { UIApplication.shared.topController }
 
     enum TransitionFromRecovery {
         case seedPhrase
@@ -81,7 +82,6 @@ enum AppRouter {
     }
 
     static func transitionToOnboardingScreen(startFromLocalAuth: Bool) {
-
         let controller = WalletCreationViewController()
         controller.startFromLocalAuth = startFromLocalAuth
 
@@ -89,22 +89,11 @@ enum AppRouter {
     }
 
     static func transitionToHomeScreen(state: WalletState) {
-        let tabBarController = MenuTabBarController()
-
         if state == .current {
             UserDefaults.standard.set(false, forKey: "ShouldShowWelcomeOverlay")
         }
-
-        if TariSettings.shared.walletSettings.configurationState == .ready ||
-           TariSettings.shared.walletSettings.configurationState == .authorized {
-            tabBarController.walletState = .newRestored
-        } else {
-            tabBarController.walletState = state
-        }
-
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: tabBarController)
-
-        transition(to: navigationController, type: .crossDissolve)
+        let walletState = TariSettings.shared.walletSettings.isNewRestored ? .newRestored : state
+        transition(to: UIHostingController(rootView: AppTabs(walletState: walletState)), type: .crossDissolve)
     }
 
     private static func transition(to controller: UIViewController, type: TransitionType) {
@@ -143,20 +132,20 @@ enum AppRouter {
     // MARK: - TabBar Actions
 
     static func moveToContactBook() {
-        tabBar?.setTab(.profile)
+        TabState.shared.selected = .profile
     }
 
     static func moveToProfile() {
         let controller = ProfileViewController()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.isNavigationBarHidden = true
-        tabBar?.presentOnFullScreen(navigationController)
+        root?.presentOnFullScreen(navigationController)
     }
 
     // MARK: - Modal Actions
 
     static func present(controller: UIViewController) {
-        tabBar?.present(controller, animated: true)
+        root?.present(controller, animated: true)
     }
 
     static func presentOnTop(controller: UIViewController, onFullScreen: Bool = false) {
@@ -180,7 +169,7 @@ enum AppRouter {
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
 
         navigationController.setNavigationBarHidden(true, animated: false)
-        tabBar?.present(navigationController, animated: true)
+        root?.present(navigationController, animated: true)
     }
 
     static func presentBackupSettings() {
@@ -189,7 +178,7 @@ enum AppRouter {
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
 
         navigationController.setNavigationBarHidden(true, animated: false)
-        tabBar?.present(navigationController, animated: true)
+        root?.present(navigationController, animated: true)
     }
 
     static func presentBackupPasswordSettings() {
@@ -199,7 +188,7 @@ enum AppRouter {
 
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.isModalInPresentation = true
-        tabBar?.present(navigationController, animated: true)
+        root?.present(navigationController, animated: true)
     }
 
     @MainActor static func presentSendTransaction(paymentInfo: PaymentInfo, presenter: UINavigationController? = nil) {
@@ -242,5 +231,11 @@ enum AppRouter {
     private static func open(rawURL: String) {
         guard let url = URL(string: rawURL), UIApplication.shared.canOpenURL(url) else { return }
         UIApplication.shared.open(url)
+    }
+}
+
+private extension WalletSettingsManager {
+    var isNewRestored: Bool {
+        configurationState == .ready || configurationState == .authorized
     }
 }

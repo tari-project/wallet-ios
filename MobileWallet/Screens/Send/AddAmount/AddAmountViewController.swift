@@ -91,7 +91,7 @@ final class AddAmountViewController: DynamicThemeViewController {
         let view = TextButton()
         view.font = .Poppins.Medium.withSize(14.0)
         view.imageSpacing = 3.0
-        view.image = .Icons.General.roundedQuestionMark
+        view.image = .roundedQuestionMark
         return view
     }()
 
@@ -588,6 +588,9 @@ extension AddAmountViewController {
         navigationBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        navigationBar.onBackButtonAction = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
 
         navigationBar.addSubview(addressView)
         

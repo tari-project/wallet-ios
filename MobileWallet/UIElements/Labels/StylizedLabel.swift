@@ -48,7 +48,7 @@ final class StylizedLabel: UILabel {
         case highlighted
     }
 
-    struct StylizedText {
+    struct StylizedText: Hashable {
         let text: String
         let style: Style
     }

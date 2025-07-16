@@ -108,12 +108,12 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
             }
         }
 
-        mainView.onSendButonTap = {
-            self.continueButtonTapped()
+        mainView.onSendButonTap = { [weak self] in
+            self?.continueButtonTapped()
         }
 
-        mainView.onCancelButonTap = {
-            self.dismiss(animated: true, completion: nil)
+        mainView.onCancelButonTap = { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
         }
 
         navigationBar.isSeparatorVisible = false
@@ -122,7 +122,10 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
         navigationBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-
+        
+        navigationBar.onBackButtonAction = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
         navigationBar.addSubview(addressView)
 
         addressView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor).isActive = true
