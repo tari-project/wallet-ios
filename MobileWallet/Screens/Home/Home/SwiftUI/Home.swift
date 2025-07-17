@@ -42,6 +42,7 @@ import SwiftUI
 import Combine
 
 struct Home: View {
+    @ObservedObject var network = NetworkManager.shared
     @State var activeMiners = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
@@ -121,10 +122,10 @@ private extension Home {
                     .foregroundStyle(syncStatus.color)
                     .frame(width: 7, height: 7)
                 Divider()
-                Text("Mainnet")
+                Text(network.selectedNetwork.presentedName)
                     .headingSmall()
                     .foregroundStyle(.primaryText)
-                Text("v4.5.0")
+                Text(network.selectedNetwork.version)
                     .headingSmall()
                     .foregroundStyle(.secondaryText)
             }
