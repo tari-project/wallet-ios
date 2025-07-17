@@ -549,7 +549,6 @@
 		714A90482D76491D0010B087 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90472D76491D0010B087 /* NotificationsView.swift */; };
 		714A904A2D7659650010B087 /* OverlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A90492D7659600010B087 /* OverlayViewController.swift */; };
 		714A904E2D7686910010B087 /* MiningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714A904D2D7686910010B087 /* MiningView.swift */; };
-		716BACC92DBA766200A0CBEA /* DropboxBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716BACC72DBA766200A0CBEA /* DropboxBackupService.swift */; };
 		71717AF92DB0786100CCB640 /* TransactionDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AF82DB0786100CCB640 /* TransactionDetailsCell.swift */; };
 		71717AFB2DB0831E00CCB640 /* TransactionTotalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AFA2DB0831E00CCB640 /* TransactionTotalCell.swift */; };
 		71717AFF2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71717AFE2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift */; };
@@ -1198,7 +1197,6 @@
 		714A90472D76491D0010B087 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		714A90492D7659600010B087 /* OverlayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayViewController.swift; sourceTree = "<group>"; };
 		714A904D2D7686910010B087 /* MiningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiningView.swift; sourceTree = "<group>"; };
-		716BACC72DBA766200A0CBEA /* DropboxBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropboxBackupService.swift; sourceTree = "<group>"; };
 		71717AF82DB0786100CCB640 /* TransactionDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsCell.swift; sourceTree = "<group>"; };
 		71717AFA2DB0831E00CCB640 /* TransactionTotalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTotalCell.swift; sourceTree = "<group>"; };
 		71717AFE2DB0905D00CCB640 /* HomeTransactionsPlaceholderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTransactionsPlaceholderCell.swift; sourceTree = "<group>"; };
@@ -1764,7 +1762,6 @@
 		37B4449C24890F3000592D92 /* Backup */ = {
 			isa = PBXGroup;
 			children = (
-				716BACC82DBA766200A0CBEA /* Dropbox */,
 				3A530BCD290AEDA400C423C7 /* Manager */,
 				3AB136D42906642700A5373D /* ICloud */,
 				3AD308632923FDBB009A53CE /* Error+BackupErrors.swift */,
@@ -3201,14 +3198,6 @@
 			path = Overlays;
 			sourceTree = "<group>";
 		};
-		716BACC82DBA766200A0CBEA /* Dropbox */ = {
-			isa = PBXGroup;
-			children = (
-				716BACC72DBA766200A0CBEA /* DropboxBackupService.swift */,
-			);
-			path = Dropbox;
-			sourceTree = "<group>";
-		};
 		71F4BDBF8B1AF18134115485 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -3893,7 +3882,6 @@
 				3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */,
 				3A530BD2290AF46500C423C7 /* BackupWalletSettingsHeaderView.swift in Sources */,
 				3A4BF7CE27B5712900CA499D /* Result+Void.swift in Sources */,
-				716BACC92DBA766200A0CBEA /* DropboxBackupService.swift in Sources */,
 				3A78860E2872FB39003B1F9A /* TariVectorWrapper.swift in Sources */,
 				3A6A03362802DC2B000432B4 /* PopUpDescriptionContentView.swift in Sources */,
 				3AF79D5E2727201A00613C24 /* ScrollableLabel.swift in Sources */,

@@ -38,32 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension DropboxBackupError {
-
-    var message: String? {
-        switch self {
-        case .unableToCreateTempFolder:
-            return localized("error.dropbox_backup.unable_to_create_temp_folder")
-        case .uploadFailed:
-            return localized("error.dropbox_backup.upload_failed")
-        case .downloadFailed:
-            return localized("error.dropbox_backup.download_failed")
-        case .deleteFailed:
-            return localized("error.dropbox_backup.delete_failed")
-        case .backupPasswordRequired:
-            return nil
-        case .authenticationCancelledByUser:
-            return nil
-        case .authenticationFailed:
-            return localized("error.dropbox_backup.auth_failed")
-        case .noBackupToRestore:
-            return localized("error.dropbox_backup.no_backup")
-        case .unknown:
-            return localized("error.dropbox_backup.unknown")
-        }
-    }
-}
-
 extension ICloudBackupService.ICloudBackupError {
 
     var message: String {
