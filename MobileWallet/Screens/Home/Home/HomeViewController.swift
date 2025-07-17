@@ -187,11 +187,6 @@ final class HomeViewController: SecureViewController<HomeView> {
     }
 
     private func setupModelCallbacks() {
-        model.$connectionStatusIcon
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
-            .store(in: &cancellables)
-
         mainView.isSyncInProgress = false
         // model.$isSyncInProgress
         //     .receive(on: DispatchQueue.main)
@@ -225,7 +220,7 @@ final class HomeViewController: SecureViewController<HomeView> {
 
         model.$recentTransactions
             .receive(on: DispatchQueue.main)
-            .map { $0.map { HomeViewTransactionCell.ViewModel(id: $0.id, titleComponents: $0.titleComponents, timestamp: $0.timestamp, amount: $0.amountModel) }}
+            .map { $0.map { HomeViewTransactionCell.ViewModel(id: $0.id, titleComponents: $0.titleComponents, timestamp: $0.timestamp, amount: $0.amount) }}
             .sink { [weak self] in self?.mainView.transactions = $0 }
             .store(in: &cancellables)
 

@@ -125,7 +125,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             TariSettings.shared.walletSettings.configurationState = .initialized
 
             // Instead of transitioning to a new splash screen, trigger auth directly if we're on the home screen
-            if let _ = UIApplication.shared.menuTabBarController {
+            if let _ = UIApplication.shared.topController {
                 // We're already in the app, show the local auth view controller
                 let authVC = LocalAuthViewController()
                 authVC.onAuthenticationSuccess = {
@@ -140,7 +140,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 }
 
                 // Present the auth view controller
-                UIApplication.shared.menuTabBarController?.present(authVC, animated: true)
+                UIApplication.shared.topController?.present(authVC, animated: true)
             }
             // If we're not in the app yet, the splash screen will handle auth naturally
         }

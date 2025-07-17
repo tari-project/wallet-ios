@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import SwiftUI
 
 final class ContactsManager {
     enum ContactType {
@@ -128,7 +128,7 @@ final class ContactsManager {
 
     private func update(tariContactModels: [Model]) async {
         await withCheckedContinuation { continuation in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.tariContactModels = tariContactModels
                 continuation.resume()
             }

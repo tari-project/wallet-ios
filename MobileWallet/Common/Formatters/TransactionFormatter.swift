@@ -39,17 +39,6 @@
 */
 
 final class TransactionFormatter {
-
-    struct Model: Identifiable {
-        var id: UInt64
-        let titleComponents: [StylizedLabel.StylizedText]
-        let timestamp: TimeInterval
-        let amountModel: AmountBadge.ViewModel
-        let status: String?
-        let note: String?
-        let giphyID: String?
-    }
-
     // MARK: - Properties
 
     private var contactsManager = ContactsManager()
@@ -60,8 +49,7 @@ final class TransactionFormatter {
         try await contactsManager.fetchModels()
     }
 
-    func model(transaction: Transaction, filter: String = "") throws -> Model? {
-
+    func model(transaction: Transaction, filter: String = "") throws -> FormattedTransaction? {
         let contactName = try contactName(transaction: transaction)
 
         if !filter.isEmpty {
@@ -70,14 +58,13 @@ final class TransactionFormatter {
 
         let messageComponents = try messageComponents(transaction: transaction)
 
-        return try Model(
+        return try FormattedTransaction(
             id: transaction.identifier,
             titleComponents: transactionTitleComponents(transaction: transaction, name: contactName),
             timestamp: TimeInterval(transaction.timestamp),
-            amountModel: amountViewModel(transaction: transaction),
+            amount: amountViewModel(transaction: transaction),
             status: status(transaction: transaction),
-            note: messageComponents.note,
-            giphyID: messageComponents.giphyID
+            note: messageComponents.note
         )
     }
 

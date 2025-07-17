@@ -57,5 +57,14 @@ class SecureViewController<MainView: UIView>: UIViewController {
 
     override func loadView() {
         view = secureWrapper
+        if let mainView = mainView as? BaseNavigationContentView {
+            mainView.navigationBar.onBackButtonAction = { [weak self] in
+                if let navigationController = self?.navigationController {
+                    navigationController.popViewController(animated: true)
+                } else {
+                    self?.dismiss(animated: true)
+                }
+            }
+        }
     }
 }

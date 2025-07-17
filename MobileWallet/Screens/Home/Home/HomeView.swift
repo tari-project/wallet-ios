@@ -113,12 +113,6 @@ final class HomeView: DynamicThemeView {
         return view
     }()
 
-    @TariView private var connectionStatusButton: BaseButton = {
-        let view = BaseButton()
-        view.tintColor = .Static.white
-        return view
-    }()
-
     @TariView private var qrCodeScannerButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "qrcode"), for: .normal)
@@ -212,14 +206,6 @@ final class HomeView: DynamicThemeView {
 
     // MARK: - Properties
 
-    var connectionStatusIcon: UIImage? {
-        get { connectionStatusButton.image(for: .normal) }
-        set {
-            UIView.transition(with: connectionStatusButton, duration: 0.5, options: .transitionCrossDissolve) {
-                self.connectionStatusButton.setImage(newValue, for: .normal)
-            }
-        }
-    }
 
     var activeMiners: String = "" {
         didSet { update(activeMiners: activeMiners) }
@@ -399,10 +385,6 @@ final class HomeView: DynamicThemeView {
 
         transactionTableView.dataSource = transactionsDataSource
         transactionTableView.delegate = self
-
-        connectionStatusButton.onTap = { [weak self] in
-            self?.onConnetionStatusButtonTap?()
-        }
 
         qrCodeScannerButton.onTap = { [weak self] in
             self?.onQRCodeScannerButtonTap?()

@@ -110,7 +110,7 @@ final class TariTransactionsService: CoreTariService {
 
     // MARK: - Setups
 
-    private func fetchData() {
+    func fetchData() {
         do {
             let completed = try completedTransactions
             let cancelled = try cancelledTransactions

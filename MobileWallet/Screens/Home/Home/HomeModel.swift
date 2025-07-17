@@ -46,13 +46,12 @@ final class HomeModel {
 
     // MARK: - View Model
 
-    @Published private(set) var connectionStatusIcon: UIImage?
     @Published private(set) var totalBalance: String = ""
     @Published private(set) var activeMiners: String = ""
     @Published private(set) var availableBalance: String = ""
     @Published private(set) var avatar: String = ""
     @Published private(set) var username: String = ""
-    @Published private(set) var recentTransactions: [TransactionFormatter.Model] = []
+    @Published private(set) var recentTransactions: [FormattedTransaction] = []
     @Published private(set) var selectedTransaction: Transaction?
     @Published private(set) var isMiningActive: Bool = false
     @Published private(set) var isSyncInProgress: Bool = false
@@ -163,24 +162,6 @@ final class HomeModel {
 
     private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
 
-        switch (networkConnection, torConnection, baseNodeConnection, syncStatus) {
-        case (.disconnected, _, _, _),
-            (.connected, .disconnected, _, _),
-            (.connected, .disconnecting, _, _):
-            connectionStatusIcon = .Icons.Network.off
-        case (.connected, .connecting, _, _),
-            (.connected, .waitingForAuthorization, _, _),
-            (.connected, .portsOpen, _, _),
-            (.connected, .connected, .offline, _),
-            (.connected, .connected, .connecting, _),
-            (.connected, .connected, .online, .idle),
-            (.connected, .connected, .online, .failed):
-            connectionStatusIcon = .Icons.Network.limited
-        case (.connected, .connected, .online, .syncing),
-            (.connected, .connected, .online, .synced):
-            connectionStatusIcon = .Icons.Network.full
-        }
-
         // Update sync status
         if !hasSyncedOnce {
             print("sync status:", syncStatus)
@@ -207,10 +188,6 @@ final class HomeModel {
         }
     }
 
-    struct MinerStats: Decodable {
-        let totalMiners: Int
-    }
-
     func formatLargeNumber(_ value: Int) -> String {
         if value >= 1_000_000 {
             return String(format: "%.1fM", Double(value) / 1_000_000)
@@ -222,7 +199,7 @@ final class HomeModel {
     }
 
     func fetchMinerStats() {
-        APIService.shared.request(endpoint: "/miner/stats")
+        API.service.request(endpoint: "/miner/stats")
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 if case .failure(let error) = completion {
@@ -234,19 +211,6 @@ final class HomeModel {
             .store(in: &cancellables)
     }
 
-    struct MiningStatusResponse: Decodable {
-        let mining: Bool?
-
-        enum CodingKeys: String, CodingKey {
-            case mining
-        }
-
-        init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            mining = try? container.decode(Bool.self, forKey: .mining)
-        }
-    }
-
     func fetchMiningStatus() {
         guard let appId = NotificationManager.shared.appId else {
             isMiningActive = false
@@ -254,7 +218,7 @@ final class HomeModel {
         }
 
         print("Fetching mining status for appId: \(appId)")
-        APIService.shared.request(endpoint: "/miner/status/\(appId)")
+        API.service.request(endpoint: "/miner/status/\(appId)")
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 if case .failure(let error) = completion {
@@ -262,7 +226,7 @@ final class HomeModel {
                     // If there's an error (including unauthorized), set mining to inactive
                     self.isMiningActive = false
                 }
-            }, receiveValue: { [weak self] (response: MiningStatusResponse) in
+            }, receiveValue: { [weak self] (response: MiningStatus) in
                 print("Mining status response: \(response)")
                 self?.isMiningActive = response.mining ?? false
             })

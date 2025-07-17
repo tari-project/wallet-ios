@@ -54,11 +54,6 @@ struct Images {
     let createWalletDownArrow = UIImage(named: "notch_down")
     let createWalletNumpad = UIImage(named: "numpad")
 
-    // TabBar
-    let homeItem = UIImage(named: "navHome")
-    let ttlItem = UIImage(named: "navTtl")
-    let settingsItem = UIImage(named: "navSettings")
-
     // General icons
     let currencySymbol = UIImage(named: "Gem")
     let backArrow = UIImage(named: "BackArrow")

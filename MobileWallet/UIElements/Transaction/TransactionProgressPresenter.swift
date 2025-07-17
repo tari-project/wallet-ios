@@ -66,7 +66,7 @@ enum TransactionProgressPresenter {
 
         controller.onCompletion = { [weak presenter] error in
             presenter?.navigationController?.dismiss(animated: true) {
-                UIApplication.shared.menuTabBarController?.setTab(.home)
+                TabState.shared.selected = .home
                 guard let error = error else { return }
                 show(transactionError: error)
             }

@@ -41,7 +41,7 @@
 import SwiftUI
 
 enum TariButtonStyle {
-    case primary, secondary, outlined, text
+    case primary, secondary, outlined, text, label
 }
 
 enum TariButtonSize {
@@ -81,7 +81,7 @@ struct TariButton<LeadingIcon: View>: View {
                     .foregroundStyle(isEnabled ? style.textColor : .disabled)
             }
             .padding(size.horizontalPadding)
-            .frame(maxWidth: size.width, maxHeight: size.height)
+            .frame(maxWidth: size.width, maxHeight: size.height(for: style))
             .background {
                 ZStack {
                     if let background = style.backgroundColor {
@@ -95,6 +95,7 @@ struct TariButton<LeadingIcon: View>: View {
                 }
             }
         }
+        .buttonStyle(.scaling)
     }
 }
 
@@ -113,7 +114,7 @@ private extension TariButtonStyle {
         switch self {
         case .primary: .primaryButtonText
         case .secondary: .Common.blackmain
-        case .outlined, .text: .primaryText
+        case .outlined, .text, .label: .primaryText
         }
     }
     
@@ -121,7 +122,7 @@ private extension TariButtonStyle {
         switch self {
         case .primary: .primaryText
         case .secondary: .primaryMain
-        case .outlined: .primaryBackground
+        case .outlined, .label: .primaryBackground
         case .text: nil
         }
     }
@@ -129,6 +130,7 @@ private extension TariButtonStyle {
     var strokeColor: Color? {
         switch self {
         case .outlined: .buttonOutline
+        case .label: .divider
         case .primary, .secondary, .text: nil
         }
     }
@@ -149,11 +151,19 @@ private extension TariButtonSize {
         }
     }
     
-    var height: CGFloat {
-        switch self {
-        case .large: 50
-        case .medium: 36
-        case .small: 30
+    func height(for style: TariButtonStyle) -> CGFloat {
+        switch style {
+        case .text, .label: 40
+        case .primary, .secondary, .outlined:
+            switch self {
+            case .large: 50
+            case .medium:
+                switch style {
+                case .primary, .secondary: 36
+                case .outlined, .text, .label: 40
+                }
+            case .small: 30
+            }
         }
     }
     

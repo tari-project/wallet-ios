@@ -104,6 +104,7 @@ private extension EditContactNameSheet {
                     let contact = try contacts.createInternalModel(name: alias, isFavorite: false, address: address)
                     onContactUpdate(contact)
                 }
+                Tari.mainWallet.transactions.fetchData()
                 dismiss()
             } catch {
                 print(error.localizedDescription)

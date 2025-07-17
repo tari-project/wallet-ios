@@ -105,8 +105,8 @@ final class TransactionHistoryViewController: SecureViewController<TransactionHi
                         timestamp: $0.timestamp,
                         info: $0.status,
                         note: $0.note,
-                        giphyID: $0.giphyID,
-                        amount: $0.amountModel
+                        giphyID: nil,
+                        amount: $0.amount
                     )
                 }
             )

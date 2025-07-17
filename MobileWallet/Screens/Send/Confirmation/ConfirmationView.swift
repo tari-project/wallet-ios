@@ -268,7 +268,7 @@ class ConfirmationView: DynamicThemeView {
             cancelButton.widthAnchor.constraint(equalToConstant: 342),
             cancelButton.heightAnchor.constraint(equalToConstant: 50),
             cancelButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            cancelButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
+            cancelButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -80)
         ])
     }
 

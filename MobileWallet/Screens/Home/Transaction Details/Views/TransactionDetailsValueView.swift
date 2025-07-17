@@ -70,7 +70,7 @@ final class TransactionDetailsValueView: DynamicThemeView {
         let view = TextButton()
         view.setTitle(localized("common.fee"), for: .normal)
         view.font = .Poppins.SemiBold.withSize(13.0)
-        view.image = .Icons.General.roundedQuestionMark
+        view.image = .roundedQuestionMark
         return view
     }()
 
