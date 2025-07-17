@@ -63,7 +63,6 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     private let items: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: RestoreCellTitle.syncWithDesktop.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
-//        SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
     ]
 
@@ -72,14 +71,12 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     private enum RestoreCellTitle: CaseIterable {
         case syncWithDesktop
         case iCloudRestore
-//        case dropboxRestore
         case phraseRestore
 
         var rawValue: String {
             switch self {
             case .syncWithDesktop: return localized("restore_wallet.item.desktop_restore")
             case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
-//            case .dropboxRestore: return localized("restore_wallet.item.dropbox_restore")
             case .phraseRestore: return localized("restore_wallet.item.phrase_restore")
             }
         }
@@ -166,7 +163,6 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         case .syncWithDesktop:
             onPaperWalletRestoreAction()
         case .iCloudRestore: oniCloudRestoreAction()
-//        case .dropboxRestore: onDropboxRestoreAction()
         case .phraseRestore: onPhraseRestoreAction()
         }
     }
@@ -178,11 +174,6 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     private func oniCloudRestoreAction() {
         // Commenting out iCloud restore
         // authenticateUserAndRestoreWallet(from: .iCloud)
-    }
-
-    private func onDropboxRestoreAction() {
-        BackupManager.shared.dropboxPresentationController = self
-        authenticateUserAndRestoreWallet(from: .dropbox)
     }
 
     private func onPhraseRestoreAction() {
@@ -277,10 +268,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
             return
         case let error as BackupError where error == .noRemoteBackup:
             errorMessage = localized("iCloud_backup.error.no_backup_exists")
-        case let error as DropboxBackupError:
-            errorMessage = error.message
         case let error as ICloudBackupService.ICloudBackupError:
-
             guard let walletError = error.internalError as? WalletError else { break }
 
             guard walletError == .cantRecover else {

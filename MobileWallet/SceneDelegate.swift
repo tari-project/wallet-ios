@@ -102,7 +102,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         Yat.integration.handle(deeplink: url)
-        BackupManager.shared.handle(url: url)
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {

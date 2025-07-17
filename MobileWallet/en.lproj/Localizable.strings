@@ -174,7 +174,6 @@
 /* BackupWalletSettings view */
 "backup_wallet_settings.title" = "Security";
 "backup_wallet_settings.item.icloud_backups" = "iCloud Backups";
-"backup_wallet_settings.item.dropbox_backups" = "Dropbox Backups";
 "backup_wallet_settings.item.change_password" = "Change your secure password";
 "backup_wallet_settings.item.secure_your_backup"  = "Secure your backup with password";
 "backup_wallet_settings.item.backup_now" = "Back up now";
@@ -414,7 +413,6 @@
 "restore_wallet.title" = "Import Wallet";
 "restore_wallet.item.desktop_restore" = "Sync with Universe desktop";
 "restore_wallet.item.iCloud_restore" = "Restore with iCloud";
-"restore_wallet.item.dropbox_restore" = "Restore with Dropbox";
 "restore_wallet.item.phrase_restore" = "Restore with recovery phrase";
 "restore_wallet.item.paper_wallet" = "Restore from paper wallet";
 "restore_wallet.pop_up.paper_wallet.confirmation.title" = "Sync your Universe wallet?";
@@ -764,16 +762,6 @@ Please keep the app open while the wallet syncs.";
 "error.contact_book.no_name.title" = "Name can’t be empty";
 "error.contact_book.no_name.description" = "A contact without a name? That won’t work. Please add one to keep things running smoothly.";
 "error.contact_book.no_name.close_button" = "Will do!";
-
-/* Dropbox Backup Error */
-
-"error.dropbox_backup.unable_to_create_temp_folder" = "Internal Data Error. Please try again later or contact support.";
-"error.dropbox_backup.upload_failed" = "Unable to upload backup to Dropbox. Please try again later.";
-"error.dropbox_backup.download_failed" = "Unable to download the backup from Dropbox. Please try again later.";
-"error.dropbox_backup.delete_failed" = "The app was unable to remove the backup from your Dropbox account.";
-"error.dropbox_backup.auth_failed" = "Authorisation failed. Please check your account credentials and connection with the internet.";
-"error.dropbox_backup.no_backup" = "The app was unable to locate a valid backup on your Dropbox account.";
-"error.dropbox_backup.unknown" = "The app detected an unknown error during the backup process. Please get in touch with the support if this error appears again.";
 
 /* BLE Errors */
 

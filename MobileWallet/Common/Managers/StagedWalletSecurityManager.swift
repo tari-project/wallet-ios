@@ -55,7 +55,7 @@ final class StagedWalletSecurityManager {
     static let shared = StagedWalletSecurityManager()
 
     private var hasVerifiedSeedPhrase: Bool { TariSettings.shared.walletSettings.hasVerifiedSeedPhrase }
-    private var isBackupOn: Bool { TariSettings.shared.walletSettings.iCloudDocsBackupStatus.isOn || TariSettings.shared.walletSettings.dropboxBackupStatus.isOn }
+    private var isBackupOn: Bool { TariSettings.shared.walletSettings.iCloudDocsBackupStatus.isOn }
     private var isBackupPasswordSet: Bool { AppKeychainWrapper.backupPassword != nil }
     private var disabledTimestampSinceNow: Date { Date(timeIntervalSinceNow: 60 * 60 * 24 * 7) }
 

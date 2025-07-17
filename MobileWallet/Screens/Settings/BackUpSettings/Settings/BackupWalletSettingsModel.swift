@@ -54,8 +54,6 @@ final class BackupWalletSettingsModel {
     @Published private(set) var isSeedWordListVerified: Bool = false
     @Published private(set) var iCloudBackupState: BackupState = .off
     @Published private(set) var iCloudLastBackupTime: String?
-    @Published private(set) var dropboxBackupState: BackupState = .off
-    @Published private(set) var dropboxLastBackupTime: String?
     @Published private(set) var isBackupSecuredByPassword: Bool = false
     @Published private(set) var isBackupOutOfSync: Bool = false
 
@@ -73,7 +71,6 @@ final class BackupWalletSettingsModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         BackupManager.shared.$syncState
             .map { $0 == .outOfSync }
             .assignPublisher(to: \.isBackupOutOfSync, on: self)
@@ -82,45 +79,19 @@ final class BackupWalletSettingsModel {
         BackupManager.shared.backupService(.iCloud).backupStatus
             .map {
                 switch $0 {
-                case .disabled:
-                    return .off
-                case .enabled:
-                    return .upToDate
-                case let .inProgress(progress):
-                    return .backupInProgress(progress: progress * 100.0)
-                case .failed:
-                    return .backupFailed
+                case .disabled: .off
+                case .enabled: .upToDate
+                case let .inProgress(progress): .backupInProgress(progress: progress * 100.0)
+                case .failed: .backupFailed
                 }
             }
             .removeDuplicates()
             .assignPublisher(to: \.iCloudBackupState, on: self)
             .store(in: &cancellables)
 
-        BackupManager.shared.backupService(.dropbox).backupStatus
-            .map {
-                switch $0 {
-                case .disabled:
-                    return .off
-                case .enabled:
-                    return .upToDate
-                case let .inProgress(progress):
-                    return .backupInProgress(progress: progress * 100.0)
-                case .failed:
-                    return .backupFailed
-                }
-            }
-            .removeDuplicates()
-            .assignPublisher(to: \.dropboxBackupState, on: self)
-            .store(in: &cancellables)
-
         BackupManager.shared.backupService(.iCloud).lastBackupTimestamp
             .map { [weak self] in self?.lastBackupText(date: $0) }
             .assignPublisher(to: \.iCloudLastBackupTime, on: self)
-            .store(in: &cancellables)
-
-        BackupManager.shared.backupService(.dropbox).lastBackupTimestamp
-            .compactMap { [weak self] in self?.lastBackupText(date: $0) }
-            .assignPublisher(to: \.dropboxLastBackupTime, on: self)
             .store(in: &cancellables)
     }
 
@@ -137,10 +108,6 @@ final class BackupWalletSettingsModel {
         try? BackupManager.shared.removeICloudRemoteBackup()
     }
 
-    func update(isDropboxBackupOn: Bool) {
-        BackupManager.shared.backupService(.dropbox).isOn = isDropboxBackupOn
-    }
-
     func backupIfNeeded() {
         BackupManager.shared.backupNow(onlyIfOutdated: true)
     }
@@ -155,13 +122,7 @@ final class BackupWalletSettingsModel {
 }
 
 extension BackupWalletSettingsModel.BackupState: Equatable {
-
     var isOn: Bool {
-        switch self {
-        case .off:
-            return false
-        default:
-            return true
-        }
+        self != .off
     }
 }

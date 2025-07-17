@@ -52,42 +52,29 @@ final class BackupManager {
 
     enum Service {
         case iCloud
-        case dropbox
     }
 
     // MARK: - Properties
 
     static let shared = BackupManager()
 
-    var dropboxPresentationController: UIViewController? {
-        get { dropboxBackupService.presentingController }
-        set { dropboxBackupService.presentingController = newValue }
-    }
-
     @Published var password: String? = AppKeychainWrapper.backupPassword
     @Published private(set) var syncState: BackupSyncState = .outOfSync
 
     private let backupSchedulerSubject = PassthroughSubject<Void, Never>()
     private let iCloudBackupService = ICloudBackupService()
-    private let dropboxBackupService = DropboxBackupService()
 
     private var scheduledBackupTimer: Timer?
-    private var allServices: [BackupServicable] { [iCloudBackupService, dropboxBackupService] }
+    private var allServices: [BackupServicable] { [iCloudBackupService] }
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Setups
 
     func configure() {
-        setupServices()
         setupCallbacks()
     }
 
-    private func setupServices() {
-        dropboxBackupService.setupConfiguration()
-    }
-
     private func setupCallbacks() {
-
         Publishers.Merge(Tari.shared.wallet(.main).walletBalance.$balance.dropFirst().onChangePublisher(), Tari.shared.wallet(.main).transactions.onUpdate.dropFirst())
             .throttle(for: 60.0, scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] in self?.performBackup(forced: true) }
@@ -97,8 +84,8 @@ final class BackupManager {
             .sink { [weak self] _ in self?.performBackup(forced: false) }
             .store(in: &cancellables)
 
-        Publishers.CombineLatest(iCloudBackupService.backupStatus, dropboxBackupService.backupStatus)
-            .compactMap { [weak self] in self?.handle(iCloudBackupStatus: $0, dropboxBackupStatus: $1) }
+        iCloudBackupService.backupStatus
+            .compactMap { [weak self] in self?.handle(iCloudBackupStatus: $0) }
             .assignPublisher(to: \.syncState, on: self)
             .store(in: &cancellables)
 
@@ -128,38 +115,21 @@ final class BackupManager {
     }
 
     private func show(error: Error) {
-
-        let message: String
-
-        switch error {
-        case let error as DropboxBackupError:
-            guard let errorMessage = error.message else { return }
-            message = errorMessage
-        case let error as ICloudBackupService.ICloudBackupError:
-            message = error.message
-        default:
+        guard let message = (error as? ICloudBackupService.ICloudBackupError)?.message else {
             return
         }
-
-        guard UIApplication.shared.applicationState == .background else {
+        if UIApplication.shared.applicationState == .background {
+            NotificationManager.shared.scheduleNotification(
+                title: localized("backup_local_notification.title"),
+                body: message,
+                identifier: NotificationManager.NotificationIdentifier.backgroundBackupTask.rawValue
+            )
+        } else {
             let messageModel = MessageModel(title: localized("iCloud_backup.error.title.create_backup"), message: message, type: .error)
             Task { @MainActor in
                 PopUpPresenter.show(message: messageModel)
             }
-            return
         }
-
-        NotificationManager.shared.scheduleNotification(
-            title: localized("backup_local_notification.title"),
-            body: message,
-            identifier: NotificationManager.NotificationIdentifier.backgroundBackupTask.rawValue
-        )
-    }
-
-    // MARK: - Dropbox Setups
-
-    func handle(url: URL) {
-        dropboxBackupService.handle(url: url)
     }
 
     // MARK: - Actions
@@ -193,19 +163,15 @@ final class BackupManager {
 
     // MARK: - Handlers
 
-    private func handle(iCloudBackupStatus: BackupStatus, dropboxBackupStatus: BackupStatus) -> BackupSyncState {
-
-        switch (iCloudBackupStatus, dropboxBackupStatus) {
-        case (.failed, _), (_, .failed):
+    private func handle(iCloudBackupStatus: BackupStatus) -> BackupSyncState {
+        switch iCloudBackupStatus {
+        case .failed:
             return .outOfSync
-        case let (.inProgress(iCloudProgress), .inProgress(dropboxProgress)):
-            let progress = min(iCloudProgress, dropboxProgress)
+        case let .inProgress(progress):
             return .inProgress(progress: progress)
-        case let (.inProgress(progress), _), let (_, .inProgress(progress)):
-            return .inProgress(progress: progress)
-        case (.enabled, _), (_, .enabled):
+        case .enabled:
             return .synced
-        case (.disabled, .disabled):
+        case .disabled:
             password = nil
             return .disabled
         }
@@ -225,14 +191,7 @@ final class BackupManager {
     // MARK: - Helpers
 
     func backupService(_ service: Service) -> BackupServicable {
-        switch service {
-        case .iCloud:
-            // Commenting out iCloud backup
-            // return iCloudBackupService
-            return dropboxBackupService
-        case .dropbox:
-            return dropboxBackupService
-        }
+        iCloudBackupService
     }
 
     // MARK: - Backup Schedule
@@ -250,13 +209,10 @@ final class BackupManager {
 }
 
 extension BackupManager.BackupSyncState: Equatable {
-
     var inProgress: Bool {
         switch self {
-        case .inProgress:
-            return true
-        default:
-            return false
+        case .inProgress: true
+        default: false
         }
     }
 }

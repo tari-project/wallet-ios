@@ -82,7 +82,6 @@ struct WalletSettings: Codable, Equatable {
     let networkName: String
     var configurationState: WalletConfigurationState
     var iCloudDocsBackupStatus: BackupStatus
-    var dropboxBackupStatus: BackupStatus
     var hasVerifiedSeedPhrase: Bool
     var delayedWalletSecurityStagesTimestamps: [WalletSecurityStage: Date]
     var yat: String?
