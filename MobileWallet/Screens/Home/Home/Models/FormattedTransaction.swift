@@ -42,6 +42,7 @@ import SwiftUI
 
 struct FormattedTransaction: Identifiable, Hashable {
     var id: UInt64
+    let emojiId: String
     let titleComponents: [StylizedLabel.StylizedText]
     let timestamp: TimeInterval
     let amount: AmountBadge.ViewModel

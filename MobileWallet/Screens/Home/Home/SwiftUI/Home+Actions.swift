@@ -50,8 +50,7 @@ extension Home {
     }
     
     func transaction(for transaction: FormattedTransaction) -> Transaction? {
-        Tari.mainWallet.transactions.all
-            .first { (try? $0.identifier) == transaction.id }
+        Tari.mainWallet.transaction(id: transaction.id)
     }
     
     func update(walletBalance: WalletBalance) {
