@@ -55,6 +55,7 @@ struct Home: View {
     @State var presentedTransaction: FormattedTransaction?
     @State var isSendPresented = false
     @State var isReceivePresented = false
+    @State var isTransactionHistoryPresented = false
     
     let walletState: WalletState
     
@@ -98,6 +99,9 @@ struct Home: View {
                 UIReceiveViewController()
                     .navigationBarBackButtonHidden()
                     .background(Color.secondaryBackground)
+            }
+            .navigationDestination(isPresented: $isTransactionHistoryPresented) {
+                TransactionHistory(transactions: recentTransactions)
             }
         }
     }
@@ -226,12 +230,14 @@ private extension Home {
             }
             if !recentTransactions.isEmpty {
                 VStack(spacing: 8) {
-                    ForEach(recentTransactions) { transaction in
+                    ForEach(recentTransactions.prefix(10)) { transaction in
                         Button(action: { presentedTransaction = transaction }) {
                             TransactionItem(transaction: transaction, isBalanceHidden: isBalanceHidden)
                         }
                     }
-                    // TODO: view all
+                    TariButton("View all transactions", style: .text, size: .medium) {
+                        isTransactionHistoryPresented = true
+                    }
                 }
             } else if isLoadingTransactions {
                 ProgressView()

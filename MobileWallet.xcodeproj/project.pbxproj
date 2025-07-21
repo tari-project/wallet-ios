@@ -618,6 +618,7 @@
 		F88B28D82E27A8D2005B9B13 /* MinerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D72E27A8D1005B9B13 /* MinerStats.swift */; };
 		F88B28DA2E27AE6C005B9B13 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D92E27AE67005B9B13 /* Tab.swift */; };
 		F8BA7D232E1D75DE00BDBEF1 /* AppTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BA7D222E1D75DE00BDBEF1 /* AppTabs.swift */; };
+		F8C065242E2A554D009BFC8F /* TransactionHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065232E2A554D009BFC8F /* TransactionHistory.swift */; };
 		F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */; };
 		F8E279822E24F69A0017C3F5 /* UISettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */; };
 		F8E279842E253B6F0017C3F5 /* UISendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279832E253B6E0017C3F5 /* UISendViewController.swift */; };
@@ -1269,6 +1270,7 @@
 		F88B28D72E27A8D1005B9B13 /* MinerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinerStats.swift; sourceTree = "<group>"; };
 		F88B28D92E27AE67005B9B13 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		F8BA7D222E1D75DE00BDBEF1 /* AppTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabs.swift; sourceTree = "<group>"; };
+		F8C065232E2A554D009BFC8F /* TransactionHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistory.swift; sourceTree = "<group>"; };
 		F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProfileViewController.swift; sourceTree = "<group>"; };
 		F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISettingsViewController.swift; sourceTree = "<group>"; };
 		F8E279832E253B6E0017C3F5 /* UISendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISendViewController.swift; sourceTree = "<group>"; };
@@ -1508,6 +1510,7 @@
 		00E2BCA6236AB25500C2A105 /* Transaction History */ = {
 			isa = PBXGroup;
 			children = (
+				F8C065222E2A5511009BFC8F /* SwiftUI */,
 				3AC05F9926C3F2F4002742C6 /* Views */,
 				54103CD92A555A1A00C456B4 /* TransactionHistoryConstructor.swift */,
 				54103CDB2A555A3100C456B4 /* TransactionHistoryModel.swift */,
@@ -3451,6 +3454,14 @@
 			path = Tabs;
 			sourceTree = "<group>";
 		};
+		F8C065222E2A5511009BFC8F /* SwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				F8C065232E2A554D009BFC8F /* TransactionHistory.swift */,
+			);
+			path = SwiftUI;
+			sourceTree = "<group>";
+		};
 		F8F1EBDB2E1C1DE400B09007 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -4061,6 +4072,7 @@
 				3AF79D602727206200613C24 /* ContactSearchView.swift in Sources */,
 				3AECD490284F3BB300D81C80 /* BaseNavigationContentView.swift in Sources */,
 				37547D522460165500EB59CC /* UIApplication+Utils.swift in Sources */,
+				F8C065242E2A554D009BFC8F /* TransactionHistory.swift in Sources */,
 				3A87C3B727A9409E007A553F /* WalletError.swift in Sources */,
 				F8214FF02DFC1728003EBB25 /* PaymentReference.swift in Sources */,
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,

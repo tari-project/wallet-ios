@@ -218,6 +218,10 @@ final class TariTransactionsService: CoreTariService {
     func paymentReference(transaction: Transaction) throws -> PaymentReference? {
         try walletManager.paymentReference(transaction: transaction)
     }
+    
+    func transaction(id: UInt64) -> Transaction? {
+        all.first { (try? $0.identifier) == id }
+    }
 }
 
 extension TariTransactionsService {

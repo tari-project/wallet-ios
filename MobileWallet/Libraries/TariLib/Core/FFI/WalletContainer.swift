@@ -261,3 +261,9 @@ final class WalletContainer: WalletInteractable, MainServiceable {
         )
     }
 }
+
+extension WalletInteractable {
+    func transaction(id: UInt64) -> Transaction? {
+        transactions.transaction(id: id)
+    }
+}

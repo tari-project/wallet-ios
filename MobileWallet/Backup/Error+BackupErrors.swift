@@ -39,21 +39,20 @@
 */
 
 extension ICloudBackupService.ICloudBackupError {
-
     var message: String {
         switch self {
         case .noUbiquityContainer:
-            return localized("iCloud_backup.error.container_not_found")
+            localized("iCloud_backup.error.container_not_found")
         case .unableToCreateBackup:
-            return localized("iCloud_backup.error.unable_create_backup_file")
+            localized("iCloud_backup.error.unable_create_backup_file")
         case .unableToCreateFolderStructure:
-            return localized("iCloud_backup.error.unable_create_backup_folder")
+            localized("iCloud_backup.error.unable_create_backup_folder")
         case .unableToDeleteFile:
-            return localized("iCloud_backup.error.unable_to_delete_backup")
+            localized("iCloud_backup.error.unable_to_delete_backup")
         case .unableToCopyFile:
-            return localized("iCloud_backup.error.unable_to_copy_file")
+            localized("iCloud_backup.error.unable_to_copy_file")
         case .unableToDownloadBackup, .unableToSaveBackup:
-            return localized("iCloud_backup.error.title.restore_wallet")
+            localized("iCloud_backup.error.title.restore_wallet")
         }
     }
 }

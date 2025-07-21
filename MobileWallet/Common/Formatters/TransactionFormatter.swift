@@ -60,6 +60,7 @@ final class TransactionFormatter {
 
         return try FormattedTransaction(
             id: transaction.identifier,
+            emojiId: transaction.address.emojis,
             titleComponents: transactionTitleComponents(transaction: transaction, name: contactName),
             timestamp: TimeInterval(transaction.timestamp),
             amount: amountViewModel(transaction: transaction),
