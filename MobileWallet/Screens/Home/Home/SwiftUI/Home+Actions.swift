@@ -41,6 +41,18 @@
 import SwiftUI
 
 extension Home {
+    var isSynced: Bool {
+        0 < scannedHeight && scannedHeight == chainTip
+    }
+    
+    var syncMessage: String {
+        isSynced
+            ? "**Synced to block #\(chainTip)**"
+            : 0 < scannedHeight && 0 < chainTip
+                ? "**Syncing** \(chainTip - scannedHeight) blocks remaining"
+                : "**Syncing**"
+    }
+    
     func load() {
         fetchMinerStats()
         fetchMiningStatus()
@@ -80,6 +92,11 @@ extension Home {
             }
         }
         self.syncStatus = syncStatus
+    }
+    
+    func update(scannedHeight: UInt64, chainTip: UInt64) {
+        self.scannedHeight = scannedHeight
+        self.chainTip = chainTip
     }
     
     func showAmountHelp() {

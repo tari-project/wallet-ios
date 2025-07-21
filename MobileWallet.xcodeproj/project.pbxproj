@@ -619,6 +619,7 @@
 		F88B28DA2E27AE6C005B9B13 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D92E27AE67005B9B13 /* Tab.swift */; };
 		F8BA7D232E1D75DE00BDBEF1 /* AppTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BA7D222E1D75DE00BDBEF1 /* AppTabs.swift */; };
 		F8C065242E2A554D009BFC8F /* TransactionHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065232E2A554D009BFC8F /* TransactionHistory.swift */; };
+		F8C065382E2E7220009BFC8F /* Text+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065372E2E721B009BFC8F /* Text+Style.swift */; };
 		F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */; };
 		F8E279822E24F69A0017C3F5 /* UISettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */; };
 		F8E279842E253B6F0017C3F5 /* UISendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279832E253B6E0017C3F5 /* UISendViewController.swift */; };
@@ -1271,6 +1272,7 @@
 		F88B28D92E27AE67005B9B13 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		F8BA7D222E1D75DE00BDBEF1 /* AppTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabs.swift; sourceTree = "<group>"; };
 		F8C065232E2A554D009BFC8F /* TransactionHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistory.swift; sourceTree = "<group>"; };
+		F8C065372E2E721B009BFC8F /* Text+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Style.swift"; sourceTree = "<group>"; };
 		F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProfileViewController.swift; sourceTree = "<group>"; };
 		F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISettingsViewController.swift; sourceTree = "<group>"; };
 		F8E279832E253B6E0017C3F5 /* UISendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISendViewController.swift; sourceTree = "<group>"; };
@@ -3401,6 +3403,7 @@
 			children = (
 				F82150342E0A7791003EBB25 /* Image+Style.swift */,
 				F821504F2E0EA9B5003EBB25 /* Shape+Style.swift */,
+				F8C065372E2E721B009BFC8F /* Text+Style.swift */,
 				F82150222E060240003EBB25 /* Toolbar+Items.swift */,
 				F82150202E060217003EBB25 /* View+Backgrount.swift */,
 			);
@@ -3789,6 +3792,7 @@
 				540C3A1F2C748CAE00B0CC97 /* RoundedAddressView.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				3A70434128E21D7A00207D6F /* PendingInboundTransaction.swift in Sources */,
+				F8C065382E2E7220009BFC8F /* Text+Style.swift in Sources */,
 				5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */,
 				3A2F30B428F5940A0095E25D /* ConsoleLogger.swift in Sources */,
 				545A9D1F294F9323008D24A6 /* RadioButtonView.swift in Sources */,
