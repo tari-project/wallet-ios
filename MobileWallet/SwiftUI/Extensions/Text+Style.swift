@@ -1,8 +1,8 @@
-//  Toolbar+Items.swift
+//  Text+Style.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 20.06.2025
+	Created by Tomas Hakel on 21.07.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,21 +40,9 @@
 
 import SwiftUI
 
-extension View {
-    func toolbarBackItem(_ action: @escaping () -> Void) -> some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            Button(action: action) {
-                Image(uiImage: .backArrow)
-                    .foregroundStyle(Color.Icons.default)
-            }
-        }
-    }
-    
-    func toolbarTitle(_ title: String) -> some ToolbarContent {
-        ToolbarItem(placement: .principal) {
-            Text(title)
-                .headingLarge()
-                .foregroundStyle(.primaryText)
-        }
+extension Text {
+    init(markdown text: String) {
+        self.init(.init(text))
+        
     }
 }

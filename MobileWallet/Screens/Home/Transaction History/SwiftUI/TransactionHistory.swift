@@ -75,11 +75,7 @@ private extension TransactionHistory {
     var toolbar: some ToolbarContent {
         Group {
             toolbarBackItem { dismiss() }
-            ToolbarItem(placement: .principal) {
-                Text("Transaction History")
-                    .headingLarge()
-                    .foregroundStyle(.primaryText)
-            }
+            toolbarTitle("Transaction History")
         }
     }
     

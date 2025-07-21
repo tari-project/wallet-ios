@@ -51,6 +51,8 @@ struct Home: View {
     @State var isBalanceHidden = false
     @State var isLoadingTransactions = false
     @State var syncStatus: TariValidationService.SyncStatus = .idle
+    @State var scannedHeight: UInt64 = 0
+    @State var chainTip: UInt64 = 0
     @State var recentTransactions = [FormattedTransaction]()
     @State var presentedTransaction: FormattedTransaction?
     @State var isSendPresented = false
@@ -84,6 +86,9 @@ struct Home: View {
             }
             .onReceive(AppConnectionHandler.shared.connectionMonitor.$syncStatus) {
                 update(syncStatus: $0)
+            }
+            .onReceive(Tari.mainWallet.connectionCallbacks.$scannedHeight.combineLatest(Tari.mainWallet.connectionCallbacks.$blockHeight)) {
+                update(scannedHeight: $0.0, chainTip: $0.1)
             }
             .navigationDestination(item: $presentedTransaction) {
                 if let transaction = transaction(for: $0) {
@@ -220,13 +225,25 @@ private extension Home {
     }
     
     var recentActivity: some View {
-        VStack(spacing: 20) {
+        VStack {
             HStack {
                 Text("Recent Activity")
                     .headingXL()
                     .foregroundStyle(.primaryText)
-                Spacer()
-                // TODO: Add sync status
+                Spacer(minLength: 8)
+
+                HStack(spacing: 2) {
+                    if isSynced {
+                        Image(.successIcon)
+                            .padding(.trailing, 2)
+                    } else {
+                        ProgressView()
+                            .scaleEffect(0.7)
+                    }
+                    Text(markdown: syncMessage)
+                        .body2()
+                        .foregroundStyle(.primaryText)
+                }
             }
             if !recentTransactions.isEmpty {
                 VStack(spacing: 8) {
