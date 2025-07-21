@@ -89,7 +89,7 @@ private extension TransactionHistory {
             || searchContains($0.emojiId)
             || searchContains($0.formattedTimestamp)
             || searchContains($0.formattedAmount.string)
-            || $0.note != nil && searchContains($0.note ?? "")
+            || $0.note.map(searchContains) ?? false
         }
     }
     
