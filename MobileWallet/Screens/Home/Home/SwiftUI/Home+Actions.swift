@@ -45,14 +45,6 @@ extension Home {
         0 < scannedHeight && scannedHeight == chainTip
     }
     
-    var syncMessage: String {
-        isSynced
-            ? "**Synced to block #\(chainTip)**"
-            : 0 < scannedHeight && 0 < chainTip
-                ? "**Syncing** \(chainTip - scannedHeight) blocks remaining"
-                : "**Syncing**"
-    }
-    
     func load() {
         fetchMinerStats()
         fetchMiningStatus()

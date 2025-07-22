@@ -195,12 +195,19 @@ private extension Home {
                             Image(.discloseHide)
                         }
                     }
-                    Text(isBalanceHidden ? "******* XTM" : "\(totalBalance) XTM")
-                        .heading2XL()
-                        .foregroundStyle(.whiteMain)
+                    HStack(spacing: 0) {
+                        Text(formattedBalance)
+                        Text(" XTM")
+                    }
+                    .heading2XL()
+                    .foregroundStyle(.whiteMain)
+                    
                     HStack(spacing: 6) {
-                        Text("Available: \(availableBalance) tXTM")
-                            .body()
+                        HStack(spacing: 0) {
+                            Text(formattedAvailableBalance)
+                            Text(" XTM")
+                        }
+                        .body()
                             
                         Button(action: showAmountHelp) {
                             Image(.roundedQuestionMark)
@@ -273,6 +280,22 @@ private extension Home {
                 .body2()
         }
         .foregroundStyle(.primaryText)
+    }
+    
+    var formattedBalance: String {
+        isBalanceHidden ? "*******" : "\(totalBalance)"
+    }
+    
+    var formattedAvailableBalance: String {
+        isBalanceHidden ? "Available: *******" : "Available: \(availableBalance)"
+    }
+    
+    var syncMessage: String {
+        isSynced
+            ? "**Synced to block #\(chainTip)**"
+            : 0 < scannedHeight && 0 < chainTip
+                ? "**Syncing** \(chainTip - scannedHeight) blocks remaining"
+                : "**Syncing**"
     }
 }
 
