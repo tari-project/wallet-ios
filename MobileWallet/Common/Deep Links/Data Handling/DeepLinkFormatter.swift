@@ -40,7 +40,6 @@
 
 enum DeeplinkType: String {
     case transactionSend = "/transactions/send"
-    case baseNodesAdd = "/base_nodes/add"
     case contacts = "/contacts"
     case profile = "/profile"
     case paperWallet = "/paper_wallet"
@@ -77,7 +76,6 @@ enum DeepLinkFormatter {
     }
 
     static func deeplink<T: DeepLinkable>(model: T, networkName: String = validNetworkName) throws -> URL? {
-
         let encoder = DeepLinkEncoder()
 
         do {

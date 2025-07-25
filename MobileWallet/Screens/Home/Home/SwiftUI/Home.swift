@@ -293,9 +293,13 @@ private extension Home {
     var syncMessage: String {
         isSynced
             ? "**Synced to block #\(chainTip)**"
-            : 0 < scannedHeight && 0 < chainTip
-                ? "**Syncing** \(chainTip - scannedHeight) blocks remaining"
+            : 0 < unsyncedBlockCount
+                ? "**Syncing** \(unsyncedBlockCount) blocks remaining"
                 : "**Syncing**"
+    }
+    
+    var unsyncedBlockCount: UInt64 {
+        chainTip - min(chainTip, scannedHeight)
     }
 }
 

@@ -114,6 +114,8 @@ final class TariValidationService: CoreTariService {
         unverifiedTransactions.remove(type)
 
         guard unverifiedTransactions.isEmpty else { return }
-        status = .synced
+        Task { @MainActor in
+            status = .synced
+        }
     }
 }

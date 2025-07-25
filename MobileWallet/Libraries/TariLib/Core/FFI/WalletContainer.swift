@@ -118,10 +118,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     // MARK: - Constants
 
-    private let publicAddress = "/ip4/0.0.0.0/tcp/9838"
     private let databaseName = "tari_wallet"
-    private let discoveryTimeout: UInt64 = 20
-    private let safMessageDuration: UInt64 = 10800
 
     // MARK: - Properties
 
@@ -150,7 +147,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         $baseNodeConnectionStatus
             .sink { [weak self] in
                 switch $0 {
@@ -190,7 +186,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     }
 
     func start(seedWords: [String]?, logPath: String, passphrase: String) throws {
-
         guard !manager.isWalletRunning else { return }
 
         let walletSeedWords = try makeSeedWords(seedWords: seedWords)
@@ -199,14 +194,14 @@ final class WalletContainer: WalletInteractable, MainServiceable {
         Logger.log(message: "Log Path: \(logPath)", domain: .general, level: .info)
 
         try manager.connectWallet(
+            network: NetworkManager.shared.selectedNetwork,
             commsConfig: makeCommsConfig(controlServerAddress: controlServerAddress, torCookie: torCookie),
             logFilePath: logPath,
             seedWords: walletSeedWords,
             passphrase: passphrase,
-            networkName: NetworkManager.shared.selectedNetwork.name,
-            dnsPeer: NetworkManager.shared.selectedNetwork.dnsPeer,
             isDnsSecureOn: false,
             logVerbosity: TariSettings.shared.environment == .debug ? 11 : 4,
+            isCreatedWallet: true, // TODO: is created?
             callbacks: walletCallbacks
         )
     }
@@ -242,22 +237,8 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     private func makeCommsConfig(controlServerAddress: String, torCookie: Data) throws -> CommsConfig {
         try CommsConfig(
-            publicAddress: publicAddress,
-            transport: makeTransportConfig(controlServerAddress: controlServerAddress, torCookie: torCookie),
             databaseName: databaseName,
             databaseFolderPath: databaseDirectoryURL.path,
-            discoveryTimeoutInSecs: discoveryTimeout,
-            safMessageDurationInSec: safMessageDuration
-        )
-    }
-
-    private func makeTransportConfig(controlServerAddress: String, torCookie: Data) throws -> TransportConfig {
-        try TransportConfig(
-            controlServerAddress: controlServerAddress,
-            torPort: TariConstants.torPort,
-            torCookie: ByteVector(data: torCookie),
-            socksUsername: nil,
-            socksPassword: nil
         )
     }
 }

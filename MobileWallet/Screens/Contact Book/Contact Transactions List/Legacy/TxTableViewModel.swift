@@ -177,11 +177,13 @@ class TxTableViewModel: NSObject {
             }
             statusMessage = localized("refresh_view.final_processing_with_param", arguments: 1, requiredConfirmationCount + 1)
         case .minedUnconfirmed:
-            guard let confirmationCount = try? (transaction as? CompletedTransaction)?.confirmationCount, let requiredConfirmationCount = try? Tari.shared.wallet(.main).transactions.requiredConfirmationsCount else {
-                statusMessage = localized("refresh_view.final_processing")
-                break
-            }
-            statusMessage = localized("refresh_view.final_processing_with_param", arguments: confirmationCount + 1, requiredConfirmationCount + 1)
+            // TODO: load from payment reference?
+            break
+//            guard let confirmationCount = try? (transaction as? CompletedTransaction)?.confirmationCount, let requiredConfirmationCount = try? Tari.mainWallet.transactions.requiredConfirmationsCount else {
+//                statusMessage = localized("refresh_view.final_processing")
+//                break
+//            }
+//            statusMessage = localized("refresh_view.final_processing_with_param", arguments: confirmationCount + 1, requiredConfirmationCount + 1)
         default:
             break
         }

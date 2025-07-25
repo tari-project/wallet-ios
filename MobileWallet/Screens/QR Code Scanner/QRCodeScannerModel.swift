@@ -226,7 +226,6 @@ final class QRCodeScannerModel {
     }
 
     private func handle(unexpectedDeeplink: DeepLinkable, scanResult: VideoCaptureManager.ScanResult) {
-
         if unexpectedDeeplink.type == .paperWallet {
             self.scannedData = scanResult
             useScannedQRCode()
@@ -254,8 +253,6 @@ final class QRCodeScannerModel {
             let address = try TariAddress(base58: deeplink.receiverAddress)
             let contactName = try transactionFormatter.contact(components: address.components)?.name ?? address.components.formattedCoreAddress
             return localized("qr_code_scanner.labels.actions.transaction_send", arguments: contactName)
-        case .baseNodesAdd:
-            return localized("qr_code_scanner.labels.actions.base_node_add")
         case .contacts, .profile:
             return localized("qr_code_scanner.labels.actions.contacts")
         case .paperWallet, .login:

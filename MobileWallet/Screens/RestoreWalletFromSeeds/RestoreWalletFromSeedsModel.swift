@@ -56,8 +56,6 @@ final class RestoreWalletFromSeedsModel {
         @Published fileprivate(set) var isAutocompletionAvailable: Bool = false
         @Published fileprivate(set) var autocompletionTokens: [TokenViewModel] = []
         @Published fileprivate(set) var autocompletionMessage: String?
-        @Published fileprivate(set) var customBaseNodeHex: String?
-        @Published fileprivate(set) var customBaseNodeAddress: String?
     }
 
     // MARK: - Properties
@@ -156,29 +154,12 @@ final class RestoreWalletFromSeedsModel {
         viewModel.updatedInputText = ""
     }
 
-    func updateCustomBaseNode(hex: String?, address: String?) {
-
-        let hex = hex ?? ""
-        let address = address ?? ""
-
-        switch (hex.isEmpty, address.isEmpty) {
-        case (true, true):
-            viewModel.customBaseNodeHex = nil
-            viewModel.customBaseNodeAddress = nil
-        case (true, false), (false, true):
-            viewModel.error = MessageModel(title: localized("restore_from_seed_words.error.title"), message: localized("restore_from_seed_words.form.error.message"), type: .error)
-            return
-        case (false, false):
-            handle(hex: hex, address: address)
-        }
-    }
-
     func deleteWallet() {
         recoveryManager.deleteWallet(wallet: .main)
     }
 
     private func restoreWallet(seedWords: [String]) {
-        recoveryManager.recover(wallet: .main, seedWords: seedWords, customBaseNodeHex: viewModel.customBaseNodeHex, customBaseNodeAddress: viewModel.customBaseNodeAddress)
+        recoveryManager.recover(wallet: .main, seedWords: seedWords)
     }
 
     private func fetchAvailableSeedWords() {
@@ -204,17 +185,6 @@ final class RestoreWalletFromSeedsModel {
 
         appendModelsBeforeEditingModel(models: models)
         viewModel.updatedInputText = lastToken
-    }
-
-    private func handle(hex: String, address: String) {
-
-        guard String.isBaseNodeAddress(hex: hex, address: address) else {
-            viewModel.error = MessageModel(title: localized("restore_from_seed_words.error.title"), message: localized("restore_from_seed_words.form.error.message"), type: .error)
-            return
-        }
-
-        viewModel.customBaseNodeHex = hex
-        viewModel.customBaseNodeAddress = address
     }
 
     // MARK: - Helpers

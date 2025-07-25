@@ -78,17 +78,6 @@ final class CompletedTransaction: Transaction {
         }
     }
 
-    var confirmationCount: UInt64 {
-        get throws {
-            var errorCode: Int32 = -1
-            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = completed_transaction_get_confirmations(pointer, errorCodePointer)
-
-            guard errorCode == 0 else { throw WalletError(code: errorCode) }
-            return result
-        }
-    }
-
     var amount: UInt64 {
         get throws {
             var errorCode: Int32 = -1

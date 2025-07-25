@@ -52,9 +52,17 @@ final class Wallet {
 
     // MARK: - Initialisers
 
-    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String,
-         dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32, callbacks: WalletCallbacks) throws {
-
+    init(
+        network: TariNetwork,
+        commsConfig: CommsConfig,
+        loggingFilePath: String,
+        seedWords: SeedWords?,
+        passphrase: String?,
+        isDnsSecureOn: Bool,
+        logVerbosity: Int32,
+        isCreatedWallet: Bool,
+        callbacks: WalletCallbacks
+    ) throws {
         let receivedTransactionCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { context, pointer in
             guard let pointer else { return }
             context?.walletCallbacks.receivedTransactionSubject.send(PendingInboundTransaction(pointer: pointer))
@@ -146,6 +154,10 @@ final class Wallet {
         let callbacksPointer = PointerHandler.rawPointer(for: callbacks)
         let isRecoveryInProgressPointer = PointerHandler.pointer(for: &isRecoveryInProgress)
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        // On recovery or normal operation this should be like 2 days.
+        // But for brand new wallets on first startup this can be set to 0, for immediate sync
+        let walletBirthdayOffset: Int32 = isCreatedWallet ? 0 : 2
 
         Logger.log(message: "Wallet created", domain: .general, level: .info)
 
@@ -159,10 +171,12 @@ final class Wallet {
             passphrase,
             nil,
             seedWords?.pointer,
-            networkName,
-            dnsPeer,
+            network.name,
+            network.dnsPeer,
             nil,
             isDnsSecureOn,
+            network.httpBaseNode,
+            walletBirthdayOffset,
             receivedTransactionCallback,
             receivedTransactionReplyCallback,
             receivedFinalizedTransactionCallback,
