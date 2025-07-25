@@ -87,7 +87,6 @@ struct TariSettings {
     var yatOrganizationKey: String?
     var yatWebServiceURL: URL?
     var yatApiURL: URL?
-    var dropboxApiKey: String?
 
     let pushNotificationServer = "https://push.tari.com"
 
@@ -145,8 +144,6 @@ struct TariSettings {
             if let yatApiRawURL = jsonResult["yatApiURL"] as? String, !yatApiRawURL.isEmpty, let url = URL(string: yatApiRawURL) {
                 self.yatApiURL = url
             }
-
-            dropboxApiKey = jsonResult["dropboxApiKey"] as? String
         } catch {
             Logger.log(message: "Could not load env vars: \(error)", domain: .general, level: .error)
         }

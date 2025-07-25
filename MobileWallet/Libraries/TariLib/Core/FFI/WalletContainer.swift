@@ -126,7 +126,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     // MARK: - Properties
 
     let tag: String
-    private let walletCallbacks: WalletCallbacks = WalletCallbacks()
+    private let walletCallbacks = WalletCallbacks()
 
     private var torCookie: Data
     private var controlServerAddress: String
@@ -259,5 +259,11 @@ final class WalletContainer: WalletInteractable, MainServiceable {
             socksUsername: nil,
             socksPassword: nil
         )
+    }
+}
+
+extension WalletInteractable {
+    func transaction(id: UInt64) -> Transaction? {
+        transactions.transaction(id: id)
     }
 }

@@ -42,7 +42,7 @@ import SwiftUI
 
 struct TransactionDetails: View {
     @Environment(\.dismiss) var dismiss
-    @State var latestTransaction: Transaction?
+    @State var latestTransaction: (any Transaction)?
     @State var title: String?
     @State var amount: String?
     @State var addressComponents: TariAddressComponents?
@@ -55,41 +55,40 @@ struct TransactionDetails: View {
     @State var isPresentingEditName = false
     @State var isPresentingPaymentReferenceInfo = false
     
-    let initialTransaction: Transaction
+    let initialTransaction: any Transaction
     
-    init(_ transaction: Transaction) {
+    init(_ transaction: any Transaction) {
         initialTransaction = transaction
     }
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                items.padding()
-            }
-            .safeAreaInset(edge: .bottom) {
-                CopyRawDetailsButton {
-                    copyRawDetails()
-                }
-                .padding(.bottom)
-            }
-            .navigationTitle(title ?? "")
-            .navigationBarTitleDisplayMode(.inline)
-            .sceneBackground(.primaryBackground)
-            .toolbar {
-                toolbarBackItem { dismiss() }
-            }
-            .sheet(isPresented: $isPresentingEditName) {
-                if let address = try? transaction.address {
-                    EditContactNameSheet(address: address) {
-                        contact = $0
-                    }
-                }
-            }
-            .sheet(isPresented: $isPresentingPaymentReferenceInfo) {
-                PaymentReferenceInfoSheet()
-            }
-            .onAppear { load() }
+        ScrollView {
+            items.padding()
         }
+        .safeAreaInset(edge: .bottom) {
+            CopyRawDetailsButton {
+                copyRawDetails()
+            }
+            .padding(.bottom)
+        }
+        .navigationTitle(title ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+        .sceneBackground(.primaryBackground)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            toolbarBackItem { dismiss() }
+        }
+        .sheet(isPresented: $isPresentingEditName) {
+            if let address = try? transaction.address {
+                EditContactNameSheet(address: address) {
+                    contact = $0
+                }
+            }
+        }
+        .sheet(isPresented: $isPresentingPaymentReferenceInfo) {
+            PaymentReferenceInfoSheet()
+        }
+        .onAppear { load() }
         .onReceive(Tari.mainWallet.connectionCallbacks.$blockHeight) {
             walletBlockHeight = $0
             loadPaymentReference()

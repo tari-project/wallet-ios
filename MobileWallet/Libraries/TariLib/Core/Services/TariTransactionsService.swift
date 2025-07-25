@@ -110,7 +110,7 @@ final class TariTransactionsService: CoreTariService {
 
     // MARK: - Setups
 
-    private func fetchData() {
+    func fetchData() {
         do {
             let completed = try completedTransactions
             let cancelled = try cancelledTransactions
@@ -217,6 +217,10 @@ final class TariTransactionsService: CoreTariService {
     
     func paymentReference(transaction: Transaction) throws -> PaymentReference? {
         try walletManager.paymentReference(transaction: transaction)
+    }
+    
+    func transaction(id: UInt64) -> Transaction? {
+        all.first { (try? $0.identifier) == id }
     }
 }
 

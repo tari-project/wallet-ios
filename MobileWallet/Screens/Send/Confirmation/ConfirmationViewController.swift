@@ -101,19 +101,17 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
             guard let self = self else { return }
             let addressComponents = self.paymentInfo.addressComponents
             self.mainView.isEmojiFormat = isEmojiFormat
-            if isEmojiFormat {
-                self.mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
-            } else {
-                self.mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
-            }
+            self.mainView.addressText = isEmojiFormat
+                ? addressComponents.fullEmoji.shortenedMiddle(to: 10)
+                : addressComponents.fullRaw.shortenedMiddle(to: 10)
         }
 
-        mainView.onSendButonTap = {
-            self.continueButtonTapped()
+        mainView.onSendButonTap = { [weak self] in
+            self?.continueButtonTapped()
         }
 
-        mainView.onCancelButonTap = {
-            self.dismiss(animated: true, completion: nil)
+        mainView.onCancelButonTap = { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
         }
 
         navigationBar.isSeparatorVisible = false
@@ -122,7 +120,10 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
         navigationBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-
+        
+        navigationBar.onBackButtonAction = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
         navigationBar.addSubview(addressView)
 
         addressView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor).isActive = true
@@ -135,7 +136,7 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
 
             var fee: UInt64 = 0
             do {
-                fee = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount.rawValue)
+                fee = try Tari.mainWallet.fees.estimateFee(amount: amount.rawValue)
             } catch {
 
             }
@@ -155,14 +156,12 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
         mainView.isEmojiFormat = true
         mainView.recipientView.isAddressCell = true
         mainView.recipientView.onAddressFormatToggle = { [weak self] isEmojiFormat in
-            guard let self = self else { return }
+            guard let self else { return }
             let addressComponents = self.paymentInfo.addressComponents
             self.mainView.isEmojiFormat = isEmojiFormat
-            if isEmojiFormat {
-                self.mainView.addressText = addressComponents.fullEmoji.shortenedMiddle(to: 10)
-            } else {
-                self.mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
-            }
+            self.mainView.addressText = isEmojiFormat
+                ? addressComponents.fullEmoji.shortenedMiddle(to: 10)
+                : addressComponents.fullRaw.shortenedMiddle(to: 10)
         }
     }
 

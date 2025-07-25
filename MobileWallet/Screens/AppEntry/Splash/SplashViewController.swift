@@ -185,7 +185,7 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         }
     }
 
-    private func moveToNextScreen(state: AppRouter.WalletState) {
+    private func moveToNextScreen(state: WalletState) {
         switch TariSettings.shared.walletSettings.configurationState {
         case .notConfigured:
             moveToHomeScreen(startFromLocalAuth: false, state: state)
@@ -205,7 +205,7 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         AppRouter.transitionToHomeScreen(state: .current)
     }
 
-    private func showAuthenticationWithContinueOption(state: AppRouter.WalletState) {
+    private func showAuthenticationWithContinueOption(state: WalletState) {
         // Skip auth on simulator, quicker for development
         guard !AppValues.general.isSimulator else {
             successAuth()
@@ -230,7 +230,7 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         )
     }
 
-    private func showContinueButton(state: AppRouter.WalletState) {
+    private func showContinueButton(state: WalletState) {
         guard !continueButtonVisible else { return }
         continueButtonVisible = true
 
@@ -267,7 +267,7 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         ])
     }
 
-    private func showAuthenticationAgain(state: AppRouter.WalletState) {
+    private func showAuthenticationAgain(state: WalletState) {
         // Show authentication again when Continue button is tapped
         localAuth.authenticateUserWithFailureHandling(
             onSuccess: { [weak self] in
@@ -281,7 +281,7 @@ final class SplashViewController: UIViewController, OverlayPresentable {
         )
     }
 
-    private func moveToHomeScreen(startFromLocalAuth: Bool, state: AppRouter.WalletState) {
+    private func moveToHomeScreen(startFromLocalAuth: Bool, state: WalletState) {
         // Remove the continue button if it exists
         continueButton?.removeFromSuperview()
         continueButton = nil

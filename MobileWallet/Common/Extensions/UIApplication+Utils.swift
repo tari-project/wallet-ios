@@ -41,12 +41,7 @@
 import UIKit
 
 extension UIApplication {
-
     var firstWindow: UIWindow? { windows.first }
-
-    var menuTabBarController: MenuTabBarController? {
-        findViewController(kindOf: MenuTabBarController.self)
-    }
 
     var topController: UIViewController? {
         guard var topController = firstWindow?.rootViewController else { return nil }
@@ -63,17 +58,5 @@ extension UIApplication {
     private var windows: [UIWindow] {
         guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return [] }
         return scene.windows
-    }
-
-    private func findViewController<T: UIViewController>(kindOf: T.Type? = nil) -> T? {
-        guard let window = firstWindow else { return nil }
-        if let vc = window.rootViewController as? T {
-            return vc
-        } else if let vc = window.rootViewController?.presentedViewController as? T {
-            return vc
-        } else if let vc = window.rootViewController?.children {
-            return vc.lazy.compactMap { $0 as? T }.first
-        }
-        return nil
     }
 }

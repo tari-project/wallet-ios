@@ -49,4 +49,12 @@ extension View {
             }
         }
     }
+    
+    func toolbarTitle(_ title: String) -> some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            Text(title)
+                .headingLarge()
+                .foregroundStyle(.primaryText)
+        }
+    }
 }

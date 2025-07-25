@@ -73,15 +73,6 @@ final class WalletSettingsManager {
         }
     }
 
-    var dropboxBackupStatus: WalletSettings.BackupStatus {
-        get { settings.dropboxBackupStatus }
-        set {
-            var settings = settings
-            settings.dropboxBackupStatus = newValue
-            update(settings: settings)
-        }
-    }
-
     var hasVerifiedSeedPhrase: Bool {
         get { settings.hasVerifiedSeedPhrase }
         set {
@@ -114,7 +105,6 @@ final class WalletSettingsManager {
             networkName: networkName,
             configurationState: .notConfigured,
             iCloudDocsBackupStatus: .disabled,
-            dropboxBackupStatus: .disabled,
             hasVerifiedSeedPhrase: false,
             delayedWalletSecurityStagesTimestamps: [:],
             yat: nil

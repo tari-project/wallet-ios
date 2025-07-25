@@ -51,7 +51,6 @@ final class NavigationBar: DynamicThemeView {
     }
 
     struct ButtonModel {
-
         let image: UIImage?
         let title: String?
         let callback: (() -> Void)?
@@ -258,11 +257,10 @@ final class NavigationBar: DynamicThemeView {
     // MARK: - Actions
 
     private func handleBackButtonAction() {
-
         guard backButtonType != .none else { return }
 
-        guard onBackButtonAction == nil else {
-            onBackButtonAction?()
+        if let onBackButtonAction {
+            onBackButtonAction()
             return
         }
 
@@ -272,7 +270,6 @@ final class NavigationBar: DynamicThemeView {
             topController?.dismiss(animated: true)
             return
         }
-
         guard navigationController.viewControllers.first == navigationController.topViewController else {
             navigationController.popViewController(animated: true)
             return

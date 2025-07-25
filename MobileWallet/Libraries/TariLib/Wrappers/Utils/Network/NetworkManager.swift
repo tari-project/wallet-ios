@@ -40,7 +40,7 @@
 
 import Combine
 
-final class NetworkManager {
+final class NetworkManager: ObservableObject {
 
     enum InternalError: Error {
         case noBaseNode
@@ -50,11 +50,11 @@ final class NetworkManager {
 
     static let shared = NetworkManager()
     public static var defaultNetwork: TariNetwork {
-        return .mainnet
+        .mainnet
 //        #if MAINNET
-//            return .mainnet
+//            .mainnet
 //        #else
-//            return .nextnet
+//            .nextnet
 //        #endif
     }
 

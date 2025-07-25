@@ -49,20 +49,14 @@ final class TransactionFeesManager {
 
     enum Status {
         case calculating
-        case data(FeesData)
+        case data(FeeData)
         case dataUnavailable
     }
 
-    struct FeeOptions {
-        let slow: MicroTari
-        let medium: MicroTari
-        let fast: MicroTari
-    }
-
-    struct FeesData {
+    struct FeeData {
         let networkTraffic: NetworkTraffic
-        let feesPerGram: FeeOptions
-        let fees: FeeOptions
+        let feePerGram: MicroTari
+        let fee: MicroTari
     }
 
     enum InternalError: Error {
@@ -83,9 +77,9 @@ final class TransactionFeesManager {
     @Published private(set) var feesStatus: Status = .calculating
     @Published private(set) var lastError: Error?
 
-    private(set) var feesData: FeesData?
+    private(set) var feeData: FeeData?
     private var networkTraffic: NetworkTraffic?
-    private var feesPerGram: FeeOptions?
+    private var feePerGram: MicroTari?
 
     // MARK: - Initialisers
 
@@ -96,16 +90,13 @@ final class TransactionFeesManager {
     // MARK: - Actions
 
     private func updateData() {
-
         fetchTrafficAndFeesPerGram { [weak self] result in
-
-            guard let self = self else { return }
-
+            guard let self else { return }
             switch result {
-            case let .success((networkTraffic, feesPerGram)):
+            case let .success((networkTraffic, feePerGram)):
                 self.networkTraffic = networkTraffic
-                self.feesPerGram = feesPerGram
-                self.updateFees(networkTraffic: networkTraffic, feesPerGram: feesPerGram)
+                self.feePerGram = feePerGram
+                self.updateFee(networkTraffic: networkTraffic, feePerGram: feePerGram)
             case let .failure(error):
                 self.lastError = error
                 self.feesStatus = .dataUnavailable
@@ -113,13 +104,12 @@ final class TransactionFeesManager {
         }
     }
 
-    private func updateFees(networkTraffic: NetworkTraffic, feesPerGram: FeeOptions) {
-
+    private func updateFee(networkTraffic: NetworkTraffic, feePerGram: MicroTari) {
         do {
-            let fees = try calculateFees(amount: amount, feesPerGram: feesPerGram)
-            let feesData = FeesData(networkTraffic: networkTraffic, feesPerGram: feesPerGram, fees: fees)
-            self.feesData = feesData
-            feesStatus = .data(feesData)
+            let fee = try calculateFee(amount: amount, feePerGram: feePerGram)
+            let feeData = FeeData(networkTraffic: networkTraffic, feePerGram: feePerGram, fee: fee)
+            self.feeData = feeData
+            feesStatus = .data(feeData)
         } catch {
             lastError = error
             self.feesStatus = .dataUnavailable
@@ -127,23 +117,21 @@ final class TransactionFeesManager {
     }
 
     private func handleNewAmount() {
-        guard let networkTraffic = networkTraffic, let feesPerGram = feesPerGram else {
+        guard let networkTraffic, let feePerGram else {
             updateData()
             return
         }
-        updateFees(networkTraffic: networkTraffic, feesPerGram: feesPerGram)
+        updateFee(networkTraffic: networkTraffic, feePerGram: feePerGram)
     }
 
-    private func fetchTrafficAndFeesPerGram(result: @escaping (Result<(NetworkTraffic, FeeOptions), Error>) -> Void) {
-
+    private func fetchTrafficAndFeesPerGram(result: @escaping (Result<(NetworkTraffic, MicroTari), Error>) -> Void) {
         DispatchQueue.global().async { [weak self] in
-
-            guard let self = self else { return }
+            guard let self else { return }
 
             let dispatchGroup = DispatchGroup()
             dispatchGroup.enter()
 
-            var response: (NetworkTraffic, FeeOptions)?
+            var response: (NetworkTraffic, MicroTari)?
 
             DispatchQueue.global().async {
                 response = try? self.calculateTrafficAndFeesPerGram()
@@ -152,58 +140,31 @@ final class TransactionFeesManager {
 
             _ = dispatchGroup.wait(timeout: .now() + self.timeout)
 
-            let finalResponse = response ?? (.unknown, FeeOptions(slow: TariConstants.defaultFeePerGram, medium: TariConstants.defaultFeePerGram, fast: TariConstants.defaultFeePerGram))
+            let finalResponse = response ?? (.unknown, TariConstants.defaultFeePerGram)
             result(.success(finalResponse))
         }
     }
 
-    private func calculateTrafficAndFeesPerGram() throws -> (NetworkTraffic, FeeOptions) {
-
-        let stats = try Tari.shared.wallet(.main).fees.feePerGramStats(count: 3)
+    private func calculateTrafficAndFeesPerGram() throws -> (NetworkTraffic, MicroTari) {
+        let stats = try Tari.mainWallet.fees.feePerGramStats(count: 3)
         let blocksCount = try stats.count
-        let elementsCount = min(blocksCount, 3)
-        let elements = try (0..<elementsCount).map { try stats.element(at: $0) }
+        let stat = try stats.element(at: 0)
+        let feePerGram = try stats.minFeePerGram(feeParGramStatPointer: stat)
 
-        let traffic: NetworkTraffic
-        let slowOption: UInt64
-        let mediumOption: UInt64
-        let fastOption: UInt64
-
-        switch blocksCount {
-        case 1:
-            traffic = .low
-            slowOption = try stats.minFeePerGram(feeParGramStatPointer: elements[0])
-            mediumOption = try stats.avgFeePerGram(feeParGramStatPointer: elements[0])
-            fastOption = try stats.maxFeePerGram(feeParGramStatPointer: elements[0])
-        case 2:
-            traffic = .medium
-            slowOption = try stats.avgFeePerGram(feeParGramStatPointer: elements[1])
-            mediumOption = try stats.minFeePerGram(feeParGramStatPointer: elements[0])
-            fastOption = try stats.maxFeePerGram(feeParGramStatPointer: elements[0])
-        case 3...UInt32.max:
-            traffic = .high
-            slowOption = try stats.avgFeePerGram(feeParGramStatPointer: elements[2])
-            mediumOption = try stats.avgFeePerGram(feeParGramStatPointer: elements[1])
-            fastOption = try stats.maxFeePerGram(feeParGramStatPointer: elements[0])
-        default:
-            throw InternalError.unexpectedBlockCount
+        let traffic: NetworkTraffic = switch blocksCount {
+        case 1: .low
+        case 2: .medium
+        case 3...UInt32.max: .high
+        default: throw InternalError.unexpectedBlockCount
         }
-
-        let feesPerGram = FeeOptions(slow: MicroTari(slowOption), medium: MicroTari(mediumOption), fast: MicroTari(fastOption))
-
-        return (traffic, feesPerGram)
+        return (traffic, MicroTari(max(1, feePerGram)))
     }
 
-    private func calculateFees(amount: MicroTari, feesPerGram: FeeOptions) throws -> FeeOptions {
-
+    private func calculateFee(amount: MicroTari, feePerGram: MicroTari) throws -> MicroTari {
         let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
         let maxAmountRaw = totalBalance > rawMaxAmountBuffer ? totalBalance - rawMaxAmountBuffer : 0
         let amount = min(amount.rawValue, maxAmountRaw)
-
-        let slowOption = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount, feePerGram: feesPerGram.slow.rawValue)
-        let mediumOption = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount, feePerGram: feesPerGram.medium.rawValue)
-        let fastOption = try Tari.shared.wallet(.main).fees.estimateFee(amount: amount, feePerGram: feesPerGram.fast.rawValue)
-
-        return FeeOptions(slow: MicroTari(slowOption), medium: MicroTari(mediumOption), fast: MicroTari(fastOption))
+        let option = try Tari.mainWallet.fees.estimateFee(amount: amount, feePerGram: feePerGram.rawValue)
+        return MicroTari(option)
     }
 }

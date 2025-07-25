@@ -82,6 +82,11 @@ extension SettingsParentViewController {
         setupNavigationBarSeparator()
     }
 
-    @objc func setupNavigationBar() {}
+    @objc func setupNavigationBar() {
+        navigationBar.onBackButtonAction = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+    }
+    
     @objc func setupNavigationBarSeparator() {}
 }

@@ -48,7 +48,6 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
     private let model: BackupWalletSettingsModel
     private let seedWordsItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.with_recovery_phrase"))
     private let iCloudItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.icloud_backups"), hasSwitch: true)
-    private let dropboxItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.dropbox_backups"), hasSwitch: true)
     private let passwordItem = SystemMenuTableViewCellItem(title: "")
     private let backupNowItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.backup_now"))
     private let onboardingItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.onboarding"))
@@ -73,7 +72,6 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
-        BackupManager.shared.dropboxPresentationController = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -100,18 +98,8 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
             .sink { [unowned self] in self.update(item: self.iCloudItem, backupTimestamp: $0) }
             .store(in: &cancellables)
 
-        model.$dropboxBackupState
-            .receive(on: DispatchQueue.main)
-            .sink { [unowned self] in self.update(switchItem: self.dropboxItem, backupState: $0) }
-            .store(in: &cancellables)
-
-        model.$dropboxLastBackupTime
-            .receive(on: DispatchQueue.main)
-            .sink { [unowned self] in self.update(item: self.dropboxItem, backupTimestamp: $0) }
-            .store(in: &cancellables)
-
-        Publishers.CombineLatest4(model.$iCloudBackupState, model.$dropboxBackupState, model.$isBackupSecuredByPassword, model.$isBackupOutOfSync)
-            .sink { [weak self] in self?.updateListItems(isPasswordItemVisible: $0.isOn || $1.isOn, isBackupSecuredByPassword: $2, isBackupNowItemVisible: $3) }
+        Publishers.CombineLatest3(model.$iCloudBackupState, model.$isBackupSecuredByPassword, model.$isBackupOutOfSync)
+            .sink { [weak self] in self?.updateListItems(isPasswordItemVisible: $0.isOn, isBackupSecuredByPassword: $1, isBackupNowItemVisible: $2) }
             .store(in: &cancellables)
 
         iCloudItem.$isSwitchIsOn.eraseToAnyPublisher()
@@ -119,13 +107,7 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
             .sink { [weak self] in self?.handleICloudSwitch(isOn: $0) }
             .store(in: &cancellables)
 
-        dropboxItem.$isSwitchIsOn
-            .dropFirst()
-            .sink { [weak self] in self?.model.update(isDropboxBackupOn: $0) }
-            .store(in: &cancellables)
-
         mainView.onSelectRow = { [weak self] indexPath in
-
             guard let self else { return }
 
             let item = self.items[indexPath.row]
