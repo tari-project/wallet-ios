@@ -231,10 +231,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         navigationController?.pushViewController(SelectNetworkViewController(), animated: true)
     }
 
-    private func onSelectBaseNodeAction() {
-        navigationController?.pushViewController(SelectBaseNodeViewController(), animated: true)
-    }
-
     private func onDeleteWalletAction() {
         let deleteWalletViewController = DeleteWalletViewController()
         navigationController?.pushViewController(deleteWalletViewController, animated: true)

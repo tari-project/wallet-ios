@@ -46,14 +46,13 @@ final class CommsConfig {
 
     // MARK: - Initialisers
 
-    init(publicAddress: String, transport: TransportConfig, databaseName: String, databaseFolderPath: String, discoveryTimeoutInSecs: UInt64, safMessageDurationInSec: UInt64) throws {
-
+    init(databaseName: String, databaseFolderPath: String) throws {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = comms_config_create(publicAddress, transport.pointer, databaseName, databaseFolderPath, discoveryTimeoutInSecs, (safMessageDurationInSec != 0), errorCodePointer)
+        let result = comms_config_create(databaseName, databaseFolderPath, errorCodePointer)
 
-        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         pointer = result
     }
 

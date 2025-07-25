@@ -256,7 +256,7 @@ final class HomeViewController: SecureViewController<HomeView> {
             })
         }
 
-        overlayViewController.onStartMiningButtonTap = { [weak self] in
+        overlayViewController.onStartMiningButtonTap = {
             overlayViewController.dismiss(animated: true)
             if let url = URL(string: "https://tari.com/") {
                 UIApplication.shared.open(url)
@@ -280,11 +280,6 @@ final class HomeViewController: SecureViewController<HomeView> {
 
     private func showQRCodeScanner() {
         AppRouter.presentQrCodeScanner(expectedDataTypes: [], disabledDataTypes: [], onExpectedDataScan: nil)
-    }
-
-    private func moveToTransactionList() {
-        let controller = TransactionHistoryConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func moveToTransactionDetails(transaction: Transaction) {

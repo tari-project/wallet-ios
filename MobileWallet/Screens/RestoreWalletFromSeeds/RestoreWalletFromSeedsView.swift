@@ -57,27 +57,11 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
 
     @TariView var tokenView = TokenCollectionView()
 
-    @TariView private(set) var selectBaseNodeButton: TextButton = {
-        let view = TextButton()
-        view.style = .secondary
-        view.isHidden = !TariSettings.showDisabledFeatures
-        return view
-    }()
-
     @TariView private(set) var submitButton: StylisedButton = {
         let view = StylisedButton(withStyle: .primary, withSize: .large)
         view.setTitle(localized("restore_from_seed_words.button.submit"), for: .normal)
         return view
     }()
-
-    // MARK: - Properties
-
-    var isCustomBaseNodeSet: Bool = false {
-        didSet {
-            let title = isCustomBaseNodeSet ? localized("restore_from_seed_words.button.select_base_node.edit") : localized("restore_from_seed_words.button.select_base_node.select")
-            selectBaseNodeButton.setTitle(title, for: .normal)
-        }
-    }
 
     // MARK: - Initializers
 
@@ -98,9 +82,8 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
     }
 
     private func setupConstraints() {
-
         addSubview(mainContentView)
-        [descriptionLabel, tokenView, selectBaseNodeButton, submitButton].forEach(mainContentView.contentView.addSubview)
+        [descriptionLabel, tokenView, submitButton].forEach(mainContentView.contentView.addSubview)
 
         let constraints = [
             mainContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
@@ -114,10 +97,7 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
             tokenView.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
             tokenView.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
             tokenView.heightAnchor.constraint(equalToConstant: 272.0),
-            selectBaseNodeButton.topAnchor.constraint(greaterThanOrEqualTo: tokenView.bottomAnchor, constant: 20.0),
-            selectBaseNodeButton.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
-            selectBaseNodeButton.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
-            submitButton.topAnchor.constraint(equalTo: selectBaseNodeButton.bottomAnchor, constant: 20.0),
+            submitButton.topAnchor.constraint(equalTo: tokenView.bottomAnchor, constant: 20.0),
             submitButton.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
             submitButton.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
             submitButton.bottomAnchor.constraint(equalTo: mainContentView.contentView.bottomAnchor, constant: -28.0)

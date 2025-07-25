@@ -182,7 +182,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func onPaperWalletRestoreAction() {
-        let disabledDataTypes: [QRCodeScannerModel.DataType] = [.deeplink(.baseNodesAdd), .deeplink(.contacts), .deeplink(.profile), .deeplink(.transactionSend), .torBridges]
+        let disabledDataTypes: [QRCodeScannerModel.DataType] = [.deeplink(.contacts), .deeplink(.profile), .deeplink(.transactionSend), .torBridges]
         AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.paperWallet)], disabledDataTypes: disabledDataTypes) { [weak self] in
             self?.handle(qrCodeData: $0)
         }
@@ -190,7 +190,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
 
     private func authenticateUserAndRestoreWallet(from service: BackupManager.Service) {
         localAuth.authenticateUser(reason: .userVerification) { [weak self] in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            Task(after: 1) { @MainActor in
                 self?.restoreWallet(from: service, password: nil)
             }
         }

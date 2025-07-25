@@ -127,19 +127,6 @@ final class NetworkManagerTests: XCTestCase {
         XCTAssertEqual(networkSettings.selectedBaseNode, baseNode)
     }
 
-    func testCustomBaseNodesUpdate() {
-
-        let baseNode = BaseNode(name: "Test Name", hex: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43", address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
-
-        networkManager.customBaseNodes = [baseNode]
-
-        let customBaseNodes = GroupUserDefaults.networksSettings!.first!.customBaseNodes
-
-        XCTAssertEqual(customBaseNodes.count, 1)
-        XCTAssertEqual(customBaseNodes, networkManager.customBaseNodes)
-        XCTAssertEqual(customBaseNodes.first!, baseNode)
-    }
-
     // MARK: - Helpers
 
     private func initialiseNetworkSettings() {

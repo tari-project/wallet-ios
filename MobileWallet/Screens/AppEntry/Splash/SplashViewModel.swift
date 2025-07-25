@@ -147,7 +147,7 @@ final class SplashViewModel {
 
     func recoverWalletIfNeeded() -> Bool {
         guard let paperWalletRecoveryData else { return false }
-        recoveryManager.recover(wallet: .main, cipher: paperWalletRecoveryData.cipher, passphrase: paperWalletRecoveryData.passphrase, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        recoveryManager.recover(wallet: .main, cipher: paperWalletRecoveryData.cipher, passphrase: paperWalletRecoveryData.passphrase)
         isRecoveryInProgress = true
         return isRecoveryInProgress
     }

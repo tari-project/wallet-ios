@@ -21,23 +21,11 @@
 
 /* Transaction detail view */
 "tx_detail.payment_cancelled" = "Payment cancelled";
-"tx_detail.payment_in_progress" = "Payment In Progress";
 "tx_detail.payment_received" = "Payment Received";
 "tx_detail.payment_sent" = "Payment Sent";
-
 "tx_detail.add_contact_name" = "Add Contact Name";
-"tx_detail.contact_name" = "Contact Name";
 "tx_detail.contect_name_placeholder" = "Create a Contact Name";
 "tx_detail.edit" = "Edit";
-"tx_detail.from" = "From";
-"tx_detail.to" = "To";
-"tx_detail.note" = "Note";
-"tx_detail.error.contact.title" = "Contact error";
-"tx_detail.error.contact.description" = "Missing public key from transaction.";
-"tx_detail.error.load_tx.title" = "Transaction error";
-"tx_detail.error.load_tx.description" = "Failed to load transaction details";
-"tx_detail.error.save_contact.description" = "Failed to save contact details.";
-"tx_detail.block_explorer.title" = "Information";
 "tx_detail.block_explorer.description" = "View on the block explorer";
 
 /* Transaction detail tx cancellation */
@@ -76,7 +64,6 @@
 
 "transaction.one_sided_payment.inbound_user_placeholder" = "Someone";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
-"transaction.one_sided_payment.note.recovered" = "You recovered some funds";
 "transaction.coinbase.title.inbound" = "Mining Reward!";
 "transaction.coinbase.title.outbound.part.1.bold" = "You";
 "transaction.coinbase.title.outbound.part.2" = "paid the";
@@ -96,13 +83,6 @@
 "authentication.action.open_settings" = "Open settings";
 "authentication.try_again" = "Try again";
 "authentication.proceed" = "Proceed";
-
-/* Transactions history list */
-
-"transaction_history.title" = "Transaction History";
-"transaction_history.section.pending" = "Pending Transactions";
-"transaction_history.section.completed" = "Completed Transactions";
-"transaction_history.search_field.placeholder" = "Scan QR code or Enter Address";
 
 /* Home */
 
@@ -326,18 +306,10 @@
 "store_modal.cancel" = "I'll check it out later";
 
 /* Refresh view */
-"refresh_view.checking" = "Checking for Updates";
 "refresh_view.final_processing" = "Completing final processing…";
 "refresh_view.final_processing_with_param" = "Completing final processing (%d of %d)";
-"refresh_view.receiving_new_txs" = "Receiving new transactions";
-"refresh_view.completing_txs" = "Completing your transactions";
-"refresh_view.updating_txs" = "Updating your transactions";
 "refresh_view.waiting_for_recipient" = "Waiting for recipient to come online";
 "refresh_view.waiting_for_sender" = "Waiting for sender to complete transaction";
-"refresh_view.success" = "You are up to date!";
-"refresh_view.backup.scheduled" = "Backup scheduled";
-"refresh_view.backup.inProgress" = "Backing up your wallet...";
-"refresh_view.backup.success" = "Backup successful!";
 
 /* VerifyPhrase view */
 "verify_phrase.complete" = "Complete Verification";
@@ -594,7 +566,6 @@
 "select_network.table_view.section_header.description" = "Please select the network to which you want to connect.";
 
 /* Select Base Node View */
-"select_base_node.title" = "Select Base Node";
 "select_base_node.cell.delete" = "Delete";
 
 /* Add Base Node View */
@@ -651,16 +622,6 @@ Please keep the app open while the wallet syncs.";
 "request.deeplink.message" = "Hi! Please send me %@ Tari(s) using this link:";
 "request.buttons.generate_qr" = "Generate QR Code";
 "request.qr_code.buttons.share" = "Share";
-
-/* Add base node dialog */
-
-"add_base_node_overlay.label.title" = "Add custom base node";
-"add_base_node_overlay.label.subtitle" = "The QR code is a deep link request to assign your wallet to use this base node.";
-"add_base_node_overlay.label.name" = "Name:";
-"add_base_node_overlay.label.peer" = "Peer:";
-"add_base_node_overlay.button.show_details" = "Show details";
-"add_base_node_overlay.button.hide_details" = "Hide details";
-"add_base_node_overlay.button.confirm" = "Connect";
 
 /* About */
 
@@ -749,15 +710,6 @@ Please keep the app open while the wallet syncs.";
 "error.wallet.429" = "Unable to recover your wallet from provided seed words. Please check the list of entered seed words and try again.";
 "error.wallet.430" = "The provided seed words are not compatible with the current wallet version. Please get in touch with support for more details.";
 "error.wallet.702.recovery" = "Looks like your backup isn't compatible with this wallet version. Consider making a new one!";
-
-"error.tx_rejection.0" = "The transaction failed for an unknown reason.";
-"error.tx_rejection.1" = "The transaction was canceled by the sender.";
-"error.tx_rejection.2" = "The transaction failed due to timeout.";
-"error.tx_rejection.3" = "The transaction was cancelled as it is spending funds that have already been spent.";
-"error.tx_rejection.4" = "The transaction was cancelled due to some funds being spent no longer being present in the chain.";
-"error.tx_rejection.5" = "This transaction was cancelled due to the funds not having reached their time-lock period yet.";
-"error.tx_rejection.6" = "The transaction failed to the invalid input data. This situation shouldn't happen. Please send a bug report or contact us directly.";
-"error.tx_rejection.7" = "The coinbase was abandoned.";
 
 "error.contact_book.no_name.title" = "Name can’t be empty";
 "error.contact_book.no_name.description" = "A contact without a name? That won’t work. Please add one to keep things running smoothly.";

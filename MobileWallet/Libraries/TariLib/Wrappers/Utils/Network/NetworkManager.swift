@@ -62,17 +62,12 @@ final class NetworkManager: ObservableObject {
 
     var defaultBaseNodes: [BaseNode] { (try? Tari.shared.wallet(.main).connection.defaultBaseNodePeers()) ?? [] }
 
-    var customBaseNodes: [BaseNode] {
-        get { settings.customBaseNodes }
-        set { update(settings: settings.update(customBaseNodes: newValue)) }
-    }
-
     var blockHeight: UInt64 {
         get { settings.blockHeight }
         set { update(settings: settings.update(blockHeight: newValue)) }
     }
 
-    var allBaseNodes: [BaseNode] { defaultBaseNodes + customBaseNodes }
+    var allBaseNodes: [BaseNode] { defaultBaseNodes }
 
     var currencySymbol: String { selectedNetwork.currencySymbol }
 
@@ -80,7 +75,7 @@ final class NetworkManager: ObservableObject {
         let allSettings = GroupUserDefaults.networksSettings ?? []
 
         guard let existingSettings = allSettings.first(where: { $0.name == selectedNetwork.name }) else {
-            let newSettings = NetworkSettings(name: selectedNetwork.name, customBaseNodes: [], blockHeight: 0)
+            let newSettings = NetworkSettings(name: selectedNetwork.name, blockHeight: 0)
             update(settings: newSettings)
             return newSettings
         }

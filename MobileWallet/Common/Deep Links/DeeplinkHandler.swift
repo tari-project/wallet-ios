@@ -54,8 +54,6 @@ enum DeeplinkHandler {
         switch type {
         case .transactionSend:
             return try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: deeplink)
-        case .baseNodesAdd:
-            return try DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: deeplink)
         case .contacts:
             return try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: deeplink)
         case .profile:
@@ -92,8 +90,6 @@ enum DeeplinkHandler {
         }
 
         switch deeplink.type {
-        case .baseNodesAdd:
-            try handle(baseNodesAddDeeplink: deeplink)
         case .contacts:
             try handle(contactsDeepLink: deeplink, actionType: actionType)
         case .profile:
@@ -105,11 +101,6 @@ enum DeeplinkHandler {
         case .login:
             handle(loginDeepLink: deeplink)
         }
-    }
-
-    private static func handle(baseNodesAddDeeplink: DeepLinkable) throws {
-        guard let deeplink = baseNodesAddDeeplink as? BaseNodesAddDeeplink else { return }
-        try DeepLinkDefaultActionsHandler.handle(baseNodesAddDeeplink: deeplink)
     }
 
     private static func handle(contactsDeepLink: DeepLinkable, actionType: DeepLinkDefaultActionsHandler.ActionType) throws {
