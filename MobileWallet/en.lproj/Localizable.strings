@@ -88,8 +88,6 @@
 
 "home.label.spendable" = "Available to spend:";
 "home.button.all_transactions" = "View all transactions";
-"home.transaction_list.placeholder.title" = "You don't have any activity yet.\n";
-"home.transaction_list.placeholder.body" = "Once you receive some %@, you'll see it here.";
 "home.pop_up.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.pop_up.amount_help.message" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.pop_up.amount_help.buttons.open_url" = "Go to TariLabs University";

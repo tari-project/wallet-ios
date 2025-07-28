@@ -1,10 +1,10 @@
-//  HomeBackgroundView.swift
-
+//  NetworkStatus.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 04/07/2023
-	Using Swift 5.0
-	Running on macOS 13.4
+	Created by Tomas Hakel on 28.07.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,53 +38,18 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import TariCommon
+import SwiftUI
 
-final class HomeBackgroundView: UIView {
+enum NetworkStatus {
+    case connected
+    case connectedWithIssues
+    case disconnected
 
-    // MARK: - Subviews
-
-    @TariView private var topView = TariGradientView()
-    @TariView private var bottomView = WaveView()
-
-    // MARK: - Initialisers
-
-    init() {
-        super.init(frame: .zero)
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupConstraints() {
-
-        [topView, bottomView].forEach(addSubview)
-
-        let constraints = [
-            topView.topAnchor.constraint(equalTo: topAnchor),
-            topView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            topView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            topView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6),
-            bottomView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            bottomView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            bottomView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            bottomView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    // MARK: - Actions
-
-    func startAnimation() {
-        bottomView.startAnimation()
-    }
-
-    func stopAnimation() {
-        bottomView.stopAnimation()
+    var color: Color {
+        switch self {
+        case .connected: .systemGreen
+        case .connectedWithIssues: .systemYellow
+        case .disconnected: .systemRed
+        }
     }
 }
