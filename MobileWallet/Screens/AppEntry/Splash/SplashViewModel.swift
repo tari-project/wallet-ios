@@ -38,6 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 struct PaperWalletRecoveryData {
@@ -46,7 +47,6 @@ struct PaperWalletRecoveryData {
 }
 
 final class SplashViewModel {
-
     private enum InternalError: Error {
         case disconnectedFromTor
     }
@@ -216,7 +216,6 @@ final class SplashViewModel {
     }
 
     private func connectToWallet(isWalletConnected: Bool) async throws {
-
         if !isWalletConnected {
             try await Tari.shared.start(wallet: .main)
         }
@@ -226,7 +225,6 @@ final class SplashViewModel {
     }
 
     private func handle(error: Error) {
-
         status = StatusModel(status: .idle, statusRepresentation: .content)
 
         guard let error = error as? InternalError else {

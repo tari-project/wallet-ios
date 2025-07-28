@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 struct LogLineModel: Identifiable, Hashable {
     let id: UUID
     let text: String

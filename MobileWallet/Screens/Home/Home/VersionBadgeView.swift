@@ -1,3 +1,4 @@
+
 import UIKit
 import TariCommon
 
@@ -127,38 +128,26 @@ class VersionBadgeView: DynamicThemeView {
 
     func updateNetworkStatus(
         networkConnection: NetworkMonitor.Status,
-        torStatus: TorConnectionStatus,
         baseNodeStatus: BaseNodeConnectivityStatus,
         syncStatus: TariValidationService.SyncStatus
     ) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-
+        Task { @MainActor in
             // Check network connection first
-            if case .disconnected = networkConnection {
-                self.networkStatus = .disconnected
-                return
-            }
-
-            // Check Tor status
-            if case .disconnected = torStatus, case .disconnecting = torStatus {
-                self.networkStatus = .disconnected
-                return
-            }
-
-            // Check base node status
-            switch baseNodeStatus {
-            case .online:
-                // Check sync status
-                if case .synced = syncStatus {
-                    self.networkStatus = .connected
-                } else {
-                    self.networkStatus = .connectedWithIssues
+            self.networkStatus = if case .disconnected = networkConnection {
+                .disconnected
+            } else {
+                // Check base node status
+                switch baseNodeStatus {
+                case .online:
+                    // Check sync status
+                    if case .synced = syncStatus {
+                        .connected
+                    } else {
+                        .connectedWithIssues
+                    }
+                case .connecting: .connectedWithIssues
+                case .offline: .disconnected
                 }
-            case .connecting:
-                self.networkStatus = .connectedWithIssues
-            case .offline:
-                self.networkStatus = .disconnected
             }
         }
     }

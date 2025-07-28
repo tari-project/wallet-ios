@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class ICloudBackupMetadataQuery: NSMetadataQuery {
+import Foundation
 
+final class ICloudBackupMetadataQuery: NSMetadataQuery {
     init(filenamePrefix: String) {
         super.init()
         operationQueue = .main

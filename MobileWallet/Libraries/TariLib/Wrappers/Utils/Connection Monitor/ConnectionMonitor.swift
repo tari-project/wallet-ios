@@ -46,9 +46,6 @@ final class ConnectionMonitor {
     // MARK: - Properties
 
     @Published private(set) var networkConnection: NetworkMonitor.Status = .disconnected
-    @Published private(set) var torConnection: TorConnectionStatus = .disconnected
-    @Published private(set) var torBootstrapProgress: Int = 0
-    @Published private(set) var isTorBootstrapCompleted: Bool = false
     @Published private(set) var baseNodeConnection: BaseNodeConnectivityStatus = .offline
     @Published private(set) var walletScannedHeight: UInt64 = 0
     @Published private(set) var chainTip: UInt64 = 0
@@ -59,24 +56,14 @@ final class ConnectionMonitor {
 
     // MARK: - Setups
 
-    func setupPublishers(torConnectionStatus: AnyPublisher<TorConnectionStatus, Never>, torBootstrapProgress: AnyPublisher<Int, Never>, baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never>,
-                         scannedHeight: AnyPublisher<UInt64, Never>, blockHeight: AnyPublisher<UInt64, Never>, baseNodeSyncStatus: AnyPublisher<TariValidationService.SyncStatus, Never>) {
-
+    func setupPublishers(
+        baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never>,
+        scannedHeight: AnyPublisher<UInt64, Never>,
+        blockHeight: AnyPublisher<UInt64, Never>,
+        baseNodeSyncStatus: AnyPublisher<TariValidationService.SyncStatus, Never>
+    ) {
         networkMonitor.$status
             .assign(to: \.networkConnection, on: self)
-            .store(in: &cancellables)
-
-        torConnectionStatus
-            .assign(to: \.torConnection, on: self)
-            .store(in: &cancellables)
-
-        torBootstrapProgress
-            .assign(to: \.torBootstrapProgress, on: self)
-            .store(in: &cancellables)
-
-        torBootstrapProgress
-            .map { $0 >= 100 }
-            .assign(to: \.isTorBootstrapCompleted, on: self)
             .store(in: &cancellables)
 
         baseNodeConnectionStatus
@@ -98,109 +85,61 @@ final class ConnectionMonitor {
 }
 
 private extension NetworkMonitor.Status {
-
     var statusName: String {
         switch self {
-        case .disconnected:
-            return localized("connection_status.popUp.label.network_status.disconnected")
-        case .connected:
-            return localized("connection_status.popUp.label.network_status.connected")
+        case .disconnected: localized("connection_status.popUp.label.network_status.disconnected")
+        case .connected: localized("connection_status.popUp.label.network_status.connected")
         }
     }
 
     var status: StatusView.Status {
         switch self {
-        case .disconnected:
-            return .error
-        case .connected:
-            return .ok
-        }
-    }
-}
-
-private extension TorConnectionStatus {
-
-    var statusName: String {
-        switch self {
-        case .disconnected, .disconnecting:
-            return localized("connection_status.popUp.label.tor_status.disconnected")
-        case .connecting, .waitingForAuthorization, .portsOpen:
-            return localized("connection_status.popUp.label.tor_status.connecting")
-        case .connected:
-            return localized("connection_status.popUp.label.tor_status.connected")
-        }
-    }
-
-    var status: StatusView.Status {
-        switch self {
-        case .disconnected, .disconnecting:
-            return .error
-        case .connecting, .waitingForAuthorization, .portsOpen:
-            return .warning
-        case .connected:
-            return .ok
+        case .disconnected: .error
+        case .connected: .ok
         }
     }
 }
 
 private extension BaseNodeConnectivityStatus {
-
     var statusName: String {
         switch self {
-        case .offline:
-            return localized("connection_status.popUp.label.base_node_connection.disconnected")
-        case .connecting:
-            return localized("connection_status.popUp.label.base_node_connection.connecting")
-        case .online:
-            return localized("connection_status.popUp.label.base_node_connection.connected")
+        case .offline: localized("connection_status.popUp.label.base_node_connection.disconnected")
+        case .connecting: localized("connection_status.popUp.label.base_node_connection.connecting")
+        case .online: localized("connection_status.popUp.label.base_node_connection.connected")
         }
     }
 
     var status: StatusView.Status {
         switch self {
-        case .offline:
-            return .error
-        case .connecting:
-            return .warning
-        case .online:
-            return .ok
+        case .offline: .error
+        case .connecting: .warning
+        case .online: .ok
         }
     }
 }
 
 private extension TariValidationService.SyncStatus {
-
     var statusName: String {
         switch self {
-        case .idle:
-            return localized("connection_status.popUp.label.base_node_sync.idle")
-        case .syncing:
-            return localized("connection_status.popUp.label.base_node_sync.pending")
-        case .synced:
-            return localized("connection_status.popUp.label.base_node_sync.success")
-        case .failed:
-            return localized("connection_status.popUp.label.base_node_sync.failure")
+        case .idle: localized("connection_status.popUp.label.base_node_sync.idle")
+        case .syncing: localized("connection_status.popUp.label.base_node_sync.pending")
+        case .synced: localized("connection_status.popUp.label.base_node_sync.success")
+        case .failed: localized("connection_status.popUp.label.base_node_sync.failure")
         }
     }
 
     var status: StatusView.Status {
         switch self {
-        case .idle:
-            return .error
-        case .syncing:
-            return .warning
-        case .synced:
-            return .ok
-        case .failed:
-            return .error
+        case .idle: .error
+        case .syncing: .warning
+        case .synced: .ok
+        case .failed: .error
         }
     }
 }
 
 extension ConnectionMonitor {
-
     @MainActor func showDetailsPopup() {
-
         let headerSection = PopUpHeaderView()
         let contentSection = PopUpNetworkStatusContentView()
         let buttonsSection = PopUpButtonsView()
@@ -212,11 +151,6 @@ extension ConnectionMonitor {
         $networkConnection
             .receive(on: DispatchQueue.main)
             .sink { [weak contentSection] in contentSection?.updateNetworkStatus(text: $0.statusName, status: $0.status) }
-            .store(in: &cancellables)
-
-        $torConnection
-            .receive(on: DispatchQueue.main)
-            .sink { [weak contentSection] in contentSection?.updateTorStatus(text: $0.statusName, status: $0.status) }
             .store(in: &cancellables)
 
         $baseNodeConnection

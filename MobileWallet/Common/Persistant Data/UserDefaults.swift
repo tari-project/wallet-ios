@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 // MARK: - Generic User Defaults
 
 private enum UserDefaultName: String, CaseIterable {
@@ -62,28 +64,10 @@ enum GroupUserDefaults {
     @UserDefault(key: UserDefaultName.hasSyncedOnce.rawValue, suiteName: TariSettings.groupIndentifier) static var hasSyncedOnce: Bool?
 }
 
-// MARK: - Tor Manager User Defaults
-
-enum TorManagerUserDefaults {
-
-    private enum Name: String, CaseIterable {
-        case isUsingCustomBridges
-        case torBridges
-    }
-
-    @UserDefault(key: Name.isUsingCustomBridges.rawValue) static var isUsingCustomBridges: Bool?
-    @UserDefault(key: Name.torBridges.rawValue) static var torBridges: String?
-
-    static func removeAll() {
-        Name.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
-    }
-}
-
 // MARK: - Extensions
 
 extension UserDefaults {
     func removeAll() {
         UserDefaultName.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
-        TorManagerUserDefaults.removeAll()
     }
 }

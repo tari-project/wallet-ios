@@ -59,16 +59,15 @@ final class SettingsViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .profileHeader: return ""
-            case .securityHeader: return localized("settings.item.header.security")
-            case .moreHeader: return localized("settings.item.header.more")
-            case .advancedSettingsHeader: return localized("settings.item.header.advanced_settings")
+            case .profileHeader: ""
+            case .securityHeader: localized("settings.item.header.security")
+            case .moreHeader: localized("settings.item.header.more")
+            case .advancedSettingsHeader: localized("settings.item.header.advanced_settings")
             }
         }
     }
 
     private enum SettingsItemTitle: CaseIterable {
-
         case backUpWallet
         case dataCollection
 
@@ -83,31 +82,28 @@ final class SettingsViewController: SettingsParentTableViewController {
 
         case selectTheme
         case screenRecording
-        case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
         case deleteWallet
 
         var rawValue: String {
             switch self {
-            case .backUpWallet: return localized("settings.item.wallet_backups")
-            case .dataCollection: return localized("settings.item.data_collection")
+            case .backUpWallet: localized("settings.item.wallet_backups")
+            case .dataCollection: localized("settings.item.data_collection")
+            case .selectTheme: localized("settings.item.select_theme")
+            case .screenRecording: localized("settings.item.screen_recording_settings")
+            case .selectNetwork: localized("settings.item.select_network")
+            case .selectBaseNode: localized("settings.item.select_base_node")
+            case .deleteWallet: localized("settings.item.delete_wallet")
 
-            case .selectTheme: return localized("settings.item.select_theme")
-            case .screenRecording: return localized("settings.item.screen_recording_settings")
-            case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
-            case .selectNetwork: return localized("settings.item.select_network")
-            case .selectBaseNode: return localized("settings.item.select_base_node")
-            case .deleteWallet: return localized("settings.item.delete_wallet")
-
-            case .about: return localized("settings.item.about")
-            case .reportBug: return localized("settings.item.report_bug")
-            case .visitTari: return localized("settings.item.visit_tari")
-            case .contributeToTariAurora: return localized("settings.item.contribute_to_tari")
-            case .userAgreement: return localized("settings.item.user_agreement")
-            case .privacyPolicy: return localized("settings.item.privacy_policy")
-            case .disclaimer: return localized("settings.item.disclaimer")
-            case .blockExplorer: return localized("settings.item.block_explorer")
+            case .about: localized("settings.item.about")
+            case .reportBug: localized("settings.item.report_bug")
+            case .visitTari: localized("settings.item.visit_tari")
+            case .contributeToTariAurora: localized("settings.item.contribute_to_tari")
+            case .userAgreement: localized("settings.item.user_agreement")
+            case .privacyPolicy: localized("settings.item.privacy_policy")
+            case .disclaimer: localized("settings.item.disclaimer")
+            case .blockExplorer: localized("settings.item.block_explorer")
             }
         }
     }
@@ -123,7 +119,6 @@ final class SettingsViewController: SettingsParentTableViewController {
     private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: .Icons.Settings.theme, title: SettingsItemTitle.selectTheme.rawValue),
         screenRecordingItem,
-        SystemMenuTableViewCellItem(icon: .Icons.Settings.bridgeConfig, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.network, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: .Icons.Settings.delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
     ]
@@ -222,11 +217,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    private func onBridgeConfigurationAction() {
-        let controller = TorBridgesConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
-    }
-
     private func onSelectNetworkAction() {
         navigationController?.pushViewController(SelectNetworkViewController(), animated: true)
     }
@@ -305,7 +295,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
         let sec = Section(rawValue: section)
 
         switch sec {
@@ -322,15 +311,15 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return nil
+        nil
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.0
+        0.0
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
@@ -370,10 +359,8 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 1:
                 onScreenRecordingSettingsAction()
             case 2:
-                onBridgeConfigurationAction()
-            case 3:
                 onSelectNetworkAction()
-            case 4:
+            case 3:
                 onDeleteWalletAction()
             default:
                 break

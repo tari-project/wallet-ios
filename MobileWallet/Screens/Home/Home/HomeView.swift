@@ -418,13 +418,12 @@ final class HomeView: DynamicThemeView {
 
         let monitor = AppConnectionHandler.shared.connectionMonitor
 
-        Publishers.CombineLatest4(monitor.$networkConnection, monitor.$torConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
+        Publishers.CombineLatest3(monitor.$networkConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
             .sink { [weak self] in
                 self?.versionBadgeView.updateNetworkStatus(
                     networkConnection: $0,
-                    torStatus: $1,
-                    baseNodeStatus: $2,
-                    syncStatus: $3
+                    baseNodeStatus: $1,
+                    syncStatus: $2
                 )
             }
             .store(in: &cancellables)

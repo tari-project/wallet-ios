@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 protocol WalletInteractable {
-
     var address: TariAddress { get throws }
     var dataVersion: String? { get throws }
     var isWalletRunning: StaticPublisherWrapper<Bool> { get }
@@ -94,8 +94,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     var dataVersion: String? {
         get throws {
-            let commsConfig = try makeCommsConfig(controlServerAddress: controlServerAddress, torCookie: torCookie)
-            return try manager.walletVersion(commsConfig: commsConfig)
+            try manager.walletVersion(commsConfig: try makeCommsConfig())
         }
     }
 
@@ -125,9 +124,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     let tag: String
     private let walletCallbacks = WalletCallbacks()
 
-    private var torCookie: Data
-    private var controlServerAddress: String
-
     var databaseDirectoryURL: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseName)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
     var databaseURL: URL { databaseDirectoryURL.appendingPathComponent(fullDatabaseName) }
     private var fullDatabaseName: String { databaseName + ".sqlite3" }
@@ -137,10 +133,8 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     // MARK: - Initialisers
 
-    init(tag: String, torCookie: Data, controlServerAddress: String) {
+    init(tag: String) {
         self.tag = tag
-        self.torCookie = torCookie
-        self.controlServerAddress = controlServerAddress
         setupCallbacks()
     }
 
@@ -181,10 +175,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     // MARK: - Actions
 
-    func update(torCookie: Data) {
-        self.torCookie = torCookie
-    }
-
     func start(seedWords: [String]?, logPath: String, passphrase: String) throws {
         guard !manager.isWalletRunning else { return }
 
@@ -195,7 +185,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
         try manager.connectWallet(
             network: NetworkManager.shared.selectedNetwork,
-            commsConfig: makeCommsConfig(controlServerAddress: controlServerAddress, torCookie: torCookie),
+            commsConfig: makeCommsConfig(),
             logFilePath: logPath,
             seedWords: walletSeedWords,
             passphrase: passphrase,
@@ -235,7 +225,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
         return try SeedWords(words: seedWords)
     }
 
-    private func makeCommsConfig(controlServerAddress: String, torCookie: Data) throws -> CommsConfig {
+    private func makeCommsConfig() throws -> CommsConfig {
         try CommsConfig(
             databaseName: databaseName,
             databaseFolderPath: databaseDirectoryURL.path,

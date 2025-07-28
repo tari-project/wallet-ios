@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class AddressPoisoningManager {
+import Foundation
 
+final class AddressPoisoningManager {
     struct SimilarAddressData {
         let address: String
         let emojiID: String

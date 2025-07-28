@@ -38,6 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import UIKit
 import Combine
 
@@ -70,7 +71,6 @@ final class ThemeSettingsViewController: SecureViewController<ThemeSettingsView>
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         Publishers.CombineLatest(model.$elements, model.$selectedIndex)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] elements, selectedIndex in
@@ -86,26 +86,19 @@ final class ThemeSettingsViewController: SecureViewController<ThemeSettingsView>
 }
 
 private extension ThemeSettingsModel.Element {
-
     var image: UIImage {
         switch self {
-        case .system:
-            return .Images.Themes.system
-        case .light:
-            return .Images.Themes.light
-        case .dark:
-            return .Images.Themes.dark
+        case .system: .Images.Themes.system
+        case .light: .Images.Themes.light
+        case .dark: .Images.Themes.dark
         }
     }
 
     var title: String? {
         switch self {
-        case .system:
-            return localized("theme_switcher.element.title.system")
-        case .light:
-            return localized("theme_switcher.element.title.light")
-        case .dark:
-            return localized("theme_switcher.element.title.dark")
+        case .system: localized("theme_switcher.element.title.system")
+        case .light: localized("theme_switcher.element.title.light")
+        case .dark: localized("theme_switcher.element.title.dark")
         }
     }
 }

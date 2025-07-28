@@ -38,13 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 enum MigrationManager {
     // MARK: - Actions
 
     static func validateWalletVersion(completion: @escaping (Bool) -> Void) {
-
         Task {
-
             guard await !isWalletHasValidVersion() else {
                 completion(true)
                 return
@@ -57,7 +57,6 @@ enum MigrationManager {
     }
 
     private static func isWalletHasValidVersion(retryCount: Int = 0) async -> Bool {
-
         let version = await fetchDBVersion()
 
         if let version {
@@ -72,7 +71,6 @@ enum MigrationManager {
     }
 
     private static func fetchDBVersion(retryCount: Int = 0) async -> String? {
-
         let maxRetryCount = 5
 
         do {

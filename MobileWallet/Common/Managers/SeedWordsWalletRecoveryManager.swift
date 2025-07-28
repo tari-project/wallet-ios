@@ -38,6 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+import Combine
+
 final class SeedWordsWalletRecoveryManager {
     @Published private(set) var isEmptyWalletCreated: Bool = false
     @Published private(set) var error: MessageModel?

@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class BugReportingModel {
+import Combine
 
+final class BugReportingModel {
     enum Action {
         case showDataCollectionConsentDialog
         case endFlow
@@ -57,7 +58,6 @@ final class BugReportingModel {
     // MARK: - Actions
 
     func sendReport(name: String?, email: String?, message: String?) {
-
         guard AppConfigurator.shared.isCrashLoggerEnabled else {
             action = .showDataCollectionConsentDialog
             return
@@ -71,7 +71,6 @@ final class BugReportingModel {
     }
 
     private func performSendReport(name: String?, email: String?, message: String?) {
-
         Task {
             do {
                 try await bugReportService.send(name: name ?? "", email: email ?? "", message: message ?? "")

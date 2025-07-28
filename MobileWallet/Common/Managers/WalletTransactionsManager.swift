@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 final class WalletTransactionsManager {
-
     enum TransactionError: Error {
         case transactionError(error: Error)
         case unsucessfulTransaction
@@ -89,24 +89,10 @@ final class WalletTransactionsManager {
     }
 
     private func waitForConnection(result: @escaping (Result<Void, TransactionError>) -> Void) {
-
         guard case .connected = AppConnectionHandler.shared.connectionMonitor.networkConnection else {
             result(.failure(.noInternetConnection))
             return
         }
-
-        Publishers.CombineLatest(AppConnectionHandler.shared.connectionMonitor.$torConnection, AppConnectionHandler.shared.connectionMonitor.$isTorBootstrapCompleted)
-            .filter { $0 == .connected && $1 }
-            .timeout(connectionTimeout, scheduler: DispatchQueue.global())
-            .first()
-            .sink(
-                receiveCompletion: {
-                    guard case .failure = $0 else { return }
-                    result(.failure(.timeout))
-                },
-                receiveValue: { _ in result(.success) }
-            )
-            .store(in: &cancellables)
     }
 
     private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {

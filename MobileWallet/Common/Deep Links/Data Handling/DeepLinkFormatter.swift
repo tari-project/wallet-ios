@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 enum DeeplinkType: String {
     case transactionSend = "/transactions/send"
     case contacts = "/contacts"
@@ -63,7 +65,6 @@ enum DeepLinkError: Error {
 }
 
 enum DeepLinkFormatter {
-
     private static var validScheme: String { "tari" }
     private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
 

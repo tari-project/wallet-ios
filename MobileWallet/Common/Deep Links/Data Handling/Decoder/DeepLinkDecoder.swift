@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct DeepLinkDecoder {
+import Foundation
 
+struct DeepLinkDecoder {
     private let parameters: [String: Any]
 
     init(parameters: [String: Any]) {
@@ -63,7 +64,6 @@ struct DeepLinkDecoder {
 }
 
 extension DeepLinkDecoder: Decoder {
-
     var codingPath: [CodingKey] { [] }
     var userInfo: [CodingUserInfoKey: Any] { [:] }
 

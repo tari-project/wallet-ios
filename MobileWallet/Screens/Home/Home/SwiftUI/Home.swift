@@ -293,7 +293,7 @@ private extension Home {
     var syncMessage: String {
         isSynced
             ? "**Synced to block #\(chainTip)**"
-            : 0 < unsyncedBlockCount
+            : 0 < unsyncedBlockCount && 0 < scannedHeight
                 ? "**Syncing** \(unsyncedBlockCount) blocks remaining"
                 : "**Syncing**"
     }

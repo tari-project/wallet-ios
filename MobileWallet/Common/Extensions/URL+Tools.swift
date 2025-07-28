@@ -38,14 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension URL {
+import Foundation
 
+extension URL {
     var keysValueComponents: [[String]: String]? {
         query?
             .removingPercentEncoding?
             .split(separator: "&")
             .map { $0.split(separator: "=") }
-            .reduce(into: [[String]: String]()) { result, element in
+            .reduce(into: [:]) { result, element in
                 switch element.count {
                 case 1:
                     let keys = String(element[0]).splitElementsInBrackets()

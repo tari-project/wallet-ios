@@ -38,6 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 enum BackupError: Error {
@@ -46,7 +47,6 @@ enum BackupError: Error {
 }
 
 protocol BackupServicable: AnyObject {
-
     var isOn: Bool { get set }
     var password: String? { get set }
     var backupStatus: AnyPublisher<BackupStatus, Never> { get }

@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class TransactionFeesManager {
+import Foundation
 
+final class TransactionFeesManager {
     enum NetworkTraffic {
         case low
         case medium

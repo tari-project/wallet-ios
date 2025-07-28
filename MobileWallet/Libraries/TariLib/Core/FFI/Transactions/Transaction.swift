@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 enum TransactionStatus: Int32 {
     case unknown = -2
     case txNullError = -1

@@ -89,8 +89,8 @@ final class HomeModel {
 
         let monitor = AppConnectionHandler.shared.connectionMonitor
 
-        Publishers.CombineLatest4(monitor.$networkConnection, monitor.$torConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
-            .sink { [weak self] in self?.handle(networkConnection: $0, torConnection: $1, baseNodeConnection: $2, syncStatus: $3) }
+        Publishers.CombineLatest3(monitor.$networkConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
+            .sink { [weak self] in self?.handle(networkConnection: $0, baseNodeConnection: $1, syncStatus: $2) }
             .store(in: &cancellables)
 
         Tari.shared.wallet(.main).walletBalance.$balance
@@ -160,7 +160,7 @@ final class HomeModel {
 
     // MARK: - Handlers
 
-    private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
+    private func handle(networkConnection: NetworkMonitor.Status, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
 
         // Update sync status
         if !hasSyncedOnce {
@@ -190,11 +190,11 @@ final class HomeModel {
 
     func formatLargeNumber(_ value: Int) -> String {
         if value >= 1_000_000 {
-            return String(format: "%.1fM", Double(value) / 1_000_000)
+            String(format: "%.1fM", Double(value) / 1_000_000)
         } else if value >= 1_000 {
-            return String(format: "%.1fK", Double(value) / 1_000)
+            String(format: "%.1fK", Double(value) / 1_000)
         } else {
-            return "\(value)"
+            "\(value)"
         }
     }
 

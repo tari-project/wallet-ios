@@ -83,11 +83,6 @@ PODS:
   - SwiftEntryKit (2.0.0)
   - SwiftKeychainWrapper (3.4.0)
   - TariCommon (0.2.0)
-  - Tor (408.12.2):
-    - Tor/CTor (= 408.12.2)
-  - Tor/Core (408.12.2)
-  - Tor/CTor (408.12.2):
-    - Tor/Core
   - YatLib (0.4.1):
     - TariCommon (~> 0.2.0)
   - Zip (2.1.2)
@@ -103,7 +98,6 @@ DEPENDENCIES:
   - SwiftEntryKit (= 2.0.0)
   - SwiftKeychainWrapper (= 3.4.0)
   - TariCommon (= 0.2.0)
-  - Tor (= 408.12.2)
   - YatLib (= 0.4.1)
   - Zip (= 2.1.2)
 
@@ -129,7 +123,6 @@ SPEC REPOS:
     - SwiftEntryKit
     - SwiftKeychainWrapper
     - TariCommon
-    - Tor
     - YatLib
     - Zip
 
@@ -154,10 +147,9 @@ SPEC CHECKSUMS:
   SwiftEntryKit: 61b5fa36f34a97dd8013e48a7345bc4c4720be9a
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
-  Tor: 19907fc430953434a233c7532166d6409b9d509b
   YatLib: dda2cfe9e47790f27a13074ea815eac19a919043
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 975890af57c24c3bb9251b7d998b2f0ee39eea98
+PODFILE CHECKSUM: 4e1695d5e14c35d47660d21e22e3afb869fc9997
 
 COCOAPODS: 1.16.2

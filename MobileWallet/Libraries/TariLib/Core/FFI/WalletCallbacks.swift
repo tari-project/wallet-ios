@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 protocol WalletCallbacksReadable: AnyObject {
-
     var receivedTransaction: AnyPublisher<PendingInboundTransaction, Never> { get }
     var receivedTransactionReply: AnyPublisher<CompletedTransaction, Never> { get }
     var receivedFinalizedTransaction: AnyPublisher<CompletedTransaction, Never> { get }
@@ -60,11 +60,9 @@ protocol WalletCallbacksReadable: AnyObject {
     var baseNodeState: AnyPublisher<BaseNodeState, Never> { get }
 
     var walletRecoveryStatus: AnyPublisher<RestoreWalletStatus, Never> { get }
-
 }
 
 final class WalletCallbacks {
-
     let receivedTransactionSubject = PassthroughSubject<PendingInboundTransaction, Never>()
     let receivedTransactionReplySubject = PassthroughSubject<CompletedTransaction, Never>()
     let receivedFinalizedTransactionSubject = PassthroughSubject<CompletedTransaction, Never>()
@@ -88,7 +86,6 @@ final class WalletCallbacks {
 }
 
 extension WalletCallbacks: WalletCallbacksReadable {
-
     var receivedTransaction: AnyPublisher<PendingInboundTransaction, Never> { receivedTransactionSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var receivedTransactionReply: AnyPublisher<CompletedTransaction, Never> { receivedTransactionReplySubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var receivedFinalizedTransaction: AnyPublisher<CompletedTransaction, Never> { receivedFinalizedTransactionSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }

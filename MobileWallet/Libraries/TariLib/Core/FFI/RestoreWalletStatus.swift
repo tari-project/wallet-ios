@@ -49,24 +49,15 @@ enum RestoreWalletStatus: Equatable {
     case recoveryFailed
 
     init(status: UInt8, firstValue: UInt64, secondValue: UInt64) {
-
-        switch status {
-        case 0:
-            self = .connectingToBaseNode
-        case 1:
-            self = .connectedToBaseNode
-        case 2:
-            self = .connectionFailed(attempt: firstValue, maxAttempts: secondValue)
-        case 3:
-            self = .progress(restoredUTXOs: firstValue, totalNumberOfUTXOs: secondValue)
-        case 4:
-            self = .completed
-        case 5:
-            self = .scanningRoundFailed(attempt: firstValue, maxAttempts: secondValue)
-        case 6:
-            self = .recoveryFailed
-        default:
-            self = .unknown
+        self = switch status {
+        case 0: .connectingToBaseNode
+        case 1: .connectedToBaseNode
+        case 2: .connectionFailed(attempt: firstValue, maxAttempts: secondValue)
+        case 3: .progress(restoredUTXOs: firstValue, totalNumberOfUTXOs: secondValue)
+        case 4: .completed
+        case 5: .scanningRoundFailed(attempt: firstValue, maxAttempts: secondValue)
+        case 6: .recoveryFailed
+        default: .unknown
         }
     }
 

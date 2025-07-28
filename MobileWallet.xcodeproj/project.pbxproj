@@ -46,8 +46,6 @@
 		3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D749247FCF2300807D72 /* SettingsViewController.swift */; };
 		3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
 		37098043249CD48A0004ED2E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 37098045249CD48A0004ED2E /* Localizable.strings */; };
-		370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
-		370E887824FEA54100576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
 		371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371189722488FF11004D0CE3 /* CloudKit.framework */; };
 		371A0818247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7A524AC9389003382EB /* SecureBackupViewController.swift */; };
@@ -214,7 +212,6 @@
 		3A84CDD42846088D005F2F8D /* UTXOsWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84CDD32846088D005F2F8D /* UTXOsWalletView.swift */; };
 		3A84CDD62846089B005F2F8D /* UTXOsWalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84CDD52846089B005F2F8D /* UTXOsWalletModel.swift */; };
 		3A84CDD828460967005F2F8D /* UTXOsWalletConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A84CDD728460967005F2F8D /* UTXOsWalletConstructor.swift */; };
-		3A874038278842F500D80823 /* TorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A874037278842F500D80823 /* TorManager.swift */; };
 		3A87403A2788438E00D80823 /* FFIWalletHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8740392788438E00D80823 /* FFIWalletHandler.swift */; };
 		3A87C3B527A94086007A553F /* CoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A87C3B427A94086007A553F /* CoreError.swift */; };
 		3A87C3B727A9409E007A553F /* WalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A87C3B627A9409E007A553F /* WalletError.swift */; };
@@ -354,7 +351,6 @@
 		543537AD2C2E97190005B2B1 /* AddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543537AC2C2E97190005B2B1 /* AddressView.swift */; };
 		54360D162C45555100EC0BBC /* TariEmojis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54360D152C45555100EC0BBC /* TariEmojis.swift */; };
 		54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54394EDD29CA133400E7CAEA /* LoadingImageView.swift */; };
-		543DF19C293F3DA90031EA70 /* TorBridgesFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */; };
 		543F89D02B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */; };
 		544013A429E0003100B5DD6D /* ContactListDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544013A329E0003100B5DD6D /* ContactListDeeplink.swift */; };
 		5443954629800F1600786682 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443954529800F1600786682 /* OnboardingViewController.swift */; };
@@ -373,7 +369,6 @@
 		5453242429A68D14009281A7 /* TariGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453242329A68D14009281A7 /* TariGradientView.swift */; };
 		5453242629A68D7D009281A7 /* RoundedAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453242529A68D7D009281A7 /* RoundedAvatarView.swift */; };
 		5453E43C2AC9D5CA00C7F40D /* UIImage+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453E43B2AC9D5CA00C7F40D /* UIImage+Utils.swift */; };
-		5453E43E2AC9D95900C7F40D /* TorBridgesConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453E43D2AC9D95900C7F40D /* TorBridgesConstructor.swift */; };
 		5455969829B08D7B00D6719E /* FormTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5455969729B08D7B00D6719E /* FormTextField.swift */; };
 		5455969B29B0A6B500D6719E /* InternalContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5455969A29B0A6B500D6719E /* InternalContactsManager.swift */; };
 		545A9D14294F6ED3008D24A6 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */; };
@@ -407,7 +402,6 @@
 		546CE7F429AF514A00264699 /* FormOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F329AF514A00264699 /* FormOverlay.swift */; };
 		546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F529AF517900264699 /* FormOverlayView.swift */; };
 		546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F829AF523F00264699 /* ContactBookFormView.swift */; };
-		5477518D2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5477518C2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift */; };
 		547A85D329ACF2D100D94985 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D229ACF2D100D94985 /* MenuCell.swift */; };
 		547A85D529AD23D800D94985 /* MenuTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D429AD23D800D94985 /* MenuTableView.swift */; };
 		547A85D729AD248400D94985 /* MenuTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D629AD248400D94985 /* MenuTableHeaderView.swift */; };
@@ -423,8 +417,6 @@
 		548C4C322AC1689B00E376EF /* SwitchMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */; };
 		54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54909AAE29C05822002D1070 /* ContactType+Data.swift */; };
 		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
-		5494BFB02AF0E98E00791A52 /* TorConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5494BFAF2AF0E98E00791A52 /* TorConnectionStatus.swift */; };
-		5494BFB22AF0E9B500791A52 /* TorError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5494BFB12AF0E9B500791A52 /* TorError.swift */; };
 		5494BFB32AF122A600791A52 /* RoundedLabeledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88929F6A54B009B0653 /* RoundedLabeledButton.swift */; };
 		549565E02AA1D21E0092A10F /* Task+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549565DF2AA1D21E0092A10F /* Task+Utils.swift */; };
 		5495C4792B7B718E00BB9051 /* SecureWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5495C4782B7B718E00BB9051 /* SecureWrapperView.swift */; };
@@ -436,7 +428,6 @@
 		549E1A032A5EC2260063022C /* VideoCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E1A022A5EC2260063022C /* VideoCaptureManager.swift */; };
 		549F5AF22ACAC32900FF4C6F /* PosixError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549F5AF12ACAC32900FF4C6F /* PosixError.swift */; };
 		54A0903829E553A900D1CDDE /* PopUpQRContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A0903729E553A900D1CDDE /* PopUpQRContentView.swift */; };
-		54A148EC2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A148EB2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift */; };
 		54A6E9F0297F1F9900A60853 /* StagedWalletSecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */; };
 		54A6E9F2297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9F1297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift */; };
 		54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9F3297F260800A60853 /* UIViewController+Common.swift */; };
@@ -501,13 +492,6 @@
 		54F2E34E29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F2E34D29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift */; };
 		54F306112A3B049500B5689D /* UIView+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F306102A3B049500B5689D /* UIView+Utils.swift */; };
 		54F323E92CAC501300FD5364 /* PaperWalletDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F323E82CAC501300FD5364 /* PaperWalletDeeplink.swift */; };
-		54F9C5A42AA712F100DA87D8 /* CustomTorBridgesInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54F9C5A32AA712F100DA87D8 /* CustomTorBridgesInputCell.swift */; };
-		54FCC3672AA5C2D100CA0025 /* TorBridgesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC3662AA5C2D100CA0025 /* TorBridgesViewController.swift */; };
-		54FCC3692AA5C2DB00CA0025 /* TorBridgesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC3682AA5C2DB00CA0025 /* TorBridgesView.swift */; };
-		54FCC36B2AA5C2E400CA0025 /* TorBridgesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC36A2AA5C2E400CA0025 /* TorBridgesModel.swift */; };
-		54FCC36F2AA5F00900CA0025 /* CustomTorBridgesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC36E2AA5F00900CA0025 /* CustomTorBridgesViewController.swift */; };
-		54FCC3712AA5FF1100CA0025 /* CustomTorBridgesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC3702AA5FF1100CA0025 /* CustomTorBridgesView.swift */; };
-		54FCC3732AA5FF1B00CA0025 /* CustomTorBridgesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FCC3722AA5FF1B00CA0025 /* CustomTorBridgesModel.swift */; };
 		711D7F7E2D50E0540080A987 /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F792D50E0540080A987 /* Poppins-SemiBold.ttf */; };
 		711D7F822D50E0540080A987 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F762D50E0540080A987 /* Poppins-Medium.ttf */; };
 		711D7F832D50E0540080A987 /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 711D7F6B2D50E0540080A987 /* Poppins-Black.ttf */; };
@@ -681,9 +665,6 @@
 		3708D749247FCF2300807D72 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3708D755247FF81900807D72 /* SettingsParentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsParentViewController.swift; sourceTree = "<group>"; };
 		37098044249CD48A0004ED2E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		370E887124FEA32600576F61 /* Ipv6Tester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ipv6Tester.swift; sourceTree = "<group>"; };
-		370E887624FEA54100576F61 /* NetworkTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkTools.h; sourceTree = "<group>"; };
-		370E887724FEA54100576F61 /* NetworkTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkTools.m; sourceTree = "<group>"; };
 		371189722488FF11004D0CE3 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		371A0817247290C000F97713 /* TransitionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionLabel.swift; sourceTree = "<group>"; };
 		3723A7A524AC9389003382EB /* SecureBackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureBackupViewController.swift; sourceTree = "<group>"; };
@@ -851,7 +832,6 @@
 		3A84CDD32846088D005F2F8D /* UTXOsWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletView.swift; sourceTree = "<group>"; };
 		3A84CDD52846089B005F2F8D /* UTXOsWalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletModel.swift; sourceTree = "<group>"; };
 		3A84CDD728460967005F2F8D /* UTXOsWalletConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletConstructor.swift; sourceTree = "<group>"; };
-		3A874037278842F500D80823 /* TorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorManager.swift; sourceTree = "<group>"; };
 		3A8740392788438E00D80823 /* FFIWalletHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFIWalletHandler.swift; sourceTree = "<group>"; };
 		3A87C3B427A94086007A553F /* CoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreError.swift; sourceTree = "<group>"; };
 		3A87C3B627A9409E007A553F /* WalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletError.swift; sourceTree = "<group>"; };
@@ -991,7 +971,6 @@
 		543537AC2C2E97190005B2B1 /* AddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressView.swift; sourceTree = "<group>"; };
 		54360D152C45555100EC0BBC /* TariEmojis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEmojis.swift; sourceTree = "<group>"; };
 		54394EDD29CA133400E7CAEA /* LoadingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImageView.swift; sourceTree = "<group>"; };
-		543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesFooterView.swift; sourceTree = "<group>"; };
 		543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingSettingsConstructor.swift; sourceTree = "<group>"; };
 		544013A329E0003100B5DD6D /* ContactListDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListDeeplink.swift; sourceTree = "<group>"; };
 		5443954529800F1600786682 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -1010,7 +989,6 @@
 		5453242329A68D14009281A7 /* TariGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariGradientView.swift; sourceTree = "<group>"; };
 		5453242529A68D7D009281A7 /* RoundedAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedAvatarView.swift; sourceTree = "<group>"; };
 		5453E43B2AC9D5CA00C7F40D /* UIImage+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Utils.swift"; sourceTree = "<group>"; };
-		5453E43D2AC9D95900C7F40D /* TorBridgesConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesConstructor.swift; sourceTree = "<group>"; };
 		5455969729B08D7B00D6719E /* FormTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormTextField.swift; sourceTree = "<group>"; };
 		5455969A29B0A6B500D6719E /* InternalContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalContactsManager.swift; sourceTree = "<group>"; };
 		545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
@@ -1044,7 +1022,6 @@
 		546CE7F329AF514A00264699 /* FormOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlay.swift; sourceTree = "<group>"; };
 		546CE7F529AF517900264699 /* FormOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlayView.swift; sourceTree = "<group>"; };
 		546CE7F829AF523F00264699 /* ContactBookFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookFormView.swift; sourceTree = "<group>"; };
-		5477518C2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesHeaderView.swift; sourceTree = "<group>"; };
 		547A85D229ACF2D100D94985 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		547A85D429AD23D800D94985 /* MenuTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableView.swift; sourceTree = "<group>"; };
 		547A85D629AD248400D94985 /* MenuTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableHeaderView.swift; sourceTree = "<group>"; };
@@ -1060,8 +1037,6 @@
 		548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchMenuCell.swift; sourceTree = "<group>"; };
 		54909AAE29C05822002D1070 /* ContactType+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactType+Data.swift"; sourceTree = "<group>"; };
 		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
-		5494BFAF2AF0E98E00791A52 /* TorConnectionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorConnectionStatus.swift; sourceTree = "<group>"; };
-		5494BFB12AF0E9B500791A52 /* TorError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorError.swift; sourceTree = "<group>"; };
 		549565DF2AA1D21E0092A10F /* Task+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Utils.swift"; sourceTree = "<group>"; };
 		5495C4782B7B718E00BB9051 /* SecureWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureWrapperView.swift; sourceTree = "<group>"; };
 		5499CF2A2C3EA31F001C417F /* AddressViewDefaultActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressViewDefaultActions.swift; sourceTree = "<group>"; };
@@ -1072,7 +1047,6 @@
 		549E1A022A5EC2260063022C /* VideoCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureManager.swift; sourceTree = "<group>"; };
 		549F5AF12ACAC32900FF4C6F /* PosixError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosixError.swift; sourceTree = "<group>"; };
 		54A0903729E553A900D1CDDE /* PopUpQRContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpQRContentView.swift; sourceTree = "<group>"; };
-		54A148EB2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesConstructor.swift; sourceTree = "<group>"; };
 		54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagedWalletSecurityManager.swift; sourceTree = "<group>"; };
 		54A6E9F1297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpStagedWalletSecurityHeaderView.swift; sourceTree = "<group>"; };
 		54A6E9F3297F260800A60853 /* UIViewController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Common.swift"; sourceTree = "<group>"; };
@@ -1138,13 +1112,6 @@
 		54F2E34D29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactTransactionListPlaceholder.swift; sourceTree = "<group>"; };
 		54F306102A3B049500B5689D /* UIView+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Utils.swift"; sourceTree = "<group>"; };
 		54F323E82CAC501300FD5364 /* PaperWalletDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperWalletDeeplink.swift; sourceTree = "<group>"; };
-		54F9C5A32AA712F100DA87D8 /* CustomTorBridgesInputCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesInputCell.swift; sourceTree = "<group>"; };
-		54FCC3662AA5C2D100CA0025 /* TorBridgesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesViewController.swift; sourceTree = "<group>"; };
-		54FCC3682AA5C2DB00CA0025 /* TorBridgesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesView.swift; sourceTree = "<group>"; };
-		54FCC36A2AA5C2E400CA0025 /* TorBridgesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesModel.swift; sourceTree = "<group>"; };
-		54FCC36E2AA5F00900CA0025 /* CustomTorBridgesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesViewController.swift; sourceTree = "<group>"; };
-		54FCC3702AA5FF1100CA0025 /* CustomTorBridgesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesView.swift; sourceTree = "<group>"; };
-		54FCC3722AA5FF1B00CA0025 /* CustomTorBridgesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesModel.swift; sourceTree = "<group>"; };
 		711D7F6A2D50E0540080A987 /* fontExporter.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = fontExporter.sh; sourceTree = "<group>"; };
 		711D7F6B2D50E0540080A987 /* Poppins-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Black.ttf"; sourceTree = "<group>"; };
 		711D7F6D2D50E0540080A987 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Bold.ttf"; sourceTree = "<group>"; };
@@ -1672,21 +1639,10 @@
 			isa = PBXGroup;
 			children = (
 				5422CBF62B88B1A200428394 /* Screen Recoding Settings */,
-				543DF198293F37DB0031EA70 /* Bridges */,
 				3AFC6E012745050500A20287 /* Views */,
 				3A62674426D76E52007F9895 /* Select Network */,
 			);
 			path = AdvancedSettings;
-			sourceTree = "<group>";
-		};
-		370E886A24FE9FF800576F61 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				370E887124FEA32600576F61 /* Ipv6Tester.swift */,
-				370E887624FEA54100576F61 /* NetworkTools.h */,
-				370E887724FEA54100576F61 /* NetworkTools.m */,
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 		371A081624728FCB00F97713 /* TransitionUILabel */ = {
@@ -2314,11 +2270,9 @@
 				54D46A932CA6908D00E554C0 /* Variables */,
 				3AABFC9E28F59B3C00D87773 /* App Setup */,
 				3A8473C028EC555B0015E63A /* Services */,
-				3AB1114728E60D8E00AA70E8 /* Tor */,
 				3AF335DE28D7981E00B48F33 /* Data Models */,
 				3A312FEB28B6314A00A290D3 /* FFI */,
 				3A47ABCC27478208007F351B /* Tari.swift */,
-				3A874037278842F500D80823 /* TorManager.swift */,
 				3A8740392788438E00D80823 /* FFIWalletHandler.swift */,
 			);
 			path = Core;
@@ -2370,16 +2324,6 @@
 				3A8A03EA28F587FD003EC8FE /* AppConfigurator.swift */,
 			);
 			path = "App Setup";
-			sourceTree = "<group>";
-		};
-		3AB1114728E60D8E00AA70E8 /* Tor */ = {
-			isa = PBXGroup;
-			children = (
-				370E886A24FE9FF800576F61 /* Helpers */,
-				5494BFAF2AF0E98E00791A52 /* TorConnectionStatus.swift */,
-				5494BFB12AF0E9B500791A52 /* TorError.swift */,
-			);
-			path = Tor;
 			sourceTree = "<group>";
 		};
 		3AB136D42906642700A5373D /* ICloud */ = {
@@ -2694,15 +2638,6 @@
 			path = "Link Contacts";
 			sourceTree = "<group>";
 		};
-		543DF198293F37DB0031EA70 /* Bridges */ = {
-			isa = PBXGroup;
-			children = (
-				54FCC36C2AA5EF8900CA0025 /* Tor Bridges List */,
-				54FCC36D2AA5EF9F00CA0025 /* Custom Tor Bridges */,
-			);
-			path = Bridges;
-			sourceTree = "<group>";
-		};
 		5443954429800F0500786682 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -2733,14 +2668,6 @@
 				5453241F29A68310009281A7 /* PageToolbarView.swift */,
 			);
 			path = Pager;
-			sourceTree = "<group>";
-		};
-		5453E43F2AC9DB5E00C7F40D /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */,
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		5455969929B0A67400D6719E /* Managers */ = {
@@ -3057,39 +2984,6 @@
 				54ADC0922A3858C40082C455 /* ErrorView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		54F9C5A22AA7121F00DA87D8 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				54F9C5A32AA712F100DA87D8 /* CustomTorBridgesInputCell.swift */,
-				5477518C2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		54FCC36C2AA5EF8900CA0025 /* Tor Bridges List */ = {
-			isa = PBXGroup;
-			children = (
-				5453E43F2AC9DB5E00C7F40D /* Views */,
-				54FCC3662AA5C2D100CA0025 /* TorBridgesViewController.swift */,
-				54FCC3682AA5C2DB00CA0025 /* TorBridgesView.swift */,
-				54FCC36A2AA5C2E400CA0025 /* TorBridgesModel.swift */,
-				5453E43D2AC9D95900C7F40D /* TorBridgesConstructor.swift */,
-			);
-			path = "Tor Bridges List";
-			sourceTree = "<group>";
-		};
-		54FCC36D2AA5EF9F00CA0025 /* Custom Tor Bridges */ = {
-			isa = PBXGroup;
-			children = (
-				54F9C5A22AA7121F00DA87D8 /* Views */,
-				54FCC36E2AA5F00900CA0025 /* CustomTorBridgesViewController.swift */,
-				54FCC3702AA5FF1100CA0025 /* CustomTorBridgesView.swift */,
-				54FCC3722AA5FF1B00CA0025 /* CustomTorBridgesModel.swift */,
-				54A148EB2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift */,
-			);
-			path = "Custom Tor Bridges";
 			sourceTree = "<group>";
 		};
 		711D7F7D2D50E0540080A987 /* Fonts */ = {
@@ -3548,13 +3442,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3630,7 +3520,6 @@
 				54D88EA22A5ADBFA0075DBC1 /* TransactionFormatter.swift in Sources */,
 				3A03683127DF211D00F304A2 /* TransactionDetailsView.swift in Sources */,
 				545A9D1A294F6F6B008D24A6 /* ThemeSettingsConstructor.swift in Sources */,
-				54FCC3672AA5C2D100CA0025 /* TorBridgesViewController.swift in Sources */,
 				3A82455827E1EE38003B6B59 /* TransactionDetailsEmojiView.swift in Sources */,
 				54621F8729E00E04000E9659 /* URL+Tools.swift in Sources */,
 				3AF97E7027CFCA2000FF6A3F /* ShortcutsManager.swift in Sources */,
@@ -3658,7 +3547,6 @@
 				F8F1EBDD2E1C1DEE00B09007 /* FormattedTransaction.swift in Sources */,
 				5410F5D12951F04B006976DC /* TariWindow.swift in Sources */,
 				54D1E1A32ABD92290021A365 /* DataCollectionSettingsConstructor.swift in Sources */,
-				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */,
 				548C4C322AC1689B00E376EF /* SwitchMenuCell.swift in Sources */,
 				3A70433F28E21D3600207D6F /* CompletedTransactionKernel.swift in Sources */,
@@ -3710,8 +3598,6 @@
 				3A8473D828EC56EF0015E63A /* TariKeyValueService.swift in Sources */,
 				F821500A2E030A71003EBB25 /* Font+Poppins.swift in Sources */,
 				F821501D2E05BB83003EBB25 /* TransactionDetails+Actions.swift in Sources */,
-				3A874038278842F500D80823 /* TorManager.swift in Sources */,
-				54FCC36F2AA5F00900CA0025 /* CustomTorBridgesViewController.swift in Sources */,
 				37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				3A4949A5283FD603002768AE /* AboutViewController.swift in Sources */,
 				3A983A6027C67C0500F0AB61 /* VerifySeedWordsConstructor.swift in Sources */,
@@ -3726,7 +3612,6 @@
 				5455969829B08D7B00D6719E /* FormTextField.swift in Sources */,
 				3A8473D228EC568A0015E63A /* TariMessageSignService.swift in Sources */,
 				F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */,
-				543DF19C293F3DA90031EA70 /* TorBridgesFooterView.swift in Sources */,
 				71AFC9242DA41A6D00684FA7 /* ReceiveModel.swift in Sources */,
 				F88B28D82E27A8D2005B9B13 /* MinerStats.swift in Sources */,
 				54D782F62BA8616F00DD3BFE /* BaseNodeState.swift in Sources */,
@@ -3757,7 +3642,6 @@
 				54C36D0F2A5D3EAC00BD973A /* QRCodeScannerView.swift in Sources */,
 				711D7FB42D5549EA0080A987 /* SeparatorView.swift in Sources */,
 				3A4205A127980FFA00A8D49C /* QRCodeView.swift in Sources */,
-				5477518D2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift in Sources */,
 				3AFC6E032745051400A20287 /* SettingsHeaderView.swift in Sources */,
 				3AEDBE5127CE477B006B0166 /* DeepLinkEncoder.swift in Sources */,
 				3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
@@ -3837,9 +3721,7 @@
 				3AE138CB28044B1E00443D34 /* CustomDeeplinkPopUpContentView.swift in Sources */,
 				3A2F30B828F5946B0095E25D /* CrashLogger.swift in Sources */,
 				3A66109927AD364E0038EB5B /* SendingTariModel.swift in Sources */,
-				54FCC36B2AA5C2E400CA0025 /* TorBridgesModel.swift in Sources */,
 				54621F9729E01443000E9659 /* DeepLinkKeyedEncodingContainer.swift in Sources */,
-				5494BFB02AF0E98E00791A52 /* TorConnectionStatus.swift in Sources */,
 				3A5A3D5A29016E1300B689C6 /* BackupWalletSettingsView.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
@@ -3851,7 +3733,6 @@
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
 				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
 				F82150082E02ECFB003EBB25 /* Text+Typography.swift in Sources */,
-				54FCC3732AA5FF1B00CA0025 /* CustomTorBridgesModel.swift in Sources */,
 				5495C4792B7B718E00BB9051 /* SecureWrapperView.swift in Sources */,
 				71F94EC72DA32E0200D3F2AC /* ReceiveConstructor.swift in Sources */,
 				54621F8929E00E38000E9659 /* Dictionary+Tools.swift in Sources */,
@@ -3955,7 +3836,6 @@
 				5488068929D4244800C2A0F9 /* ContactBookShareBar.swift in Sources */,
 				3A8005CB28EAF3A90022A38A /* TransactionValidationData.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
-				5453E43E2AC9D95900C7F40D /* TorBridgesConstructor.swift in Sources */,
 				3AE9F4E42795A260006101D1 /* RequestTariAmountModel.swift in Sources */,
 				3AA2E2212885755A00D30B62 /* NetworkMonitor.swift in Sources */,
 				5422CBFA2B88B5C900428394 /* ScreenRecordingSettingsModel.swift in Sources */,
@@ -3999,7 +3879,6 @@
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,
 				5460258629A74D8200CF5764 /* ContactDetailsModel.swift in Sources */,
 				545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */,
-				5494BFB22AF0E9B500791A52 /* TorError.swift in Sources */,
 				3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */,
 				3A84CDD42846088D005F2F8D /* UTXOsWalletView.swift in Sources */,
 				5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */,
@@ -4041,7 +3920,6 @@
 				54C7EB602AC6B22C00F387DF /* TrackingConsentManager.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */,
-				370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				540CEA842A5407A700BD26C7 /* WaveView.swift in Sources */,
 				5455969B29B0A6B500D6719E /* InternalContactsManager.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
@@ -4072,7 +3950,6 @@
 				3A70434828E21F5600207D6F /* Transaction.swift in Sources */,
 				54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */,
 				3A8473BF28EC51780015E63A /* TransactionValidationStatus.swift in Sources */,
-				54F9C5A42AA712F100DA87D8 /* CustomTorBridgesInputCell.swift in Sources */,
 				37B444A9248949B800592D92 /* Checkbox.swift in Sources */,
 				546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */,
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
@@ -4124,7 +4001,6 @@
 				546CE7F429AF514A00264699 /* FormOverlay.swift in Sources */,
 				549B033C2B84DA8D0059983C /* SecureViewController.swift in Sources */,
 				3A3D70BB291A637100A8CD7A /* BaseMenuTableView.swift in Sources */,
-				54FCC3712AA5FF1100CA0025 /* CustomTorBridgesView.swift in Sources */,
 				3A21FC5128FFD7B8004B09A0 /* PopUpTableView.swift in Sources */,
 				544D9D4C296D9B2000D8ECEF /* UnblindedOutputs.swift in Sources */,
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
@@ -4135,12 +4011,10 @@
 				54CB24F829FA65230008632D /* PaymentInfo.swift in Sources */,
 				3A13260327EDE42A00289C8C /* GradientView.swift in Sources */,
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
-				54FCC3692AA5C2DB00CA0025 /* TorBridgesView.swift in Sources */,
 				F821503F2E0BE369003EBB25 /* CopyRawDetailsButton.swift in Sources */,
 				54D88EA42A5AEAEC0075DBC1 /* TransactionDynamicModel.swift in Sources */,
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
-				54A148EC2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift in Sources */,
 				540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */,
 				54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */,
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,

@@ -507,22 +507,9 @@
 "advanced_settings.item.header.baseNode" = "Wallet base node";
 "advanced_settings.item.header.torNode" = "Tor node";
 
-/* BridgesConfiguration view */
-"bridges_configuration.title" = "Bridges Configuration";
-"bridges_configuration.item.noBridges" = "No Bridges";
-"bridges_configuration.item.custom" = "Custom Bridges";
-"bridges_configuration.description.bridges" = "If you are in a country or using a connection that censors Tor, you might need to use bridges.";
-"bridges_configuration.connect" = "Connect";
-
 /* CustomBridges view */
-"custom_bridges.title" = "Custom Bridges";
-"custom_bridges.connect" = "Connect";
 
 "custom_bridges.item.paste_bridges" = "Paste Bridges";
-
-"custom_bridges.item.request_bridges_from_torproject" = "Request Bridges from torproject.org";
-"custom_bridges.item.scan_QR_code" = "Scan QR Code";
-"custom_bridges.item.upload_QR_code" = "Upload QR Code";
 
 "custom_bridges.error.image_decode.title" = "QR code decode error";
 "custom_bridges.error.image_decode.description" = "Failed to decode QR Code from image";

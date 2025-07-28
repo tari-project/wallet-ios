@@ -182,7 +182,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
     }
 
     private func onPaperWalletRestoreAction() {
-        let disabledDataTypes: [QRCodeScannerModel.DataType] = [.deeplink(.contacts), .deeplink(.profile), .deeplink(.transactionSend), .torBridges]
+        let disabledDataTypes: [QRCodeScannerModel.DataType] = [.deeplink(.contacts), .deeplink(.profile), .deeplink(.transactionSend)]
         AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.paperWallet)], disabledDataTypes: disabledDataTypes) { [weak self] in
             self?.handle(qrCodeData: $0)
         }

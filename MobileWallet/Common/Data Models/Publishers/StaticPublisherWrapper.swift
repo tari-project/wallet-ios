@@ -38,11 +38,12 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
- final class StaticPublisherWrapper<T: Publishable> {
+import Combine
 
+final class StaticPublisherWrapper<T: Publishable> {
     @Published private(set) var value = T()
 
     init(publisher: Published<T>.Publisher) {
         publisher.assign(to: &$value)
     }
- }
+}
