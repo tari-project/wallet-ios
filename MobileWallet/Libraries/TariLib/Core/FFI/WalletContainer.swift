@@ -58,7 +58,6 @@ protocol WalletInteractable {
     var transactions: TariTransactionsService { get }
     var unspentOutputsService: TariUnspentOutputsService { get }
     var utxos: TariUTXOsService { get }
-    var validation: TariValidationService { get }
     var walletBalance: TariBalanceService { get }
 
     func log(message: String) throws
@@ -112,7 +111,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     private(set) lazy var transactions = TariTransactionsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var utxos = TariUTXOsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
-    private(set) lazy var validation: TariValidationService = TariValidationService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var walletBalance = TariBalanceService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
 
     // MARK: - Constants
@@ -141,19 +139,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     // MARK: - Setups
 
     private func setupCallbacks() {
-        $baseNodeConnectionStatus
-            .sink { [weak self] in
-                switch $0 {
-                case .offline:
-                    self?.validation.reset()
-                case .connecting:
-                    break
-                case .online:
-                    try? self?.validation.sync()
-                }
-            }
-            .store(in: &cancellables)
-
         walletCallbacks.connectivityStatus
             .removeDuplicates()
             .receive(on: DispatchQueue.main)

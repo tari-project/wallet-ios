@@ -54,11 +54,6 @@ final class StatusLoggerManager {
         AppConnectionHandler.shared.connectionMonitor.$baseNodeConnection
             .sink { Logger.log(message: "Base Node Connection: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-
-        AppConnectionHandler.shared.connectionMonitor.$syncStatus
-            .sink { Logger.log(message: "Sync Status: \($0)", domain: .connection, level: .verbose) }
-            .store(in: &cancellables)
-
         AppConnectionHandler.shared.connectionMonitor.$networkConnection
             .sink { Logger.log(message: "Network Connection Status: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)

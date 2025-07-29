@@ -114,8 +114,7 @@ final class Wallet {
         }
 
         let txoValidationCallback: @convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void = { context, identifier, status in
-            guard let status = TransactionValidationStatus(rawValue: status) else { return }
-            context?.walletCallbacks.transactionOutputValidationDataSubject.send(TransactionValidationData(identifier: identifier, status: status))
+            // TODO: not used anymore, should be removed once FFI is updated
         }
 
         let contactsLivenessDataUpdatedCallback: (@convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void) = { _, _ in
@@ -127,8 +126,7 @@ final class Wallet {
         }
 
         let trasactionValidationCompleteCallback: @convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void = { context, identifier, status in
-            guard let status = TransactionValidationStatus(rawValue: status) else { return }
-            context?.walletCallbacks.trasactionValidationDataSubject.send(TransactionValidationData(identifier: identifier, status: status))
+            // TODO: not used anymore, should be removed once FFI is updated
         }
 
         let storedMessagesReceivedCallback: (@convention(c) (UnsafeMutableRawPointer?) -> Void) = { _ in
@@ -187,10 +185,10 @@ final class Wallet {
             fauxTransactionUnconfirmedCallback,
             transactionSendResultCallback,
             transactionCancellationCallback,
-            txoValidationCallback,
+            txoValidationCallback, // TODO: not used anymore, should be removed once FFI is updated
             contactsLivenessDataUpdatedCallback,
             balanceUpdatedCallback,
-            trasactionValidationCompleteCallback,
+            trasactionValidationCompleteCallback, // TODO: not used anymore, should be removed once FFI is updated
             storedMessagesReceivedCallback,
             connectivityStatusCallback,
             walletScannedHeightCallback,

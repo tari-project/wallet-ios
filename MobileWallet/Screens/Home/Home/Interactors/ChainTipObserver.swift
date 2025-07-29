@@ -53,6 +53,14 @@ extension ChainTipObserver {
     var unsyncedBlockCount: UInt64 {
         chainTip - min(chainTip, scannedHeight)
     }
+    
+    var chainTipSyncStatusColor: Color {
+        isChainTipSynced
+            ? .successMain
+            : 0 < scannedHeight && 0 < chainTip
+                ? .warningMain
+                : .errorMain
+    }
 }
 
 extension View {

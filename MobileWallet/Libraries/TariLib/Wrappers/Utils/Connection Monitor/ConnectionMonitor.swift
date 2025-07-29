@@ -49,7 +49,6 @@ final class ConnectionMonitor {
     @Published private(set) var baseNodeConnection: BaseNodeConnectivityStatus = .offline
     @Published private(set) var walletScannedHeight: UInt64 = 0
     @Published private(set) var chainTip: UInt64 = 0
-    @Published private(set) var syncStatus: TariValidationService.SyncStatus = .idle
 
     private let networkMonitor = NetworkMonitor()
     private var cancellables = Set<AnyCancellable>()
@@ -59,8 +58,7 @@ final class ConnectionMonitor {
     func setupPublishers(
         baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never>,
         scannedHeight: AnyPublisher<UInt64, Never>,
-        blockHeight: AnyPublisher<UInt64, Never>,
-        baseNodeSyncStatus: AnyPublisher<TariValidationService.SyncStatus, Never>
+        blockHeight: AnyPublisher<UInt64, Never>
     ) {
         networkMonitor.$status
             .assign(to: \.networkConnection, on: self)
@@ -76,10 +74,6 @@ final class ConnectionMonitor {
 
         blockHeight
             .assign(to: \.chainTip, on: self)
-            .store(in: &cancellables)
-
-        baseNodeSyncStatus
-            .assign(to: \.syncStatus, on: self)
             .store(in: &cancellables)
     }
 }

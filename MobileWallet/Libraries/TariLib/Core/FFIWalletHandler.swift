@@ -215,28 +215,6 @@ final class FFIWalletHandler {
         return result
     }
 
-    func startTransactionOutputValidation() throws -> UInt64 {
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_start_txo_validation(wallet.pointer, errorCodePointer)
-
-        try checkError(errorCode)
-        return result
-    }
-
-    func startTransactionValidation() throws -> UInt64 {
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_start_transaction_validation(wallet.pointer, errorCodePointer)
-
-        try checkError(errorCode)
-        return result
-    }
-
     func feeEstimate(amount: UInt64, feePerGram: UInt64, kernelsCount: UInt32, outputsCount: UInt32) throws -> UInt64 {
         let wallet = try exisingWallet
 

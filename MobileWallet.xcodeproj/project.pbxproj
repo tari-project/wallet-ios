@@ -185,7 +185,6 @@
 		3A7E06DC287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7E06DB287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift */; };
 		3A8005C628EAF0A50022A38A /* TransactionSendResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005C528EAF0A50022A38A /* TransactionSendResult.swift */; };
 		3A8005C828EAF1AB0022A38A /* RestoreWalletStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */; };
-		3A8005CB28EAF3A90022A38A /* TransactionValidationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005CA28EAF3A90022A38A /* TransactionValidationData.swift */; };
 		3A8005CD28EAF9110022A38A /* WalletBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005CC28EAF9100022A38A /* WalletBalance.swift */; };
 		3A8005CF28EAF9380022A38A /* BaseNodeConnectivityStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */; };
 		3A80F636287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A80F635287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift */; };
@@ -194,11 +193,9 @@
 		3A82455827E1EE38003B6B59 /* TransactionDetailsEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455727E1EE38003B6B59 /* TransactionDetailsEmojiView.swift */; };
 		3A82455A27E1EE93003B6B59 /* TransactionDetailsContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455927E1EE93003B6B59 /* TransactionDetailsContactView.swift */; };
 		3A82455C27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455B27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift */; };
-		3A8473BF28EC51780015E63A /* TransactionValidationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */; };
 		3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C128EC556C0015E63A /* CoreTariService.swift */; };
 		3A8473C428EC55B10015E63A /* TariTransactionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C328EC55B10015E63A /* TariTransactionsService.swift */; };
 		3A8473C628EC55DB0015E63A /* TariContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C528EC55DB0015E63A /* TariContactsService.swift */; };
-		3A8473C828EC55F50015E63A /* TariValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C728EC55F50015E63A /* TariValidationService.swift */; };
 		3A8473CA28EC56180015E63A /* TariFeesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C928EC56180015E63A /* TariFeesService.swift */; };
 		3A8473CC28EC562E0015E63A /* TariConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CB28EC562E0015E63A /* TariConnectionService.swift */; };
 		3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CD28EC56480015E63A /* TariUTXOsService.swift */; };
@@ -793,7 +790,6 @@
 		3A7E06DB287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpCombineUTXOsConfirmationContentView.swift; sourceTree = "<group>"; };
 		3A8005C528EAF0A50022A38A /* TransactionSendResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionSendResult.swift; sourceTree = "<group>"; };
 		3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletStatus.swift; sourceTree = "<group>"; };
-		3A8005CA28EAF3A90022A38A /* TransactionValidationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionValidationData.swift; sourceTree = "<group>"; };
 		3A8005CC28EAF9100022A38A /* WalletBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBalance.swift; sourceTree = "<group>"; };
 		3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNodeConnectivityStatus.swift; sourceTree = "<group>"; };
 		3A80F635287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpUtxoDetailsContentView.swift; sourceTree = "<group>"; };
@@ -802,11 +798,9 @@
 		3A82455727E1EE38003B6B59 /* TransactionDetailsEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsEmojiView.swift; sourceTree = "<group>"; };
 		3A82455927E1EE93003B6B59 /* TransactionDetailsContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsContactView.swift; sourceTree = "<group>"; };
 		3A82455B27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsNoteView.swift; sourceTree = "<group>"; };
-		3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionValidationStatus.swift; sourceTree = "<group>"; };
 		3A8473C128EC556C0015E63A /* CoreTariService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTariService.swift; sourceTree = "<group>"; };
 		3A8473C328EC55B10015E63A /* TariTransactionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariTransactionsService.swift; sourceTree = "<group>"; };
 		3A8473C528EC55DB0015E63A /* TariContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariContactsService.swift; sourceTree = "<group>"; };
-		3A8473C728EC55F50015E63A /* TariValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariValidationService.swift; sourceTree = "<group>"; };
 		3A8473C928EC56180015E63A /* TariFeesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariFeesService.swift; sourceTree = "<group>"; };
 		3A8473CB28EC562E0015E63A /* TariConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariConnectionService.swift; sourceTree = "<group>"; };
 		3A8473CD28EC56480015E63A /* TariUTXOsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUTXOsService.swift; sourceTree = "<group>"; };
@@ -1813,8 +1807,6 @@
 				3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */,
 				3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */,
 				3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */,
-				3A8005CA28EAF3A90022A38A /* TransactionValidationData.swift */,
-				3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */,
 				3A4D90A3273A75FC00A23FA8 /* Wallet.swift */,
 				54360D152C45555100EC0BBC /* TariEmojis.swift */,
 				5449192D2C9301A7008F1173 /* WalletContainer.swift */,
@@ -2191,7 +2183,6 @@
 				3A8473C128EC556C0015E63A /* CoreTariService.swift */,
 				3A8473C328EC55B10015E63A /* TariTransactionsService.swift */,
 				3A8473C528EC55DB0015E63A /* TariContactsService.swift */,
-				3A8473C728EC55F50015E63A /* TariValidationService.swift */,
 				3A8473C928EC56180015E63A /* TariFeesService.swift */,
 				3A8473CB28EC562E0015E63A /* TariConnectionService.swift */,
 				3A8473CD28EC56480015E63A /* TariUTXOsService.swift */,
@@ -3716,7 +3707,6 @@
 				3A84CDD62846089B005F2F8D /* UTXOsWalletModel.swift in Sources */,
 				54F1FDA62C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift in Sources */,
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
-				3A8473C828EC55F50015E63A /* TariValidationService.swift in Sources */,
 				3AE8850C28378BF20070D1AC /* TariSegmentedControl.swift in Sources */,
 				54D419B72995094100D496B4 /* ContactBookView.swift in Sources */,
 				3A87C3B527A94086007A553F /* CoreError.swift in Sources */,
@@ -3802,7 +3792,6 @@
 				F8214FF42DFC4E42003EBB25 /* String+Hex.swift in Sources */,
 				F8214FF22DFC1BD2003EBB25 /* PaymentReferences.swift in Sources */,
 				5488068929D4244800C2A0F9 /* ContactBookShareBar.swift in Sources */,
-				3A8005CB28EAF3A90022A38A /* TransactionValidationData.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
 				3AE9F4E42795A260006101D1 /* RequestTariAmountModel.swift in Sources */,
 				3AA2E2212885755A00D30B62 /* NetworkMonitor.swift in Sources */,
@@ -3912,7 +3901,6 @@
 				3A82455A27E1EE93003B6B59 /* TransactionDetailsContactView.swift in Sources */,
 				3A70434828E21F5600207D6F /* Transaction.swift in Sources */,
 				54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */,
-				3A8473BF28EC51780015E63A /* TransactionValidationStatus.swift in Sources */,
 				37B444A9248949B800592D92 /* Checkbox.swift in Sources */,
 				546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */,
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,

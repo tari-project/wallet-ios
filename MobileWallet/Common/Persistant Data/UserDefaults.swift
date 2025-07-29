@@ -50,7 +50,6 @@ private enum UserDefaultName: String, CaseIterable {
     case isTrackingEnabled
     case areScreenshotsDisabled
     case trustedAddresses
-    case hasSyncedOnce
 }
 
 enum GroupUserDefaults {
@@ -61,7 +60,6 @@ enum GroupUserDefaults {
     @UserDefault(key: UserDefaultName.isTrackingEnabled.rawValue, suiteName: TariSettings.groupIndentifier) static var isTrackingEnabled: Bool?
     @UserDefault(key: UserDefaultName.areScreenshotsDisabled.rawValue, suiteName: TariSettings.groupIndentifier) static var areScreenshotsDisabled: Bool?
     @UserDefault(key: UserDefaultName.trustedAddresses.rawValue, suiteName: TariSettings.groupIndentifier) static var trustedAddresses: Set<String>?
-    @UserDefault(key: UserDefaultName.hasSyncedOnce.rawValue, suiteName: TariSettings.groupIndentifier) static var hasSyncedOnce: Bool?
 }
 
 // MARK: - Extensions

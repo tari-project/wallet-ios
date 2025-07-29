@@ -46,11 +46,9 @@ struct Home: View, ChainTipObserver {
     @State var activeMiners = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
-    @State var isSyncInProgress = false
     @State var isMining = false
     @State var isBalanceHidden = false
     @State var isLoadingTransactions = false
-    @State var syncStatus: TariValidationService.SyncStatus = .idle
     @State var scannedHeight: UInt64 = 0
     @State var chainTip: UInt64 = 0
     @State var recentTransactions = [FormattedTransaction]()
@@ -85,9 +83,6 @@ struct Home: View, ChainTipObserver {
             }
             .onReceive(Tari.mainWallet.transactions.$all) {
                 update(transactions: $0)
-            }
-            .onReceive(AppConnectionHandler.shared.connectionMonitor.$syncStatus) {
-                update(syncStatus: $0)
             }
             .navigationDestination(item: $presentedTransaction) {
                 if let transaction = transaction(for: $0) {
@@ -130,7 +125,7 @@ private extension Home {
         Button(action: { isConnectionStatusPresented = true }) {
             HStack(spacing: 4) {
                 Circle()
-                    .foregroundStyle(syncStatus.color)
+                    .foregroundStyle(chainTipSyncStatusColor)
                     .frame(width: 7, height: 7)
                 Divider()
                 Text(network.selectedNetwork.presentedName)
@@ -224,7 +219,7 @@ private extension Home {
                 TariButton("Send", style: .label, size: .large) {
                     isSendPresented = true
                 }
-                .disabled(isSyncInProgress)
+                .disabled(!isChainTipSynced)
                 
                 TariButton("Receive", style: .label, size: .large) {
                     isReceivePresented = true
@@ -298,16 +293,6 @@ private extension Home {
             : 0 < unsyncedBlockCount && 0 < scannedHeight
                 ? "**Syncing** \(unsyncedBlockCount) blocks remaining"
                 : "**Syncing**"
-    }
-}
-
-private extension TariValidationService.SyncStatus {
-    var color: Color {
-        switch self {
-        case .syncing: .systemYellow
-        case .synced: .successMain
-        case .idle, .failed: .systemRed
-        }
     }
 }
 

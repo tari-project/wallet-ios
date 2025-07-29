@@ -69,18 +69,6 @@ extension Home {
             recentTransactions = uniqueTransactions.compactMap { try? transactionFormatter.model(transaction: $0) }
         }
     }
-    
-    func update(syncStatus: TariValidationService.SyncStatus) {
-        if !hasSyncedOnce {
-            print("sync status: ", syncStatus)
-            isSyncInProgress = syncStatus != .synced
-            if syncStatus == .synced {
-                isSyncInProgress = false
-                hasSyncedOnce = true
-            }
-        }
-        self.syncStatus = syncStatus
-    }
 
     func showAmountHelp() {
         let popUpModel = PopUpDialogModel(
@@ -100,11 +88,6 @@ extension Home {
 }
 
 private extension Home {
-    var hasSyncedOnce: Bool {
-        get { GroupUserDefaults.hasSyncedOnce ?? false }
-        nonmutating set { GroupUserDefaults.hasSyncedOnce = newValue }
-    }
-    
     var shouldShowWelcomeOverlay: Bool {
         get { UserDefaults.standard.bool(forKey: "ShouldShowWelcomeOverlay") }
         nonmutating set { UserDefaults.standard.set(newValue, forKey: "ShouldShowWelcomeOverlay") }
