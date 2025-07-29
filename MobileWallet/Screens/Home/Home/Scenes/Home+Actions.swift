@@ -41,10 +41,6 @@
 import SwiftUI
 
 extension Home {
-    var isSynced: Bool {
-        0 < scannedHeight && scannedHeight == chainTip
-    }
-    
     func load() {
         fetchMinerStats()
         fetchMiningStatus()
@@ -85,12 +81,7 @@ extension Home {
         }
         self.syncStatus = syncStatus
     }
-    
-    func update(scannedHeight: UInt64, chainTip: UInt64) {
-        self.scannedHeight = scannedHeight
-        self.chainTip = chainTip
-    }
-    
+
     func showAmountHelp() {
         let popUpModel = PopUpDialogModel(
             title: localized("home.pop_up.amount_help.title"),

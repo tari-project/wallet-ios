@@ -525,25 +525,6 @@
 "incompatible_network.confirm"="Start over, I say!";
 "incompatible_network.cancel"="I'll do it later";
 
-/* Connection status */
-"connection_status.popUp.header" = "Connection Status";
-"connection_status.popUp.label.network_status.disconnected" = "Disconnected from the Internet";
-"connection_status.popUp.label.network_status.connected" = "Connected to the Internet";
-"connection_status.popUp.label.tor_status.disconnected" = "Disconnected from Tor";
-"connection_status.popUp.label.tor_status.connecting" = "Connecting with Tor";
-"connection_status.popUp.label.tor_status.connected" = "Connected with Tor";
-"connection_status.popUp.label.tor_status.failed" = "Failed to connect with Tor";
-"connection_status.popUp.label.base_node_connection.disconnected" = "Disconnected from Base Node";
-"connection_status.popUp.label.base_node_connection.connecting" = "Connecting to Base Node";
-"connection_status.popUp.label.base_node_connection.connected" = "Connected to Base Node";
-"connection_status.popUp.label.base_node_sync.idle" = "Waiting for Sync";
-"connection_status.popUp.label.base_node_sync.pending" = "Syncing with Base Node";
-"connection_status.popUp.label.base_node_sync.success" = "Synced with Base Node";
-"connection_status.popUp.label.base_node_sync.failure" = "Failed sync with Base Node";
-"connection_status.popUp.label.chain_tip.prefix" = "Chain Tip:";
-"connection_status.popUp.label.chain_tip.values" = "#%d (%d)";
-"connection_status.popUp.label.chain_tip.waiting_for_connection" = "Waiting for connection...";
-
 /* Select Network View */
 "select_network.title" = "Select Network";
 "select_network.dialog.switch_network.title" = "One thing before you go";
@@ -620,7 +601,6 @@ Please keep the app open while the wallet syncs.";
 "debug.popup.options.designs" = "Design system";
 "debug.popup.options.logs"= "View logs";
 "debug.popup.options.bug_report"= "Report a bug";
-"debug.popup.options.connection_status"= "View connection status";
 "debug.logs.list.title" = "Debug Logs";
 "debug.logs.list.button.export" = "Export";
 "debug.logs.list.error.message.unable_to_load" = "Unable to load log files. Please try again later or send us a bug report.";

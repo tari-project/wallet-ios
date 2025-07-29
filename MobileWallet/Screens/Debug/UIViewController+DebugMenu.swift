@@ -54,7 +54,6 @@ extension UIViewController {
     // MARK: - Actions
 
     private func handleShakeGesture() {
-
         let headerSection = PopUpHeaderView()
         let contentSection = PopUpButtonsTableView()
         let buttonsSection = PopUpButtonsView()
@@ -65,8 +64,7 @@ extension UIViewController {
             localized("debug.popup.options.designs"),
             "New Design System",
             localized("debug.popup.options.logs"),
-            localized("debug.popup.options.bug_report"),
-            localized("debug.popup.options.connection_status")
+            localized("debug.popup.options.bug_report")
         ])
 
         contentSection.onSelectedRow = { [weak self] in self?.handle(selectedIndexPath: $0) }
@@ -77,7 +75,6 @@ extension UIViewController {
     }
 
     private func handle(selectedIndexPath: IndexPath) {
-
         PopUpPresenter.dismissPopup()
 
         switch selectedIndexPath.row {
@@ -89,8 +86,6 @@ extension UIViewController {
             moveToLogsScene()
         case 3:
             moveToReportBugScene()
-        case 4:
-            showConnectionStatus()
         default:
             break
         }
@@ -123,9 +118,5 @@ extension UIViewController {
     private func moveToReportBugScene() {
         let controller = BugReportingConstructor.buildScene()
         present(controller, animated: true)
-    }
-
-    private func showConnectionStatus() {
-        AppConnectionHandler.shared.connectionMonitor.showDetailsPopup()
     }
 }

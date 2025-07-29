@@ -41,7 +41,7 @@
 import SwiftUI
 import Combine
 
-struct Home: View {
+struct Home: View, ChainTipObserver {
     @ObservedObject var network = NetworkManager.shared
     @State var activeMiners = " "
     @State var totalBalance = ""
@@ -58,6 +58,7 @@ struct Home: View {
     @State var isSendPresented = false
     @State var isReceivePresented = false
     @State var isTransactionHistoryPresented = false
+    @State var isConnectionStatusPresented = false
     
     let walletState: WalletState
     
@@ -78,6 +79,7 @@ struct Home: View {
             .onAppear {
                 load()
             }
+            .observeChainTip(self)
             .onReceive(Tari.mainWallet.walletBalance.$balance) {
                 update(walletBalance: $0)
             }
@@ -86,9 +88,6 @@ struct Home: View {
             }
             .onReceive(AppConnectionHandler.shared.connectionMonitor.$syncStatus) {
                 update(syncStatus: $0)
-            }
-            .onReceive(Tari.mainWallet.connectionCallbacks.$scannedHeight.combineLatest(Tari.mainWallet.connectionCallbacks.$blockHeight)) {
-                update(scannedHeight: $0.0, chainTip: $0.1)
             }
             .navigationDestination(item: $presentedTransaction) {
                 if let transaction = transaction(for: $0) {
@@ -108,6 +107,9 @@ struct Home: View {
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
             }
+            .sheet(isPresented: $isConnectionStatusPresented) {
+                ConnectionStatusSheet()
+            }
         }
     }
 }
@@ -125,7 +127,7 @@ private extension Home {
     }
     
     var connectionStatusTag: some View {
-        Button(action: { AppConnectionHandler.shared.connectionMonitor.showDetailsPopup() }) {
+        Button(action: { isConnectionStatusPresented = true }) {
             HStack(spacing: 4) {
                 Circle()
                     .foregroundStyle(syncStatus.color)
@@ -240,7 +242,7 @@ private extension Home {
                 Spacer(minLength: 8)
 
                 HStack(spacing: 2) {
-                    if isSynced {
+                    if isChainTipSynced {
                         Image(.successIcon)
                             .padding(.trailing, 2)
                     } else {
@@ -291,15 +293,11 @@ private extension Home {
     }
     
     var syncMessage: String {
-        isSynced
+        isChainTipSynced
             ? "**Synced to block #\(chainTip)**"
             : 0 < unsyncedBlockCount && 0 < scannedHeight
                 ? "**Syncing** \(unsyncedBlockCount) blocks remaining"
                 : "**Syncing**"
-    }
-    
-    var unsyncedBlockCount: UInt64 {
-        chainTip - min(chainTip, scannedHeight)
     }
 }
 

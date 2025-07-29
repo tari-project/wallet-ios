@@ -1,10 +1,10 @@
-//  NetworkMonitor.swift
-
+//  ChainTipObserver.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 18/07/2022
-	Using Swift 5.0
-	Running on macOS 12.4
+	Created by Tomas Hakel on 29.07.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,49 +38,26 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Network
-import Combine
+import SwiftUI
 
-final class NetworkMonitor: ObservableObject {
-    enum Status: Hashable {
-        case disconnected
-        case connected(interface: String)
+protocol ChainTipObserver {
+    var scannedHeight: UInt64 { get nonmutating set }
+    var chainTip: UInt64 { get nonmutating set }
+}
+
+extension ChainTipObserver {
+    var isChainTipSynced: Bool {
+        0 < scannedHeight && scannedHeight == chainTip
     }
-
-    private let monitor = NWPathMonitor()
-
-    @Published private(set) var status: Status = .disconnected
-
-    init() {
-        setup()
-    }
-
-    // MARK: - Setups
-
-    private func setup() {
-        monitor.pathUpdateHandler = { [weak self] in
-            guard $0.status == .satisfied else {
-                self?.status = .disconnected
-                return
-            }
-            self?.status = .connected(interface: $0.interfaceName)
-        }
-
-        let queue = DispatchQueue(label: "NetworkMonitor Queue")
-        monitor.start(queue: queue)
-    }
-
-    deinit {
-        monitor.cancel()
+    
+    var unsyncedBlockCount: UInt64 {
+        chainTip - min(chainTip, scannedHeight)
     }
 }
 
-private extension NWPath {
-    var interfaceName: String {
-        if usesInterfaceType(.wifi) { return "WiFi" }
-        if usesInterfaceType(.cellular) { return "Cellular" }
-        if usesInterfaceType(.wiredEthernet) { return "Ethernet" }
-        if usesInterfaceType(.loopback) { return "Loopback" }
-        return "Unknown"
+extension View {
+    func observeChainTip(_ observer: ChainTipObserver) -> some View {
+        self.onReceive(Tari.mainWallet.connectionCallbacks.$scannedHeight) { observer.scannedHeight = $0 }
+            .onReceive(Tari.mainWallet.connectionCallbacks.$blockHeight) { observer.chainTip = $0 }
     }
 }

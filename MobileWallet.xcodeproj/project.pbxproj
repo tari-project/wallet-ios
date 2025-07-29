@@ -172,7 +172,6 @@
 		3A78860E2872FB39003B1F9A /* TariVectorWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */; };
 		3A793BF128031F540094DF23 /* PopUpImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A793BF028031F540094DF23 /* PopUpImageHeaderView.swift */; };
 		3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A793BF2280354830094DF23 /* PopUpHeaderWithSubtitle.swift */; };
-		3A7A38D32881689A00D7E8BD /* PopUpNetworkStatusContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7A38D22881689A00D7E8BD /* PopUpNetworkStatusContentView.swift */; };
 		3A7DAB8F28FDAF9A002CC013 /* LogsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB8E28FDAF9A002CC013 /* LogsListViewController.swift */; };
 		3A7DAB9128FDAFD5002CC013 /* LogsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9028FDAFD5002CC013 /* LogsListView.swift */; };
 		3A7DAB9328FDB18A002CC013 /* LogsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */; };
@@ -578,6 +577,8 @@
 		F8C065242E2A554D009BFC8F /* TransactionHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065232E2A554D009BFC8F /* TransactionHistory.swift */; };
 		F8C065382E2E7220009BFC8F /* Text+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065372E2E721B009BFC8F /* Text+Style.swift */; };
 		F8C0653D2E37BFC5009BFC8F /* NetworkStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C0653C2E37BFC4009BFC8F /* NetworkStatus.swift */; };
+		F8C0653F2E37C3A5009BFC8F /* ConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */; };
+		F8C065422E38A2F5009BFC8F /* ChainTipObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */; };
 		F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */; };
 		F8E279822E24F69A0017C3F5 /* UISettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */; };
 		F8E279842E253B6F0017C3F5 /* UISendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279832E253B6E0017C3F5 /* UISendViewController.swift */; };
@@ -779,7 +780,6 @@
 		3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariVectorWrapper.swift; sourceTree = "<group>"; };
 		3A793BF028031F540094DF23 /* PopUpImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpImageHeaderView.swift; sourceTree = "<group>"; };
 		3A793BF2280354830094DF23 /* PopUpHeaderWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpHeaderWithSubtitle.swift; sourceTree = "<group>"; };
-		3A7A38D22881689A00D7E8BD /* PopUpNetworkStatusContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpNetworkStatusContentView.swift; sourceTree = "<group>"; };
 		3A7DAB8E28FDAF9A002CC013 /* LogsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListViewController.swift; sourceTree = "<group>"; };
 		3A7DAB9028FDAFD5002CC013 /* LogsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListView.swift; sourceTree = "<group>"; };
 		3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListModel.swift; sourceTree = "<group>"; };
@@ -1188,6 +1188,8 @@
 		F8C065232E2A554D009BFC8F /* TransactionHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistory.swift; sourceTree = "<group>"; };
 		F8C065372E2E721B009BFC8F /* Text+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Style.swift"; sourceTree = "<group>"; };
 		F8C0653C2E37BFC4009BFC8F /* NetworkStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatus.swift; sourceTree = "<group>"; };
+		F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatus.swift; sourceTree = "<group>"; };
+		F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainTipObserver.swift; sourceTree = "<group>"; };
 		F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProfileViewController.swift; sourceTree = "<group>"; };
 		F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISettingsViewController.swift; sourceTree = "<group>"; };
 		F8E279832E253B6E0017C3F5 /* UISendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISendViewController.swift; sourceTree = "<group>"; };
@@ -2128,8 +2130,9 @@
 		3A7A38D12881688800D7E8BD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F82150472E0D78F4003EBB25 /* TransactionItem.swift */,
+				F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */,
 				714103CD2DC4628500D4D452 /* SyncStatusView.swift */,
-				3A7A38D22881689A00D7E8BD /* PopUpNetworkStatusContentView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2217,8 +2220,9 @@
 		3A860BD0287DA2A200FC4F76 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				F8C065402E38A2C2009BFC8F /* Interactors */,
 				F8F1EBDB2E1C1DE400B09007 /* Models */,
-				F82150422E0D528C003EBB25 /* SwiftUI */,
+				F82150422E0D528C003EBB25 /* Scenes */,
 				3A7A38D12881688800D7E8BD /* Views */,
 			);
 			path = Home;
@@ -3217,16 +3221,15 @@
 			path = SwiftUI;
 			sourceTree = "<group>";
 		};
-		F82150422E0D528C003EBB25 /* SwiftUI */ = {
+		F82150422E0D528C003EBB25 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
 				F82150432E0D52A6003EBB25 /* Home.swift */,
 				F82150452E0D5348003EBB25 /* Home+Actions.swift */,
-				F82150472E0D78F4003EBB25 /* TransactionItem.swift */,
 				F8E279832E253B6E0017C3F5 /* UISendViewController.swift */,
 				F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */,
 			);
-			path = SwiftUI;
+			path = Scenes;
 			sourceTree = "<group>";
 		};
 		F88B28DB2E27AEC1005B9B13 /* Models */ = {
@@ -3246,6 +3249,14 @@
 				F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */,
 			);
 			path = Tabs;
+			sourceTree = "<group>";
+		};
+		F8C065402E38A2C2009BFC8F /* Interactors */ = {
+			isa = PBXGroup;
+			children = (
+				F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */,
+			);
+			path = Interactors;
 			sourceTree = "<group>";
 		};
 		F8F1EBDB2E1C1DE400B09007 /* Models */ = {
@@ -3653,6 +3664,7 @@
 				37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				3A7DAB9728FDB6FD002CC013 /* LogsListConstructor.swift in Sources */,
 				540F02322A6A67E500691FF5 /* AddRecipientView.swift in Sources */,
+				F8C065422E38A2F5009BFC8F /* ChainTipObserver.swift in Sources */,
 				3AEDBE4D27CE45C0006B0166 /* DeepLinkFormatter.swift in Sources */,
 				3ACDA70E26B0320900F138B8 /* SeedWordsRecoveryProgressModel.swift in Sources */,
 				3AE138CF2804A88500443D34 /* ToastPresenter.swift in Sources */,
@@ -3821,7 +3833,7 @@
 				3ACFECAA27ABD0B100FA9FE1 /* SendingTariProgressBar.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
 				3AFC3D60288EC3FA0046D386 /* UnselectableTextView.swift in Sources */,
-				3A7A38D32881689A00D7E8BD /* PopUpNetworkStatusContentView.swift in Sources */,
+				F8C0653F2E37C3A5009BFC8F /* ConnectionStatus.swift in Sources */,
 				71717AF92DB0786100CCB640 /* TransactionDetailsCell.swift in Sources */,
 				3A530BCF290AEDB600C423C7 /* BackupServicable.swift in Sources */,
 				3AF79D602727206200613C24 /* ContactSearchView.swift in Sources */,
