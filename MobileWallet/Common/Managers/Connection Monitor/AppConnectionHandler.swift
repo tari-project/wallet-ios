@@ -66,7 +66,6 @@ final class AppConnectionHandler {
 
     private func updateConfiguration(wallet: WalletInteractable) {
         connectionMonitor.setupPublishers(
-            baseNodeConnectionStatus: wallet.connectionCallbacks.$baseNodeConnectionStatus.eraseToAnyPublisher(),
             scannedHeight: wallet.connectionCallbacks.$scannedHeight.eraseToAnyPublisher(),
             blockHeight: wallet.connectionCallbacks.$blockHeight.eraseToAnyPublisher()
         )

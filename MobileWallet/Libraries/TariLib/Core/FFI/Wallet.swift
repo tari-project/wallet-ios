@@ -133,8 +133,7 @@ final class Wallet {
         }
 
         let connectivityStatusCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = { context, status in
-            guard let status = BaseNodeConnectivityStatus(rawValue: status) else { return }
-            context?.walletCallbacks.connectivityStatusSubject.send(status)
+            // TODO: not used anymore, should be removed once FFI is updated
         }
 
         let walletScannedHeightCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = { context, scannedHeight in

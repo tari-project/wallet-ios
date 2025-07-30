@@ -46,7 +46,6 @@ final class ConnectionMonitor {
     // MARK: - Properties
 
     @Published private(set) var networkConnection: NetworkMonitor.Status = .disconnected
-    @Published private(set) var baseNodeConnection: BaseNodeConnectivityStatus = .offline
     @Published private(set) var walletScannedHeight: UInt64 = 0
     @Published private(set) var chainTip: UInt64 = 0
 
@@ -56,22 +55,15 @@ final class ConnectionMonitor {
     // MARK: - Setups
 
     func setupPublishers(
-        baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never>,
         scannedHeight: AnyPublisher<UInt64, Never>,
         blockHeight: AnyPublisher<UInt64, Never>
     ) {
         networkMonitor.$status
             .assign(to: \.networkConnection, on: self)
             .store(in: &cancellables)
-
-        baseNodeConnectionStatus
-            .assign(to: \.baseNodeConnection, on: self)
-            .store(in: &cancellables)
-
         scannedHeight
             .assign(to: \.walletScannedHeight, on: self)
             .store(in: &cancellables)
-
         blockHeight
             .assign(to: \.chainTip, on: self)
             .store(in: &cancellables)

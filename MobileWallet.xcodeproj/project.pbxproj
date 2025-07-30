@@ -186,7 +186,6 @@
 		3A8005C628EAF0A50022A38A /* TransactionSendResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005C528EAF0A50022A38A /* TransactionSendResult.swift */; };
 		3A8005C828EAF1AB0022A38A /* RestoreWalletStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */; };
 		3A8005CD28EAF9110022A38A /* WalletBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005CC28EAF9100022A38A /* WalletBalance.swift */; };
-		3A8005CF28EAF9380022A38A /* BaseNodeConnectivityStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */; };
 		3A80F636287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A80F635287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift */; };
 		3A82455427E1EDBB003B6B59 /* TransactionDetailsValueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455327E1EDBB003B6B59 /* TransactionDetailsValueView.swift */; };
 		3A82455627E1EE0D003B6B59 /* TransactionDetailsSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455527E1EE0D003B6B59 /* TransactionDetailsSectionView.swift */; };
@@ -791,7 +790,6 @@
 		3A8005C528EAF0A50022A38A /* TransactionSendResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionSendResult.swift; sourceTree = "<group>"; };
 		3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletStatus.swift; sourceTree = "<group>"; };
 		3A8005CC28EAF9100022A38A /* WalletBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBalance.swift; sourceTree = "<group>"; };
-		3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNodeConnectivityStatus.swift; sourceTree = "<group>"; };
 		3A80F635287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpUtxoDetailsContentView.swift; sourceTree = "<group>"; };
 		3A82455327E1EDBB003B6B59 /* TransactionDetailsValueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsValueView.swift; sourceTree = "<group>"; };
 		3A82455527E1EE0D003B6B59 /* TransactionDetailsSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsSectionView.swift; sourceTree = "<group>"; };
@@ -2887,7 +2885,6 @@
 		54D782F42BA8615D00DD3BFE /* Base Node */ = {
 			isa = PBXGroup;
 			children = (
-				3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */,
 				54D782F52BA8616F00DD3BFE /* BaseNodeState.swift */,
 			);
 			path = "Base Node";
@@ -3700,7 +3697,6 @@
 				546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				37875E4824D8787A00C0595B /* TxTableViewModel.swift in Sources */,
-				3A8005CF28EAF9380022A38A /* BaseNodeConnectivityStatus.swift in Sources */,
 				3A115B1827EC4B14001259E5 /* TransactionDetailsSeparatorView.swift in Sources */,
 				549E1A012A5EB7B00063022C /* QRCodeScannerBoxView.swift in Sources */,
 				3A8473CC28EC562E0015E63A /* TariConnectionService.swift in Sources */,

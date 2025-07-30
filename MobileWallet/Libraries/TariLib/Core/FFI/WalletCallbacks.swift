@@ -53,7 +53,6 @@ protocol WalletCallbacksReadable: AnyObject {
     var transactionSendResult: AnyPublisher<TransactionSendResult, Never> { get }
     var transactionCancellation: AnyPublisher<CompletedTransaction, Never> { get }
     var balanceUpdate: AnyPublisher<Balance, Never> { get }
-    var connectivityStatus: AnyPublisher<BaseNodeConnectivityStatus, Never> { get }
     var scannedHeight: AnyPublisher<UInt64, Never> { get }
     var baseNodeState: AnyPublisher<BaseNodeState, Never> { get }
 
@@ -72,7 +71,6 @@ final class WalletCallbacks {
     let transactionSendResultSubject = PassthroughSubject<TransactionSendResult, Never>()
     let transactionCancellationSubject = PassthroughSubject<CompletedTransaction, Never>()
     let balanceUpdateSubject = PassthroughSubject<Balance, Never>()
-    let connectivityStatusSubject = PassthroughSubject<BaseNodeConnectivityStatus, Never>()
     let scannedHeightSubject = PassthroughSubject<UInt64, Never>()
     let baseNodeStateSubject = PassthroughSubject<BaseNodeState, Never>()
 
@@ -93,7 +91,6 @@ extension WalletCallbacks: WalletCallbacksReadable {
     var transactionSendResult: AnyPublisher<TransactionSendResult, Never> { transactionSendResultSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var transactionCancellation: AnyPublisher<CompletedTransaction, Never> { transactionCancellationSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var balanceUpdate: AnyPublisher<Balance, Never> { balanceUpdateSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
-    var connectivityStatus: AnyPublisher<BaseNodeConnectivityStatus, Never> { connectivityStatusSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var scannedHeight: AnyPublisher<UInt64, Never> { scannedHeightSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var baseNodeState: AnyPublisher<BaseNodeState, Never> { baseNodeStateSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
 

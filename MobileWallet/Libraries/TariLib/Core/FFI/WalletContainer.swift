@@ -67,21 +67,16 @@ protocol WalletInteractable {
 }
 
 final class WalletConnectionCallbacks {
-
-    @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
     @Published private(set) var scannedHeight: UInt64 = 0
     @Published private(set) var blockHeight: UInt64 = 0
 
-    init(baseNodeConnectionStatusPublisher: Published<BaseNodeConnectivityStatus>.Publisher, scannedHeightPublisher: Published<UInt64>.Publisher, blockHeight: Published<UInt64>.Publisher) {
-        baseNodeConnectionStatusPublisher.assign(to: &$baseNodeConnectionStatus)
+    init(scannedHeightPublisher: Published<UInt64>.Publisher, blockHeight: Published<UInt64>.Publisher) {
         scannedHeightPublisher.assign(to: &$scannedHeight)
         blockHeight.assign(to: &$blockHeight)
     }
 }
 
 final class WalletContainer: WalletInteractable, MainServiceable {
-
-    @Published private var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
     @Published private var scannedHeight: UInt64 = 0
     @Published private var blockHeight: UInt64 = NetworkManager.shared.blockHeight
 
@@ -100,7 +95,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     private(set) lazy var isWalletRunning: StaticPublisherWrapper<Bool> = StaticPublisherWrapper(publisher: manager.$isWalletRunning)
     var isWalletDBExist: Bool { (try? databaseDirectoryURL.checkResourceIsReachable()) ?? false }
 
-    private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(baseNodeConnectionStatusPublisher: $baseNodeConnectionStatus, scannedHeightPublisher: $scannedHeight, blockHeight: $blockHeight)
+    private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(scannedHeightPublisher: $scannedHeight, blockHeight: $blockHeight)
 
     private(set) lazy var connection: TariConnectionService = TariConnectionService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var contacts = TariContactsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
@@ -139,11 +134,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     // MARK: - Setups
 
     private func setupCallbacks() {
-        walletCallbacks.connectivityStatus
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$baseNodeConnectionStatus)
-
         walletCallbacks.scannedHeight
             .assign(to: &$scannedHeight)
 
@@ -183,7 +173,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     func stop() {
         manager.disconnectWallet()
-        baseNodeConnectionStatus = .offline
     }
 
     func log(message: String) throws {
