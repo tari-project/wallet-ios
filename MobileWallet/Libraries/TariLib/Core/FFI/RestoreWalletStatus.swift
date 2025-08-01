@@ -39,38 +39,24 @@
 */
 
 enum RestoreWalletStatus: Equatable {
-    case unknown
-    case connectingToBaseNode
-    case connectedToBaseNode
-    case connectionFailed(attempt: UInt64, maxAttempts: UInt64)
     case progress(restoredUTXOs: UInt64, totalNumberOfUTXOs: UInt64)
     case completed
     case scanningRoundFailed(attempt: UInt64, maxAttempts: UInt64)
-    case recoveryFailed
+    case unknown
 
     init(status: UInt8, firstValue: UInt64, secondValue: UInt64) {
         self = switch status {
-        case 0: .connectingToBaseNode
-        case 1: .connectedToBaseNode
-        case 2: .connectionFailed(attempt: firstValue, maxAttempts: secondValue)
-        case 3: .progress(restoredUTXOs: firstValue, totalNumberOfUTXOs: secondValue)
-        case 4: .completed
-        case 5: .scanningRoundFailed(attempt: firstValue, maxAttempts: secondValue)
-        case 6: .recoveryFailed
+        case 0: .progress(restoredUTXOs: firstValue, totalNumberOfUTXOs: secondValue)
+        case 1: .completed
+        case 2: .scanningRoundFailed(attempt: firstValue, maxAttempts: secondValue)
         default: .unknown
         }
     }
 
 	 static func == (lhs: RestoreWalletStatus, rhs: RestoreWalletStatus) -> Bool {
         switch (lhs, rhs) {
-        case (.unknown, .unknown),
-             (.connectingToBaseNode, .connectingToBaseNode),
-             (.connectedToBaseNode, .connectedToBaseNode),
-             (.completed, .completed),
-             (.recoveryFailed, .recoveryFailed):
+        case (.unknown, .unknown), (.completed, .completed):
             return true
-        case let (.connectionFailed(lhsAttempt, lhsMaxAttempts), .connectionFailed(rhsAttempt, rhsMaxAttempts)):
-            return lhsAttempt == rhsAttempt && lhsMaxAttempts == rhsMaxAttempts
         case let (.progress(lhsRestored, lhsTotal), .progress(rhsRestored, rhsTotal)):
             return lhsRestored == rhsRestored && lhsTotal == rhsTotal
         case let (.scanningRoundFailed(lhsAttempt, lhsMaxAttempts), .scanningRoundFailed(rhsAttempt, rhsMaxAttempts)):

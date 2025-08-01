@@ -94,24 +94,18 @@ final class SeedWordsRecoveryProgressModel {
 
     private func handle(restoreStatus: RestoreWalletStatus) {
         switch restoreStatus {
-        case .connectingToBaseNode:
-            return
-        case .connectedToBaseNode:
-            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.connected")
-            viewModel.progress = nil
-            viewModel.error = nil
-        case let .connectionFailed(attempt, maxAttempts), let .scanningRoundFailed(attempt, maxAttempts):
-            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.connecting")
-            viewModel.progress = localized("restore_from_seed_words.progress_overlay.progress.connection_failed", arguments: attempt + 1, maxAttempts + 1)
-            viewModel.error = nil
         case let .progress(restoredUTXOs, totalNumberOfUTXOs):
             let value = Double(restoredUTXOs) / Double(totalNumberOfUTXOs) * 100.0
-            viewModel.status =  localized("restore_from_seed_words.progress_overlay.status.progress")
+            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.progress")
             viewModel.progress = String(format: "%.1f%%", value)
             viewModel.error = nil
         case .completed:
             viewModel.isWalletRestored = true
-        case .recoveryFailed, .unknown:
+        case let .scanningRoundFailed(attempt, maxAttempts):
+            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.connecting")
+            viewModel.progress = localized("restore_from_seed_words.progress_overlay.progress.connection_failed", arguments: attempt + 1, maxAttempts + 1)
+            viewModel.error = nil
+        case .unknown:
             viewModel.error = MessageModel(
                 title: localized("restore_from_seed_words.progress_overlay.error.title"),
                 message: localized("restore_from_seed_words.progress_overlay.error.description.connection_failed"),

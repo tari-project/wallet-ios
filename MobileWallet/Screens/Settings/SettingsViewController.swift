@@ -83,7 +83,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         case selectTheme
         case screenRecording
         case selectNetwork
-        case selectBaseNode
         case deleteWallet
 
         var rawValue: String {
@@ -93,7 +92,6 @@ final class SettingsViewController: SettingsParentTableViewController {
             case .selectTheme: localized("settings.item.select_theme")
             case .screenRecording: localized("settings.item.screen_recording_settings")
             case .selectNetwork: localized("settings.item.select_network")
-            case .selectBaseNode: localized("settings.item.select_base_node")
             case .deleteWallet: localized("settings.item.delete_wallet")
 
             case .about: localized("settings.item.about")

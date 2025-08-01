@@ -47,7 +47,7 @@ final class TariFeesService: CoreTariService {
         try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
     }
 
-    func feePerGramStats(count: UInt32) throws -> TariFeePerGramStats {
+    func feePerGramStats(count: UInt32) throws -> TariFeePerGramStat {
         try walletManager.feePerGramStats(count: count)
     }
 }

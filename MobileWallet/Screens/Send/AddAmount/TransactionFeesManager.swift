@@ -41,13 +41,6 @@
 import Foundation
 
 final class TransactionFeesManager {
-    enum NetworkTraffic {
-        case low
-        case medium
-        case high
-        case unknown
-    }
-
     enum Status {
         case calculating
         case data(FeeData)
@@ -55,7 +48,6 @@ final class TransactionFeesManager {
     }
 
     struct FeeData {
-        let networkTraffic: NetworkTraffic
         let feePerGram: MicroTari
         let fee: MicroTari
     }
@@ -79,7 +71,6 @@ final class TransactionFeesManager {
     @Published private(set) var lastError: Error?
 
     private(set) var feeData: FeeData?
-    private var networkTraffic: NetworkTraffic?
     private var feePerGram: MicroTari?
 
     // MARK: - Initialisers
@@ -91,13 +82,12 @@ final class TransactionFeesManager {
     // MARK: - Actions
 
     private func updateData() {
-        fetchTrafficAndFeesPerGram { [weak self] result in
+        fetchFeesPerGram { [weak self] result in
             guard let self else { return }
             switch result {
-            case let .success((networkTraffic, feePerGram)):
-                self.networkTraffic = networkTraffic
+            case let .success(feePerGram):
                 self.feePerGram = feePerGram
-                self.updateFee(networkTraffic: networkTraffic, feePerGram: feePerGram)
+                self.updateFee(feePerGram: feePerGram)
             case let .failure(error):
                 self.lastError = error
                 self.feesStatus = .dataUnavailable
@@ -105,10 +95,10 @@ final class TransactionFeesManager {
         }
     }
 
-    private func updateFee(networkTraffic: NetworkTraffic, feePerGram: MicroTari) {
+    private func updateFee(feePerGram: MicroTari) {
         do {
             let fee = try calculateFee(amount: amount, feePerGram: feePerGram)
-            let feeData = FeeData(networkTraffic: networkTraffic, feePerGram: feePerGram, fee: fee)
+            let feeData = FeeData(feePerGram: feePerGram, fee: fee)
             self.feeData = feeData
             feesStatus = .data(feeData)
         } catch {
@@ -118,47 +108,36 @@ final class TransactionFeesManager {
     }
 
     private func handleNewAmount() {
-        guard let networkTraffic, let feePerGram else {
+        guard let feePerGram else {
             updateData()
             return
         }
-        updateFee(networkTraffic: networkTraffic, feePerGram: feePerGram)
+        updateFee(feePerGram: feePerGram)
     }
 
-    private func fetchTrafficAndFeesPerGram(result: @escaping (Result<(NetworkTraffic, MicroTari), Error>) -> Void) {
+    private func fetchFeesPerGram(result: @escaping (Result<MicroTari, Error>) -> Void) {
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
 
             let dispatchGroup = DispatchGroup()
             dispatchGroup.enter()
 
-            var response: (NetworkTraffic, MicroTari)?
+            var response: MicroTari?
 
             DispatchQueue.global().async {
-                response = try? self.calculateTrafficAndFeesPerGram()
+                response = try? self.calculateFeesPerGram()
                 dispatchGroup.leave()
             }
-
             _ = dispatchGroup.wait(timeout: .now() + self.timeout)
 
-            let finalResponse = response ?? (.unknown, TariConstants.defaultFeePerGram)
-            result(.success(finalResponse))
+            result(.success(response ?? TariConstants.defaultFeePerGram))
         }
     }
 
-    private func calculateTrafficAndFeesPerGram() throws -> (NetworkTraffic, MicroTari) {
+    private func calculateFeesPerGram() throws -> MicroTari {
         let stats = try Tari.mainWallet.fees.feePerGramStats(count: 3)
-        let blocksCount = try stats.count
-        let stat = try stats.element(at: 0)
-        let feePerGram = try stats.minFeePerGram(feeParGramStatPointer: stat)
-
-        let traffic: NetworkTraffic = switch blocksCount {
-        case 1: .low
-        case 2: .medium
-        case 3...UInt32.max: .high
-        default: throw InternalError.unexpectedBlockCount
-        }
-        return (traffic, MicroTari(max(1, feePerGram)))
+        let feePerGram = try stats.minFeePerGram()
+        return MicroTari(max(1, feePerGram))
     }
 
     private func calculateFee(amount: MicroTari, feePerGram: MicroTari) throws -> MicroTari {

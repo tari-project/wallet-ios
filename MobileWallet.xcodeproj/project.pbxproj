@@ -156,7 +156,7 @@
 		3A6A033C2802DD34000432B4 /* PopUpPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6A033B2802DD34000432B4 /* PopUpPresenter.swift */; };
 		3A6A033E2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6A033D2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift */; };
 		3A6CD3B5279194980034DF81 /* RequestTariAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6CD3B4279194980034DF81 /* RequestTariAmountView.swift */; };
-		3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */; };
+		3A6F3FF8283BF980005D1793 /* TariFeePerGramStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6F3FF7283BF980005D1793 /* TariFeePerGramStat.swift */; };
 		3A70433D28E21CFB00207D6F /* CompletedTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A70433C28E21CFB00207D6F /* CompletedTransaction.swift */; };
 		3A70433F28E21D3600207D6F /* CompletedTransactionKernel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A70433E28E21D3600207D6F /* CompletedTransactionKernel.swift */; };
 		3A70434128E21D7A00207D6F /* PendingInboundTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A70434028E21D7A00207D6F /* PendingInboundTransaction.swift */; };
@@ -760,7 +760,7 @@
 		3A6A033B2802DD34000432B4 /* PopUpPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpPresenter.swift; sourceTree = "<group>"; };
 		3A6A033D2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PopUpPresenter+CommonPopUps.swift"; sourceTree = "<group>"; };
 		3A6CD3B4279194980034DF81 /* RequestTariAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTariAmountView.swift; sourceTree = "<group>"; };
-		3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariFeePerGramStats.swift; sourceTree = "<group>"; };
+		3A6F3FF7283BF980005D1793 /* TariFeePerGramStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariFeePerGramStat.swift; sourceTree = "<group>"; };
 		3A70433C28E21CFB00207D6F /* CompletedTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTransaction.swift; sourceTree = "<group>"; };
 		3A70433E28E21D3600207D6F /* CompletedTransactionKernel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTransactionKernel.swift; sourceTree = "<group>"; };
 		3A70434028E21D7A00207D6F /* PendingInboundTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingInboundTransaction.swift; sourceTree = "<group>"; };
@@ -1803,7 +1803,7 @@
 				4CDEC322273A5E3500999DCB /* Balance.swift */,
 				00BBD80D237DA07400EBF5E6 /* ByteVector.swift */,
 				3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */,
-				3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */,
+				3A6F3FF7283BF980005D1793 /* TariFeePerGramStat.swift */,
 				3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */,
 				3A4D90A3273A75FC00A23FA8 /* Wallet.swift */,
 				54360D152C45555100EC0BBC /* TariEmojis.swift */,
@@ -3839,7 +3839,7 @@
 				543F89D02B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift in Sources */,
 				3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */,
 				714909EA2D8ACDDB0081F417 /* NewProfileModel.swift in Sources */,
-				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
+				3A6F3FF8283BF980005D1793 /* TariFeePerGramStat.swift in Sources */,
 				54360D162C45555100EC0BBC /* TariEmojis.swift in Sources */,
 				3A5A3D5829016DE300B689C6 /* BackupWalletSettingsViewController.swift in Sources */,
 				54CA4D6C2CB9570900C33FD9 /* AppConnectionHandler.swift in Sources */,

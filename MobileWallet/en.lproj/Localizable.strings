@@ -201,7 +201,6 @@
 "settings.item.data_collection" = "Data Collection";
 "settings.item.bridge_configuration" = "Bridge Configuration";
 "settings.item.select_network" = "Select Network";
-"settings.item.select_base_node" = "Select Base Node";
 "settings.item.delete_wallet" = "Delete Your Wallet";
 
 "settings.item.contribute_to_tari" = "Contribute to Tari Universe Wallet";
@@ -569,7 +568,6 @@ This could be due to a slow internet connection, a busy network, or a hiccup wit
 Please keep the app open while the wallet syncs.";
 "restore_from_seed_words.progress_overlay.success" = "Your wallet was restored. Welcome back!";
 "restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection";
-"restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon";
 "restore_from_seed_words.progress_overlay.status.progress" = "Restoring in progress:";
 "restore_from_seed_words.progress_overlay.progress.connection_failed" = "Attempt %d out of %d";
 "restore_from_seed_words.progress_overlay.error.title" = "Recovery Failed";

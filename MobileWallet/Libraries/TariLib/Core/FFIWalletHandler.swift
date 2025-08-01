@@ -226,7 +226,7 @@ final class FFIWalletHandler {
         return result
     }
 
-    func feePerGramStats(count: UInt32) throws -> TariFeePerGramStats {
+    func feePerGramStats(count: UInt32) throws -> TariFeePerGramStat {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -234,7 +234,7 @@ final class FFIWalletHandler {
         let result = wallet_get_fee_per_gram_stats(wallet.pointer, count, errorCodePointer)
 
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        return TariFeePerGramStats(pointer: pointer)
+        return TariFeePerGramStat(pointer: pointer)
     }
 
     func seedPeers() throws -> PublicKeys {
