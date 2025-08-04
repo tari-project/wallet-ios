@@ -575,6 +575,7 @@
 		F8C0653D2E37BFC5009BFC8F /* NetworkStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C0653C2E37BFC4009BFC8F /* NetworkStatus.swift */; };
 		F8C0653F2E37C3A5009BFC8F /* ConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */; };
 		F8C065422E38A2F5009BFC8F /* ChainTipObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */; };
+		F8CDD7AD2E40CFD4008E82B5 /* HomeRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CDD7AC2E40CFCE008E82B5 /* HomeRouter.swift */; };
 		F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */; };
 		F8E279822E24F69A0017C3F5 /* UISettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */; };
 		F8E279842E253B6F0017C3F5 /* UISendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279832E253B6E0017C3F5 /* UISendViewController.swift */; };
@@ -1182,6 +1183,7 @@
 		F8C0653C2E37BFC4009BFC8F /* NetworkStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatus.swift; sourceTree = "<group>"; };
 		F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatus.swift; sourceTree = "<group>"; };
 		F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainTipObserver.swift; sourceTree = "<group>"; };
+		F8CDD7AC2E40CFCE008E82B5 /* HomeRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRouter.swift; sourceTree = "<group>"; };
 		F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProfileViewController.swift; sourceTree = "<group>"; };
 		F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISettingsViewController.swift; sourceTree = "<group>"; };
 		F8E279832E253B6E0017C3F5 /* UISendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISendViewController.swift; sourceTree = "<group>"; };
@@ -3214,6 +3216,7 @@
 			children = (
 				F82150432E0D52A6003EBB25 /* Home.swift */,
 				F82150452E0D5348003EBB25 /* Home+Actions.swift */,
+				F8CDD7AC2E40CFCE008E82B5 /* HomeRouter.swift */,
 				F8E279832E253B6E0017C3F5 /* UISendViewController.swift */,
 				F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */,
 			);
@@ -3654,6 +3657,7 @@
 				540F02322A6A67E500691FF5 /* AddRecipientView.swift in Sources */,
 				F8C065422E38A2F5009BFC8F /* ChainTipObserver.swift in Sources */,
 				3AEDBE4D27CE45C0006B0166 /* DeepLinkFormatter.swift in Sources */,
+				F8CDD7AD2E40CFD4008E82B5 /* HomeRouter.swift in Sources */,
 				3ACDA70E26B0320900F138B8 /* SeedWordsRecoveryProgressModel.swift in Sources */,
 				3AE138CF2804A88500443D34 /* ToastPresenter.swift in Sources */,
 				3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */,

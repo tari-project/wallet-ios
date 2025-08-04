@@ -1,8 +1,8 @@
-//  AppTabs.swift
+//  HomeRouter.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 08.07.2025
+	Created by Tomas Hakel on 04.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -41,54 +41,9 @@
 import SwiftUI
 
 @Observable
-class TabState {
-    static let shared = TabState()
-    var selected: Tab = .home
-}
-
-struct AppTabs: View {
-    @State var state = TabState.shared
+class HomeRouter {
+    // TODO: Remove along with UIKit
+    static let shared = HomeRouter()
     
-    let walletState: WalletState
-    
-    var body: some View {
-        TabView(selection: $state.selected) {
-            home
-            profile
-            settings
-        }
-    }
-}
-
-private extension AppTabs {
-    var home: some View {
-        Home(walletState: walletState)
-            .environment(HomeRouter.shared)
-            .tab(.home, selected: state.selected)
-    }
-    
-    var profile: some View {
-        UIProfileViewController()
-            .background(Color.secondaryBackground)
-            .tab(.profile, selected: state.selected)
-    }
-    
-    var settings: some View {
-        UISettingsViewController()
-            .background(Color.secondaryBackground)
-            .tab(.settings, selected: state.selected)
-    }
-}
-
-private extension View {
-    func tab(_ tab: Tab, selected: Tab) -> some View {
-        tabItem {
-            Image(selected == tab ? tab.selectedIcon : tab.icon)
-        }
-        .tag(tab)
-    }
-}
-
-#Preview {
-    AppTabs(walletState: .current)
+    var isSendPresented = false
 }

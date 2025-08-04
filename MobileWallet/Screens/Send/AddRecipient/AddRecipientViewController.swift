@@ -127,6 +127,10 @@ final class AddRecipientViewController: SecureViewController<AddRecipientView> {
 
     func setupViews() {
         mainView.navigationBar.title = "Send"
+        mainView.navigationBar.backButtonType = .close
+        mainView.navigationBar.onBackButtonAction = {
+            HomeRouter.shared.isSendPresented = false
+        }
     }
     // MARK: - Handlers
 

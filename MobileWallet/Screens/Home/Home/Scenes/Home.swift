@@ -43,6 +43,7 @@ import Combine
 
 struct Home: View, ChainTipObserver {
     @ObservedObject var network = NetworkManager.shared
+    @Environment(HomeRouter.self) var router
     @State var activeMiners = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
@@ -53,7 +54,6 @@ struct Home: View, ChainTipObserver {
     @State var chainTip: UInt64 = 0
     @State var recentTransactions = [FormattedTransaction]()
     @State var presentedTransaction: FormattedTransaction?
-    @State var isSendPresented = false
     @State var isReceivePresented = false
     @State var isTransactionHistoryPresented = false
     @State var isConnectionStatusPresented = false
@@ -61,6 +61,7 @@ struct Home: View, ChainTipObserver {
     let walletState: WalletState
     
     var body: some View {
+        @Bindable var router = router
         NavigationStack {
             ScrollView {
                 VStack(spacing: 10) {
@@ -89,11 +90,6 @@ struct Home: View, ChainTipObserver {
                     TransactionDetails(transaction)
                 }
             }
-            .navigationDestination(isPresented: $isSendPresented) {
-                UISendViewController()
-                    .navigationBarBackButtonHidden()
-                    .background(Color.secondaryBackground)
-            }
             .navigationDestination(isPresented: $isReceivePresented) {
                 UIReceiveViewController()
                     .navigationBarBackButtonHidden()
@@ -101,6 +97,13 @@ struct Home: View, ChainTipObserver {
             }
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
+            }
+            .sheet(isPresented: $router.isSendPresented) {
+                NavigationStack {
+                    UISendViewController()
+                        .navigationBarBackButtonHidden()
+                        .background(Color.secondaryBackground)
+                }
             }
             .sheet(isPresented: $isConnectionStatusPresented) {
                 ConnectionStatusSheet()
@@ -217,7 +220,7 @@ private extension Home {
             
             HStack(spacing: 8) {
                 TariButton("Send", style: .label, size: .large) {
-                    isSendPresented = true
+                    router.isSendPresented = true
                 }
                 .disabled(!isChainTipSynced)
                 

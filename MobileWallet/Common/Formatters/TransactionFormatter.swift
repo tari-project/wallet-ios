@@ -81,12 +81,10 @@ final class TransactionFormatter {
     }
 
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
-
         guard try !transaction.isCoinbase else {
             let blockNumber = try (transaction as? CompletedTransaction)?.minedBlockHeight ?? 0
             return [StylizedLabel.StylizedText(text: "Block #\(blockNumber)", style: .bold)]
         }
-
         if try transaction.isOutboundTransaction {
             return [
                 StylizedLabel.StylizedText(text: "Paid", style: .normal),
@@ -137,11 +135,7 @@ final class TransactionFormatter {
             }
             return localized("refresh_view.final_processing_with_param", arguments: 1, requiredConfirmationCount + 1)
         case .minedUnconfirmed:
-            // TODO: Load confirmationCount?
-//            guard let confirmationCount, let requiredConfirmationCount = try? Tari.mainWallet.transactions.requiredConfirmationsCount else {
-                return localized("refresh_view.final_processing")
-//            }
-//            return localized("refresh_view.final_processing_with_param", arguments: confirmationCount + 1, requiredConfirmationCount + 1)
+            return localized("refresh_view.final_processing")
         case .imported, .coinbase, .minedConfirmed, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain, .txNullError, .unknown:
             return nil
         }

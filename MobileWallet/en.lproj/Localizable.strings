@@ -258,8 +258,6 @@
 
 "sending_tari.connecting" = "Connecting to the";
 "sending_tari.sent" = "Good to go!";
-"sending_tari.recipient" = "recipient on the Tari Network...";
-"sending_tari.searching" = "Searching for the";
 "sending_tari.network" = "Tari Network...";
 "sending_tari.tx_is_on_its_way" = "Your transaction is on its way...";
 

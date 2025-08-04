@@ -42,8 +42,7 @@ import UIKit
 
 enum TransactionProgressPresenter {
 
-    @MainActor static func showTransactionProgress(presenter: UIViewController, paymentInfo: PaymentInfo, isOneSidedPayment: Bool) {
-
+    @MainActor static func showTransactionProgress(presenter: UIViewController, paymentInfo: PaymentInfo) {
         guard let amount = paymentInfo.amount, let feePerGram = paymentInfo.feePerGram else {
             show(transactionError: .missingInputData)
             return
@@ -55,20 +54,23 @@ enum TransactionProgressPresenter {
 
         if let yatID = paymentInfo.yatID {
             // FIXME: Yat features doesn't support base58 and TariAddressComponent yet.
-            let inputData = YatTransactionModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
+            let inputData = YatTransactionModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID)
             controller = YatTransactionConstructor.buildScene(inputData: inputData)
             presenter.present(controller, animated: false)
         } else {
-            let inputData = SendingTariModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, paymentID: message, isOneSidedPayment: isOneSidedPayment)
+            let inputData = SendingTariModel.InputData(address: paymentInfo.addressComponents.fullRaw, amount: amount, feePerGram: feePerGram, paymentID: message)
             controller = SendingTariConstructor.buildScene(inputData: inputData)
             presenter.navigationController?.pushViewController(controller, animated: false)
         }
 
-        controller.onCompletion = { [weak presenter] error in
-            presenter?.navigationController?.dismiss(animated: true) {
-                TabState.shared.selected = .home
-                guard let error = error else { return }
-                show(transactionError: error)
+        controller.onCompletion = { error in
+            HomeRouter.shared.isSendPresented = false
+            TabState.shared.selected = .home
+            
+            if let error {
+                Task(after: 0.4) {
+                    show(transactionError: error)
+                }
             }
         }
     }

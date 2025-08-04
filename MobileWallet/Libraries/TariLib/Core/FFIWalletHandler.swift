@@ -290,13 +290,13 @@ final class FFIWalletHandler {
         return result.pointee
     }
 
-    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, isOneSidedPayment: Bool, paymentID: String) throws -> UInt64 {
+    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, paymentID: String) throws -> UInt64 {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, isOneSidedPayment, paymentID, errorCodePointer)
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, true, paymentID, errorCodePointer)
 
         try checkError(errorCode)
         return result
