@@ -6,7 +6,7 @@ NETWORK=mainnet
 FILE=env.json
 WORKING_DIR=Temp
 FRAMEWORK_ZIP_FILE_NAME=libminotari_wallet_ffi-mainnet_archive.zip
-FRAMEWORK_DIRECTORY=libminotari_wallet_ffi-mainnet-ios-xcframework/libminotari_wallet_ffi-ios-xcframework
+FRAMEWORK_DIRECTORY=libminotari_wallet_ffi-mainnet-ios-xcframework
 FRAMEWORK_FILE_NAME=libminotari_wallet_ffi_ios.xcframework
 PROJECT_FRAMEWORK_DIRECTORY=./MobileWallet/Libraries/TariLib
 
@@ -64,10 +64,10 @@ rm -rf $WORKING_DIR
 mkdir $WORKING_DIR
 
 # Show the full download URL
-DOWNLOAD_URL="https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME"
+DOWNLOAD_URL="https://github.com/leet4tari/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME"
 echo "Downloading FFI library from: $DOWNLOAD_URL"
 
-curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME" -o "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
+curl -L "https://github.com/leet4tari/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME" -o "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
 unzip "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME" -d "./$WORKING_DIR"
 rm -f "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
 
