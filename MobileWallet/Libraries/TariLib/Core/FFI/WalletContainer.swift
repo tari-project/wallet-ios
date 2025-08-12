@@ -202,7 +202,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     private func makeCommsConfig() throws -> CommsConfig {
         try CommsConfig(
             databaseName: databaseName,
-            databaseFolderPath: databaseDirectoryURL.path,
+            databaseFolderPath: databaseDirectoryURL.path
         )
     }
 }
