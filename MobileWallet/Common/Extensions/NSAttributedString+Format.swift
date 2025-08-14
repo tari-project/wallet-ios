@@ -38,18 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 extension NSAttributedString {
-
     convenience init(format: NSAttributedString, arguments: NSAttributedString...) {
-
         let mutableNSAttributedString = NSMutableAttributedString(attributedString: format)
-
-        arguments
-            .forEach { attributedString in
-                let range = NSString(string: mutableNSAttributedString.string).range(of: "%@")
-                mutableNSAttributedString.replaceCharacters(in: range, with: attributedString)
-            }
-
+        arguments.forEach { attributedString in
+            let range = NSString(string: mutableNSAttributedString.string).range(of: "%@")
+            mutableNSAttributedString.replaceCharacters(in: range, with: attributedString)
+        }
         self.init(attributedString: mutableNSAttributedString)
     }
 }

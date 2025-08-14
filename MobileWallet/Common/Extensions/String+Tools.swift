@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 extension String {
-
     static func isBaseNodeAddress(hex: String, address: String?) -> Bool {
-
         if #available(iOS 16.0, *) {
             guard hex.ranges(of: /^[a-f0-9]{64}$/).count == 1 else { return false }
             guard let address else { return true }

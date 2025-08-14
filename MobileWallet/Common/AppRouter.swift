@@ -97,7 +97,6 @@ enum AppRouter {
     }
 
     private static func transition(to controller: UIViewController, type: TransitionType) {
-
         guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = scene.windows.first else { return }
 
         guard type != .none else {
@@ -118,7 +117,6 @@ enum AppRouter {
     }
 
     private static func update(snapshot: UIView, controller: UIViewController, transitionType: TransitionType) {
-
         switch transitionType {
         case .moveDown:
             snapshot.frame.origin.y = controller.view.bounds.maxY
@@ -215,11 +213,6 @@ enum AppRouter {
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("qr_code_scanner.error.no_valid_device.title"), message: localized("qr_code_scanner.error.no_valid_device.message"), type: .error))
         }
-    }
-
-    static func presentCustomTorBridgesForm(bridges: String?) {
-        let controller = CustomTorBridgesConstructor.buildScene(bridges: bridges)
-        presentOnTop(controller: controller)
     }
 
     // MARK: - External Apps

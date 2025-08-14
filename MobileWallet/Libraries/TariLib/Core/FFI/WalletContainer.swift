@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 protocol WalletInteractable {
-
     var address: TariAddress { get throws }
     var dataVersion: String? { get throws }
     var isWalletRunning: StaticPublisherWrapper<Bool> { get }
@@ -58,7 +58,6 @@ protocol WalletInteractable {
     var transactions: TariTransactionsService { get }
     var unspentOutputsService: TariUnspentOutputsService { get }
     var utxos: TariUTXOsService { get }
-    var validation: TariValidationService { get }
     var walletBalance: TariBalanceService { get }
 
     func log(message: String) throws
@@ -68,21 +67,16 @@ protocol WalletInteractable {
 }
 
 final class WalletConnectionCallbacks {
-
-    @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
     @Published private(set) var scannedHeight: UInt64 = 0
     @Published private(set) var blockHeight: UInt64 = 0
 
-    init(baseNodeConnectionStatusPublisher: Published<BaseNodeConnectivityStatus>.Publisher, scannedHeightPublisher: Published<UInt64>.Publisher, blockHeight: Published<UInt64>.Publisher) {
-        baseNodeConnectionStatusPublisher.assign(to: &$baseNodeConnectionStatus)
+    init(scannedHeightPublisher: Published<UInt64>.Publisher, blockHeight: Published<UInt64>.Publisher) {
         scannedHeightPublisher.assign(to: &$scannedHeight)
         blockHeight.assign(to: &$blockHeight)
     }
 }
 
 final class WalletContainer: WalletInteractable, MainServiceable {
-
-    @Published private var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
     @Published private var scannedHeight: UInt64 = 0
     @Published private var blockHeight: UInt64 = NetworkManager.shared.blockHeight
 
@@ -94,15 +88,14 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     var dataVersion: String? {
         get throws {
-            let commsConfig = try makeCommsConfig(controlServerAddress: controlServerAddress, torCookie: torCookie)
-            return try manager.walletVersion(commsConfig: commsConfig)
+            try manager.walletVersion(commsConfig: try makeCommsConfig())
         }
     }
 
     private(set) lazy var isWalletRunning: StaticPublisherWrapper<Bool> = StaticPublisherWrapper(publisher: manager.$isWalletRunning)
     var isWalletDBExist: Bool { (try? databaseDirectoryURL.checkResourceIsReachable()) ?? false }
 
-    private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(baseNodeConnectionStatusPublisher: $baseNodeConnectionStatus, scannedHeightPublisher: $scannedHeight, blockHeight: $blockHeight)
+    private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(scannedHeightPublisher: $scannedHeight, blockHeight: $blockHeight)
 
     private(set) lazy var connection: TariConnectionService = TariConnectionService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var contacts = TariContactsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
@@ -113,23 +106,16 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     private(set) lazy var transactions = TariTransactionsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var utxos = TariUTXOsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
-    private(set) lazy var validation: TariValidationService = TariValidationService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var walletBalance = TariBalanceService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
 
     // MARK: - Constants
 
-    private let publicAddress = "/ip4/0.0.0.0/tcp/9838"
     private let databaseName = "tari_wallet"
-    private let discoveryTimeout: UInt64 = 20
-    private let safMessageDuration: UInt64 = 10800
 
     // MARK: - Properties
 
     let tag: String
     private let walletCallbacks = WalletCallbacks()
-
-    private var torCookie: Data
-    private var controlServerAddress: String
 
     var databaseDirectoryURL: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseName)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
     var databaseURL: URL { databaseDirectoryURL.appendingPathComponent(fullDatabaseName) }
@@ -140,35 +126,14 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     // MARK: - Initialisers
 
-    init(tag: String, torCookie: Data, controlServerAddress: String) {
+    init(tag: String) {
         self.tag = tag
-        self.torCookie = torCookie
-        self.controlServerAddress = controlServerAddress
         setupCallbacks()
     }
 
     // MARK: - Setups
 
     private func setupCallbacks() {
-
-        $baseNodeConnectionStatus
-            .sink { [weak self] in
-                switch $0 {
-                case .offline:
-                    self?.validation.reset()
-                case .connecting:
-                    break
-                case .online:
-                    try? self?.validation.sync()
-                }
-            }
-            .store(in: &cancellables)
-
-        walletCallbacks.connectivityStatus
-            .removeDuplicates()
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$baseNodeConnectionStatus)
-
         walletCallbacks.scannedHeight
             .assign(to: &$scannedHeight)
 
@@ -185,12 +150,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     // MARK: - Actions
 
-    func update(torCookie: Data) {
-        self.torCookie = torCookie
-    }
-
     func start(seedWords: [String]?, logPath: String, passphrase: String) throws {
-
         guard !manager.isWalletRunning else { return }
 
         let walletSeedWords = try makeSeedWords(seedWords: seedWords)
@@ -199,21 +159,20 @@ final class WalletContainer: WalletInteractable, MainServiceable {
         Logger.log(message: "Log Path: \(logPath)", domain: .general, level: .info)
 
         try manager.connectWallet(
-            commsConfig: makeCommsConfig(controlServerAddress: controlServerAddress, torCookie: torCookie),
+            network: NetworkManager.shared.selectedNetwork,
+            commsConfig: makeCommsConfig(),
             logFilePath: logPath,
             seedWords: walletSeedWords,
             passphrase: passphrase,
-            networkName: NetworkManager.shared.selectedNetwork.name,
-            dnsPeer: NetworkManager.shared.selectedNetwork.dnsPeer,
             isDnsSecureOn: false,
             logVerbosity: TariSettings.shared.environment == .debug ? 11 : 4,
+            isCreatedWallet: true, // TODO: is created?
             callbacks: walletCallbacks
         )
     }
 
     func stop() {
         manager.disconnectWallet()
-        baseNodeConnectionStatus = .offline
     }
 
     func log(message: String) throws {
@@ -240,24 +199,10 @@ final class WalletContainer: WalletInteractable, MainServiceable {
         return try SeedWords(words: seedWords)
     }
 
-    private func makeCommsConfig(controlServerAddress: String, torCookie: Data) throws -> CommsConfig {
+    private func makeCommsConfig() throws -> CommsConfig {
         try CommsConfig(
-            publicAddress: publicAddress,
-            transport: makeTransportConfig(controlServerAddress: controlServerAddress, torCookie: torCookie),
             databaseName: databaseName,
-            databaseFolderPath: databaseDirectoryURL.path,
-            discoveryTimeoutInSecs: discoveryTimeout,
-            safMessageDurationInSec: safMessageDuration
-        )
-    }
-
-    private func makeTransportConfig(controlServerAddress: String, torCookie: Data) throws -> TransportConfig {
-        try TransportConfig(
-            controlServerAddress: controlServerAddress,
-            torPort: TariConstants.torPort,
-            torCookie: ByteVector(data: torCookie),
-            socksUsername: nil,
-            socksPassword: nil
+            databaseFolderPath: databaseDirectoryURL.path
         )
     }
 }

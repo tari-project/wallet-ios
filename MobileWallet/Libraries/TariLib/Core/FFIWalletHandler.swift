@@ -65,19 +65,19 @@ final class FFIWalletHandler {
 
     // MARK: - Actions
 
-    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32, callbacks: WalletCallbacks) throws {
+    func connectWallet(network: TariNetwork, commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, isDnsSecureOn: Bool, logVerbosity: Int32, isCreatedWallet: Bool, callbacks: WalletCallbacks) throws {
         do {
             let beforeWalletCreationDate = Date()
             Logger.log(message: "Wallet will be created", domain: .general, level: .info)
             wallet = try Wallet(
+                network: network,
                 commsConfig: commsConfig,
                 loggingFilePath: logFilePath,
                 seedWords: seedWords,
                 passphrase: passphrase,
-                networkName: networkName,
-                dnsPeer: dnsPeer,
                 isDnsSecureOn: isDnsSecureOn,
                 logVerbosity: logVerbosity,
+                isCreatedWallet: isCreatedWallet,
                 callbacks: callbacks
             )
             Logger.log(message: "Wallet created after \(-beforeWalletCreationDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
@@ -128,67 +128,61 @@ final class FFIWalletHandler {
     }
 
     func balance() throws -> Balance {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_get_balance(wallet.pointer, errorCodePointer)
 
-        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return Balance(pointer: result)
     }
 
     func completedTransactions() throws -> CompletedTransactions {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_completed_transactions(wallet.pointer, errorCodePointer)
+        let result = wallet_get_completed_transactions(wallet.pointer, 0, errorCodePointer)
 
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        return CompletedTransactions(pointer: pointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return CompletedTransactions(pointer: result)
     }
 
     func cancelledTransactions() throws -> CompletedTransactions {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_cancelled_transactions(wallet.pointer, errorCodePointer)
+        let result = wallet_get_cancelled_transactions(wallet.pointer, 0, errorCodePointer)
 
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        return CompletedTransactions(pointer: pointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return CompletedTransactions(pointer: result)
     }
 
     func pendingInboundTransactions() throws -> PendingInboundTransactions {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_pending_inbound_transactions(wallet.pointer, errorCodePointer)
+        let result = wallet_get_pending_inbound_transactions(wallet.pointer, 0, errorCodePointer)
 
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        return PendingInboundTransactions(pointer: pointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return PendingInboundTransactions(pointer: result)
     }
 
     func pendingOutboundTransactions() throws -> PendingOutboundTransactions {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_pending_outbound_transactions(wallet.pointer, errorCodePointer)
+        let result = wallet_get_pending_outbound_transactions(wallet.pointer, 0, errorCodePointer)
 
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        return PendingOutboundTransactions(pointer: pointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return PendingOutboundTransactions(pointer: result)
     }
 
     func cancelPendingTransaction(identifier: UInt64) throws -> Bool {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -200,7 +194,6 @@ final class FFIWalletHandler {
     }
 
     func upsert(contact: Contact) throws -> Bool {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -212,7 +205,6 @@ final class FFIWalletHandler {
     }
 
     func remove(contact: Contact) throws -> Bool {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -223,32 +215,7 @@ final class FFIWalletHandler {
         return result
     }
 
-    func startTransactionOutputValidation() throws -> UInt64 {
-
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_start_txo_validation(wallet.pointer, errorCodePointer)
-
-        try checkError(errorCode)
-        return result
-    }
-
-    func startTransactionValidation() throws -> UInt64 {
-
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_start_transaction_validation(wallet.pointer, errorCodePointer)
-
-        try checkError(errorCode)
-        return result
-    }
-
     func feeEstimate(amount: UInt64, feePerGram: UInt64, kernelsCount: UInt32, outputsCount: UInt32) throws -> UInt64 {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -259,8 +226,7 @@ final class FFIWalletHandler {
         return result
     }
 
-    func feePerGramStats(count: UInt32) throws -> TariFeePerGramStats {
-
+    func feePerGramStats(count: UInt32) throws -> TariFeePerGramStat {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -268,23 +234,10 @@ final class FFIWalletHandler {
         let result = wallet_get_fee_per_gram_stats(wallet.pointer, count, errorCodePointer)
 
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        return TariFeePerGramStats(pointer: pointer)
-    }
-
-    func set(baseNodePeer: PublicKey, address: String?) throws -> Bool {
-
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_set_base_node_peer(wallet.pointer, baseNodePeer.pointer, address, errorCodePointer)
-
-        try checkError(errorCode)
-        return result
+        return TariFeePerGramStat(pointer: pointer)
     }
 
     func seedPeers() throws -> PublicKeys {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -296,7 +249,6 @@ final class FFIWalletHandler {
     }
 
     func utxos() throws -> [TariUtxo] {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -309,7 +261,6 @@ final class FFIWalletHandler {
     }
 
     func coinSplitPreview(commitments: [String], splitsCount: UInt, feePerGram: UInt64) throws -> TariCoinPreview {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -325,7 +276,6 @@ final class FFIWalletHandler {
     }
 
     func coinsJoinPreview(commitments: [String], feePerGram: UInt64) throws -> TariCoinPreview {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -340,14 +290,13 @@ final class FFIWalletHandler {
         return result.pointee
     }
 
-    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, isOneSidedPayment: Bool, paymentID: String) throws -> UInt64 {
-
+    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, paymentID: String) throws -> UInt64 {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, isOneSidedPayment, paymentID, errorCodePointer)
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, true, paymentID, errorCodePointer)
 
         try checkError(errorCode)
         return result
@@ -373,8 +322,7 @@ final class FFIWalletHandler {
         return nil
     }
 
-    func startRecovery(recoveredOutputMessage: String) throws -> Bool {
-
+    func startRecovery() throws -> Bool {
         let wallet = try exisingWallet
 
         let callback: @convention(c) (UnsafeMutableRawPointer?, UInt8, UInt64, UInt64) -> Void = { context, status, firstValue, secondValue in
@@ -385,14 +333,13 @@ final class FFIWalletHandler {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = wallet_start_recovery(wallet.pointer, nil, callback, recoveredOutputMessage, errorCodePointer)
+        let result = wallet_start_recovery(wallet.pointer, callback, errorCodePointer)
 
         try checkError(errorCode)
         return result
     }
 
     func sign(message: String) throws -> String {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -401,13 +348,12 @@ final class FFIWalletHandler {
         let result = wallet_sign_message(wallet.pointer, message, errorCodePointer)
         defer { string_destroy(result) }
 
-        guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
 
-        return String(cString: cString)
+        return String(cString: result)
     }
 
     func requiredConfirmationsCount() throws -> UInt64 {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -420,7 +366,6 @@ final class FFIWalletHandler {
     }
 
     func set(key: String, value: String) throws -> Bool {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -432,7 +377,6 @@ final class FFIWalletHandler {
     }
 
     func clear(key: String) throws -> Bool {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -444,15 +388,14 @@ final class FFIWalletHandler {
     }
 
     func value(key: String) throws -> String {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_get_value(wallet.pointer, key, errorCodePointer)
 
-        guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
-        return String(cString: cString)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return String(cString: result)
     }
 
     func walletVersion(commsConfig: CommsConfig) throws -> String? {
@@ -471,7 +414,6 @@ final class FFIWalletHandler {
     }
 
     func coinSplit(commitments: TariVectorWrapper, splitsCount: UInt, feePerGram: UInt64) throws -> UInt64 {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -483,7 +425,6 @@ final class FFIWalletHandler {
     }
 
     func coinJoin(commitments: TariVectorWrapper, feePerGram: UInt64) throws -> UInt64 {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -495,7 +436,6 @@ final class FFIWalletHandler {
     }
 
     func restartTransactionBroadcast() throws -> Bool {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -507,7 +447,6 @@ final class FFIWalletHandler {
     }
 
     func log(message: String) throws {
-
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         log_debug_message(message, errorCodePointer)
@@ -516,7 +455,6 @@ final class FFIWalletHandler {
     }
 
     func unspentOutputs() throws -> UnblindedOutputs {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
@@ -529,7 +467,6 @@ final class FFIWalletHandler {
     }
 
     func importExternalUtxoAnNonRewindable(output: UnblindedOutput, sourceAddress: TariAddress, message: String) throws -> UInt64 {
-
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1

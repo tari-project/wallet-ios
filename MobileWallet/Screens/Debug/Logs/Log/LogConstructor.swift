@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum LogConstructor {
+import Foundation
 
+enum LogConstructor {
     static func buildScene(fileURL: URL) -> LogViewController {
         let model = LogModel(fileURL: fileURL)
         return LogViewController(model: model)

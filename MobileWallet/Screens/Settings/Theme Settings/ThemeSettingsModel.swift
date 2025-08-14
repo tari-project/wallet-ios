@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class ThemeSettingsModel {
+import Foundation
 
+final class ThemeSettingsModel {
     enum Element {
         case system
         case light
@@ -69,29 +70,19 @@ final class ThemeSettingsModel {
     }
 
     func reloadData() {
-
-        let selectedElement: Element
-
-        switch ThemeCoordinator.shared.colorScheme {
-        case .system:
-            selectedElement = .system
-        case .light:
-            selectedElement = .light
-        case .dark:
-            selectedElement = .dark
+        let selectedElement: Element = switch ThemeCoordinator.shared.colorScheme {
+        case .system: .system
+        case .light: .light
+        case .dark: .dark
         }
-
         selectedIndex = elements.firstIndex { $0.element == selectedElement } ?? 0
     }
 
     private func update(selectedElement: Element) {
-        switch selectedElement {
-        case .system:
-            ThemeCoordinator.shared.colorScheme = .system
-        case .light:
-            ThemeCoordinator.shared.colorScheme = .light
-        case .dark:
-            ThemeCoordinator.shared.colorScheme = .dark
+        ThemeCoordinator.shared.colorScheme = switch selectedElement {
+        case .system: .system
+        case .light: .light
+        case .dark: .dark
         }
     }
 }

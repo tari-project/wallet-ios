@@ -38,9 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct WalletSettings: Codable, Equatable {
+import Foundation
 
-    enum  WalletConfigurationState: Codable {
+struct WalletSettings: Codable, Equatable {
+    enum WalletConfigurationState: Codable {
         /// Wallet wasn't configured
         case notConfigured
         /// Walet was created
@@ -52,7 +53,6 @@ struct WalletSettings: Codable, Equatable {
     }
 
     enum BackupStatus: Codable {
-
         case disabled
         case enabled(syncDate: Date?)
 
@@ -60,10 +60,8 @@ struct WalletSettings: Codable, Equatable {
 
         var isEnabled: Bool {
             switch self {
-            case .enabled:
-                return true
-            case .disabled:
-                return false
+            case .enabled: true
+            case .disabled: false
             }
         }
     }
@@ -90,13 +88,10 @@ struct WalletSettings: Codable, Equatable {
 }
 
 extension WalletSettings.BackupStatus {
-
     var isOn: Bool {
         switch self {
-        case .enabled:
-            return true
-        case .disabled:
-            return false
+        case .enabled: true
+        case .disabled: false
         }
     }
 }

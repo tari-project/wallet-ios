@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct PosixError: CoreError {
+import Foundation
 
+struct PosixError: CoreError {
     static var connectionRefused: Self { Self(code: 61) }
 
     let code: Int

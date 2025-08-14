@@ -38,10 +38,12 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 struct TariNetwork {
     let name: String
     let presentedName: String
-    let tickerSymbol: String
+    let httpBaseNode: String
     let isRecommended: Bool
     let dnsPeer: String
     let blockExplorerURL: URL?
@@ -51,24 +53,25 @@ struct TariNetwork {
 }
 
 extension TariNetwork {
-
     static var mainnet: Self {
-        makeNetwork(
+        TariNetwork(
             name: "mainnet",
             presentedName: "Mainnet",
+            httpBaseNode: "https://rpc.tari.com",
             isRecommended: true,
             dnsPeer: "seeds.tari.com",
             blockExplorerURL: URL(string: "https://explore.tari.com"),
             currencySymbol: "XTM",
             minValidVersion: "2.0.0-alpha.1",
-            version: "4.5.0"
+            version: "5.0.0"
         )
     }
 
     static var nextnet: Self {
-        makeNetwork(
+        TariNetwork(
             name: "nextnet",
             presentedName: "Nextnet",
+            httpBaseNode: "https://rpc.nextnet.tari.com",
             isRecommended: false,
             dnsPeer: "aurora.nextnet.tari.com",
             blockExplorerURL: URL(string: "https://explore-nextnet.tari.com"),
@@ -79,9 +82,10 @@ extension TariNetwork {
     }
 
     static var esmeralda: Self {
-        makeNetwork(
+        TariNetwork(
             name: "esmeralda",
             presentedName: "Esmeralda",
+            httpBaseNode: "https://rpc.esmeralda.tari.com",
             isRecommended: true,
             dnsPeer: "seeds.esmeralda.tari.com",
             blockExplorerURL: nil,
@@ -96,6 +100,7 @@ extension TariNetwork {
         return "\(presentedName) (\(localized("common.recommended")))"
     }
 
+    var tickerSymbol: String { currencySymbol }
     var isBlockExplorerAvailable: Bool { blockExplorerURL != nil }
 
     func blockExplorerKernelURL(nounce: String, signature: String) -> URL? {
@@ -110,28 +115,5 @@ extension TariNetwork {
             guard let rawURL = blockExplorerURL?.absoluteString.appending("/kernel_search?nonces=\(nounce)&signatures=\(signature)") else { return nil }
             return URL(string: rawURL)
         }
-    }
-
-    private static func makeNetwork(
-        name: String,
-        presentedName: String,
-        isRecommended: Bool,
-        dnsPeer: String,
-        blockExplorerURL: URL?,
-        currencySymbol: String,
-        minValidVersion: String,
-        version: String
-    ) -> Self {
-        return Self(
-            name: name,
-            presentedName: presentedName,
-            tickerSymbol: currencySymbol,
-            isRecommended: isRecommended,
-            dnsPeer: dnsPeer,
-            blockExplorerURL: blockExplorerURL,
-            currencySymbol: currencySymbol,
-            minValidVersion: minValidVersion,
-            version: version
-        )
     }
 }

@@ -38,8 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class LogsListModel {
+import Foundation
+import Combine
 
+final class LogsListModel {
     enum Action {
         case share(url: URL)
     }

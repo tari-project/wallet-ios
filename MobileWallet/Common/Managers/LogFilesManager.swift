@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum LogFilesManager {
+import Foundation
 
+enum LogFilesManager {
     private struct Metadata {
         let url: URL
         let modificationDate: Date
@@ -53,7 +54,6 @@ enum LogFilesManager {
     // MARK: - Actions
 
     static func cleanupLogs() {
-
         do {
             try Tari.shared.logsURLs
                 .map { Metadata(url: $0, modificationDate: modificationDate(url: $0)) }

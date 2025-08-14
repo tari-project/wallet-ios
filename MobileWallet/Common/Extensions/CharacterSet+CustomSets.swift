@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension CharacterSet {
+import Foundation
 
+extension CharacterSet {
     static var digitsAndDecimalSeparator: Self {
         var characterSet = Self.decimalDigits
         characterSet.insert(charactersIn: MicroTari.decimalSeparator)

@@ -63,7 +63,6 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
     // MARK: - Setups
 
     private func setupFeedbacks() {
-
         model.viewModel.$isEmptyWalletCreated
             .filter { $0 }
             .receive(on: DispatchQueue.main)
@@ -100,12 +99,6 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
             .assign(to: \.seedWords, on: mainView.tokenView)
             .store(in: &cancelables)
 
-        Publishers.CombineLatest(model.viewModel.$customBaseNodeHex, model.viewModel.$customBaseNodeAddress)
-            .receive(on: DispatchQueue.main)
-            .map { $0 != nil && $1 != nil }
-            .assign(to: \.isCustomBaseNodeSet, on: mainView)
-            .store(in: &cancelables)
-
         mainView.tokenView.$inputText
             .receive(on: DispatchQueue.main)
             .assign(to: \.inputText, on: model)
@@ -121,10 +114,6 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
 
         mainView.tokenView.onEndEditing = { [weak self] in
             self?.model.handleEndEditing()
-        }
-
-        mainView.selectBaseNodeButton.onTap = { [weak self] in
-            self?.showCustomBaseNodeForm()
         }
 
         mainView.submitButton.onTap = { [weak self] in
@@ -151,11 +140,5 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
         }
 
         show(overlay: overlay)
-    }
-
-    private func showCustomBaseNodeForm() {
-        FormOverlayPresenter.showSelectCustomBaseNodeForm(hex: model.viewModel.customBaseNodeHex, address: model.viewModel.customBaseNodeAddress, presenter: self) { [weak self] in
-            self?.model.updateCustomBaseNode(hex: $0, address: $1)
-        }
     }
 }

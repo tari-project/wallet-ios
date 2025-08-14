@@ -63,6 +63,7 @@ struct AppTabs: View {
 private extension AppTabs {
     var home: some View {
         Home(walletState: walletState)
+            .environment(HomeRouter.shared)
             .tab(.home, selected: state.selected)
     }
     

@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 protocol WalletCallbacksReadable: AnyObject {
-
     var receivedTransaction: AnyPublisher<PendingInboundTransaction, Never> { get }
     var receivedTransactionReply: AnyPublisher<CompletedTransaction, Never> { get }
     var receivedFinalizedTransaction: AnyPublisher<CompletedTransaction, Never> { get }
@@ -52,19 +52,14 @@ protocol WalletCallbacksReadable: AnyObject {
     var fauxTransactionUnconfirmed: AnyPublisher<CompletedTransaction, Never> { get }
     var transactionSendResult: AnyPublisher<TransactionSendResult, Never> { get }
     var transactionCancellation: AnyPublisher<CompletedTransaction, Never> { get }
-    var transactionOutputValidationData: AnyPublisher<TransactionValidationData, Never> { get }
     var balanceUpdate: AnyPublisher<Balance, Never> { get }
-    var trasactionValidationData: AnyPublisher<TransactionValidationData, Never> { get }
-    var connectivityStatus: AnyPublisher<BaseNodeConnectivityStatus, Never> { get }
     var scannedHeight: AnyPublisher<UInt64, Never> { get }
     var baseNodeState: AnyPublisher<BaseNodeState, Never> { get }
 
     var walletRecoveryStatus: AnyPublisher<RestoreWalletStatus, Never> { get }
-
 }
 
 final class WalletCallbacks {
-
     let receivedTransactionSubject = PassthroughSubject<PendingInboundTransaction, Never>()
     let receivedTransactionReplySubject = PassthroughSubject<CompletedTransaction, Never>()
     let receivedFinalizedTransactionSubject = PassthroughSubject<CompletedTransaction, Never>()
@@ -75,10 +70,7 @@ final class WalletCallbacks {
     let fauxTransactionUnconfirmedSubject = PassthroughSubject<CompletedTransaction, Never>()
     let transactionSendResultSubject = PassthroughSubject<TransactionSendResult, Never>()
     let transactionCancellationSubject = PassthroughSubject<CompletedTransaction, Never>()
-    let transactionOutputValidationDataSubject = PassthroughSubject<TransactionValidationData, Never>()
     let balanceUpdateSubject = PassthroughSubject<Balance, Never>()
-    let trasactionValidationDataSubject = PassthroughSubject<TransactionValidationData, Never>()
-    let connectivityStatusSubject = PassthroughSubject<BaseNodeConnectivityStatus, Never>()
     let scannedHeightSubject = PassthroughSubject<UInt64, Never>()
     let baseNodeStateSubject = PassthroughSubject<BaseNodeState, Never>()
 
@@ -88,7 +80,6 @@ final class WalletCallbacks {
 }
 
 extension WalletCallbacks: WalletCallbacksReadable {
-
     var receivedTransaction: AnyPublisher<PendingInboundTransaction, Never> { receivedTransactionSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var receivedTransactionReply: AnyPublisher<CompletedTransaction, Never> { receivedTransactionReplySubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var receivedFinalizedTransaction: AnyPublisher<CompletedTransaction, Never> { receivedFinalizedTransactionSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
@@ -99,10 +90,7 @@ extension WalletCallbacks: WalletCallbacksReadable {
     var fauxTransactionUnconfirmed: AnyPublisher<CompletedTransaction, Never> { fauxTransactionUnconfirmedSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var transactionSendResult: AnyPublisher<TransactionSendResult, Never> { transactionSendResultSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var transactionCancellation: AnyPublisher<CompletedTransaction, Never> { transactionCancellationSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
-    var transactionOutputValidationData: AnyPublisher<TransactionValidationData, Never> { transactionOutputValidationDataSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var balanceUpdate: AnyPublisher<Balance, Never> { balanceUpdateSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
-    var trasactionValidationData: AnyPublisher<TransactionValidationData, Never> { trasactionValidationDataSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
-    var connectivityStatus: AnyPublisher<BaseNodeConnectivityStatus, Never> { connectivityStatusSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var scannedHeight: AnyPublisher<UInt64, Never> { scannedHeightSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
     var baseNodeState: AnyPublisher<BaseNodeState, Never> { baseNodeStateSubject.receive(on: callbacksQueue).eraseToAnyPublisher() }
 

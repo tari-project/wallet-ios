@@ -48,7 +48,6 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     private static var giphyCurrentKeywordIndex = 0
 
     private let paymentInfo: PaymentInfo
-    private let isOneSidedPayment: Bool
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
     @TariView private var navigationBar = NavigationBar()
@@ -100,9 +99,8 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         }
     }
 
-    init(paymentInfo: PaymentInfo, isOneSidedPayment: Bool) {
+    init(paymentInfo: PaymentInfo) {
         self.paymentInfo = paymentInfo
-        self.isOneSidedPayment = isOneSidedPayment
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -141,25 +139,16 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     }
 
     private func displayAliasOrEmojiId() {
-
-        var alias: String?
-
-        do {
-            alias = try paymentInfo.alias ?? Tari.shared.wallet(.main).contacts.findContact(components: paymentInfo.addressComponents)?.alias
-        } catch {
-        }
-
-        guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
+        var alias = try? paymentInfo.alias ?? Tari.mainWallet.contacts.findContact(components: paymentInfo.addressComponents)?.alias
+        guard let alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             let addressComponents = paymentInfo.addressComponents
-            addressView.update(
-                viewModel: AddressView.ViewModel(
-                    prefix: addressComponents.networkAndFeatures,
-                    text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
-                    isDetailsButtonVisible: true)
-            )
+            addressView.update(viewModel: AddressView.ViewModel(
+                prefix: addressComponents.networkAndFeatures,
+                text: .truncated(prefix: addressComponents.coreAddressPrefix, suffix: addressComponents.coreAddressSuffix),
+                isDetailsButtonVisible: true
+            ))
             return
         }
-
         addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: true))
     }
 
@@ -264,7 +253,6 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     }
 
     private func sendTx() {
-
         var message = noteText
 
         if let attachment = attachment, let embedUrl = attachment.embedUrl {
@@ -272,7 +260,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         }
 
         let paymentInfo = PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: message)
-        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: isOneSidedPayment)
+        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo)
     }
 
     override func update(theme: AppTheme) {

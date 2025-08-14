@@ -38,15 +38,17 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class SeedWordsWalletRecoveryManager {
+import Foundation
+import Combine
 
+final class SeedWordsWalletRecoveryManager {
     @Published private(set) var isEmptyWalletCreated: Bool = false
     @Published private(set) var error: MessageModel?
 
-    func recover(wallet: WalletTag, cipher: String, passphrase: String, customBaseNodeHex: String?, customBaseNodeAddress: String?) {
+    func recover(wallet: WalletTag, cipher: String, passphrase: String) {
         do {
             let seedWords = try SeedWords(cipher: cipher, passphrase: passphrase).all
-            recover(wallet: wallet, seedWords: seedWords, customBaseNodeHex: customBaseNodeHex, customBaseNodeAddress: customBaseNodeAddress)
+            recover(wallet: wallet, seedWords: seedWords)
         } catch let error as WalletError {
             handle(walletError: error)
         } catch {
@@ -54,8 +56,7 @@ final class SeedWordsWalletRecoveryManager {
         }
     }
 
-    func recover(wallet: WalletTag, seedWords: [String], customBaseNodeHex: String?, customBaseNodeAddress: String?) {
-
+    func recover(wallet: WalletTag, seedWords: [String]) {
         deleteWallet(wallet: wallet)
 
         // Set flag to show welcome overlay for recovered wallet
@@ -63,7 +64,6 @@ final class SeedWordsWalletRecoveryManager {
 
         do {
             try Tari.shared.restore(wallet: wallet, seedWords: seedWords)
-            try selectCustomBaseNode(hex: customBaseNodeHex, address: customBaseNodeAddress)
             isEmptyWalletCreated = true
         } catch let error as SeedWords.InternalError {
             handle(seedWordsError: error)
@@ -80,11 +80,6 @@ final class SeedWordsWalletRecoveryManager {
 
         // Set flag to true so welcome screen shows when a new wallet is created after deletion
         UserDefaults.standard.set(true, forKey: "ShouldShowWelcomeOverlay")
-    }
-
-    private func selectCustomBaseNode(hex: String?, address: String?) throws {
-        guard let hex, let address else { return }
-        try Tari.shared.wallet(.main).connection.addBaseNode(name: localized("restore_from_seed_words.custom_node_name"), hex: hex, address: address)
     }
 
     private func handle(seedWordsError: SeedWords.InternalError) {

@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension DateFormatter {
+import Foundation
 
+extension DateFormatter {
     static var backupTimestamp: Self {
         let formatter = Self()
         formatter.dateFormat = "MMM dd yyy 'at' h:mm a"

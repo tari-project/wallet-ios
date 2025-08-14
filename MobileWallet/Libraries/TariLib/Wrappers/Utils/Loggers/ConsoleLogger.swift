@@ -38,12 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import os
 
-final class ConsoleLogger {}
-
-extension ConsoleLogger: Logable {
-
+final class ConsoleLogger: Logable {
     func log(message: String, domain: Logger.Domain, logLevel: Logger.Level) {
         let formattedMessage = LogFormatter.formattedMessage(message: message, domain: domain, logLevel: logLevel, showPrefix: true)
         os_log("%@ %@", Date().description, formattedMessage)

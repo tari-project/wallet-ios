@@ -41,7 +41,6 @@
 import Combine
 
 final class StatusLoggerManager {
-
     static let shared = StatusLoggerManager()
     private var cancellables = Set<AnyCancellable>()
 
@@ -52,31 +51,8 @@ final class StatusLoggerManager {
     }
 
     private func setupCallbacks() {
-
-        AppConnectionHandler.shared.connectionMonitor.$baseNodeConnection
-            .sink { Logger.log(message: "Base Node Connection: \($0)", domain: .connection, level: .verbose) }
-            .store(in: &cancellables)
-
-        AppConnectionHandler.shared.connectionMonitor.$syncStatus
-            .sink { Logger.log(message: "Sync Status: \($0)", domain: .connection, level: .verbose) }
-            .store(in: &cancellables)
-
-        AppConnectionHandler.shared.connectionMonitor.$torConnection
-            .sink { Logger.log(message: "Tor Connection Status: \($0)", domain: .connection, level: .verbose) }
-            .store(in: &cancellables)
-
         AppConnectionHandler.shared.connectionMonitor.$networkConnection
             .sink { Logger.log(message: "Network Connection Status: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-
-        AppConnectionHandler.shared.connectionMonitor.$torBootstrapProgress
-            .sink { Logger.log(message: "Tor Bootstrap Progress: \($0)", domain: .connection, level: .verbose) }
-            .store(in: &cancellables)
-
-        AppConnectionHandler.shared.connectionMonitor.$isTorBootstrapCompleted
-            .removeDuplicates()
-            .sink { Logger.log(message: "Is Tor Bootstrap Progress Completed: \($0)", domain: .connection, level: .verbose) }
-            .store(in: &cancellables)
-
     }
 }

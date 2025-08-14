@@ -66,7 +66,6 @@ final class RestoreWalletModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         recoveryModel.$isEmptyWalletCreated
             .filter { $0 }
             .sink { [weak self] _ in self?.action = .showPaperWalletRecoveryProgress }
@@ -99,7 +98,7 @@ final class RestoreWalletModel {
 
     func enter(paperWalletPassword: String) {
         guard let unconfirmedCipher else { return }
-        recoveryModel.recover(wallet: .main, cipher: unconfirmedCipher, passphrase: paperWalletPassword, customBaseNodeHex: nil, customBaseNodeAddress: nil)
+        recoveryModel.recover(wallet: .main, cipher: unconfirmedCipher, passphrase: paperWalletPassword)
         self.unconfirmedCipher = nil
     }
 }

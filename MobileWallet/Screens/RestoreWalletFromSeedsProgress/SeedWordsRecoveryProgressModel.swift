@@ -42,7 +42,6 @@ import Combine
 import UIKit
 
 final class SeedWordsRecoveryProgressModel {
-
     final class ViewModel {
         @Published var status: String? = localized("restore_from_seed_words.progress_overlay.status.connecting")
         @Published var progress: String?
@@ -67,7 +66,7 @@ final class SeedWordsRecoveryProgressModel {
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 // Only start recovery if it's not already in progress
-                let restoreStatus = Tari.shared.wallet(.main).recovery.status
+                let restoreStatus = Tari.mainWallet.recovery.status
 
                 if !(restoreStatus == .completed) || self?.viewModel.isWalletRestored != true {
                     self?.startRestoringWallet()
@@ -75,7 +74,7 @@ final class SeedWordsRecoveryProgressModel {
             }
             .store(in: &cancellables)
 
-        Tari.shared.wallet(.main).recovery.$status
+        Tari.mainWallet.recovery.$status
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(restoreStatus: $0) }
@@ -85,39 +84,28 @@ final class SeedWordsRecoveryProgressModel {
     // MARK: - Actions
 
     func startRestoringWallet() {
-        do {
-            let isSuccess = try Tari.shared.wallet(.main).recovery.startRecovery(recoveredOutputMessage: localized("transaction.one_sided_payment.note.recovered"))
-            if !isSuccess {
-                handleStartRecoveryFailure()
-            }
-        } catch {
+        guard (try? Tari.mainWallet.recovery.startRecovery()) == true else {
             handleStartRecoveryFailure()
+            return
         }
     }
 
     // MARK: - Handlers
 
     private func handle(restoreStatus: RestoreWalletStatus) {
-
         switch restoreStatus {
-        case .connectingToBaseNode:
-            return
-        case .connectedToBaseNode:
-            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.connected")
-            viewModel.progress = nil
-            viewModel.error = nil
-        case let .connectionFailed(attempt, maxAttempts), let .scanningRoundFailed(attempt, maxAttempts):
-            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.connecting")
-            viewModel.progress = localized("restore_from_seed_words.progress_overlay.progress.connection_failed", arguments: attempt + 1, maxAttempts + 1)
-            viewModel.error = nil
         case let .progress(restoredUTXOs, totalNumberOfUTXOs):
             let value = Double(restoredUTXOs) / Double(totalNumberOfUTXOs) * 100.0
-            viewModel.status =  localized("restore_from_seed_words.progress_overlay.status.progress")
+            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.progress")
             viewModel.progress = String(format: "%.1f%%", value)
             viewModel.error = nil
         case .completed:
             viewModel.isWalletRestored = true
-        case .recoveryFailed, .unknown:
+        case let .scanningRoundFailed(attempt, maxAttempts):
+            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.connecting")
+            viewModel.progress = localized("restore_from_seed_words.progress_overlay.progress.connection_failed", arguments: attempt + 1, maxAttempts + 1)
+            viewModel.error = nil
+        case .unknown:
             viewModel.error = MessageModel(
                 title: localized("restore_from_seed_words.progress_overlay.error.title"),
                 message: localized("restore_from_seed_words.progress_overlay.error.description.connection_failed"),

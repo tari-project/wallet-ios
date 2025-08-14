@@ -47,7 +47,6 @@ enum QRCodeData {
 }
 
 final class QRCodeScannerModel {
-
     struct ActionModel {
         let title: String
         let isValid: Bool
@@ -55,7 +54,6 @@ final class QRCodeScannerModel {
 
     enum DataType {
         case deeplink(DeeplinkType)
-        case torBridges
         case base64Address
     }
 
@@ -86,13 +84,6 @@ final class QRCodeScannerModel {
         }
     }
 
-    private var expectTorBridges: Bool {
-        expectedDataTypes.contains {
-            guard case .torBridges = $0 else { return false }
-            return true
-        }
-    }
-
     private var expectBase64Address: Bool {
         expectedDataTypes.contains {
             guard case .base64Address = $0 else { return false }
@@ -104,13 +95,6 @@ final class QRCodeScannerModel {
         disabledDataTypes.compactMap {
             guard case let .deeplink(deeplink) = $0 else { return nil }
             return deeplink
-        }
-    }
-
-    private var disabledTorBridges: Bool {
-        disabledDataTypes.contains {
-            guard case .torBridges = $0 else { return false }
-            return true
         }
     }
 
@@ -126,7 +110,6 @@ final class QRCodeScannerModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         videoCaptureManager.$result
             .sink { [weak self] in self?.handle(scanResult: $0) }
             .store(in: &cancellables)
@@ -148,8 +131,6 @@ final class QRCodeScannerModel {
         switch scannedData {
         case let .validDeeplink(deeplink):
             onCompletion = .unexpectedData({ try? DeeplinkHandler.handle(deeplink: deeplink, showDefaultDialogIfNeeded: false) })
-        case let .torBridges(bridges):
-            onCompletion = .unexpectedData({ AppRouter.presentCustomTorBridgesForm(bridges: bridges) })
         case let .base64Address(address):
             onCompletion = .expectedData(.base64Address(address))
         case .invalid:
@@ -171,8 +152,6 @@ final class QRCodeScannerModel {
         switch scanResult {
         case let .validDeeplink(deeplink):
             handle(validDeeplink: deeplink, scanResult: scanResult)
-        case let .torBridges(torBridges):
-            handle(torBridges: torBridges, scanResult: scanResult)
         case let .base64Address(address):
             handle(base64Address: address, scanResult: scanResult)
         case .invalid:
@@ -190,19 +169,6 @@ final class QRCodeScannerModel {
         }
 
         onCompletion = .expectedData(.deeplink(validDeeplink))
-    }
-
-    private func handle(torBridges: String, scanResult: VideoCaptureManager.ScanResult) {
-
-        guard !disabledTorBridges else { return }
-
-        guard expectTorBridges else {
-            actionModel = ActionModel(title: localized("qr_code_scanner.labels.actions.tor_bridges"), isValid: true)
-            scannedData = scanResult
-            return
-        }
-
-        onCompletion = .expectedData(.bridges(torBridges))
     }
 
     private func handle(base64Address: String, scanResult: VideoCaptureManager.ScanResult) {
@@ -226,7 +192,6 @@ final class QRCodeScannerModel {
     }
 
     private func handle(unexpectedDeeplink: DeepLinkable, scanResult: VideoCaptureManager.ScanResult) {
-
         if unexpectedDeeplink.type == .paperWallet {
             self.scannedData = scanResult
             useScannedQRCode()
@@ -254,8 +219,6 @@ final class QRCodeScannerModel {
             let address = try TariAddress(base58: deeplink.receiverAddress)
             let contactName = try transactionFormatter.contact(components: address.components)?.name ?? address.components.formattedCoreAddress
             return localized("qr_code_scanner.labels.actions.transaction_send", arguments: contactName)
-        case .baseNodesAdd:
-            return localized("qr_code_scanner.labels.actions.base_node_add")
         case .contacts, .profile:
             return localized("qr_code_scanner.labels.actions.contacts")
         case .paperWallet, .login:

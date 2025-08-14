@@ -54,15 +54,6 @@ extension String {
         return self.enumerated().map({String($0.element) + (($0.offset != self.count - 1 && $0.offset % n ==  n - 1) ? "\(separatorString)" : "")}).joined()
     }
 
-    func findBridges() -> String? {
-        if let data = replacingOccurrences(of: "'", with: "\"").data(using: .utf8),
-            let newBridges = try? JSONSerialization.jsonObject(with: data, options: []) as? [String] {
-            return newBridges.joined(separator: "\n")
-        } else {
-            return nil
-        }
-    }
-
     static func random(unicodeRange: Range<UInt8> = 0..<UInt8.max, length: Int) -> String {
         (0..<length)
             .map { _ in

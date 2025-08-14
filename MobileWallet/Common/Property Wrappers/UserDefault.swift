@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-@propertyWrapper struct UserDefault<T: Codable> {
+import Foundation
 
+@propertyWrapper struct UserDefault<T: Codable> {
     private let key: String
     private let userDefaults: UserDefaults
 

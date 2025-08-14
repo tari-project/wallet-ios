@@ -122,7 +122,6 @@ final class SendingTariViewController: SecureViewController<SendingTariView>, Tr
     }
 
     private func handleProgressSectionOnState(stepIndex: Int) {
-
         guard !model.isNextStepAvailable else {
             model.moveToNextStep()
             return

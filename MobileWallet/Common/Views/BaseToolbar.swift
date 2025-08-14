@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-class BaseToolbar: DynamicThemeView {
+import Foundation
 
+class BaseToolbar: DynamicThemeView {
     var backgroundAlpha: CGFloat = 0.0 {
         didSet { updateBackground() }
     }

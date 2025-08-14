@@ -66,12 +66,8 @@ final class AppConnectionHandler {
 
     private func updateConfiguration(wallet: WalletInteractable) {
         connectionMonitor.setupPublishers(
-            torConnectionStatus: Tari.shared.$torConnectionStatus.eraseToAnyPublisher(),
-            torBootstrapProgress: Tari.shared.$torBootstrapProcess.eraseToAnyPublisher(),
-            baseNodeConnectionStatus: wallet.connectionCallbacks.$baseNodeConnectionStatus.eraseToAnyPublisher(),
             scannedHeight: wallet.connectionCallbacks.$scannedHeight.eraseToAnyPublisher(),
-            blockHeight: wallet.connectionCallbacks.$blockHeight.eraseToAnyPublisher(),
-            baseNodeSyncStatus: wallet.validation.$status.eraseToAnyPublisher()
+            blockHeight: wallet.connectionCallbacks.$blockHeight.eraseToAnyPublisher()
         )
     }
 }

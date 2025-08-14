@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 enum AppInfo {
     static var appVersion: String? { Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String }
     static var buildVestion: String? { Bundle.main.infoDictionary?["CFBundleVersion"] as? String }
