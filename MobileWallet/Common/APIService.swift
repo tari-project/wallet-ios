@@ -11,7 +11,8 @@ enum APIError: Error {
 
 final class API {
     static let service = API()
-    private let baseURL = "https://airdrop.tari.com/api"
+    private static let airdropBaseUrl = "https://airdrop.tari.com/api"
+    private static let rwaBaseUrl = "https://rwa.y.at"
 
     private init() {}
     
@@ -23,9 +24,13 @@ final class API {
         await request(endpoint: "/miner/status/\(appId)")
     }
     
-    func request<T: Decodable>(endpoint: String, method: String = "GET", body: Data? = nil) async -> T? {
+    func requiredAppVersion() async -> AppVersion? {
+        await request(endpoint: "/mobile/version", baseUrl: Self.rwaBaseUrl)
+    }
+    
+    func request<T: Decodable>(endpoint: String, method: String = "GET", body: Data? = nil, baseUrl: String = API.airdropBaseUrl) async -> T? {
         do {
-            let request = try urlRequest(endpoint: endpoint, method: method, body: body)
+            let request = try urlRequest(endpoint: endpoint, method: method, body: body, baseUrl: baseUrl)
             let (data, response) = try await URLSession.shared.data(for: request)
             try process(data: data, response: response, endpoint: endpoint)
             return try JSONDecoder().decode(T.self, from: data)
@@ -33,12 +38,12 @@ final class API {
             if case APIError.unauthorized = error {
                 do {
                     try await refreshToken()
-                    return await request(endpoint: endpoint, method: method, body: body)
+                    return await request(endpoint: endpoint, method: method, body: body, baseUrl: baseUrl)
                 } catch {
-                    log(error)
+                    log(error, endpoint)
                 }
             }
-            log(error)
+            log(error, endpoint)
             return nil
         }
     }
@@ -75,8 +80,8 @@ private extension API {
         let refreshToken: String?
     }
     
-    func urlRequest(endpoint: String, method: String, body: Data?) throws -> URLRequest {
-        guard let url = URL(string: "\(baseURL)\(endpoint)") else {
+    func urlRequest(endpoint: String, method: String, body: Data?, baseUrl: String = API.airdropBaseUrl) throws -> URLRequest {
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             throw APIError.invalidURL
         }
         var request = URLRequest(url: url)
@@ -132,8 +137,8 @@ private extension API {
             .eraseToAnyPublisher()
     }
     
-    func refreshTokenRequest(token: String) -> URLRequest? {
-        guard let url = URL(string: "\(baseURL)/auth/local/refresh") else {
+    func refreshTokenRequest(token: String, baseUrl: String = API.airdropBaseUrl) -> URLRequest? {
+        guard let url = URL(string: "\(baseUrl)/auth/local/refresh") else {
             return nil
         }
         var request = URLRequest(url: url)
@@ -161,7 +166,7 @@ private extension API {
         }
     }
     
-    func log(_ error: Error) {
-        print("Network error: " + error.localizedDescription)
+    func log(_ error: Error, _ endpoint: String) {
+        print("Network error: \(endpoint) - " + error.localizedDescription)
     }
 }

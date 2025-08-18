@@ -106,6 +106,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         ShortcutsManager.executeQueuedShortcut()
+        TabState.shared.checkRequiredVersion()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {

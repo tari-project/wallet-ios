@@ -1,8 +1,8 @@
-//  AppTabs.swift
+//  UpdateRequiredSheet.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 08.07.2025
+	Created by Tomas Hakel on 18.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,69 +40,41 @@
 
 import SwiftUI
 
-@Observable
-class TabState {
-    static let shared = TabState()
-    var selected: Tab = .home
-    var requiredUpdate: AppVersion?
+struct UpdateRequiredSheet: View {
+    @Environment(\.dismiss) var dismiss
     
-    func checkRequiredVersion() {
-        Task {
-            guard let version = await API.service.requiredAppVersion() else { return }
-            if version.recommendsUpdate || version.requiresUpdate {
-                requiredUpdate = version
-            }
-        }
-    }
-}
+    let appVersion: AppVersion
 
-struct AppTabs: View {
-    @Environment(\.scenePhase) var scenePhase
-    @State var state = TabState.shared
-    
-    let walletState: WalletState
-    
     var body: some View {
-        TabView(selection: $state.selected) {
-            home
-            profile
-            settings
-        }
-        .sheet(item: $state.requiredUpdate) {
-            UpdateRequiredSheet(appVersion: $0)
-        }
+        UpdateRequired(
+            title: title,
+            message: message,
+            ctaTitle: "Update",
+            isDismissable: !appVersion.requiresUpdate,
+            update: { openAppStore() },
+            dismiss: { dismiss() }
+        )
+        .presentationDetents([.height(300)])
     }
 }
 
-private extension AppTabs {
-    var home: some View {
-        Home(walletState: walletState)
-            .environment(HomeRouter.shared)
-            .tab(.home, selected: state.selected)
+private extension UpdateRequiredSheet {
+    var title: String {
+        appVersion.requiresUpdate ? "You must update the app" : "Update recommended"
     }
     
-    var profile: some View {
-        UIProfileViewController()
-            .background(Color.secondaryBackground)
-            .tab(.profile, selected: state.selected)
+    var message: String {
+        appVersion.requiresUpdate
+            ? "Recently, we made some amazing changes to the app, but unfortunately, you need to update to the latest version to continue using it."
+            : "You are using an outdated version of the app. We recommend updating to the latest version to ensure the best experience."
     }
-    
-    var settings: some View {
-        UISettingsViewController()
-            .background(Color.secondaryBackground)
-            .tab(.settings, selected: state.selected)
-    }
-}
 
-private extension View {
-    func tab(_ tab: Tab, selected: Tab) -> some View {
-        tabItem {
-            Image(selected == tab ? tab.selectedIcon : tab.icon)
-        }
-        .tag(tab)
+    func openAppStore() {
+        guard let url = URL(string: TariSettings.shared.appStoreUrl) else { return }
+        UIApplication.shared.open(url)
     }
 }
 
 #Preview {
-    AppTabs(walletState: .current)
+    UpdateRequiredSheet(appVersion: AppVersion(minVersion: "1.00", recommendedVersion: "1.2.0"))
 }

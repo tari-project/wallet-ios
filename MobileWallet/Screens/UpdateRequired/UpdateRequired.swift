@@ -1,8 +1,8 @@
-//  AppTabs.swift
+//  UpdateRequired.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 08.07.2025
+	Created by Tomas Hakel on 18.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,69 +40,59 @@
 
 import SwiftUI
 
-@Observable
-class TabState {
-    static let shared = TabState()
-    var selected: Tab = .home
-    var requiredUpdate: AppVersion?
+struct UpdateRequired: View {
+    let title: String
+    let message: String
+    let ctaTitle: String
+    let isDismissable: Bool
+    let update: () -> Void
+    let dismiss: () -> Void
+
+    var body: some View {
+        VStack(spacing: 32) {
+            text
+            actions
+        }
+        .padding(24)
+        .interactiveDismissDisabled(!isDismissable)
+    }
+}
+
+@MainActor
+private extension UpdateRequired {
+    var text: some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .modalTitle()
+                .foregroundColor(.primaryText)
+            Text(message)
+                .body()
+                .foregroundColor(.secondaryText)
+                .multilineTextAlignment(.center)
+        }
+    }
     
-    func checkRequiredVersion() {
-        Task {
-            guard let version = await API.service.requiredAppVersion() else { return }
-            if version.recommendsUpdate || version.requiresUpdate {
-                requiredUpdate = version
+    var actions: some View {
+        VStack(spacing: 8) {
+            TariButton(ctaTitle, style: .primary, size: .large) {
+                update()
+            }
+            if isDismissable {
+                TariButton("Cancel", style: .text, size: .medium) {
+                    dismiss()
+                }
             }
         }
     }
 }
 
-struct AppTabs: View {
-    @Environment(\.scenePhase) var scenePhase
-    @State var state = TabState.shared
-    
-    let walletState: WalletState
-    
-    var body: some View {
-        TabView(selection: $state.selected) {
-            home
-            profile
-            settings
-        }
-        .sheet(item: $state.requiredUpdate) {
-            UpdateRequiredSheet(appVersion: $0)
-        }
-    }
-}
-
-private extension AppTabs {
-    var home: some View {
-        Home(walletState: walletState)
-            .environment(HomeRouter.shared)
-            .tab(.home, selected: state.selected)
-    }
-    
-    var profile: some View {
-        UIProfileViewController()
-            .background(Color.secondaryBackground)
-            .tab(.profile, selected: state.selected)
-    }
-    
-    var settings: some View {
-        UISettingsViewController()
-            .background(Color.secondaryBackground)
-            .tab(.settings, selected: state.selected)
-    }
-}
-
-private extension View {
-    func tab(_ tab: Tab, selected: Tab) -> some View {
-        tabItem {
-            Image(selected == tab ? tab.selectedIcon : tab.icon)
-        }
-        .tag(tab)
-    }
-}
-
 #Preview {
-    AppTabs(walletState: .current)
+    UpdateRequired(
+        title: "Update required",
+        message: "Please update",
+        ctaTitle: "Update",
+        isDismissable: true,
+        update: { },
+        dismiss: { }
+    )
 }

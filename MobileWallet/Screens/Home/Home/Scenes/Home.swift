@@ -75,16 +75,6 @@ struct Home: View, ChainTipObserver {
             .sceneBackground(.secondaryBackground)
             .toolbar { toolbar }
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear {
-                load()
-            }
-            .observeChainTip(self)
-            .onReceive(Tari.mainWallet.walletBalance.$balance) {
-                update(walletBalance: $0)
-            }
-            .onReceive(Tari.mainWallet.transactions.$all) {
-                update(transactions: $0)
-            }
             .navigationDestination(item: $presentedTransaction) {
                 if let transaction = transaction(for: $0) {
                     TransactionDetails(transaction)
@@ -107,6 +97,14 @@ struct Home: View, ChainTipObserver {
             }
             .sheet(isPresented: $isConnectionStatusPresented) {
                 ConnectionStatusSheet()
+            }
+            .onAppear { load() }
+            .observeChainTip(self)
+            .onReceive(Tari.mainWallet.walletBalance.$balance) {
+                update(walletBalance: $0)
+            }
+            .onReceive(Tari.mainWallet.transactions.$all) {
+                update(transactions: $0)
             }
         }
     }
