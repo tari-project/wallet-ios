@@ -41,29 +41,13 @@
 import SwiftUI
 
 struct UpdateRequired: View {
-    private let title: String
-    private let message: String
-    private let ctaTitle: String
-    private let isDismissable: Bool
-    private let update: () -> Void
-    private let dismiss: () -> Void
-    
-    init(
-        title: String,
-        message: String,
-        ctaTitle: String,
-        isDismissable: Bool,
-        update: @escaping () -> Void,
-        dismiss: @escaping () -> Void
-    ) {
-        self.title = title
-        self.message = message
-        self.ctaTitle = ctaTitle
-        self.isDismissable = isDismissable
-        self.update = update
-        self.dismiss = dismiss
-    }
-    
+    let title: String
+    let message: String
+    let ctaTitle: String
+    let isDismissable: Bool
+    let update: () -> Void
+    let dismiss: () -> Void
+
     var body: some View {
         VStack(spacing: 32) {
             text
