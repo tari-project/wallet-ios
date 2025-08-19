@@ -39,9 +39,9 @@
 */
 
 import Combine
+import UIKit
 
 final class ContactSelectionModel {
-
     enum Action {
         case showConfirmation(address: String, name: String)
         case showSuccess(address: String, name: String)

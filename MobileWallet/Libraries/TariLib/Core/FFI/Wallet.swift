@@ -52,9 +52,17 @@ final class Wallet {
 
     // MARK: - Initialisers
 
-    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String,
-         dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32, callbacks: WalletCallbacks) throws {
-
+    init(
+        network: TariNetwork,
+        commsConfig: CommsConfig,
+        loggingFilePath: String,
+        seedWords: SeedWords?,
+        passphrase: String?,
+        isDnsSecureOn: Bool,
+        logVerbosity: Int32,
+        isCreatedWallet: Bool,
+        callbacks: WalletCallbacks
+    ) throws {
         let receivedTransactionCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { context, pointer in
             guard let pointer else { return }
             context?.walletCallbacks.receivedTransactionSubject.send(PendingInboundTransaction(pointer: pointer))
@@ -106,8 +114,7 @@ final class Wallet {
         }
 
         let txoValidationCallback: @convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void = { context, identifier, status in
-            guard let status = TransactionValidationStatus(rawValue: status) else { return }
-            context?.walletCallbacks.transactionOutputValidationDataSubject.send(TransactionValidationData(identifier: identifier, status: status))
+            // TODO: not used anymore, should be removed once FFI is updated
         }
 
         let contactsLivenessDataUpdatedCallback: (@convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void) = { _, _ in
@@ -119,16 +126,14 @@ final class Wallet {
         }
 
         let trasactionValidationCompleteCallback: @convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void = { context, identifier, status in
-            guard let status = TransactionValidationStatus(rawValue: status) else { return }
-            context?.walletCallbacks.trasactionValidationDataSubject.send(TransactionValidationData(identifier: identifier, status: status))
+            // TODO: not used anymore, should be removed once FFI is updated
         }
 
         let storedMessagesReceivedCallback: (@convention(c) (UnsafeMutableRawPointer?) -> Void) = { _ in
         }
 
         let connectivityStatusCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = { context, status in
-            guard let status = BaseNodeConnectivityStatus(rawValue: status) else { return }
-            context?.walletCallbacks.connectivityStatusSubject.send(status)
+            // TODO: not used anymore, should be removed once FFI is updated
         }
 
         let walletScannedHeightCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = { context, scannedHeight in
@@ -146,6 +151,10 @@ final class Wallet {
         let callbacksPointer = PointerHandler.rawPointer(for: callbacks)
         let isRecoveryInProgressPointer = PointerHandler.pointer(for: &isRecoveryInProgress)
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        // On recovery or normal operation this should be like 2 days.
+        // But for brand new wallets on first startup this can be set to 0, for immediate sync
+        let walletBirthdayOffset: Int32 = isCreatedWallet ? 0 : 2
 
         Logger.log(message: "Wallet created", domain: .general, level: .info)
 
@@ -159,10 +168,12 @@ final class Wallet {
             passphrase,
             nil,
             seedWords?.pointer,
-            networkName,
-            dnsPeer,
+            network.name,
+            network.dnsPeer,
             nil,
             isDnsSecureOn,
+            network.httpBaseNode,
+            walletBirthdayOffset,
             receivedTransactionCallback,
             receivedTransactionReplyCallback,
             receivedFinalizedTransactionCallback,
@@ -173,10 +184,10 @@ final class Wallet {
             fauxTransactionUnconfirmedCallback,
             transactionSendResultCallback,
             transactionCancellationCallback,
-            txoValidationCallback,
+            txoValidationCallback, // TODO: not used anymore, should be removed once FFI is updated
             contactsLivenessDataUpdatedCallback,
             balanceUpdatedCallback,
-            trasactionValidationCompleteCallback,
+            trasactionValidationCompleteCallback, // TODO: not used anymore, should be removed once FFI is updated
             storedMessagesReceivedCallback,
             connectivityStatusCallback,
             walletScannedHeightCallback,

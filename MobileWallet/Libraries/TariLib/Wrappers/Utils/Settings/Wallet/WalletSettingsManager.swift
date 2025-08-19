@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 final class WalletSettingsManager {
-
     private var settings: WalletSettings {
-
         let networkName = NetworkManager.shared.selectedNetwork.name
 
         guard let existingSettings = GroupUserDefaults.walletSettings?.first(where: { $0.networkName == networkName }) else {

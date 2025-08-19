@@ -41,11 +41,9 @@
 import AVFoundation
 
 final class VideoCaptureManager: NSObject {
-
     enum ScanResult {
         case invalid
         case validDeeplink(DeepLinkable)
-        case torBridges(String)
         case base64Address(String)
     }
 
@@ -93,7 +91,6 @@ final class VideoCaptureManager: NSObject {
 }
 
 extension VideoCaptureManager: AVCaptureMetadataOutputObjectsDelegate {
-
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
               let rawData = object.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines) else {
@@ -104,8 +101,6 @@ extension VideoCaptureManager: AVCaptureMetadataOutputObjectsDelegate {
         do {
             if let deeplink = try DeeplinkHandler.deeplink(rawDeeplink: rawData) {
                 result = .validDeeplink(deeplink)
-            } else if let bridges = rawData.findBridges() {
-                result = .torBridges(bridges)
             } else if (try? TariAddress(base58: rawData)) != nil {
                 result = .base64Address(rawData)
             } else {

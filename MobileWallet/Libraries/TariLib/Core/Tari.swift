@@ -74,25 +74,13 @@ final class Tari {
         }
     }
 
-    var isUsingCustomBridges: Bool { torManager.isUsingCustomBridges }
-    var torBridges: String? { torManager.bridges }
-
-    @Published private(set) var torConnectionStatus: TorConnectionStatus = .disconnected
-    @Published private(set) var torBootstrapProcess: Int = 0
-    @Published private(set) var torError: TorError?
     @Published private(set) var containerCreated: String?
 
     var canAutomaticalyReconnectWallet: Bool = false
     @Published var isDisconnectionDisabled: Bool = false
 
     private var wallets: [WalletContainer] = []
-
-    private lazy var torManager = TorManager(logPath: logFilePath)
     private var cancellables = Set<AnyCancellable>()
-
-    func update(torBridges: String?) {
-        torManager.update(bridges: torBridges)
-    }
 
     // MARK: - Initialisers
 
@@ -103,7 +91,6 @@ final class Tari {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { [weak self] _ in self?.connect() }
             .store(in: &cancellables)
@@ -118,22 +105,12 @@ final class Tari {
             .filter { !$0 && UIApplication.shared.applicationState == .background }
             .sink { [weak self] _ in self?.disconnect() }
             .store(in: &cancellables)
-
-        torManager.$connectionStatus
-            .assign(to: &$torConnectionStatus)
-
-        torManager.$bootstrapProgress
-            .assign(to: &$torBootstrapProcess)
-
-        torManager.$error
-            .assignPublisher(to: \.torError, on: self)
-            .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
     func start(wallet tag: String) async throws {
-        await waitForTor()
+//        await waitForTor()
         guard await UIApplication.shared.applicationState != .background else { return }
         try start(tag, seedWords: nil)
     }
@@ -160,7 +137,6 @@ final class Tari {
     }
 
     private func connect() {
-        torManager.start()
         guard canAutomaticalyReconnectWallet else { return }
         wallets.forEach { connect(tag: $0.tag) }
     }
@@ -174,22 +150,11 @@ final class Tari {
 
     private func disconnect() {
         wallets.forEach { $0.stop() }
-        torManager.stop()
     }
 
     private func start(_ tag: String, seedWords: [String]?) throws {
         try walletContainer(tag).start(seedWords: seedWords, logPath: logFilePath, passphrase: passphrase)
         resetServices(tag)
-    }
-
-    private func waitForTor() async {
-        return await withCheckedContinuation { continuation in
-            torManager.$connectionStatus
-                .filter { $0 == .waitingForAuthorization || $0 == .portsOpen || $0 == .connected }
-                .first()
-                .sink { _ in continuation.resume() }
-                .store(in: &cancellables)
-        }
     }
 
     private func resetServices(_ tag: String) {
@@ -210,22 +175,18 @@ final class Tari {
 
     func wallet(_ tag: String) -> WalletInteractable { walletContainer(tag) }
 
-    private func fetchWallet(tag: String, torCookie: Data, controlServerAddress: String) -> WalletContainer {
-
+    private func fetchWallet(tag: String) -> WalletContainer {
         guard let wallet = wallets.first(where: { $0.tag == tag }) else {
-            let wallet = WalletContainer(tag: tag, torCookie: torCookie, controlServerAddress: controlServerAddress)
+            let wallet = WalletContainer(tag: tag)
             wallets.append(wallet)
             containerCreated = tag
             return wallet
         }
-
-        wallet.update(torCookie: torCookie)
         return wallet
     }
 
     private func walletContainer(_ tag: String) -> WalletContainer {
-        let torCookie = try? torManager.controlAuthCookie()
-        return fetchWallet(tag: tag, torCookie: torCookie ?? Data(), controlServerAddress: torManager.controlServerAddress)
+        fetchWallet(tag: tag)
     }
 
     private func removeWallet(tag: String) {

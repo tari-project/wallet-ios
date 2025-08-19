@@ -41,9 +41,8 @@
 import Network
 import Combine
 
-final class NetworkMonitor {
-
-    enum Status {
+final class NetworkMonitor: ObservableObject {
+    enum Status: Hashable {
         case disconnected
         case connected(interface: String)
     }
@@ -59,14 +58,11 @@ final class NetworkMonitor {
     // MARK: - Setups
 
     private func setup() {
-
         monitor.pathUpdateHandler = { [weak self] in
-
             guard $0.status == .satisfied else {
                 self?.status = .disconnected
                 return
             }
-
             self?.status = .connected(interface: $0.interfaceName)
         }
 

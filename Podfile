@@ -4,7 +4,6 @@ use_frameworks!
 inhibit_all_warnings!
 
 target 'MobileWallet' do
-  pod 'Tor', '408.12.2'
   pod 'lottie-ios', '3.2.3'
   pod 'SwiftEntryKit', '2.0.0'
   pod 'ReachabilitySwift', '5.0.0'

@@ -41,34 +41,10 @@
 final class TariConnectionService: CoreTariService {
 
     enum InternalError: Error {
-            case invalidPeerString
-        }
+        case invalidPeerString
+    }
 
     // MARK: - Actions
-
-    @discardableResult func select(baseNode: BaseNode) throws -> Bool {
-        services.validation.reset()
-        do {
-            let result = try walletManager.set(baseNodePeer: baseNode.makePublicKey(), address: baseNode.address)
-            return result
-        } catch FFIWalletHandler.GeneralError.unableToCreateWallet {
-            return false
-        } catch {
-            throw error
-        }
-    }
-
-    func addBaseNode(name: String, hex: String, address: String?) throws {
-        let baseNode = BaseNode(name: name, hex: hex, address: address)
-        NetworkManager.shared.customBaseNodes.append(baseNode)
-        try select(baseNode: baseNode)
-    }
-
-    func addBaseNode(name: String, peer: String) throws {
-        let components = peer.components(separatedBy: "::")
-        guard components.count == 2 else { throw InternalError.invalidPeerString }
-        try addBaseNode(name: name, hex: components[0], address: components[1])
-    }
 
     func defaultBaseNodePeers() throws -> [BaseNode] {
         try walletManager.seedPeers()

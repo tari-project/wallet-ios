@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 extension Data {
     var string: String { String(decoding: self, as: UTF8.self) }
 

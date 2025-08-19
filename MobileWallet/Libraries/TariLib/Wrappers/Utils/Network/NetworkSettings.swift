@@ -39,15 +39,12 @@
 */
 
 struct NetworkSettings: Codable, Equatable {
-
     let name: String
-    let customBaseNodes: [BaseNode]
     let blockHeight: UInt64
 
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.name == rhs.name }
 }
 
 extension NetworkSettings {
-    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(blockHeight: UInt64) -> Self { Self(name: name, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
+    func update(blockHeight: UInt64) -> Self { Self(name: name, blockHeight: blockHeight) }
 }

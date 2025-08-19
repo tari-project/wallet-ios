@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct ContactListDeeplink {
+import Foundation
 
+struct ContactListDeeplink {
     struct Contact: Codable {
         let alias: String
         let tariAddress: String

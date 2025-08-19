@@ -39,10 +39,9 @@
 */
 
 enum SendingTariConstructor {
-
     static func buildScene(inputData: SendingTariModel.InputData) -> SendingTariViewController {
         let model = SendingTariModel(inputData: inputData)
-        let viewInputModel = SendingTariView.InputModel(numberOfSections: inputData.isOneSidedPayment ? 2 : 3)
+        let viewInputModel = SendingTariView.InputModel(numberOfSections: 2)
         return SendingTariViewController(model: model, viewInputModel: viewInputModel)
     }
 }

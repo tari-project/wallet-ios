@@ -38,17 +38,16 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 final class AddContactModel {
-
     enum Action {
         case showDetails(model: ContactsManager.Model)
         case popBack
     }
 
     private enum DataValidationError: Int, Error, Comparable {
-
         case noEmojiID
         case invalidEmojiID
         case noName
@@ -90,7 +89,6 @@ final class AddContactModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         emojiIDSubject
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
@@ -128,7 +126,6 @@ final class AddContactModel {
     }
 
     func handle(qrCodeData: QRCodeData) {
-
         guard case let .deeplink(deeplink) = qrCodeData else { return }
 
         switch deeplink {
@@ -170,26 +167,18 @@ final class AddContactModel {
     }
 
     private func handle(contactName: String) {
-
         guard !contactName.isEmpty else {
             errors.insert(.noName)
             return
         }
-
         errors.remove(.noName)
     }
 
     private func makeErrorText(error: DataValidationError?) -> String? {
-
-        guard let error else { return nil }
-
         switch error {
-        case .noEmojiID:
-            return nil
-        case .invalidEmojiID:
-            return localized("contact_book.add_contact.validation_error.invalid_emoji_id")
-        case .noName:
-            return localized("contact_book.add_contact.validation_error.no_name")
+        case .invalidEmojiID: localized("contact_book.add_contact.validation_error.invalid_emoji_id")
+        case .noName: localized("contact_book.add_contact.validation_error.no_name")
+        case .noEmojiID, .none: nil
         }
     }
 }

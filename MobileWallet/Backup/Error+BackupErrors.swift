@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 extension ICloudBackupService.ICloudBackupError {
     var message: String {
         switch self {

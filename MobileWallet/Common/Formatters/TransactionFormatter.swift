@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 final class TransactionFormatter {
     // MARK: - Properties
 
@@ -79,12 +81,10 @@ final class TransactionFormatter {
     }
 
     private func transactionTitleComponents(transaction: Transaction, name: String) throws -> [StylizedLabel.StylizedText] {
-
         guard try !transaction.isCoinbase else {
             let blockNumber = try (transaction as? CompletedTransaction)?.minedBlockHeight ?? 0
             return [StylizedLabel.StylizedText(text: "Block #\(blockNumber)", style: .bold)]
         }
-
         if try transaction.isOutboundTransaction {
             return [
                 StylizedLabel.StylizedText(text: "Paid", style: .normal),
@@ -123,24 +123,19 @@ final class TransactionFormatter {
     }
 
     private func status(transaction: Transaction) throws -> String? {
-
         guard !transaction.isCancelled else {
             return localized("tx_detail.payment_cancelled")
         }
-
         switch try transaction.status {
         case .pending:
             return try transaction.isOutboundTransaction ? localized("refresh_view.waiting_for_recipient") : localized("refresh_view.waiting_for_sender")
         case .broadcast, .completed:
-            guard let requiredConfirmationCount = try? Tari.shared.wallet(.main).transactions.requiredConfirmationsCount else {
+            guard let requiredConfirmationCount = try? Tari.mainWallet.transactions.requiredConfirmationsCount else {
                 return localized("refresh_view.final_processing")
             }
             return localized("refresh_view.final_processing_with_param", arguments: 1, requiredConfirmationCount + 1)
         case .minedUnconfirmed:
-            guard let confirmationCount = try? (transaction as? CompletedTransaction)?.confirmationCount, let requiredConfirmationCount = try? Tari.shared.wallet(.main).transactions.requiredConfirmationsCount else {
-                return localized("refresh_view.final_processing")
-            }
-            return localized("refresh_view.final_processing_with_param", arguments: confirmationCount + 1, requiredConfirmationCount + 1)
+            return localized("refresh_view.final_processing")
         case .imported, .coinbase, .minedConfirmed, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain, .txNullError, .unknown:
             return nil
         }

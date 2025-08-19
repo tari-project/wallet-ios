@@ -21,23 +21,11 @@
 
 /* Transaction detail view */
 "tx_detail.payment_cancelled" = "Payment cancelled";
-"tx_detail.payment_in_progress" = "Payment In Progress";
 "tx_detail.payment_received" = "Payment Received";
 "tx_detail.payment_sent" = "Payment Sent";
-
 "tx_detail.add_contact_name" = "Add Contact Name";
-"tx_detail.contact_name" = "Contact Name";
 "tx_detail.contect_name_placeholder" = "Create a Contact Name";
 "tx_detail.edit" = "Edit";
-"tx_detail.from" = "From";
-"tx_detail.to" = "To";
-"tx_detail.note" = "Note";
-"tx_detail.error.contact.title" = "Contact error";
-"tx_detail.error.contact.description" = "Missing public key from transaction.";
-"tx_detail.error.load_tx.title" = "Transaction error";
-"tx_detail.error.load_tx.description" = "Failed to load transaction details";
-"tx_detail.error.save_contact.description" = "Failed to save contact details.";
-"tx_detail.block_explorer.title" = "Information";
 "tx_detail.block_explorer.description" = "View on the block explorer";
 
 /* Transaction detail tx cancellation */
@@ -76,7 +64,6 @@
 
 "transaction.one_sided_payment.inbound_user_placeholder" = "Someone";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
-"transaction.one_sided_payment.note.recovered" = "You recovered some funds";
 "transaction.coinbase.title.inbound" = "Mining Reward!";
 "transaction.coinbase.title.outbound.part.1.bold" = "You";
 "transaction.coinbase.title.outbound.part.2" = "paid the";
@@ -97,19 +84,10 @@
 "authentication.try_again" = "Try again";
 "authentication.proceed" = "Proceed";
 
-/* Transactions history list */
-
-"transaction_history.title" = "Transaction History";
-"transaction_history.section.pending" = "Pending Transactions";
-"transaction_history.section.completed" = "Completed Transactions";
-"transaction_history.search_field.placeholder" = "Scan QR code or Enter Address";
-
 /* Home */
 
 "home.label.spendable" = "Available to spend:";
 "home.button.all_transactions" = "View all transactions";
-"home.transaction_list.placeholder.title" = "You don't have any activity yet.\n";
-"home.transaction_list.placeholder.body" = "Once you receive some %@, you'll see it here.";
 "home.pop_up.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.pop_up.amount_help.message" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.pop_up.amount_help.buttons.open_url" = "Go to TariLabs University";
@@ -223,7 +201,6 @@
 "settings.item.data_collection" = "Data Collection";
 "settings.item.bridge_configuration" = "Bridge Configuration";
 "settings.item.select_network" = "Select Network";
-"settings.item.select_base_node" = "Select Base Node";
 "settings.item.delete_wallet" = "Delete Your Wallet";
 
 "settings.item.contribute_to_tari" = "Contribute to Tari Universe Wallet";
@@ -281,8 +258,6 @@
 
 "sending_tari.connecting" = "Connecting to the";
 "sending_tari.sent" = "Good to go!";
-"sending_tari.recipient" = "recipient on the Tari Network...";
-"sending_tari.searching" = "Searching for the";
 "sending_tari.network" = "Tari Network...";
 "sending_tari.tx_is_on_its_way" = "Your transaction is on its way...";
 
@@ -326,18 +301,10 @@
 "store_modal.cancel" = "I'll check it out later";
 
 /* Refresh view */
-"refresh_view.checking" = "Checking for Updates";
 "refresh_view.final_processing" = "Completing final processing…";
 "refresh_view.final_processing_with_param" = "Completing final processing (%d of %d)";
-"refresh_view.receiving_new_txs" = "Receiving new transactions";
-"refresh_view.completing_txs" = "Completing your transactions";
-"refresh_view.updating_txs" = "Updating your transactions";
 "refresh_view.waiting_for_recipient" = "Waiting for recipient to come online";
 "refresh_view.waiting_for_sender" = "Waiting for sender to complete transaction";
-"refresh_view.success" = "You are up to date!";
-"refresh_view.backup.scheduled" = "Backup scheduled";
-"refresh_view.backup.inProgress" = "Backing up your wallet...";
-"refresh_view.backup.success" = "Backup successful!";
 
 /* VerifyPhrase view */
 "verify_phrase.complete" = "Complete Verification";
@@ -535,22 +502,9 @@
 "advanced_settings.item.header.baseNode" = "Wallet base node";
 "advanced_settings.item.header.torNode" = "Tor node";
 
-/* BridgesConfiguration view */
-"bridges_configuration.title" = "Bridges Configuration";
-"bridges_configuration.item.noBridges" = "No Bridges";
-"bridges_configuration.item.custom" = "Custom Bridges";
-"bridges_configuration.description.bridges" = "If you are in a country or using a connection that censors Tor, you might need to use bridges.";
-"bridges_configuration.connect" = "Connect";
-
 /* CustomBridges view */
-"custom_bridges.title" = "Custom Bridges";
-"custom_bridges.connect" = "Connect";
 
 "custom_bridges.item.paste_bridges" = "Paste Bridges";
-
-"custom_bridges.item.request_bridges_from_torproject" = "Request Bridges from torproject.org";
-"custom_bridges.item.scan_QR_code" = "Scan QR Code";
-"custom_bridges.item.upload_QR_code" = "Upload QR Code";
 
 "custom_bridges.error.image_decode.title" = "QR code decode error";
 "custom_bridges.error.image_decode.description" = "Failed to decode QR Code from image";
@@ -568,25 +522,6 @@
 "incompatible_network.confirm"="Start over, I say!";
 "incompatible_network.cancel"="I'll do it later";
 
-/* Connection status */
-"connection_status.popUp.header" = "Connection Status";
-"connection_status.popUp.label.network_status.disconnected" = "Disconnected from the Internet";
-"connection_status.popUp.label.network_status.connected" = "Connected to the Internet";
-"connection_status.popUp.label.tor_status.disconnected" = "Disconnected from Tor";
-"connection_status.popUp.label.tor_status.connecting" = "Connecting with Tor";
-"connection_status.popUp.label.tor_status.connected" = "Connected with Tor";
-"connection_status.popUp.label.tor_status.failed" = "Failed to connect with Tor";
-"connection_status.popUp.label.base_node_connection.disconnected" = "Disconnected from Base Node";
-"connection_status.popUp.label.base_node_connection.connecting" = "Connecting to Base Node";
-"connection_status.popUp.label.base_node_connection.connected" = "Connected to Base Node";
-"connection_status.popUp.label.base_node_sync.idle" = "Waiting for Sync";
-"connection_status.popUp.label.base_node_sync.pending" = "Syncing with Base Node";
-"connection_status.popUp.label.base_node_sync.success" = "Synced with Base Node";
-"connection_status.popUp.label.base_node_sync.failure" = "Failed sync with Base Node";
-"connection_status.popUp.label.chain_tip.prefix" = "Chain Tip:";
-"connection_status.popUp.label.chain_tip.values" = "#%d (%d)";
-"connection_status.popUp.label.chain_tip.waiting_for_connection" = "Waiting for connection...";
-
 /* Select Network View */
 "select_network.title" = "Select Network";
 "select_network.dialog.switch_network.title" = "One thing before you go";
@@ -594,7 +529,6 @@
 "select_network.table_view.section_header.description" = "Please select the network to which you want to connect.";
 
 /* Select Base Node View */
-"select_base_node.title" = "Select Base Node";
 "select_base_node.cell.delete" = "Delete";
 
 /* Add Base Node View */
@@ -632,7 +566,6 @@ This could be due to a slow internet connection, a busy network, or a hiccup wit
 Please keep the app open while the wallet syncs.";
 "restore_from_seed_words.progress_overlay.success" = "Your wallet was restored. Welcome back!";
 "restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection";
-"restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon";
 "restore_from_seed_words.progress_overlay.status.progress" = "Restoring in progress:";
 "restore_from_seed_words.progress_overlay.progress.connection_failed" = "Attempt %d out of %d";
 "restore_from_seed_words.progress_overlay.error.title" = "Recovery Failed";
@@ -652,16 +585,6 @@ Please keep the app open while the wallet syncs.";
 "request.buttons.generate_qr" = "Generate QR Code";
 "request.qr_code.buttons.share" = "Share";
 
-/* Add base node dialog */
-
-"add_base_node_overlay.label.title" = "Add custom base node";
-"add_base_node_overlay.label.subtitle" = "The QR code is a deep link request to assign your wallet to use this base node.";
-"add_base_node_overlay.label.name" = "Name:";
-"add_base_node_overlay.label.peer" = "Peer:";
-"add_base_node_overlay.button.show_details" = "Show details";
-"add_base_node_overlay.button.hide_details" = "Hide details";
-"add_base_node_overlay.button.confirm" = "Connect";
-
 /* About */
 
 "about.title" = "About";
@@ -674,7 +597,6 @@ Please keep the app open while the wallet syncs.";
 "debug.popup.options.designs" = "Design system";
 "debug.popup.options.logs"= "View logs";
 "debug.popup.options.bug_report"= "Report a bug";
-"debug.popup.options.connection_status"= "View connection status";
 "debug.logs.list.title" = "Debug Logs";
 "debug.logs.list.button.export" = "Export";
 "debug.logs.list.error.message.unable_to_load" = "Unable to load log files. Please try again later or send us a bug report.";
@@ -749,15 +671,6 @@ Please keep the app open while the wallet syncs.";
 "error.wallet.429" = "Unable to recover your wallet from provided seed words. Please check the list of entered seed words and try again.";
 "error.wallet.430" = "The provided seed words are not compatible with the current wallet version. Please get in touch with support for more details.";
 "error.wallet.702.recovery" = "Looks like your backup isn't compatible with this wallet version. Consider making a new one!";
-
-"error.tx_rejection.0" = "The transaction failed for an unknown reason.";
-"error.tx_rejection.1" = "The transaction was canceled by the sender.";
-"error.tx_rejection.2" = "The transaction failed due to timeout.";
-"error.tx_rejection.3" = "The transaction was cancelled as it is spending funds that have already been spent.";
-"error.tx_rejection.4" = "The transaction was cancelled due to some funds being spent no longer being present in the chain.";
-"error.tx_rejection.5" = "This transaction was cancelled due to the funds not having reached their time-lock period yet.";
-"error.tx_rejection.6" = "The transaction failed to the invalid input data. This situation shouldn't happen. Please send a bug report or contact us directly.";
-"error.tx_rejection.7" = "The coinbase was abandoned.";
 
 "error.contact_book.no_name.title" = "Name can’t be empty";
 "error.contact_book.no_name.description" = "A contact without a name? That won’t work. Please add one to keep things running smoothly.";

@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class InternalContactsManager {
+import Foundation
 
+final class InternalContactsManager {
     struct ContactModel: Hashable {
         let alias: String?
         let defaultAlias: String?
@@ -156,11 +157,11 @@ final class InternalContactsManager {
     }
 
     private func saveContacts(_ contacts: [ContactModel]) throws {
-        let storedContacts = try contacts.map { contact -> StoredContactModel in
+        let storedContacts = contacts.map { contact -> StoredContactModel in
             StoredContactModel(
                 alias: contact.alias,
                 defaultAlias: contact.defaultAlias,
-                addressBase58: try contact.addressComponents.fullRaw,
+                addressBase58: contact.addressComponents.fullRaw,
                 isFavorite: contact.isFavorite
             )
         }

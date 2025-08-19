@@ -38,8 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class SelectNetworkModel {
+import Combine
 
+final class SelectNetworkModel {
     struct NetworkModel: Hashable {
         let networkName: String
         let isSelected: Bool

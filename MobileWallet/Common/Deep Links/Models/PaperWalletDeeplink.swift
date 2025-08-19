@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 struct PaperWalletDeeplink {
     let privateKey: String
     let appId: String?

@@ -60,12 +60,6 @@ enum DeepLinkDefaultActionsHandler {
 
     // MARK: - Handlers
 
-    static func handle(baseNodesAddDeeplink: BaseNodesAddDeeplink) throws {
-        Task { @MainActor in
-            self.showAddBaseNodePopUp(name: baseNodesAddDeeplink.name, peer: baseNodesAddDeeplink.peer)
-        }
-    }
-
     static func handle(contactListDeepLink: ContactListDeeplink, actionType: ActionType) throws {
         let contacts = contactData(deeplink: contactListDeepLink)
         try handle(deeplink: contactListDeepLink, contacts: contacts, actionType: actionType)
@@ -132,24 +126,6 @@ enum DeepLinkDefaultActionsHandler {
     }
 
     // MARK: - Pop Ups
-
-    @MainActor private static func showAddBaseNodePopUp(name: String, peer: String) {
-
-        let headerSection = PopUpHeaderWithSubtitle()
-        headerSection.titleLabel.text = localized("add_base_node_overlay.label.title")
-        headerSection.subtitleLabel.text = localized("add_base_node_overlay.label.subtitle")
-
-        let contentSection = CustomDeeplinkPopUpContentView()
-        contentSection.update(name: name, peer: peer)
-
-        let buttonSection = PopUpComponentsFactory.makeButtonsView(models: [
-            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.wallet(.main).connection.addBaseNode(name: name, peer: peer) }),
-            PopUpDialogButtonModel(title: localized("common.close"), type: .text)
-        ])
-
-        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonSection)
-        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
-    }
 
     @MainActor private static func showAddContactsPopUp(contacts: [ContactData]) async throws {
         guard await showAddContactsDialog(contacts: contacts) else { return }

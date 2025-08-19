@@ -69,8 +69,8 @@ final class TariRecoveryService: CoreTariService {
 
     // MARK: - Actions
 
-    func startRecovery(recoveredOutputMessage: String) throws -> Bool {
-        try walletManager.startRecovery(recoveredOutputMessage: recoveredOutputMessage)
+    func startRecovery() throws -> Bool {
+        try walletManager.startRecovery()
     }
 
     func allSeedWords(forLanguage language: SeedWordsMnemonicWordList.Language) throws -> [String] {

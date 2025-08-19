@@ -38,10 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
 import Combine
 
 final class WalletTransactionsManager {
-
     enum TransactionError: Error {
         case transactionError(error: Error)
         case unsucessfulTransaction
@@ -52,7 +52,6 @@ final class WalletTransactionsManager {
 
     enum State {
         case connectionCheck
-        case transaction
     }
 
     // MARK: - Properties
@@ -62,17 +61,13 @@ final class WalletTransactionsManager {
 
     // MARK: - Actions
 
-    func performTransactionPublisher(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
-
+    func performTransactionPublisher(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String) -> AnyPublisher<State, TransactionError> {
         let subject = CurrentValueSubject<State, TransactionError>(.connectionCheck)
 
         waitForConnection { [weak self] result in
             switch result {
             case .success:
-                if !isOneSidedPayment {
-                    subject.send(.transaction)
-                }
-                self?.sendTransactionToBlockchain(address: address, amount: amount, feePerGram: feePerGram, paymentID: paymentID, isOneSidedPayment: isOneSidedPayment) { result in
+                self?.sendTransactionToBlockchain(address: address, amount: amount, feePerGram: feePerGram, paymentID: paymentID) { result in
                     switch result {
                     case .success:
                         subject.send(completion: .finished)
@@ -84,83 +79,28 @@ final class WalletTransactionsManager {
                 subject.send(completion: .failure(error))
             }
         }
-
         return subject.eraseToAnyPublisher()
     }
 
     private func waitForConnection(result: @escaping (Result<Void, TransactionError>) -> Void) {
-
         guard case .connected = AppConnectionHandler.shared.connectionMonitor.networkConnection else {
             result(.failure(.noInternetConnection))
             return
         }
-
-        Publishers.CombineLatest(AppConnectionHandler.shared.connectionMonitor.$torConnection, AppConnectionHandler.shared.connectionMonitor.$isTorBootstrapCompleted)
-            .filter { $0 == .connected && $1 }
-            .timeout(connectionTimeout, scheduler: DispatchQueue.global())
-            .first()
-            .sink(
-                receiveCompletion: {
-                    guard case .failure = $0 else { return }
-                    result(.failure(.timeout))
-                },
-                receiveValue: { _ in result(.success) }
-            )
-            .store(in: &cancellables)
+        result(.success)
     }
 
-    private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
-
+    private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
         do {
-            let tariAddress = try TariAddress(base58: address)
-            let transactionID = try Tari.shared.wallet(.main).transactions.send(
-                toAddress: tariAddress,
+            try Tari.mainWallet.transactions.send(
+                toAddress: try TariAddress(base58: address),
                 amount: amount.rawValue,
                 feePerGram: feePerGram.rawValue,
-                isOneSidedPayment: isOneSidedPayment,
                 paymentID: paymentID
             )
-
-            guard !isOneSidedPayment else {
-                result(.success)
-                return
-            }
-            try startListeningForWalletEvents(transactionID: transactionID, publicKey: tariAddress.spendKey.byteVector.hex, result: result)
+            result(.success)
         } catch {
             result(.failure(.transactionError(error: error)))
-        }
-    }
-
-    private func startListeningForWalletEvents(transactionID: UInt64, publicKey: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
-
-        Tari.shared.wallet(.main).transactions.$transactionSendResult
-            .compactMap { $0 }
-            .filter { $0.identifier == transactionID }
-            .first()
-            .sink { [weak self] in
-                guard $0.status.isSuccess else {
-                    result(.failure(.unsucessfulTransaction))
-                    return
-                }
-
-                self?.sendPushNotificationToRecipient(publicKey: publicKey)
-
-                Logger.log(message: "Transaction send successful", domain: .general, level: .info)
-                result(.success)
-            }
-            .store(in: &cancellables)
-    }
-
-    private func sendPushNotificationToRecipient(publicKey: String) {
-
-        do {
-            try NotificationManager.shared.sendToRecipient(
-                publicKey: publicKey,
-                onSuccess: { Logger.log(message: "Recipient has been notified", domain: .general, level: .info) },
-                onError: { Logger.log(message: "Failed to notify recipient: \($0.localizedDescription)", domain: .general, level: .error) }
-            )
-        } catch {
-            Logger.log(message: "Failed to notify recipient: \(error.localizedDescription)", domain: .general, level: .error)
         }
     }
 }

@@ -41,13 +41,11 @@
 import Combine
 
 final class SendingTariModel {
-
     struct InputData {
         let address: String
         let amount: MicroTari
         let feePerGram: MicroTari
         let paymentID: String
-        let isOneSidedPayment: Bool
     }
 
     struct StateModel {
@@ -63,7 +61,6 @@ final class SendingTariModel {
 
     private enum State: Comparable {
         case connectionCheck
-        case discovery
         case sent
     }
 
@@ -120,8 +117,7 @@ final class SendingTariModel {
     }
 
     private func sendTransactionToBlockchain() {
-
-        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, paymentID: inputData.paymentID, isOneSidedPayment: inputData.isOneSidedPayment)
+        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, paymentID: inputData.paymentID)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:
@@ -133,8 +129,6 @@ final class SendingTariModel {
                 switch state {
                 case .connectionCheck:
                     self?.addStateToQueue(state: .connectionCheck)
-                case .transaction:
-                    self?.addStateToQueue(state: .discovery)
                 }
             }
             .store(in: &cancellables)
@@ -150,12 +144,13 @@ final class SendingTariModel {
     private func stateModel(forState state: State) -> StateModel? {
         switch state {
         case .connectionCheck:
-            return StateModel(firstText: localized("sending_tari.connecting"), secondText: localized("sending_tari.network"), stepIndex: 0)
-        case .discovery:
-            return StateModel(firstText: localized("sending_tari.searching"), secondText: localized("sending_tari.recipient"), stepIndex: 1)
+            StateModel(firstText: localized("sending_tari.connecting"), secondText: localized("sending_tari.network"), stepIndex: 0)
         case .sent:
-            let stepIndex = inputData.isOneSidedPayment ? 1 : 2
-            return StateModel(firstText: localized("sending_tari.sent"), secondText: localized("sending_tari.tx_is_on_its_way"), stepIndex: stepIndex)
+            StateModel(
+                firstText: localized("sending_tari.sent"),
+                secondText: localized("sending_tari.tx_is_on_its_way"),
+                stepIndex: 1
+            )
         }
     }
 }

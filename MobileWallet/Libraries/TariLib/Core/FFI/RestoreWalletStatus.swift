@@ -39,47 +39,24 @@
 */
 
 enum RestoreWalletStatus: Equatable {
-    case unknown
-    case connectingToBaseNode
-    case connectedToBaseNode
-    case connectionFailed(attempt: UInt64, maxAttempts: UInt64)
     case progress(restoredUTXOs: UInt64, totalNumberOfUTXOs: UInt64)
     case completed
     case scanningRoundFailed(attempt: UInt64, maxAttempts: UInt64)
-    case recoveryFailed
+    case unknown
 
     init(status: UInt8, firstValue: UInt64, secondValue: UInt64) {
-
-        switch status {
-        case 0:
-            self = .connectingToBaseNode
-        case 1:
-            self = .connectedToBaseNode
-        case 2:
-            self = .connectionFailed(attempt: firstValue, maxAttempts: secondValue)
-        case 3:
-            self = .progress(restoredUTXOs: firstValue, totalNumberOfUTXOs: secondValue)
-        case 4:
-            self = .completed
-        case 5:
-            self = .scanningRoundFailed(attempt: firstValue, maxAttempts: secondValue)
-        case 6:
-            self = .recoveryFailed
-        default:
-            self = .unknown
+        self = switch status {
+        case 0: .progress(restoredUTXOs: firstValue, totalNumberOfUTXOs: secondValue)
+        case 1: .completed
+        case 2: .scanningRoundFailed(attempt: firstValue, maxAttempts: secondValue)
+        default: .unknown
         }
     }
 
 	 static func == (lhs: RestoreWalletStatus, rhs: RestoreWalletStatus) -> Bool {
         switch (lhs, rhs) {
-        case (.unknown, .unknown),
-             (.connectingToBaseNode, .connectingToBaseNode),
-             (.connectedToBaseNode, .connectedToBaseNode),
-             (.completed, .completed),
-             (.recoveryFailed, .recoveryFailed):
+        case (.unknown, .unknown), (.completed, .completed):
             return true
-        case let (.connectionFailed(lhsAttempt, lhsMaxAttempts), .connectionFailed(rhsAttempt, rhsMaxAttempts)):
-            return lhsAttempt == rhsAttempt && lhsMaxAttempts == rhsMaxAttempts
         case let (.progress(lhsRestored, lhsTotal), .progress(rhsRestored, rhsTotal)):
             return lhsRestored == rhsRestored && lhsTotal == rhsTotal
         case let (.scanningRoundFailed(lhsAttempt, lhsMaxAttempts), .scanningRoundFailed(rhsAttempt, rhsMaxAttempts)):

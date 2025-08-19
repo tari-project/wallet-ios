@@ -40,7 +40,6 @@
 
 protocol MainServiceable: AnyObject {
     var connection: TariConnectionService { get }
-    var validation: TariValidationService { get }
     var walletBalance: TariBalanceService { get }
 }
 

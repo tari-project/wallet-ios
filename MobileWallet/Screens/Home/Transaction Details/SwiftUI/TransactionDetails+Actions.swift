@@ -162,7 +162,7 @@ extension TransactionDetails {
             "timestamp": "\((try? transaction.timestamp) ?? 0)",
             "status": "\(status?.0 ?? "-")",
             "paymentID": "\(transactionMessage ?? "-")"
-            "confirmationCount": "\(transactionConfirmationCount ?? 0)",
+            "confirmationCount": "\(confirmationCount)",
             "minedHeight": "\(walletBlockHeight)"
             }
             """
@@ -178,10 +178,6 @@ extension TransactionDetails {
 }
 
 private extension TransactionDetails {
-    var transactionConfirmationCount: UInt64? {
-        try? (transaction as? CompletedTransaction)?.confirmationCount
-    }
-    
     func transactions() -> TariTransactionsService {
         Tari.mainWallet.transactions
     }
