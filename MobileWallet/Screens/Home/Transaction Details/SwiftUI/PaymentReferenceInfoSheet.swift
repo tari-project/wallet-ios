@@ -48,7 +48,6 @@ struct PaymentReferenceInfoSheet: View {
             title: "Your unique payment ID!",
             message: "Share this with anyone who needs to confirm your payment - they can look it up on a block explorer while your privacy stays protected."
         )
-//        .presentationDetents([.height(220)])
     }
 }
 
