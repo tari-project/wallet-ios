@@ -1,8 +1,8 @@
-//  PaymentReferenceInfoSheet.swift
+//  FeeInfoSheet.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 24.06.2025
+	Created by Tomas Hakel on 19.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,18 +40,15 @@
 
 import SwiftUI
 
-struct PaymentReferenceInfoSheet: View {
-    @Environment(\.dismiss) var dismiss
-    
+struct FeeInfoSheet: View {
     var body: some View {
         InfoSheet(
-            title: "Your unique payment ID!",
-            message: "Share this with anyone who needs to confirm your payment - they can look it up on a block explorer while your privacy stays protected."
+            title: "Transaction Fee",
+            message: localized("common.fee_info.description")
         )
-//        .presentationDetents([.height(220)])
     }
 }
 
 #Preview {
-    PaymentReferenceInfoSheet()
+    FeeInfoSheet()
 }

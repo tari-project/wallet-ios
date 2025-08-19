@@ -1,10 +1,10 @@
-//  TransactionDetailsView.swift
-
+//  TransactionDetailTotal.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 14/03/2022
-	Using Swift 5.0
-	Running on macOS 12.2
+	Created by Tomas Hakel on 19.08.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,56 +38,23 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import TariCommon
+import SwiftUI
 
-final class TransactionDetailsView: DynamicThemeView {
-
-    // MARK: - Subviews
-
-    @TariView private var navigationBar = NavigationBar()
-
-    // MARK: - Properties
-
-    var title: String? {
-        get { navigationBar.title }
-        set { navigationBar.title = newValue }
+struct TransactionDetailTotal: View {
+    let value: String
+    
+    var body: some View {
+        HStack {
+            Text("Total")
+            Spacer()
+            Text(value)
+        }
+        .headingLarge()
+        .foregroundStyle(.primaryText)
+        .padding(.vertical, 16)
     }
+}
 
-    // MARK: - Initialisers
-
-    override init() {
-        super.init()
-        setupViews()
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupViews() {
-        backgroundColor = .Background.primary
-    }
-
-    private func setupConstraints() {
-        addSubview(navigationBar)
-
-        let constraints = [
-            navigationBar.topAnchor.constraint(equalTo: topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    // MARK: - Updates
-
-    override func update(theme: AppTheme) {
-        super.update(theme: theme)
-        backgroundColor = .Background.secondary
-    }
+#Preview {
+    TransactionDetailTotal(value: "9 XTM")
 }

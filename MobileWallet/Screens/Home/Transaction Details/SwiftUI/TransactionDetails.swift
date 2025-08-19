@@ -45,6 +45,8 @@ struct TransactionDetails: View {
     @State var latestTransaction: (any Transaction)?
     @State var title: String?
     @State var amount: String?
+    @State var fee: String?
+    @State var total: String?
     @State var addressComponents: TariAddressComponents?
     @State var contact: ContactsManager.Model?
     @State var paymentReference: PaymentReference?
@@ -54,6 +56,7 @@ struct TransactionDetails: View {
     @State var showsFullTextAddress = false
     @State var isPresentingEditName = false
     @State var isPresentingPaymentReferenceInfo = false
+    @State var isPresentingFeeInfo = false
     
     let initialTransaction: any Transaction
     
@@ -87,6 +90,9 @@ struct TransactionDetails: View {
         }
         .sheet(isPresented: $isPresentingPaymentReferenceInfo) {
             PaymentReferenceInfoSheet()
+        }
+        .sheet(isPresented: $isPresentingFeeInfo) {
+            FeeInfoSheet()
         }
         .onAppear { load() }
         .onReceive(Tari.mainWallet.connectionCallbacks.$blockHeight) {
@@ -145,6 +151,13 @@ private extension TransactionDetails {
                     isPresentingEditName = true
                 }
             }
+            if let fee {
+                TransactionDetailItem(label: "Transaction Fee", value: fee) {
+                    IconButton(.helpCircle) {
+                        isPresentingFeeInfo = true
+                    }
+                }
+            }
             if let date {
                 TransactionDetailItem(label: "Date", value: date)
             }
@@ -162,6 +175,9 @@ private extension TransactionDetails {
                 TransactionDetailItem(label: "Note", value: transactionMessage) {
                     copyButton(transactionMessage)
                 }
+            }
+            if let total {
+                TransactionDetailTotal(value: total)
             }
         }
     }

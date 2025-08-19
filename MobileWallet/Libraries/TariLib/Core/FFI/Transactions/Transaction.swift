@@ -91,6 +91,11 @@ extension Transaction {
         get throws { Date(timeIntervalSince1970: Double(try timestamp)).relativeDayFromToday() ?? "" }
     }
     
+    var transactionFee: UInt64? {
+        try? (self as? CompletedTransaction)?.fee
+            ?? (self as? PendingOutboundTransaction)?.fee
+    }
+    
     func paymentId(
         getPaymentId: ((OpaquePointer, UnsafeMutablePointer<Int32>) -> UnsafePointer<CChar>?)? = nil,
         getUserPaymentId: ((OpaquePointer, UnsafeMutablePointer<Int32>) -> UnsafeMutablePointer<CChar>?)? = nil,
@@ -129,16 +134,12 @@ extension Transaction {
 }
 
 extension Array where Element == Transaction {
-
     func filterDuplicates() -> Self {
-
         var uniqueTransactions: Self = []
-
         forEach {
             guard let identifier = try? $0.identifier, uniqueTransactions.first(where: { (try? $0.identifier) == identifier }) == nil else { return }
             uniqueTransactions.append($0)
         }
-
         return uniqueTransactions
     }
 }
