@@ -1,10 +1,10 @@
-//  TransactionDetailsSeparatorView.swift
-
+//  InfoSheet.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 24/03/2022
-	Using Swift 5.0
-	Running on macOS 12.3
+	Created by Tomas Hakel on 19.08.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,47 +38,30 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import TariCommon
+import SwiftUI
 
-final class TransactionDetailsSeparatorView: DynamicThemeView {
-
-    // MARK: - Subviews
-
-    @TariView private var separatorView = UIView()
-
-    // MARK: - Initialisers
-
-    override init() {
-        super.init()
-        setupConstaints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupConstaints() {
-
-        addSubview(separatorView)
-
-        let constraints = [
-            separatorView.topAnchor.constraint(equalTo: topAnchor),
-            separatorView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            separatorView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            separatorView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            separatorView.heightAnchor.constraint(equalToConstant: 1.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    // MARK: - Updates
-
-    override func update(theme: AppTheme) {
-        super.update(theme: theme)
-        separatorView.backgroundColor = theme.neutral.tertiary
+struct InfoSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    let title: String
+    let message: String
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            Text(title)
+                .modalTitle()
+                .foregroundStyle(.primaryText)
+            Text(message)
+                .body()
+                .foregroundStyle(.secondaryText)
+                .multilineTextAlignment(.center)
+            
+            TariButton("Close", style: .text, size: .medium) {
+                dismiss()
+            }
+        }
+        .padding(.top, 24)
+        .padding([.horizontal, .bottom], 10)
+        .autoheightDetents()
     }
 }

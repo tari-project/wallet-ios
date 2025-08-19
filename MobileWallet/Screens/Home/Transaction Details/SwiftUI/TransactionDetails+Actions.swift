@@ -139,6 +139,8 @@ extension TransactionDetails {
     func load() {
         title = try? fetchTitle()
         amount = try? fetchAmount()
+        fee = try? fetchFee()
+        total = try? fetchTotal()
         addressComponents = try? fetchAddressComponents()
         loadPaymentReference()
         loadTransactionLink()
@@ -195,8 +197,18 @@ private extension TransactionDetails {
     }
     
     func fetchAmount() throws -> String {
-        MicroTari(try transaction.amount).formattedPrecise
-            + " \(NetworkManager.shared.currencySymbol)"
+        formattedAmount(try transaction.amount)
+    }
+    
+    func fetchFee() throws -> String? {
+        guard let fee = transaction.transactionFee else { return nil }
+        return formattedAmount(fee)
+    }
+    
+    func fetchTotal() throws -> String {
+        let amount = try transaction.amount
+        let fee = transaction.transactionFee ?? 0
+        return formattedAmount(amount + fee)
     }
     
     func fetchAddressComponents() throws -> TariAddressComponents {
@@ -217,5 +229,10 @@ private extension TransactionDetails {
             return
         }
         blockExplorerLink = NetworkManager.shared.selectedNetwork.blockExplorerKernelURL(nounce: transactionNounce, signature: transactionSignature)
+    }
+    
+    func formattedAmount(_ amount: UInt64) -> String {
+        MicroTari(amount).formattedPrecise
+            + " \(NetworkManager.shared.currencySymbol)"
     }
 }
