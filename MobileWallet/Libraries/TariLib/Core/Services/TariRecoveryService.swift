@@ -38,7 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import SwiftUI
 import Combine
+import BackgroundTasks
 
 final class TariRecoveryService: CoreTariService {
 
@@ -49,8 +51,16 @@ final class TariRecoveryService: CoreTariService {
     var seedWords: [String] {
         get throws { try walletManager.seedWords().all }
     }
+    
+    var isInProgress: Bool {
+        switch status {
+        case .progress, .scanningRoundFailed: true
+        case .completed, .unknown, nil: false
+        }
+    }
 
     private var cancellables = Set<AnyCancellable>()
+    private var backgroundTaskId: UIBackgroundTaskIdentifier?
 
     // MARK: - Initialisers
 
@@ -61,16 +71,24 @@ final class TariRecoveryService: CoreTariService {
 
     // MARK: - Setups
 
-    private func setupCallbacks() {
+    func setupCallbacks() {
         walletCallbacks.walletRecoveryStatus
-            .sink { [weak self] in self?.status = $0 }
+            .sink { [weak self] in
+                self?.status = $0
+                if $0 == .completed, let taskId = self?.backgroundTaskId {
+                    UIApplication.shared.endBackgroundTask(taskId)
+                }
+            }
             .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
     func startRecovery() throws -> Bool {
-        try walletManager.startRecovery()
+        backgroundTaskId = UIApplication.shared.beginBackgroundTask {
+            Logger.log(message: "Background task expired", domain: .connection, level: .warning)
+        }
+        return try walletManager.startRecovery()
     }
 
     func allSeedWords(forLanguage language: SeedWordsMnemonicWordList.Language) throws -> [String] {

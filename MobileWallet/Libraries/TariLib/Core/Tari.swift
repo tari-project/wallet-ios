@@ -81,6 +81,7 @@ final class Tari {
 
     private var wallets: [WalletContainer] = []
     private var cancellables = Set<AnyCancellable>()
+    private var isReconnecting = false
 
     // MARK: - Initialisers
 
@@ -110,7 +111,6 @@ final class Tari {
     // MARK: - Actions
 
     func start(wallet tag: String) async throws {
-//        await waitForTor()
         guard await UIApplication.shared.applicationState != .background else { return }
         try start(tag, seedWords: nil)
     }
@@ -131,6 +131,14 @@ final class Tari {
         removeSettings()
         NetworkManager.shared.selectedNetwork = network
     }
+    
+    func reconnect() {
+        guard !isReconnecting else { return }
+        isReconnecting = true
+        canAutomaticalyReconnectWallet = true
+        disconnect()
+        connect()
+    }
 
     func log(wallet tag: String, message: String) {
         try? wallet(tag).log(message: message)
@@ -145,6 +153,7 @@ final class Tari {
         guard !wallet(tag).isWalletRunning.value else { return }
         Task {
             try? await start(wallet: tag)
+            isReconnecting = false
         }
     }
 

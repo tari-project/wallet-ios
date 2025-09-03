@@ -66,7 +66,6 @@ final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWo
         DispatchQueue.main.asyncAfter(deadline: .now() + 180) {
             self.mainView.descriptionLabel.text = localized("restore_from_seed_words.progress_overlay.label.description_long")
         }
-
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -76,7 +75,6 @@ final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWo
     // MARK: - Setups
 
     private func setupFeedbacks() {
-
         model.viewModel.$status
             .assign(to: \.text, on: mainView.statusLabel)
             .store(in: &cancelables)
@@ -97,7 +95,7 @@ final class SeedWordsRecoveryProgressViewController: SecureViewController<SeedWo
     // MARK: - Actions
 
     private func handle(errorModel: MessageModel?) {
-        guard let errorModel = errorModel else { return }
+        guard let errorModel else { return }
         PopUpPresenter.showMessageWithCloseButton(message: errorModel) { [weak self] in
             self?.dismiss(animated: true)
         }
