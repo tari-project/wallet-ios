@@ -562,7 +562,7 @@
 "restore_from_seed_words.progress_overlay.label.title" = "Restoring your wallet";
 "restore_from_seed_words.progress_overlay.label.description" = "This could take between 1 to 3 minutes.\nPlease keep the app open.";
 "restore_from_seed_words.progress_overlay.label.description_long" = "It’s taking a bit longer than expected.
-This could be due to a slow internet connection, a busy network, or a hiccup with Tor. We’re on it and will have your wallet synced soon! 
+This could be due to a slow internet connection, or a busy network. We’re on it and will have your wallet synced soon! 
 Please keep the app open while the wallet syncs.";
 "restore_from_seed_words.progress_overlay.success" = "Your wallet was restored. Welcome back!";
 "restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection";
@@ -655,7 +655,7 @@ Please keep the app open while the wallet syncs.";
 /* Data Collection Settings */
 
 "data_collection_settings.title" = "Data Collection";
-"data_collection_settings.label.description" = "We're always striving to make Aurora better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
+"data_collection_settings.label.description" = "We're always striving to make Tari Universe Wallet better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
 "data_collection_settings.label.consent" = "I consent to data collection";
 
 /* Errors */
@@ -820,7 +820,7 @@ Please keep the app open while the wallet syncs.";
 /* Tracking */
 
 "tracking.pop_up.consent.title" = "Help us improve";
-"tracking.pop_up.consent.message" = "We're always striving to make Aurora better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
+"tracking.pop_up.consent.message" = "We're always striving to make Tari Universe Wallet better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
 "tracking.pop_up.consent.button.yes" = "Yes, I consent";
 "tracking.pop_up.consent.button.no" = "No, I decline";
 

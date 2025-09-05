@@ -1,8 +1,8 @@
-//  PaymentReferenceInfoSheet.swift
+//  AppVersion.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 24.06.2025
+	Created by Tomas Hakel on 15.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -38,19 +38,30 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import SwiftUI
-
-struct PaymentReferenceInfoSheet: View {
-    @Environment(\.dismiss) var dismiss
+struct AppVersion: Codable {
+    let minVersion: String
+    let recommendedVersion: String
     
-    var body: some View {
-        InfoSheet(
-            title: "Your unique payment ID!",
-            message: "Share this with anyone who needs to confirm your payment - they can look it up on a block explorer while your privacy stays protected."
-        )
+    enum CodingKeys: String, CodingKey {
+        case minVersion = "minIosVersion"
+        case recommendedVersion = "recommendedIosVersion"
     }
 }
 
-#Preview {
-    PaymentReferenceInfoSheet()
+extension AppVersion: Identifiable {
+    var id: String { "\(minVersion)-\(recommendedVersion)" }
+}
+
+extension AppVersion {
+    var currentVersion: String {
+        AppInfo.appVersion ?? "1.0.0"
+    }
+    
+    var requiresUpdate: Bool {
+        currentVersion.compare(minVersion, options: .numeric) == .orderedAscending
+    }
+    
+    var recommendsUpdate: Bool {
+        currentVersion.compare(recommendedVersion, options: .numeric) == .orderedAscending
+    }
 }

@@ -1,8 +1,8 @@
-//  PaymentReferenceInfoSheet.swift
+//  UpdateRequired.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 24.06.2025
+	Created by Tomas Hakel on 18.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,17 +40,59 @@
 
 import SwiftUI
 
-struct PaymentReferenceInfoSheet: View {
-    @Environment(\.dismiss) var dismiss
-    
+struct UpdateRequired: View {
+    let title: String
+    let message: String
+    let ctaTitle: String
+    let isDismissable: Bool
+    let update: () -> Void
+    let dismiss: () -> Void
+
     var body: some View {
-        InfoSheet(
-            title: "Your unique payment ID!",
-            message: "Share this with anyone who needs to confirm your payment - they can look it up on a block explorer while your privacy stays protected."
-        )
+        VStack(spacing: 32) {
+            text
+            actions
+        }
+        .padding(24)
+        .interactiveDismissDisabled(!isDismissable)
+    }
+}
+
+@MainActor
+private extension UpdateRequired {
+    var text: some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .modalTitle()
+                .foregroundColor(.primaryText)
+            Text(message)
+                .body()
+                .foregroundColor(.secondaryText)
+                .multilineTextAlignment(.center)
+        }
+    }
+    
+    var actions: some View {
+        VStack(spacing: 8) {
+            TariButton(ctaTitle, style: .primary, size: .large) {
+                update()
+            }
+            if isDismissable {
+                TariButton("Cancel", style: .text, size: .medium) {
+                    dismiss()
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    PaymentReferenceInfoSheet()
+    UpdateRequired(
+        title: "Update required",
+        message: "Please update",
+        ctaTitle: "Update",
+        isDismissable: true,
+        update: { },
+        dismiss: { }
+    )
 }

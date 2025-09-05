@@ -53,6 +53,9 @@ final class SeedWordsRecoveryProgressModel {
 
     let viewModel = ViewModel()
     private var cancellables: Set<AnyCancellable> = []
+    private var scannedHeight: UInt64?
+    private var blockHeight: UInt64?
+    private var lastUpdate: Date?
 
     // MARK: - Initializers
 
@@ -65,11 +68,10 @@ final class SeedWordsRecoveryProgressModel {
     private func registerOnRestoreProgressCallbacks() {
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
+                guard let self else { return }
                 // Only start recovery if it's not already in progress
-                let restoreStatus = Tari.mainWallet.recovery.status
-
-                if !(restoreStatus == .completed) || self?.viewModel.isWalletRestored != true {
-                    self?.startRestoringWallet()
+                if !Tari.mainWallet.recovery.isInProgress && self.viewModel.isWalletRestored == false {
+                    self.startRestoringWallet()
                 }
             }
             .store(in: &cancellables)
@@ -79,28 +81,38 @@ final class SeedWordsRecoveryProgressModel {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(restoreStatus: $0) }
             .store(in: &cancellables)
+
+        Tari.mainWallet.connectionCallbacks.$scannedHeight
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.scannedHeight = $0
+                self?.handleWalletHeightUpdate()
+            }
+            .store(in: &cancellables)
+
+        Tari.mainWallet.connectionCallbacks.$blockHeight
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.blockHeight = $0 }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
     func startRestoringWallet() {
         guard (try? Tari.mainWallet.recovery.startRecovery()) == true else {
-            handleStartRecoveryFailure()
-            return
+            return handleStartRecoveryFailure()
         }
+        Tari.shared.isDisconnectionDisabled = true
     }
 
     // MARK: - Handlers
 
     private func handle(restoreStatus: RestoreWalletStatus) {
         switch restoreStatus {
-        case let .progress(restoredUTXOs, totalNumberOfUTXOs):
-            let value = Double(restoredUTXOs) / Double(totalNumberOfUTXOs) * 100.0
-            viewModel.status = localized("restore_from_seed_words.progress_overlay.status.progress")
-            viewModel.progress = String(format: "%.1f%%", value)
-            viewModel.error = nil
+        case .progress:
+            () // handled via more reliable scannedHeight observation
         case .completed:
-            viewModel.isWalletRestored = true
+            handleRecoveryComplete()
         case let .scanningRoundFailed(attempt, maxAttempts):
             viewModel.status = localized("restore_from_seed_words.progress_overlay.status.connecting")
             viewModel.progress = localized("restore_from_seed_words.progress_overlay.progress.connection_failed", arguments: attempt + 1, maxAttempts + 1)
@@ -112,6 +124,36 @@ final class SeedWordsRecoveryProgressModel {
                 type: .error
             )
         }
+    }
+    
+    private func handleWalletHeightUpdate() {
+        guard let scannedHeight, let blockHeight, 0 < blockHeight else { return }
+        if scannedHeight == blockHeight {
+            handleRecoveryComplete()
+        } else {
+            handleProgress(Double(scannedHeight) / Double(blockHeight) * 100.0)
+        }
+    }
+    
+    private func handleProgress(_ percentValue: Double) {
+        viewModel.status = localized("restore_from_seed_words.progress_overlay.status.progress")
+        viewModel.progress = String(format: "%.1f%%", percentValue)
+        viewModel.error = nil
+        lastUpdate = .now
+        
+        Task(after: 10) { [weak self] in
+            // if the restore got stuck, try to reconnect
+            if let lastUpdate = self?.lastUpdate, lastUpdate.addingTimeInterval(9) < .now {
+                Logger.log(message: "Restore - Attrmpting wallet reconnect", domain: .general, level: .verbose)
+                Tari.shared.reconnect()
+                self?.lastUpdate = nil
+            }
+        }
+    }
+    
+    private func handleRecoveryComplete() {
+        Tari.shared.isDisconnectionDisabled = false
+        viewModel.isWalletRestored = true
     }
 
     private func handleStartRecoveryFailure() {

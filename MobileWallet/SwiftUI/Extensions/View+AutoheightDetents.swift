@@ -1,8 +1,8 @@
-//  PaymentReferenceInfoSheet.swift
+//  View+AutoheightDetents.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 24.06.2025
+	Created by Tomas Hakel on 19.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,17 +40,18 @@
 
 import SwiftUI
 
-struct PaymentReferenceInfoSheet: View {
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        InfoSheet(
-            title: "Your unique payment ID!",
-            message: "Share this with anyone who needs to confirm your payment - they can look it up on a block explorer while your privacy stays protected."
-        )
+extension View {
+    func autoheightDetents() -> some View {
+        modifier(AutoheightModifier())
     }
 }
 
-#Preview {
-    PaymentReferenceInfoSheet()
+private struct AutoheightModifier: ViewModifier {
+    @State private var height: CGFloat = 1000
+
+    func body(content: Content) -> some View {
+        content
+            .onHeightChange { self.height = $0 }
+            .presentationDetents([.height(height + 1)])
+    }
 }

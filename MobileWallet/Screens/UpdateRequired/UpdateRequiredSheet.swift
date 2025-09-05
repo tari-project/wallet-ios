@@ -1,8 +1,8 @@
-//  PaymentReferenceInfoSheet.swift
+//  UpdateRequiredSheet.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 24.06.2025
+	Created by Tomas Hakel on 18.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,17 +40,41 @@
 
 import SwiftUI
 
-struct PaymentReferenceInfoSheet: View {
+struct UpdateRequiredSheet: View {
     @Environment(\.dismiss) var dismiss
     
+    let appVersion: AppVersion
+
     var body: some View {
-        InfoSheet(
-            title: "Your unique payment ID!",
-            message: "Share this with anyone who needs to confirm your payment - they can look it up on a block explorer while your privacy stays protected."
+        UpdateRequired(
+            title: title,
+            message: message,
+            ctaTitle: "Update",
+            isDismissable: !appVersion.requiresUpdate,
+            update: { openAppStore() },
+            dismiss: { dismiss() }
         )
+        .presentationDetents([.height(300)])
+    }
+}
+
+private extension UpdateRequiredSheet {
+    var title: String {
+        appVersion.requiresUpdate ? "You must update the app" : "Update recommended"
+    }
+    
+    var message: String {
+        appVersion.requiresUpdate
+            ? "Recently, we made some amazing changes to the app, but unfortunately, you need to update to the latest version to continue using it."
+            : "You are using an outdated version of the app. We recommend updating to the latest version to ensure the best experience."
+    }
+
+    func openAppStore() {
+        guard let url = URL(string: TariSettings.shared.appStoreUrl) else { return }
+        UIApplication.shared.open(url)
     }
 }
 
 #Preview {
-    PaymentReferenceInfoSheet()
+    UpdateRequiredSheet(appVersion: AppVersion(minVersion: "1.00", recommendedVersion: "1.2.0"))
 }

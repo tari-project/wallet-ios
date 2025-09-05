@@ -45,6 +45,7 @@ struct BackgroundTaskManager {
     static let shared = BackgroundTaskManager()
 
     static let appBackgroundTaskScheduleReminderNotifications = "com.tari.wallet.scheduleReminderNotifications"
+    static let walletRestoreIdentifier = "com.tari.wallet.restore"
     // For testing using the debugger, pause, paste below command in and unpause
     // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.tari.wallet.scheduleReminderNotifications"]
 
@@ -59,7 +60,9 @@ struct BackgroundTaskManager {
                 self.handleScheduleRemindersTask(task: bgTask)
             }
         }
-
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.walletRestoreIdentifier, using: .global()) { task in
+            Logger.log(message: "Wallet restore background task registered", domain: .general, level: .verbose)
+        }
         scheduleBackgroundCheckForReminderNotifications()
     }
 

@@ -1,8 +1,8 @@
-//  AppTabs.swift
+//  View+ObservableFrame.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 08.07.2025
+	Created by Tomas Hakel on 19.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,69 +40,48 @@
 
 import SwiftUI
 
-@Observable
-class TabState {
-    static let shared = TabState()
-    var selected: Tab = .home
-    var requiredUpdate: AppVersion?
+extension View {
+    func onSizeChange(action: @escaping (CGSize) -> Void) -> some View {
+        modifier(ObservableFrame(preferenceKey: SizeKey.self, transform: { $0.size }, onFrameChange: action))
+    }
     
-    func checkRequiredVersion() {
-        Task {
-            guard let version = await API.service.requiredAppVersion() else { return }
-            if version.recommendsUpdate || version.requiresUpdate {
-                requiredUpdate = version
-            }
+    func onWidthChange(action: @escaping (CGFloat) -> Void) -> some View {
+        modifier(ObservableFrame(preferenceKey: FloatKey.self, transform: { $0.size.width }, onFrameChange: action))
+    }
+    
+    func onHeightChange(action: @escaping (CGFloat) -> Void) -> some View {
+        modifier(ObservableFrame(preferenceKey: FloatKey.self, transform: { $0.size.height }, onFrameChange: action))
+    }
+}
+
+private struct ObservableFrame<Key: PreferenceKey, Value: Equatable>: ViewModifier where Key.Value == Value {
+    let preferenceKey: Key.Type
+    let transform: (GeometryProxy) -> Value
+    let onFrameChange: (Value) -> Void
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay(sizeReader)
+            .onPreferenceChange(preferenceKey, perform: onFrameChange)
+    }
+
+    private var sizeReader: some View {
+        GeometryReader { geometry in
+            Color.clear.preference(key: preferenceKey, value: transform(geometry))
         }
     }
 }
 
-struct AppTabs: View {
-    @Environment(\.scenePhase) var scenePhase
-    @State var state = TabState.shared
-    
-    let walletState: WalletState
-    
-    var body: some View {
-        TabView(selection: $state.selected) {
-            home
-            profile
-            settings
-        }
-        .sheet(item: $state.requiredUpdate) {
-            UpdateRequiredSheet(appVersion: $0)
-        }
+private struct FloatKey: PreferenceKey {
+    static var defaultValue: CGFloat = .zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
-private extension AppTabs {
-    var home: some View {
-        Home(walletState: walletState)
-            .environment(HomeRouter.shared)
-            .tab(.home, selected: state.selected)
+private struct SizeKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
     }
-    
-    var profile: some View {
-        UIProfileViewController()
-            .background(Color.secondaryBackground)
-            .tab(.profile, selected: state.selected)
-    }
-    
-    var settings: some View {
-        UISettingsViewController()
-            .background(Color.secondaryBackground)
-            .tab(.settings, selected: state.selected)
-    }
-}
-
-private extension View {
-    func tab(_ tab: Tab, selected: Tab) -> some View {
-        tabItem {
-            Image(selected == tab ? tab.selectedIcon : tab.icon)
-        }
-        .tag(tab)
-    }
-}
-
-#Preview {
-    AppTabs(walletState: .current)
 }
