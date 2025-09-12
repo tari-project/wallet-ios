@@ -42,7 +42,6 @@ import Combine
 import YatLib
 
 final class AddRecipientModel {
-
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
     }
@@ -138,29 +137,11 @@ final class AddRecipientModel {
     }
 
     private func fetchRecentTariAddresses() throws -> [TariAddress] {
-
-        let transactionsService = Tari.shared.wallet(.main).transactions
-        let transactions: [Transaction] = transactionsService.completed + transactionsService.pendingInbound + transactionsService.pendingOutbound
-
-        let addresses = try transactions
-            .sorted { try $0.timestamp > $1.timestamp }
-            .map { try $0.address }
-            .reduce(into: (identifiers: [String](), output: [TariAddress]())) { result, address in
-                let addressComponents = try address.components
-                guard !result.identifiers.contains(addressComponents.uniqueIdentifier), !addressComponents.isUnknownAddress else { return }
-                result.identifiers.append(addressComponents.uniqueIdentifier)
-                result.output.append(address)
-            }
-            .output
-            .prefix(3)
-
-        return Array(addresses)
+        try contactsManager.recentAddresses(count: 3)
     }
 
     private func fetchRecentContacts() -> [ContactsManager.Model] {
-
         let allContacts = contactsManager.tariContactModels
-
         do {
             return try fetchRecentTariAddresses().compactMap { address in try allContacts.first { try $0.internalModel?.addressComponents == address.components }}
         } catch {

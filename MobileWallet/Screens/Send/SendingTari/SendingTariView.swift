@@ -57,7 +57,7 @@ final class SendingTariView: DynamicThemeView {
         return view
     }()
 
-    @TariView private var logoView = AnimationView(name: "sendingTariAnimation")
+    @TariView private var logoView = LottieAnimationView(name: "sendingTariAnimation")
 
     @TariView private var firstLabel: SendingTariLabel = {
         let view = SendingTariLabel()

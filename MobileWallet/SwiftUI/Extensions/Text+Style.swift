@@ -43,6 +43,5 @@ import SwiftUI
 extension Text {
     init(markdown text: String) {
         self.init(.init(text))
-        
     }
 }

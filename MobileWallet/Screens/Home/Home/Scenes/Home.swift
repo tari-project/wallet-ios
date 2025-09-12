@@ -88,11 +88,9 @@ struct Home: View, ChainTipObserver {
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
             }
-            .sheet(isPresented: $router.isSendPresented) {
+            .fullScreenCover(isPresented: $router.isSendPresented) {
                 NavigationStack {
-                    UISendViewController()
-                        .navigationBarBackButtonHidden()
-                        .background(Color.secondaryBackground)
+                    Send()
                 }
             }
             .sheet(isPresented: $isConnectionStatusPresented) {

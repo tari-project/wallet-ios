@@ -85,41 +85,33 @@ class UserManager: NSObject {
         let components = token.components(separatedBy: ".")
         return components.count == 3
     }
+    
+    private let defaults = UserDefaults.standard
 
     var accessToken: String? {
-        get {
-            UserDefaults.standard.string(forKey: "AccessToken")
-        }
+        get { defaults.string(forKey: "AccessToken") }
         set {
             if let newToken = newValue {
                 if isValidTokenFormat(newToken) {
-                    UserDefaults.standard.set(newToken, forKey: "AccessToken")
+                    defaults.set(newToken, forKey: "AccessToken")
                     fetchUserDetails(accessToken: newToken)
                 } else {
                     user = .Error("Invalid token format")
                 }
             } else {
-                UserDefaults.standard.set(nil, forKey: "AccessToken")
+                defaults.set(nil, forKey: "AccessToken")
             }
         }
     }
 
     var refreshToken: String? {
-        get {
-            UserDefaults.standard.string(forKey: "RefreshToken")
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "RefreshToken")
-        }
+        get { defaults.string(forKey: "RefreshToken") }
+        set { defaults.set(newValue, forKey: "RefreshToken") }
     }
 
-       var userId: String? {
-        get {
-            UserDefaults.standard.string(forKey: "UserId")
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "UserId")
-        }
+    var userId: String? {
+        get { defaults.string(forKey: "UserId") }
+        set { defaults.set(newValue, forKey: "UserId") }
     }
 
     @Published var user: UserInfoStatus = .LoggedOut

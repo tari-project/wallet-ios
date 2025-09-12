@@ -40,6 +40,27 @@
 
 import SwiftUI
 
+struct ContactModel: Identifiable, Hashable {
+    let id = UUID()
+    let name: String
+    let alias: String?
+    var avatar: String
+    let address: TariAddressComponents?
+    var isFavorite: Bool
+    var isFFIContact: Bool
+    var type: ContactsManager.ContactType
+
+    init(internalModel: InternalContactsManager.ContactModel?) {
+        alias = internalModel?.alias ?? internalModel?.defaultAlias
+        name = alias ?? internalModel?.addressComponents.formattedCoreAddress ?? ""
+        avatar = internalModel?.addressComponents.spendKey.firstOrEmpty ?? ""
+        address = internalModel?.addressComponents
+        isFavorite = internalModel?.isFavorite ?? false
+        isFFIContact = internalModel?.alias != nil
+        type = internalModel != nil ? .internalOrEmojiID : .empty
+    }
+}
+
 final class ContactsManager {
     enum ContactType {
         case internalOrEmojiID
@@ -84,6 +105,11 @@ final class ContactsManager {
     private let internalContactsManager = InternalContactsManager()
 
     // MARK: - Actions
+    func contacts() -> [ContactModel] {
+        tariContactModels.map {
+            ContactModel(internalModel: $0.internalModel)
+        }
+    }
     
     func contact(for address: TariAddress) async throws -> ContactsManager.Model? {
         try await fetchModels()
@@ -124,6 +150,21 @@ final class ContactsManager {
     func createInternalModel(name: String, isFavorite: Bool, address: TariAddress) throws -> Model {
         let internalModel = try internalContactsManager.create(alias: name, isFavorite: isFavorite, address: address)
         return Model(internalModel: internalModel)
+    }
+    
+    func recentAddresses(count: Int) throws -> [TariAddress] {
+        let transactions = Tari.mainWallet.allTransactions
+        let addresses = try transactions
+            .map { try $0.address }
+            .reduce(into: (identifiers: [String](), output: [TariAddress]())) { result, address in
+                let addressComponents = try address.components
+                guard !result.identifiers.contains(addressComponents.uniqueIdentifier), !addressComponents.isUnknownAddress else { return }
+                result.identifiers.append(addressComponents.uniqueIdentifier)
+                result.output.append(address)
+            }
+            .output
+            .prefix(3)
+        return Array(addresses)
     }
 
     private func update(tariContactModels: [Model]) async {

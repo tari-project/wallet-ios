@@ -114,7 +114,7 @@ private extension TransactionDetails {
             if let address {
                 TransactionDetailItem(
                     label: isOutbound ? "To" : "From",
-                    value: showsFullTextAddress && !isEmojiAddress ? address : address.truncated(to: 12)
+                    value: showsFullTextAddress && !isEmojiAddress ? address : address.truncatedAddress
                 ) {
                     HStack {
                         EmojiToggle(isOn: $isEmojiAddress)
@@ -194,6 +194,10 @@ extension String {
     func truncated(to length: Int) -> String {
         guard count > length else { return self }
         return "\(prefix(length / 2))...\(suffix(length / 2))"
+    }
+    
+    var truncatedAddress: String {
+        truncated(to: 12)
     }
 }
 

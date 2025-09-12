@@ -38,6 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
 import UIKit
 import TariCommon
 import Combine
@@ -400,7 +401,6 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     @objc private func continueButtonTapped() {
         guard let fetchedPaymentInfo = updatedPaymentInfo() else { return }
-        
         let controller = ConfirmationViewController(paymentInfo: fetchedPaymentInfo)
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -437,7 +437,7 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     private func updatedPaymentInfo() -> PaymentInfo? {
-        guard let amount = calculateAmount(), let feePerGram = feePerGram else { return nil }
+        guard let amount = calculateAmount(), let feePerGram else { return nil }
         return PaymentInfo(addressComponents: paymentInfo.addressComponents, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
     }
 

@@ -41,9 +41,9 @@
 import UIKit
 import UserNotifications
 import Combine
-
 import Firebase
 import FirebaseMessaging
+
 private struct TokenRegistrationServerRequest: Encodable {
     let token: String
     let platform: String = "ios"

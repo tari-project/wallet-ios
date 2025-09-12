@@ -1,10 +1,10 @@
-//  Animation+EnumInit.swift
-
+//  ContactBookItem.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 20.05.2020
-	Using Swift 5.0
-	Running on macOS 10.15
+	Created by Tomas Hakel on 25.08.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,33 +38,32 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Lottie
-import SwiftUICore
+import SwiftUI
 
-enum LottieAnimationType: String {
-    case none
-
-    case splash = "SplashAnimation"
-
-    case checkMark = "CheckMark"
-    case faceID = "FaceID"
-    case touchID = "TouchIdAnimation"
-    case notification = "NotificationAnimation"
-    case notificationsSuccess = "NotificationSuccessAnimation"
-    case emojiWheel = "EmojiWheel"
-    case nerdEmoji = "NerdEmojiAnimation"
-    case pendingCircleAnimation = "PendingCircleAnimation"
-
-    case waveEmoji = "WaveEmojiAnimation"
-
-    case checkboxSelectAnimation = "CheckboxSelectAnimation"
-    case checkboxDeselectAnimation = "CheckboxDeselectAnimation"
-}
-
-extension LottieAnimation {
-    static func named(_ animation: LottieAnimationType) -> LottieAnimation? {
-        animation != .none
-            ? LottieAnimation.named(animation.rawValue)
-            : nil
+struct ContactBookItem: View {
+    let contact: ContactModel
+    let action: (ContactModel) -> Void
+    
+    var body: some View {
+        Button(action: { action(contact) }) {
+            HStack {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(contact.name)
+                        .body()
+                        .foregroundStyle(.primaryText)
+                    if let address = contact.address?.fullRaw {
+                        Text(address.prefix(6) + " ••• " + address.suffix(6))
+                            .body2()
+                            .foregroundStyle(.secondaryText)
+                    }
+                }
+                Spacer()
+            }
+            .padding(16)
+            .background {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.primaryBackground, stroke: .outlined)
+            }
+        }
     }
 }
