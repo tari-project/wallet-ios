@@ -211,4 +211,15 @@ extension WalletInteractable {
     func transaction(id: UInt64) -> Transaction? {
         transactions.transaction(id: id)
     }
+    
+    var allTransactions: [Transaction] {
+        do {
+            let allTransactions: [Transaction] = transactions.completed + transactions.pendingInbound + transactions.pendingOutbound
+            return try allTransactions.sorted { try $0.timestamp > $1.timestamp }
+        } catch { return [] }
+    }
+    
+    func recentTransactions(count: Int) throws -> [Transaction] {
+        Array(allTransactions.prefix(count))
+    }
 }

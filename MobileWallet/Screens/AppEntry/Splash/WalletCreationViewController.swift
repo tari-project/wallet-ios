@@ -43,8 +43,6 @@ import LocalAuthentication
 import AVFoundation
 
 final class WalletCreationViewController: DynamicThemeViewController {
-    typealias LottieAnimation = Animation.LottieAnimation
-
     // MARK: - States
     private enum WalletCreationState {
         case initial
@@ -59,13 +57,13 @@ final class WalletCreationViewController: DynamicThemeViewController {
 
     private var state: WalletCreationState = .createEmojiId
 
-    private var loadingCircle = AnimationView()
+    private var loadingCircle = LottieAnimationView()
 
     private var stackView = UIStackView()
     private var stackViewCenterYConstraint: NSLayoutConstraint?
 
     private var numpadImageView = UIImageView()
-    private let animationView = AnimationView()
+    private let animationView = LottieAnimationView()
     private var animationViewHeightConstraint: NSLayoutConstraint?
     private var animationViewWidthConstraint: NSLayoutConstraint?
 
@@ -167,9 +165,9 @@ final class WalletCreationViewController: DynamicThemeViewController {
         )
     }
 
-    private func playLottieAnimation(_ animation: LottieAnimation, completion: ((Bool) -> Void)? = nil) {
+    private func playLottieAnimation(_ animation: LottieAnimationType, completion: ((Bool) -> Void)? = nil) {
         updateConstraintsAnimationView(animation: animation)
-        animationView.animation = Animation.named(animation)
+        animationView.animation = .named(animation)
         animationView.alpha = 1.0
         animationView.play(
             fromProgress: 0,
@@ -490,7 +488,7 @@ extension WalletCreationViewController {
 
     private func setupPendingAnimation() {
         loadingCircle.backgroundBehavior = .pauseAndRestore
-        loadingCircle.animation = Animation.named(.pendingCircleAnimation)
+        loadingCircle.animation = .named(.pendingCircleAnimation)
         loadingCircle.alpha = 0.0
 
         mainView.addSubview(loadingCircle)
@@ -503,7 +501,7 @@ extension WalletCreationViewController {
         loadingCircle.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
     }
 
-    private func updateConstraintsAnimationView(animation: LottieAnimation) {
+    private func updateConstraintsAnimationView(animation: LottieAnimationType) {
         switch animation {
         case .none:
             animationViewWidthConstraint?.constant = 0.0

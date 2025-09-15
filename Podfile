@@ -4,7 +4,7 @@ use_frameworks!
 inhibit_all_warnings!
 
 target 'MobileWallet' do
-  pod 'lottie-ios', '3.2.3'
+  pod 'lottie-ios', '4.3.0'
   pod 'SwiftEntryKit', '2.0.0'
   pod 'ReachabilitySwift', '5.0.0'
   pod 'Sentry', '8.52.0'

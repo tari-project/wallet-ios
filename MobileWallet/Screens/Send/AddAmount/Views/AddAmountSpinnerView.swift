@@ -46,10 +46,10 @@ final class AddAmountSpinnerView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    private let spinnerView: AnimationView = {
-        let view = AnimationView()
+    private let spinnerView: LottieAnimationView = {
+        let view = LottieAnimationView()
         view.backgroundBehavior = .pauseAndRestore
-        view.animation = Animation.named(.pendingCircleAnimation)
+        view.animation = .named(.pendingCircleAnimation)
         view.loopMode = .loop
         view.play()
         view.translatesAutoresizingMaskIntoConstraints = false

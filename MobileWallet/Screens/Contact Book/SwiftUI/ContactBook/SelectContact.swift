@@ -1,10 +1,10 @@
-//  Animation+EnumInit.swift
-
+//  ContactBook.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 20.05.2020
-	Using Swift 5.0
-	Running on macOS 10.15
+	Created by Tomas Hakel on 25.08.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,33 +38,28 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Lottie
-import SwiftUICore
+import SwiftUI
 
-enum LottieAnimationType: String {
-    case none
+struct SelectContact: View {
+    @Environment(\.dismiss) var dismiss
+    
+    let selectAction: (ContactModel) -> Void
 
-    case splash = "SplashAnimation"
-
-    case checkMark = "CheckMark"
-    case faceID = "FaceID"
-    case touchID = "TouchIdAnimation"
-    case notification = "NotificationAnimation"
-    case notificationsSuccess = "NotificationSuccessAnimation"
-    case emojiWheel = "EmojiWheel"
-    case nerdEmoji = "NerdEmojiAnimation"
-    case pendingCircleAnimation = "PendingCircleAnimation"
-
-    case waveEmoji = "WaveEmojiAnimation"
-
-    case checkboxSelectAnimation = "CheckboxSelectAnimation"
-    case checkboxDeselectAnimation = "CheckboxDeselectAnimation"
+    var body: some View {
+        NavigationStack {
+            ContactList {
+                selectAction($0)
+                dismiss()
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                toolbarTitle("Contact Book")
+                toolbarCloseItem { dismiss() }
+            }
+        }
+    }
 }
 
-extension LottieAnimation {
-    static func named(_ animation: LottieAnimationType) -> LottieAnimation? {
-        animation != .none
-            ? LottieAnimation.named(animation.rawValue)
-            : nil
-    }
+#Preview {
+    SelectContact { _ in }
 }

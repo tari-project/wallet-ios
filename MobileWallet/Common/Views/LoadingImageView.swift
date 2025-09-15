@@ -50,8 +50,8 @@ final class LoadingImageView: UIView {
 
     // MARK: - Subviews
 
-    @TariView private var loadingView: AnimationView = {
-        let view = AnimationView()
+    @TariView private var loadingView: LottieAnimationView = {
+        let view = LottieAnimationView()
         view.backgroundBehavior = .pauseAndRestore
         view.animation = .named(.pendingCircleAnimation)
         view.loopMode = .loop

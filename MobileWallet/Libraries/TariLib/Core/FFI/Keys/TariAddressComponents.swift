@@ -40,8 +40,7 @@
 
 import Base58Swift
 
-struct TariAddressComponents {
-
+struct TariAddressComponents: Hashable {
     let network: String
     let networkName: String
     let features: String
@@ -68,7 +67,6 @@ extension TariAddressComponents: Equatable {
 }
 
 extension TariAddressComponents {
-
     var networkAndFeatures: String { network + features }
     var coreAddressPrefix: String { String(coreAddress.prefix(3)) }
     var coreAddressSuffix: String { String(coreAddress.suffix(3)) }
@@ -78,7 +76,6 @@ extension TariAddressComponents {
     private var coreAddress: String { [viewKey, spendKey, checksum].compactMap { $0 }.joined() }
 
     init(address: TariAddress) throws {
-
         let addressNetwork = try address.network
         let addressFeatures = try address.features
 

@@ -69,7 +69,7 @@ PODS:
   - libwebp/sharpyuv (1.5.0)
   - libwebp/webp (1.5.0):
     - libwebp/sharpyuv
-  - lottie-ios (3.2.3)
+  - lottie-ios (4.3.0)
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
     - nanopb/encode (= 3.30910.0)
@@ -92,7 +92,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Giphy (= 2.2.11)
   - IPtProxy (= 3.3.0)
-  - lottie-ios (= 3.2.3)
+  - lottie-ios (= 4.3.0)
   - ReachabilitySwift (= 5.0.0)
   - Sentry (= 8.52.0)
   - SwiftEntryKit (= 2.0.0)
@@ -139,7 +139,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   IPtProxy: 2136e276560ffd3a1d017683259f52552fc7c2e5
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
-  lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
+  lottie-ios: c69214a487e1a1465a231c1918c6ce174e2d45bc
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
@@ -150,6 +150,6 @@ SPEC CHECKSUMS:
   YatLib: dda2cfe9e47790f27a13074ea815eac19a919043
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 4e1695d5e14c35d47660d21e22e3afb869fc9997
+PODFILE CHECKSUM: 3f8694f52f6060fbb908aff7a82a9e696d1a7653
 
 COCOAPODS: 1.16.2

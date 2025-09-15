@@ -57,7 +57,7 @@ struct TransactionDetailItem<Actions: View>: View {
                     .body()
                     .foregroundStyle(valueColor)
                     .onTapGesture { valueAction?() }
-                Spacer()
+                Spacer(minLength: 0)
                 if let actions {
                     actions
                 }

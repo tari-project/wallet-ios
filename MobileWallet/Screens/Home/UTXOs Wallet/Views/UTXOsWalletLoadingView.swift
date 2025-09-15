@@ -53,10 +53,10 @@ final class UTXOsWalletLoadingView: DynamicThemeView {
         return view
     }()
 
-    @TariView private var spinnerView: AnimationView = {
-        let view = AnimationView()
+    @TariView private var spinnerView: LottieAnimationView = {
+        let view = LottieAnimationView()
         view.backgroundBehavior = .pauseAndRestore
-        view.animation = Animation.named(.pendingCircleAnimation)
+        view.animation = .named(.pendingCircleAnimation)
         view.loopMode = .loop
         view.play()
         return view

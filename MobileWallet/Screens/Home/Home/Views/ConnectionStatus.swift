@@ -76,7 +76,7 @@ private extension ConnectionStatusSheet {
     func item(_ title: String, message: String, status: ImageResource) -> some View {
         HStack(spacing: 10) {
             Text(title)
-                .body()
+                .headingMedium()
                 .foregroundStyle(.primaryText)
             Spacer()
             Text(message)
@@ -84,7 +84,7 @@ private extension ConnectionStatusSheet {
                 .foregroundStyle(.secondaryText)
             Image(status)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 10)
         .frame(height: 64)
         .background(alignment: .bottom) {
             Divider()

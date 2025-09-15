@@ -48,7 +48,7 @@ enum LoadinGIFButtonVariation {
 
 class LoadingGIFButton: DynamicThemeBaseButton {
     static let HEIGHT: CGFloat = 20.0
-    private let pendingAnimationView = AnimationView()
+    private let pendingAnimationView = LottieAnimationView()
 
     var variation: LoadinGIFButtonVariation = .retry {
         didSet {
@@ -95,7 +95,7 @@ class LoadingGIFButton: DynamicThemeBaseButton {
 
     private func setupPendingAnimation() {
         pendingAnimationView.backgroundBehavior = .pauseAndRestore
-        pendingAnimationView.animation = Animation.named(.pendingCircleAnimation)
+        pendingAnimationView.animation = .named(.pendingCircleAnimation)
 
         addSubview(pendingAnimationView)
         pendingAnimationView.translatesAutoresizingMaskIntoConstraints = false
