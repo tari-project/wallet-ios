@@ -117,9 +117,6 @@ final class Wallet {
             // TODO: not used anymore, should be removed once FFI is updated
         }
 
-        let contactsLivenessDataUpdatedCallback: (@convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void) = { _, _ in
-        }
-
         let balanceUpdatedCallback: @convention(c) (UnsafeMutableRawPointer?, OpaquePointer?) -> Void = { context, pointer in
             guard let pointer else { return }
             context?.walletCallbacks.balanceUpdateSubject.send(Balance(pointer: pointer))
@@ -185,7 +182,6 @@ final class Wallet {
             transactionSendResultCallback,
             transactionCancellationCallback,
             txoValidationCallback, // TODO: not used anymore, should be removed once FFI is updated
-            contactsLivenessDataUpdatedCallback,
             balanceUpdatedCallback,
             trasactionValidationCompleteCallback, // TODO: not used anymore, should be removed once FFI is updated
             storedMessagesReceivedCallback,

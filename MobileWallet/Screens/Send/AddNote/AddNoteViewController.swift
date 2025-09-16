@@ -139,8 +139,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     }
 
     private func displayAliasOrEmojiId() {
-        var alias = try? paymentInfo.alias ?? Tari.mainWallet.contacts.findContact(components: paymentInfo.addressComponents)?.alias
-        guard let alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
+        guard let alias = try? paymentInfo.alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             let addressComponents = paymentInfo.addressComponents
             addressView.update(viewModel: AddressView.ViewModel(
                 prefix: addressComponents.networkAndFeatures,

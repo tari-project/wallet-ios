@@ -65,30 +65,26 @@ class ConfirmationViewController: SecureViewController<ConfirmationView> {
     }
 
     private func displayAliasOrEmojiId() {
-        do {
-            if let alias = try paymentInfo.alias ?? Tari.mainWallet.contacts.findContact(components: paymentInfo.addressComponents)?.alias {
-                // Show contact name in the main address view
-                addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false))
-                mainView.userText = alias
+        if let alias = paymentInfo.alias {
+            // Show contact name in the main address view
+            addressView.update(viewModel: AddressView.ViewModel(prefix: nil, text: .single(alias), isDetailsButtonVisible: false))
+            mainView.userText = alias
 
-                // Update the recipient address section with the full address
-                let addressComponents = paymentInfo.addressComponents
-                mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
-                mainView.isEmojiFormat = true
-            } else {
-                let addressComponents = paymentInfo.addressComponents
-                // Show shortened address in both views
-                let viewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures,
-                                                    text: .truncated(prefix: addressComponents.coreAddressPrefix,
-                                                                    suffix: addressComponents.coreAddressSuffix),
-                                                    isDetailsButtonVisible: false)
-                addressView.update(viewModel: viewModel)
-                mainView.userText = addressComponents.fullRaw.shortenedMiddle(to: 10)
-                mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
-                mainView.isEmojiFormat = true
-            }
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
+            // Update the recipient address section with the full address
+            let addressComponents = paymentInfo.addressComponents
+            mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
+            mainView.isEmojiFormat = true
+        } else {
+            let addressComponents = paymentInfo.addressComponents
+            // Show shortened address in both views
+            let viewModel = AddressView.ViewModel(prefix: addressComponents.networkAndFeatures,
+                                                text: .truncated(prefix: addressComponents.coreAddressPrefix,
+                                                                suffix: addressComponents.coreAddressSuffix),
+                                                isDetailsButtonVisible: false)
+            addressView.update(viewModel: viewModel)
+            mainView.userText = addressComponents.fullRaw.shortenedMiddle(to: 10)
+            mainView.addressText = addressComponents.fullRaw.shortenedMiddle(to: 10)
+            mainView.isEmojiFormat = true
         }
     }
 

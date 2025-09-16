@@ -50,7 +50,6 @@ protocol WalletInteractable {
     var connectionCallbacks: WalletConnectionCallbacks { get }
 
     var connection: TariConnectionService { get }
-    var contacts: TariContactsService { get }
     var fees: TariFeesService { get }
     var keyValues: TariKeyValueService { get }
     var messageSign: TariMessageSignService { get }
@@ -98,7 +97,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
     private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(scannedHeightPublisher: $scannedHeight, blockHeight: $blockHeight)
 
     private(set) lazy var connection: TariConnectionService = TariConnectionService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
-    private(set) lazy var contacts = TariContactsService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var fees = TariFeesService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var keyValues = TariKeyValueService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var messageSign = TariMessageSignService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
