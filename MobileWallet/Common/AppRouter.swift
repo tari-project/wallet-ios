@@ -191,17 +191,13 @@ enum AppRouter {
 
     @MainActor static func presentSendTransaction(paymentInfo: PaymentInfo, presenter: UINavigationController? = nil) {
         AddressPoisoningDataHandler.handleAddressSelection(paymentInfo: paymentInfo) { selectedPaymentInfo in
-
-            let controller = AddAmountViewController(paymentInfo: selectedPaymentInfo)
-
-            guard let presenter else {
-                let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+            if let presenter {
+                presenter.pushViewController(UIHostingController(rootView: Send()), animated: true)
+            } else {
+                let navigationController = AlwaysPoppableNavigationController(rootViewController: UIHostingController(rootView: Send()))
                 navigationController.isNavigationBarHidden = true
                 presentOnTop(controller: navigationController, onFullScreen: true)
-                return
             }
-
-            presenter.pushViewController(controller, animated: true)
         }
     }
 
