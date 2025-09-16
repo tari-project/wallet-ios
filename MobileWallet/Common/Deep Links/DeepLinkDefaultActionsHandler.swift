@@ -216,18 +216,10 @@ enum DeepLinkDefaultActionsHandler {
     }
 
     private static func add(contacts: [ContactData]) throws {
-
         let contactsManager = ContactsManager()
-
         try contacts.forEach {
-
             let address = try TariAddress(base58: $0.address)
-
-            if Tari.shared.wallet(.main).isWalletRunning.value {
-                _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)
-            } else {
-                try PendingDataManager.shared.storeContact(name: $0.name, isFavorite: false, address: address)
-            }
+            _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)
         }
     }
 

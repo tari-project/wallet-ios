@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012562E2371D81500A9C067 /* SplashViewController.swift */; };
 		001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDB238011CA00FA7002 /* PublicKey.swift */; };
-		001F6CE02380198D00FA7002 /* Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDF2380198D00FA7002 /* Contacts.swift */; };
-		001F6CE42380253B00FA7002 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CE32380253B00FA7002 /* Contact.swift */; };
 		00262EB4236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
 		004277F323E0407900AE7BD9 /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277F223E0407900AE7BD9 /* TextButton.swift */; };
 		004277F723E0628A00AE7BD9 /* UIViewController+Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */; };
@@ -186,7 +184,6 @@
 		3A80F636287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A80F635287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift */; };
 		3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C128EC556C0015E63A /* CoreTariService.swift */; };
 		3A8473C428EC55B10015E63A /* TariTransactionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C328EC55B10015E63A /* TariTransactionsService.swift */; };
-		3A8473C628EC55DB0015E63A /* TariContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C528EC55DB0015E63A /* TariContactsService.swift */; };
 		3A8473CA28EC56180015E63A /* TariFeesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C928EC56180015E63A /* TariFeesService.swift */; };
 		3A8473CC28EC562E0015E63A /* TariConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CB28EC562E0015E63A /* TariConnectionService.swift */; };
 		3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CD28EC56480015E63A /* TariUTXOsService.swift */; };
@@ -428,7 +425,6 @@
 		54C36D0F2A5D3EAC00BD973A /* QRCodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0E2A5D3EAC00BD973A /* QRCodeScannerView.swift */; };
 		54C36D112A5D3EB600BD973A /* QRCodeScannerConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D102A5D3EB600BD973A /* QRCodeScannerConstructor.swift */; };
 		54C416232A1C914200454096 /* LocalNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416222A1C914200454096 /* LocalNotificationsManager.swift */; };
-		54C416252A1CA81700454096 /* PendingDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416242A1CA81700454096 /* PendingDataManager.swift */; };
 		54C7EB602AC6B22C00F387DF /* TrackingConsentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C7EB5F2AC6B22C00F387DF /* TrackingConsentManager.swift */; };
 		54CA4D6C2CB9570900C33FD9 /* AppConnectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CA4D6B2CB9570900C33FD9 /* AppConnectionHandler.swift */; };
 		54CB24F829FA65230008632D /* PaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB24F729FA65230008632D /* PaymentInfo.swift */; };
@@ -616,8 +612,6 @@
 /* Begin PBXFileReference section */
 		0012562E2371D81500A9C067 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		001F6CDB238011CA00FA7002 /* PublicKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKey.swift; sourceTree = "<group>"; };
-		001F6CDF2380198D00FA7002 /* Contacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contacts.swift; sourceTree = "<group>"; };
-		001F6CE32380253B00FA7002 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		004277F223E0407900AE7BD9 /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Content.swift"; sourceTree = "<group>"; };
@@ -798,7 +792,6 @@
 		3A80F635287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpUtxoDetailsContentView.swift; sourceTree = "<group>"; };
 		3A8473C128EC556C0015E63A /* CoreTariService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTariService.swift; sourceTree = "<group>"; };
 		3A8473C328EC55B10015E63A /* TariTransactionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariTransactionsService.swift; sourceTree = "<group>"; };
-		3A8473C528EC55DB0015E63A /* TariContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariContactsService.swift; sourceTree = "<group>"; };
 		3A8473C928EC56180015E63A /* TariFeesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariFeesService.swift; sourceTree = "<group>"; };
 		3A8473CB28EC562E0015E63A /* TariConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariConnectionService.swift; sourceTree = "<group>"; };
 		3A8473CD28EC56480015E63A /* TariUTXOsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUTXOsService.swift; sourceTree = "<group>"; };
@@ -1040,7 +1033,6 @@
 		54C36D0E2A5D3EAC00BD973A /* QRCodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerView.swift; sourceTree = "<group>"; };
 		54C36D102A5D3EB600BD973A /* QRCodeScannerConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerConstructor.swift; sourceTree = "<group>"; };
 		54C416222A1C914200454096 /* LocalNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsManager.swift; sourceTree = "<group>"; };
-		54C416242A1CA81700454096 /* PendingDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDataManager.swift; sourceTree = "<group>"; };
 		54C7EB5F2AC6B22C00F387DF /* TrackingConsentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingConsentManager.swift; sourceTree = "<group>"; };
 		54CA4D6B2CB9570900C33FD9 /* AppConnectionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConnectionHandler.swift; sourceTree = "<group>"; };
 		54CB24F729FA65230008632D /* PaymentInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInfo.swift; sourceTree = "<group>"; };
@@ -1811,7 +1803,6 @@
 			children = (
 				54D782F42BA8615D00DD3BFE /* Base Node */,
 				3AF335DD28D7905C00B48F33 /* Configs */,
-				3AF335DA28D754EC00B48F33 /* Contacts */,
 				54C02B8F2BA075040057301A /* Errors */,
 				3AF335DC28D78D1F00B48F33 /* Keys */,
 				3AF335DB28D789F000B48F33 /* Seed Words */,
@@ -1878,7 +1869,6 @@
 				54C416222A1C914200454096 /* LocalNotificationsManager.swift */,
 				5491696D2940F78000783E54 /* LogFilesManager.swift */,
 				3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */,
-				54C416242A1CA81700454096 /* PendingDataManager.swift */,
 				54E007B52B8DF55600AFCD7C /* SecurityManager.swift */,
 				54516C0B2CAE851D00A8A2FB /* SeedWordsWalletRecoveryManager.swift */,
 				3AF97E6F27CFCA2000FF6A3F /* ShortcutsManager.swift */,
@@ -2189,7 +2179,6 @@
 			children = (
 				3A8473C128EC556C0015E63A /* CoreTariService.swift */,
 				3A8473C328EC55B10015E63A /* TariTransactionsService.swift */,
-				3A8473C528EC55DB0015E63A /* TariContactsService.swift */,
 				3A8473C928EC56180015E63A /* TariFeesService.swift */,
 				3A8473CB28EC562E0015E63A /* TariConnectionService.swift */,
 				3A8473CD28EC56480015E63A /* TariUTXOsService.swift */,
@@ -2423,15 +2412,6 @@
 				546B270C2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift */,
 			);
 			path = "Deep Links";
-			sourceTree = "<group>";
-		};
-		3AF335DA28D754EC00B48F33 /* Contacts */ = {
-			isa = PBXGroup;
-			children = (
-				001F6CDF2380198D00FA7002 /* Contacts.swift */,
-				001F6CE32380253B00FA7002 /* Contact.swift */,
-			);
-			path = Contacts;
 			sourceTree = "<group>";
 		};
 		3AF335DB28D789F000B48F33 /* Seed Words */ = {
@@ -3582,7 +3562,6 @@
 				3A7DABA228FDD0A8002CC013 /* LogCell.swift in Sources */,
 				540F02342A6A67EF00691FF5 /* AddRecipientModel.swift in Sources */,
 				54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */,
-				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				3AF97E6927CF76C800FF6A3F /* DeeplinkHandler.swift in Sources */,
 				00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */,
 				54F323E92CAC501300FD5364 /* PaperWalletDeeplink.swift in Sources */,
@@ -3702,10 +3681,8 @@
 				373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */,
 				3A530BD6290AFB6600C423C7 /* ICloudDocsDownloadService.swift in Sources */,
-				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
 				547A85D729AD248400D94985 /* MenuTableHeaderView.swift in Sources */,
 				0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */,
-				3A8473C628EC55DB0015E63A /* TariContactsService.swift in Sources */,
 				5453E43C2AC9D5CA00C7F40D /* UIImage+Utils.swift in Sources */,
 				542F22B92C33F73200F07557 /* PopUpAddressDetailsContentSectionView.swift in Sources */,
 				3A2F30B628F594520095E25D /* FileLogger.swift in Sources */,
@@ -3978,7 +3955,6 @@
 				714909E82D8AC8CD0081F417 /* NewProfileView.swift in Sources */,
 				491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				54C36D0B2A5D3E9800BD973A /* QRCodeScannerModel.swift in Sources */,
-				54C416252A1CA81700454096 /* PendingDataManager.swift in Sources */,
 				5460258829A74DA200CF5764 /* ContactDetailsViewController.swift in Sources */,
 				3A42059A279804B300A8D49C /* QRCodeFactory.swift in Sources */,
 				711D7FA22D511F770080A987 /* DesignSystemViewController.swift in Sources */,
@@ -4278,7 +4254,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4313,7 +4289,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
