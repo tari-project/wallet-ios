@@ -45,7 +45,7 @@ final class ScreenshotPopUpHandler {
 
     // MARK: - Constants
 
-    private let disabledViewControllers = [SendingTariViewController.self, YatTransactionViewController.self]
+    private let disabledViewControllers = [YatTransactionViewController.self]
 
     // MARK: - Properties
 
