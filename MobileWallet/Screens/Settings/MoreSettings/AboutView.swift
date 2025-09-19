@@ -45,7 +45,7 @@ final class AboutView: BaseNavigationContentView {
 
     struct CellModel: Identifiable, Hashable {
         let id: UUID = UUID()
-        let icon: UIImage?
+        let icon: ImageResource
         let text: String?
     }
 
@@ -91,7 +91,6 @@ final class AboutView: BaseNavigationContentView {
     }
 
     func setupCallbacks() {
-
         dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: AboutViewCell.self, indexPath: indexPath)
             cell.update(icon: model.icon, text: model.text)

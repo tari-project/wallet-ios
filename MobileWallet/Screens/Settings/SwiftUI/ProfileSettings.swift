@@ -1,10 +1,10 @@
-//  ScreenRecordingSettingsConstructor.swift
-
+//  ProfileSettings.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 06/03/2024
-	Using Swift 5.0
-	Running on macOS 14.2
+	Created by Tomas Hakel on 18.09.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,54 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum ScreenRecordingSettingsConstructor {
+import SwiftUI
 
-    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> ScreenRecordingSettingsViewController {
-        let model = ScreenRecordingSettingsModel()
-        return ScreenRecordingSettingsViewController(model: model, backButtonType: backButtonType)
+struct ProfileSettings: View {
+    @State private var presentedItem: Item?
+
+    var body: some View {
+        SettingsDetail(title: "Profile") {
+            item(.screenRecording)
+            Divider()
+            item(.about)
+        }
+        .navigationDestination(item: $presentedItem) {
+            destination(for: $0)
+                .navigationBarBackButtonHidden()
+                .ignoresSafeArea()
+        }
     }
+}
+
+private extension ProfileSettings {
+    enum Item {
+        case screenRecording, about
+    }
+    
+    @ViewBuilder
+    func destination(for item: Item) -> some View {
+        switch item {
+        case .screenRecording: UIScreenRecording()
+        case .about: UIAbout()
+        }
+    }
+    
+    func item(_ item: Item) -> some View {
+        SettingsDetailItem(title: item.title) {
+            presentedItem = item
+        }
+    }
+}
+
+private extension ProfileSettings.Item {
+    var title: String {
+        switch self {
+        case .screenRecording: "Screen Recording"
+        case .about: "About"
+        }
+    }
+}
+
+#Preview {
+    ProfileSettings()
 }

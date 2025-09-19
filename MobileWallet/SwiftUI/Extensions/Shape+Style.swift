@@ -48,3 +48,9 @@ extension Shape {
         }
     }
 }
+
+extension View {
+    func frame(square size: CGFloat) -> some View {
+        frame(width: size, height: size)
+    }
+}

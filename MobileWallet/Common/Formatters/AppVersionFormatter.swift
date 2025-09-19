@@ -39,7 +39,6 @@
 */
 
 enum AppVersionFormatter {
-
     static var version: String? {
         guard let version = AppInfo.appVersion, let build = AppInfo.buildVestion else { return nil }
         let networkName = NetworkManager.shared.selectedNetwork.name.uppercased()

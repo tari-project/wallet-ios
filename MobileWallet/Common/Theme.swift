@@ -51,28 +51,25 @@ struct Theme {
 
 struct Images {
     // Create Wallet
-    let createWalletDownArrow = UIImage(named: "notch_down")
-    let createWalletNumpad = UIImage(named: "numpad")
+    let createWalletDownArrow: UIImage = .notchDown
+    let createWalletNumpad: UIImage = .numpad
 
     // General icons
-    let currencySymbol = UIImage(named: "Gem")
-    let backArrow = UIImage(named: "BackArrow")
-    let forwardArrow = UIImage(named: "ForwardArrow")
-    let close = UIImage(named: "Close")
-    let share = UIImage(named: "share")
-    let handWave = UIImage(named: "HandWave")
-    let attentionIcon = UIImage(named: "AttentionIcon")
-    let scheduledIcon = UIImage(named: "ScheduledIcon")
-    let successIcon = UIImage(named: "SuccessIcon")
-    let tariIcon = UIImage(named: "TariIcon")
-    let cancelGiphy = UIImage(named: "cancelGiphy")
-    let poweredByGiphy = UIImage(named: "poweredByGiphy")
-    let searchIcon = UIImage(named: "SearchIcon")
+    let currencySymbol: UIImage = .gem
+    let share: UIImage = .share
+    let handWave: UIImage = .handWave
+    let attentionIcon: UIImage = .attentionIcon
+    let scheduledIcon: UIImage = .scheduledIcon
+    let successIcon: UIImage = .successIcon
+    let tariIcon: UIImage = .tariIcon
+    let cancelGiphy: UIImage = .cancelGiphy
+    let poweredByGiphy: UIImage = .poweredByGiphy
+    let searchIcon: UIImage = .searchIcon
 
     // Amount
-    let delete = UIImage(named: "numpad-delete")
+    let delete: UIImage = .numpadDelete
 
-    let splashScreen = UIImage(named: "staticSplash")
+    let splashScreen: UIImage = .staticSplash
 }
 
 struct Fonts {

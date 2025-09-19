@@ -45,13 +45,12 @@ final class ScreenRecordingSettingsViewController: SecureViewController<ScreenRe
 
     // MARK: - Properties
 
-    private let model: ScreenRecordingSettingsModel
+    private let model = ScreenRecordingSettingsModel()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: ScreenRecordingSettingsModel, backButtonType: NavigationBar.BackButtonType) {
-        self.model = model
+    init(backButtonType: NavigationBar.BackButtonType) {
         super.init(nibName: nil, bundle: nil)
         mainView.navigationBar.backButtonType = backButtonType
     }

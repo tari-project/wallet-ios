@@ -1,8 +1,8 @@
-//  SettingsItem.swift
+//  UIBackupWalletSettings.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 19.06.2025
+	Created by Tomas Hakel on 18.09.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,33 +40,12 @@
 
 import SwiftUI
 
-struct SettingsItem: View {
-    let image: ImageResource
-    let title: String
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                HStack(spacing: 16) {
-                    Image(image)
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.Icons.default)
-                        .frame(square: 24)
-                    Text(title)
-                        .menuItem()
-                        .foregroundStyle(.primaryText)
-                    Spacer()
-                }
-                .padding(.vertical, 24)
-                
-                Divider()
-            }
-        }
-    }
-}
+struct UIBackupWalletSettings: UIViewControllerRepresentable {
+    typealias UIViewControllerType = BackupWalletSettingsViewController
 
-#Preview {
-    SettingsItem(image: .settingsTab, title: "Settings") { }
-        .padding()
+    func makeUIViewController(context: Context) -> BackupWalletSettingsViewController {
+        BackupWalletSettingsViewController(backButtonType: .back)
+    }
+    
+    func updateUIViewController(_ uiViewController: BackupWalletSettingsViewController, context: Context) { }
 }

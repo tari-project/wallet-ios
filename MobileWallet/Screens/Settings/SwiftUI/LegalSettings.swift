@@ -1,8 +1,8 @@
-//  SettingsItem.swift
+//  LegalSettings.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 19.06.2025
+	Created by Tomas Hakel on 18.09.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,33 +40,54 @@
 
 import SwiftUI
 
-struct SettingsItem: View {
-    let image: ImageResource
-    let title: String
-    let action: () -> Void
-    
+struct LegalSettings: View {
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                HStack(spacing: 16) {
-                    Image(image)
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.Icons.default)
-                        .frame(square: 24)
-                    Text(title)
-                        .menuItem()
-                        .foregroundStyle(.primaryText)
-                    Spacer()
-                }
-                .padding(.vertical, 24)
-                
-                Divider()
-            }
+        SettingsDetail(title: "Legal") {
+            item(.userAgreement)
+            Divider()
+            item(.privacyPolicy)
+            Divider()
+            item(.disclaimer)
+        }
+    }
+}
+
+private extension LegalSettings {
+    enum Item {
+        case userAgreement, privacyPolicy, disclaimer
+    }
+    
+    func item(_ item: Item) -> some View {
+        SettingsDetailItem(title: item.title) {
+            select(item: item)
+        }
+    }
+    
+    func select(item: Item) {
+        if let url = item.url {
+            WebBrowserPresenter.open(url: url)
+        }
+    }
+}
+
+private extension LegalSettings.Item {
+    var title: String {
+        switch self {
+        case .userAgreement: "User Agreement"
+        case .privacyPolicy: "Privacy Policy"
+        case .disclaimer: "Disclaimer"
+        }
+    }
+    
+    var url: URL? {
+        switch self {
+        case .userAgreement: TariSettings.shared.userAgreementUrl
+        case .privacyPolicy: TariSettings.shared.privacyPolicyUrl
+        case .disclaimer: TariSettings.shared.disclaimer
         }
     }
 }
 
 #Preview {
-    SettingsItem(image: .settingsTab, title: "Settings") { }
-        .padding()
+    LegalSettings()
 }

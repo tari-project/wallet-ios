@@ -1,10 +1,10 @@
-//  BackupWalletSettingsConstructor.swift
-
+//  UIThemeSettings.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/10/2022
-	Using Swift 5.0
-	Running on macOS 12.6
+	Created by Tomas Hakel on 18.09.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum BackupWalletSettingsConstructor {
+import SwiftUI
 
-    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> BackupWalletSettingsViewController {
-        let model = BackupWalletSettingsModel()
-        return BackupWalletSettingsViewController(model: model, backButtonType: backButtonType)
+struct UIThemeSettings: UIViewControllerRepresentable {
+    typealias UIViewControllerType = ThemeSettingsViewController
+
+    func makeUIViewController(context: Context) -> ThemeSettingsViewController {
+        ThemeSettingsViewController()
     }
+    
+    func updateUIViewController(_ uiViewController: ThemeSettingsViewController, context: Context) { }
 }

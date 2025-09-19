@@ -130,17 +130,17 @@ class SystemMenuTableViewCell: DynamicThemeCell {
                 progressView.isHidden = true
                 switcher.isHidden = !(item?.hasSwitch ?? false)
             case .attention:
-                markImageView.image = Theme.shared.images.attentionIcon!
+                markImageView.image = Theme.shared.images.attentionIcon
                 progressView.isHidden = true
             case .success:
-                markImageView.image = Theme.shared.images.successIcon!
+                markImageView.image = Theme.shared.images.successIcon
                 progressView.isHidden = true
             case .progress:
                 markImageView.image = nil
                 progressView.isHidden = false
                 isUserInteractionEnabled = disableCellInProgress ? false : true
             case .scheduled:
-                markImageView.image = Theme.shared.images.scheduledIcon!
+                markImageView.image = Theme.shared.images.scheduledIcon
                 progressView.isHidden = true
             }
 

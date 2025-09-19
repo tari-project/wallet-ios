@@ -1,10 +1,10 @@
-//  BugReportingConstructor.swift
-
+//  SettingsDetailItem.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/10/2022
-	Using Swift 5.0
-	Running on macOS 12.6
+	Created by Tomas Hakel on 18.09.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,29 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum BugReportingConstructor {
+import SwiftUI
 
-    static func buildScene() -> BugReportingViewController {
-        let model = BugReportingModel()
-        return BugReportingViewController(model: model)
+struct SettingsDetailItem: View {
+    let title: String
+    var isCritical = false
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                    .body()
+                    .foregroundStyle(isCritical ? .errorMain : .primaryText)
+                Spacer()
+                Image(.chevronRight)
+                    .foregroundStyle(.primaryText)
+            }
+            .padding(.horizontal, 24)
+            .frame(height: 64)
+        }
     }
+}
+
+#Preview {
+    SettingsDetailItem(title: "Profile") { }
 }

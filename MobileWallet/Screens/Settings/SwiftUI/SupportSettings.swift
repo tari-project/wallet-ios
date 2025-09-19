@@ -1,8 +1,8 @@
-//  SettingsItem.swift
+//  SupportSettings.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 19.06.2025
+	Created by Tomas Hakel on 18.09.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,33 +40,67 @@
 
 import SwiftUI
 
-struct SettingsItem: View {
-    let image: ImageResource
-    let title: String
-    let action: () -> Void
-    
+struct SupportSettings: View {
+    @State var isPresentingBugReport = false
+
     var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                HStack(spacing: 16) {
-                    Image(image)
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.Icons.default)
-                        .frame(square: 24)
-                    Text(title)
-                        .menuItem()
-                        .foregroundStyle(.primaryText)
-                    Spacer()
-                }
-                .padding(.vertical, 24)
-                
+        SettingsDetail(title: "Support & Resources") {
+            item(.bugReport)
+            Divider()
+            item(.website)
+            Divider()
+            item(.contribute)
+            if NetworkManager.shared.selectedNetwork.isBlockExplorerAvailable {
                 Divider()
+                item(.blockExplorer)
             }
+        }
+        .sheet(isPresented: $isPresentingBugReport) {
+            UIBugReporting()
+        }
+    }
+}
+
+private extension SupportSettings {
+    enum Item {
+        case bugReport, website, contribute ,blockExplorer
+    }
+    
+    func item(_ item: Item) -> some View {
+        SettingsDetailItem(title: item.title) {
+            select(item: item)
+        }
+    }
+    
+    func select(item: Item) {
+        if let url = item.url {
+            WebBrowserPresenter.open(url: url)
+        } else if item == .bugReport {
+            isPresentingBugReport = true
+        }
+    }
+}
+
+private extension SupportSettings.Item {
+    var title: String {
+        switch self {
+        case .bugReport: "Report a Bug"
+        case .website: "Visit Tari.com"
+        case .contribute: "Contribute to Tari Universe"
+        case .blockExplorer: "Block Explorer"
+        }
+    }
+    
+    var url: URL? {
+        switch self {
+        case .bugReport: nil
+        case .website: TariSettings.shared.tariUrl
+        case .contribute: TariSettings.shared.contributeUrl
+        case .blockExplorer: NetworkManager.shared.selectedNetwork.blockExplorerURL
         }
     }
 }
 
 #Preview {
-    SettingsItem(image: .settingsTab, title: "Settings") { }
-        .padding()
+    SupportSettings()
 }

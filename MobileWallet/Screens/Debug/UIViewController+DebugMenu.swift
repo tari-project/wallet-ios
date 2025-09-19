@@ -116,7 +116,6 @@ extension UIViewController {
     }
 
     private func moveToReportBugScene() {
-        let controller = BugReportingConstructor.buildScene()
-        present(controller, animated: true)
+        present(BugReportingViewController(), animated: true)
     }
 }

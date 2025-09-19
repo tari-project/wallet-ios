@@ -89,8 +89,7 @@ final class ScreenshotPopUpHandler {
     }
 
     private func showScreenShotSettingsScreen() {
-        let controller = ScreenRecordingSettingsConstructor.buildScene(backButtonType: .close)
-        AppRouter.present(controller: controller)
+        AppRouter.present(controller: ScreenRecordingSettingsViewController(backButtonType: .close))
     }
 
     // MARK: - Handlers

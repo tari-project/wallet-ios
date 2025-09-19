@@ -56,7 +56,7 @@ final class ContactBookListPlaceholder: DynamicThemeView {
     @TariView private var backgroundImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.image = .Images.Security.Onboarding.background
+        view.image = .onboardingBackground
         return view
     }()
 

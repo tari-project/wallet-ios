@@ -1,8 +1,8 @@
-//  SettingsItem.swift
+//  SettingsDetail.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 19.06.2025
+	Created by Tomas Hakel on 18.09.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,33 +40,36 @@
 
 import SwiftUI
 
-struct SettingsItem: View {
-    let image: ImageResource
+struct SettingsDetail<Content: View>: View {
+    @Environment(\.dismiss) private var dismiss
+    
     let title: String
-    let action: () -> Void
+    @ViewBuilder var content: Content
     
     var body: some View {
-        Button(action: action) {
+        ScrollView {
             VStack(spacing: 0) {
-                HStack(spacing: 16) {
-                    Image(image)
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.Icons.default)
-                        .frame(square: 24)
-                    Text(title)
-                        .menuItem()
-                        .foregroundStyle(.primaryText)
-                    Spacer()
-                }
-                .padding(.vertical, 24)
-                
-                Divider()
+                content
             }
+            .background { detailBackground }
+            .padding(16)
         }
+        .background(Color.secondaryBackground)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            toolbarTitle(title)
+            toolbarBackItem { dismiss() }
+        }
+    }
+    
+    var detailBackground: some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill(.primaryBackground)
     }
 }
 
 #Preview {
-    SettingsItem(image: .settingsTab, title: "Settings") { }
-        .padding()
+    SettingsDetail(title: "Detail") {
+        Text("Content")
+    }
 }

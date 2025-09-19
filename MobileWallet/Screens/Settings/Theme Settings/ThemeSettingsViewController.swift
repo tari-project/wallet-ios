@@ -46,13 +46,12 @@ final class ThemeSettingsViewController: SecureViewController<ThemeSettingsView>
 
     // MARK: - Properties
 
-    private let model: ThemeSettingsModel
+    private let model = ThemeSettingsModel()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initalisers
 
-    init(model: ThemeSettingsModel) {
-        self.model = model
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
 

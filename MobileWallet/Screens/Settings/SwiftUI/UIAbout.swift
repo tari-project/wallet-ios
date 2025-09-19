@@ -1,8 +1,8 @@
-//  SettingsItem.swift
+//  UIAbout.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 19.06.2025
+	Created by Tomas Hakel on 19.09.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,33 +40,12 @@
 
 import SwiftUI
 
-struct SettingsItem: View {
-    let image: ImageResource
-    let title: String
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 0) {
-                HStack(spacing: 16) {
-                    Image(image)
-                        .renderingMode(.template)
-                        .foregroundStyle(Color.Icons.default)
-                        .frame(square: 24)
-                    Text(title)
-                        .menuItem()
-                        .foregroundStyle(.primaryText)
-                    Spacer()
-                }
-                .padding(.vertical, 24)
-                
-                Divider()
-            }
-        }
-    }
-}
+struct UIAbout: UIViewControllerRepresentable {
+    typealias UIViewControllerType = AboutViewController
 
-#Preview {
-    SettingsItem(image: .settingsTab, title: "Settings") { }
-        .padding()
+    func makeUIViewController(context: Context) -> AboutViewController {
+        AboutViewController()
+    }
+    
+    func updateUIViewController(_ uiViewController: AboutViewController, context: Context) { }
 }
