@@ -109,8 +109,12 @@ extension Send {
         if contact?.name != address {
             contact = nil
         }
-        withAnimation {
-            addressError = !address.isEmpty && !isAddressValid  ? "Invalid address" : nil
+        if let emojiAddressComponents = try? TariAddress(emojiID: address).components {
+            address = emojiAddressComponents.fullRaw
+        } else {
+            withAnimation {
+                addressError = !address.isEmpty && !isAddressValid  ? "Invalid address" : nil
+            }
         }
     }
     
