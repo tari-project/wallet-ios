@@ -88,7 +88,7 @@ private extension SendingTransaction {
     var animatedBackground: some View {
         GeometryReader { geometry in
             if let backgroundPlayer {
-                VideoPlayer(player: backgroundPlayer)
+                UIVideoPlayer(player: backgroundPlayer, videoGravity: .resizeAspectFill)
                     .aspectRatio(geometry.size, contentMode: .fill)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .disabled(true)

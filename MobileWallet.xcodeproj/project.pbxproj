@@ -557,6 +557,7 @@
 		F8C0653F2E37C3A5009BFC8F /* ConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */; };
 		F8C065422E38A2F5009BFC8F /* ChainTipObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */; };
 		F8CDD7AD2E40CFD4008E82B5 /* HomeRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CDD7AC2E40CFCE008E82B5 /* HomeRouter.swift */; };
+		F8D63B252E81684400071B66 /* UIVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D63B242E81684100071B66 /* UIVideoPlayer.swift */; };
 		F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */; };
 		F8E279822E24F69A0017C3F5 /* UISettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */; };
 		F8E279862E2540570017C3F5 /* UIReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */; };
@@ -1146,6 +1147,7 @@
 		F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainTipObserver.swift; sourceTree = "<group>"; };
 		F8CDD7AC2E40CFCE008E82B5 /* HomeRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRouter.swift; sourceTree = "<group>"; };
 		F8CDD7EF2E42159B008E82B5 /* dependencies.env */ = {isa = PBXFileReference; lastKnownFileType = text; path = dependencies.env; sourceTree = SOURCE_ROOT; };
+		F8D63B242E81684100071B66 /* UIVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVideoPlayer.swift; sourceTree = "<group>"; };
 		F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProfileViewController.swift; sourceTree = "<group>"; };
 		F8E279812E24F6970017C3F5 /* UISettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISettingsViewController.swift; sourceTree = "<group>"; };
 		F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIReceiveViewController.swift; sourceTree = "<group>"; };
@@ -3118,6 +3120,7 @@
 		F8472F702E745A2F0094163D /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F8D63B242E81684100071B66 /* UIVideoPlayer.swift */,
 				F8472F712E745A3D0094163D /* ProgressIndicator.swift */,
 			);
 			path = Views;
@@ -3559,6 +3562,7 @@
 				5449192E2C9301A7008F1173 /* WalletContainer.swift in Sources */,
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				3A2C0B8927DA22C20018C5A8 /* ExpandButton.swift in Sources */,
+				F8D63B252E81684400071B66 /* UIVideoPlayer.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TxTableViewCell.swift in Sources */,

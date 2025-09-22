@@ -1,10 +1,10 @@
-//  Animation+EnumInit.swift
-
+//  UIVideoPlayer.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 20.05.2020
-	Using Swift 5.0
-	Running on macOS 10.15
+	Created by Tomas Hakel on 22.09.2025
+	Using Swift 6.0
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,33 +38,49 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Lottie
 import SwiftUI
+import AVFoundation
 
-enum LottieAnimationType: String {
-    case none
-
-    case splash = "SplashAnimation"
-
-    case checkMark = "CheckMark"
-    case faceID = "FaceID"
-    case touchID = "TouchIdAnimation"
-    case notification = "NotificationAnimation"
-    case notificationsSuccess = "NotificationSuccessAnimation"
-    case emojiWheel = "EmojiWheel"
-    case nerdEmoji = "NerdEmojiAnimation"
-    case pendingCircleAnimation = "PendingCircleAnimation"
-
-    case waveEmoji = "WaveEmojiAnimation"
-
-    case checkboxSelectAnimation = "CheckboxSelectAnimation"
-    case checkboxDeselectAnimation = "CheckboxDeselectAnimation"
+struct UIVideoPlayer: UIViewRepresentable {
+    let player: AVPlayer
+    let videoGravity: AVLayerVideoGravity
+    
+    func makeUIView(context: Context) -> UIVideoPlayerView {
+        let view = UIVideoPlayerView(frame: .zero)
+        view.setPlayer(player, gravity: videoGravity)
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIVideoPlayerView, context: Context) { }
 }
 
-extension LottieAnimation {
-    static func named(_ animation: LottieAnimationType) -> LottieAnimation? {
-        animation != .none
-            ? LottieAnimation.named(animation.rawValue)
-            : nil
+class UIVideoPlayerView: UIView {
+    private let playerLayer = AVPlayerLayer()
+    private var player: AVPlayer?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupLayer()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupLayer()
+    }
+
+    private func setupLayer() {
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        layer.addSublayer(playerLayer)
+    }
+
+    func setPlayer(_ player: AVPlayer, gravity: AVLayerVideoGravity) {
+        self.player = player
+        playerLayer.player = player
+        playerLayer.videoGravity = gravity
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        playerLayer.frame = bounds
     }
 }
