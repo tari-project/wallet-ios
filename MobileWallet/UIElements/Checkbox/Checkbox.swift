@@ -43,17 +43,14 @@ import Lottie
 
 final class CheckBox: DynamicThemeBaseButton {
     private let borderLayer = CALayer()
-
-    private let animationView = AnimationView()
-    private let selectAnimation = Animation.named(.checkboxSelectAnimation)
-    private let deselectAnimation = Animation.named(.checkboxDeselectAnimation)
+    private let animationView = LottieAnimationView()
 
     var isChecked: Bool = false {
         didSet {
             if isChecked == true {
-                animationView.animation = selectAnimation
+                animationView.animation = .named(.checkboxSelectAnimation)
             } else {
-                animationView.animation = deselectAnimation
+                animationView.animation = .named(.checkboxDeselectAnimation)
             }
             animationView.play()
         }

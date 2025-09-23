@@ -45,7 +45,16 @@ extension View {
         ToolbarItem(placement: .topBarLeading) {
             Button(action: action) {
                 Image(uiImage: .backArrow)
-                    .foregroundStyle(Color.Icons.default)
+                    .foregroundStyle(.navbarIcons)
+            }
+        }
+    }
+    
+    func toolbarCloseItem(_ action: @escaping () -> Void) -> some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(action: action) {
+                Image(uiImage: .close)
+                    .foregroundStyle(.navbarIcons)
             }
         }
     }

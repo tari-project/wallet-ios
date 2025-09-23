@@ -90,7 +90,13 @@ private extension TransactionHistory {
     }
     
     func searchContains(_ value: String) -> Bool {
-        value.lowercased()
+        value.contains(search: searchText)
+    }
+}
+
+extension String {
+    func contains(search searchText: String) -> Bool {
+        self.lowercased()
             .components(separatedBy: " ")
             .contains { $0.contains(searchText.lowercased()) }
     }

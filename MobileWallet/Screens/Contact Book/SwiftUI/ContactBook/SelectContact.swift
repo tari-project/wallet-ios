@@ -1,8 +1,8 @@
-//  Text+Style.swift
+//  ContactBook.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 21.07.2025
+	Created by Tomas Hakel on 25.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,8 +40,26 @@
 
 import SwiftUI
 
-extension Text {
-    init(markdown text: String) {
-        self.init(.init(text))
+struct SelectContact: View {
+    @Environment(\.dismiss) var dismiss
+    
+    let selectAction: (ContactModel) -> Void
+
+    var body: some View {
+        NavigationStack {
+            ContactList {
+                selectAction($0)
+                dismiss()
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                toolbarTitle("Contact Book")
+                toolbarCloseItem { dismiss() }
+            }
+        }
     }
+}
+
+#Preview {
+    SelectContact { _ in }
 }

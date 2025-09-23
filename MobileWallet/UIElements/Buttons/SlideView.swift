@@ -52,7 +52,7 @@ enum SlideViewVariation {
 final class SlideView: DynamicThemeView {
     static private let thumbnailMargin: CGFloat = 10
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-    private let pendingAnimationView = AnimationView()
+    private let pendingAnimationView = LottieAnimationView()
 
     var onSlideToEnd: (() -> Void)?
 
@@ -241,7 +241,7 @@ final class SlideView: DynamicThemeView {
         heightAnchor.constraint(equalToConstant: 60).isActive = true
 
         pendingAnimationView.backgroundBehavior = .pauseAndRestore
-        pendingAnimationView.animation = Animation.named(.pendingCircleAnimation)
+        pendingAnimationView.animation = .named(.pendingCircleAnimation)
 
         pendingAnimationView.translatesAutoresizingMaskIntoConstraints = false
         pendingAnimationView.widthAnchor.constraint(equalToConstant: 45).isActive = true

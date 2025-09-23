@@ -1,8 +1,8 @@
-//  Text+Style.swift
+//  ContactBookItem.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 21.07.2025
+	Created by Tomas Hakel on 25.08.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,8 +40,30 @@
 
 import SwiftUI
 
-extension Text {
-    init(markdown text: String) {
-        self.init(.init(text))
+struct ContactBookItem: View {
+    let contact: ContactModel
+    let action: (ContactModel) -> Void
+    
+    var body: some View {
+        Button(action: { action(contact) }) {
+            HStack {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(contact.name)
+                        .body()
+                        .foregroundStyle(.primaryText)
+                    if let address = contact.address?.fullRaw {
+                        Text(address.prefix(6) + " ••• " + address.suffix(6))
+                            .body2()
+                            .foregroundStyle(.secondaryText)
+                    }
+                }
+                Spacer()
+            }
+            .padding(16)
+            .background {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.primaryBackground, stroke: .outlined)
+            }
+        }
     }
 }

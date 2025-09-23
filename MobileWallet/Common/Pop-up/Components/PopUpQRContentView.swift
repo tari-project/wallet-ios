@@ -39,7 +39,6 @@
 */
 
 import TariCommon
-import Lottie
 
 final class PopUpQRContentView: DynamicThemeView {
 

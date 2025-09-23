@@ -118,15 +118,6 @@ final class FFIWalletHandler {
         return TariAddress(pointer: result)
     }
 
-    func walletContacts() throws -> Contacts {
-        let wallet = try exisingWallet
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_contacts(wallet.pointer, errorCodePointer)
-        guard let result else { throw WalletError(code: errorCode) }
-        return Contacts(pointer: result)
-    }
-
     func balance() throws -> Balance {
         let wallet = try exisingWallet
 
@@ -188,28 +179,6 @@ final class FFIWalletHandler {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_cancel_pending_transaction(wallet.pointer, identifier, errorCodePointer)
-
-        try checkError(errorCode)
-        return result
-    }
-
-    func upsert(contact: Contact) throws -> Bool {
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_upsert_contact(wallet.pointer, contact.pointer, errorCodePointer)
-
-        try checkError(errorCode)
-        return result
-    }
-
-    func remove(contact: Contact) throws -> Bool {
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_remove_contact(wallet.pointer, contact.pointer, errorCodePointer)
 
         try checkError(errorCode)
         return result
@@ -296,7 +265,7 @@ final class FFIWalletHandler {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, true, paymentID, errorCodePointer)
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, paymentID, errorCodePointer)
 
         try checkError(errorCode)
         return result

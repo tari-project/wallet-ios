@@ -39,30 +39,32 @@
 */
 
 import Lottie
+import SwiftUI
 
-extension Animation {
-    enum LottieAnimation: String {
-        case none
+enum LottieAnimationType: String {
+    case none
 
-        case splash = "SplashAnimation"
+    case splash = "SplashAnimation"
 
-        case checkMark = "CheckMark"
-        case faceID = "FaceID"
-        case touchID = "TouchIdAnimation"
-        case notification = "NotificationAnimation"
-        case notificationsSuccess = "NotificationSuccessAnimation"
-        case emojiWheel = "EmojiWheel"
-        case nerdEmoji = "NerdEmojiAnimation"
-        case pendingCircleAnimation = "PendingCircleAnimation"
+    case checkMark = "CheckMark"
+    case faceID = "FaceID"
+    case touchID = "TouchIdAnimation"
+    case notification = "NotificationAnimation"
+    case notificationsSuccess = "NotificationSuccessAnimation"
+    case emojiWheel = "EmojiWheel"
+    case nerdEmoji = "NerdEmojiAnimation"
+    case pendingCircleAnimation = "PendingCircleAnimation"
 
-        case waveEmoji = "WaveEmojiAnimation"
+    case waveEmoji = "WaveEmojiAnimation"
 
-        case checkboxSelectAnimation = "CheckboxSelectAnimation"
-        case checkboxDeselectAnimation = "CheckboxDeselectAnimation"
-    }
+    case checkboxSelectAnimation = "CheckboxSelectAnimation"
+    case checkboxDeselectAnimation = "CheckboxDeselectAnimation"
+}
 
-    static func named(_ animation: LottieAnimation) -> Animation? {
-        if animation == .none { return nil }
-        return Animation.named(animation.rawValue)
+extension LottieAnimation {
+    static func named(_ animation: LottieAnimationType) -> LottieAnimation? {
+        animation != .none
+            ? LottieAnimation.named(animation.rawValue)
+            : nil
     }
 }

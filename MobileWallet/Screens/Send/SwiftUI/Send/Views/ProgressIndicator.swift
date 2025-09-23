@@ -1,8 +1,8 @@
-//  Text+Style.swift
+//  ProgressIndicator.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 21.07.2025
+	Created by Tomas Hakel on 12.09.2025
 	Using Swift 6.0
 	Running on macOS 15.5
 
@@ -40,8 +40,19 @@
 
 import SwiftUI
 
-extension Text {
-    init(markdown text: String) {
-        self.init(.init(text))
+struct ProgressIndicator: View {
+    let value: CGFloat
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(.accentBackground)
+                Capsule()
+                    .fill(.secondaryMain)
+                    .frame(width: value * geometry.size.width)
+            }
+        }
+        .frame(height: 4)
     }
 }

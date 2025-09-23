@@ -159,12 +159,6 @@ final class TariAddress {
 }
 
 extension TariAddress {
-
-    @available(*, deprecated, message: "This getter is obsolete and it will be removed in the future.")
-    var publicKey: String {
-        get throws { try String(byteVector.hex.dropLast(2)) }
-    }
-
     static func makeTariAddress(input: String) throws -> TariAddress {
         do { return try TariAddress(emojiID: input) } catch {}
         return try TariAddress(base58: input)
@@ -176,14 +170,12 @@ extension TariAddress {
 }
 
 extension TariAddress.Network {
-
     var name: String {
-        return NetworkManager.defaultNetwork.presentedName
+        NetworkManager.defaultNetwork.presentedName
     }
 }
 
 extension TariAddress.Features {
-
     enum Feature: UInt8, CaseIterable {
         case oneSided = 0b00000001
         case interactive = 0b00000010
@@ -197,28 +189,24 @@ extension TariAddress.Features {
     }
 
     func isOnesided() -> Bool {
-        return value.flag(bitmask: Feature.oneSided.rawValue)
+        value.flag(bitmask: Feature.oneSided.rawValue)
     }
 
     func isInteractive() -> Bool {
-        return value.flag(bitmask: Feature.interactive.rawValue)
+        value.flag(bitmask: Feature.interactive.rawValue)
     }
     
     func isPaymentId() -> Bool {
-        return value.flag(bitmask: Feature.paymentId.rawValue)
+        value.flag(bitmask: Feature.paymentId.rawValue)
     }
 }
 
 extension TariAddress.Features.Feature {
-
     var name: String {
         switch self {
-        case .oneSided:
-            return localized("address_features.one_sided")
-        case .interactive:
-            return localized("address_features.interactive")
-        case .paymentId:
-            return "Payment ID" // TODO: Localise
+        case .oneSided: localized("address_features.one_sided")
+        case .interactive: localized("address_features.interactive")
+        case .paymentId: "Payment ID" // TODO: Localise
         }
     }
 }

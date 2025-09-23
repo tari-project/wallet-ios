@@ -1,10 +1,10 @@
-//  Text+Style.swift
+//  UIVideoPlayer.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 21.07.2025
+	Created by Tomas Hakel on 22.09.2025
 	Using Swift 6.0
-	Running on macOS 15.5
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -39,9 +39,48 @@
 */
 
 import SwiftUI
+import AVFoundation
 
-extension Text {
-    init(markdown text: String) {
-        self.init(.init(text))
+struct UIVideoPlayer: UIViewRepresentable {
+    let player: AVPlayer
+    let videoGravity: AVLayerVideoGravity
+    
+    func makeUIView(context: Context) -> UIVideoPlayerView {
+        let view = UIVideoPlayerView(frame: .zero)
+        view.setPlayer(player, gravity: videoGravity)
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIVideoPlayerView, context: Context) { }
+}
+
+class UIVideoPlayerView: UIView {
+    private let playerLayer = AVPlayerLayer()
+    private var player: AVPlayer?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupLayer()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupLayer()
+    }
+
+    private func setupLayer() {
+        playerLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        layer.addSublayer(playerLayer)
+    }
+
+    func setPlayer(_ player: AVPlayer, gravity: AVLayerVideoGravity) {
+        self.player = player
+        playerLayer.player = player
+        playerLayer.videoGravity = gravity
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        playerLayer.frame = bounds
     }
 }
