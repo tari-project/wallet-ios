@@ -179,8 +179,8 @@ private extension Home {
         VStack(spacing: 10) {
             ZStack(alignment: .bottomLeading) {
                 Image(.walletCard)
+                    .resizable()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(spacing: 4) {
                         Text("Wallet Balance")
