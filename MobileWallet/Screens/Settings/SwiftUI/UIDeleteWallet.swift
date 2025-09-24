@@ -1,10 +1,10 @@
-//  ProfileSettings.swift
+//  UIDeleteWallet.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 18.09.2025
+	Created by Tomas Hakel on 24.09.2025
 	Using Swift 6.0
-	Running on macOS 15.5
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -40,14 +40,12 @@
 
 import SwiftUI
 
-struct ProfileSettings: View {
-    var body: some View {
-        SettingsDetail(title: "Profile") {
-            
-        }
-    }
-}
+struct UIDeleteWallet: UIViewControllerRepresentable {
+    typealias UIViewControllerType = DeleteWalletViewController
 
-#Preview {
-    ProfileSettings()
+    func makeUIViewController(context: Context) -> DeleteWalletViewController {
+        DeleteWalletViewController()
+    }
+    
+    func updateUIViewController(_ uiViewController: DeleteWalletViewController, context: Context) { }
 }

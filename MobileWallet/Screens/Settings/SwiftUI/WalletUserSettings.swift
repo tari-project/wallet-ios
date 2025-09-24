@@ -54,6 +54,10 @@ struct WalletUserSettings: View {
             Divider()
             item(.selectNetwork)
             Divider()
+            item(.screenRecording)
+            Divider()
+            item(.about)
+            Divider()
             item(.selectTheme)
             Divider()
             item(.deleteWallet)
@@ -68,7 +72,7 @@ struct WalletUserSettings: View {
 
 private extension WalletUserSettings {
     enum Item {
-        case backup, security, selectNetwork, selectTheme, deleteWallet
+        case backup, security, selectNetwork, screenRecording, about, selectTheme, deleteWallet
     }
     
     @ViewBuilder
@@ -77,9 +81,10 @@ private extension WalletUserSettings {
         case .backup: UIBackupWalletSettings()
         case .security: UIDataCollection()
         case .selectNetwork: UISelectNetwork()
+        case .screenRecording: UIScreenRecording()
+        case .about: UIAbout()
         case .selectTheme: UIThemeSettings()
-        case .deleteWallet:
-            Text("deleteWallet")
+        case .deleteWallet: UIDeleteWallet()
         }
     }
     
@@ -95,10 +100,8 @@ private extension WalletUserSettings {
             localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) {
                 presentedItem = .backup
             }
-        case .security, .selectNetwork, .selectTheme:
+        case .security, .selectNetwork, .screenRecording, .about, .selectTheme, .deleteWallet:
             presentedItem = item
-        case .deleteWallet:
-            () // TODO: Delete wallet
         }
     }
 }
@@ -109,6 +112,8 @@ private extension WalletUserSettings.Item {
         case .backup: "Wallet Backups"
         case .security: "Privacy & Security"
         case .selectNetwork: "Select Network"
+        case .screenRecording: "Screen Recording"
+        case .about: "About"
         case .selectTheme: "Select Theme"
         case .deleteWallet: "Delete Your Wallet"
         }

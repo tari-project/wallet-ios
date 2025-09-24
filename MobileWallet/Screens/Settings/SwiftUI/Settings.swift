@@ -47,8 +47,10 @@ struct Settings: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    item(.profile)
-                    item(.contacts)
+                    // TODO: Find profile
+//                    item(.profile)
+                    // TODO: Add contacts
+//                    item(.contacts)
                     item(.walletSettings)
                     item(.support)
                     item(.legal)

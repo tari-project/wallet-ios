@@ -549,6 +549,7 @@
 		F8472F6D2E744AFF0094163D /* SendingTransaction+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F6C2E744AFA0094163D /* SendingTransaction+Actions.swift */; };
 		F8472F722E745A3E0094163D /* ProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F712E745A3D0094163D /* ProgressIndicator.swift */; };
 		F88A33E62E4F901D00AFA71E /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A33E52E4F901B00AFA71E /* AppVersion.swift */; };
+		F88A5F822E83F4C00033A454 /* UIDeleteWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F812E83F4B50033A454 /* UIDeleteWallet.swift */; };
 		F88B28D82E27A8D2005B9B13 /* MinerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D72E27A8D1005B9B13 /* MinerStats.swift */; };
 		F88B28DA2E27AE6C005B9B13 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D92E27AE67005B9B13 /* Tab.swift */; };
 		F899FBC62E532C7F00653B5A /* UpdateRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = F899FBC52E532C7F00653B5A /* UpdateRequired.swift */; };
@@ -1147,6 +1148,7 @@
 		F8472F6C2E744AFA0094163D /* SendingTransaction+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SendingTransaction+Actions.swift"; sourceTree = "<group>"; };
 		F8472F712E745A3D0094163D /* ProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicator.swift; sourceTree = "<group>"; };
 		F88A33E52E4F901B00AFA71E /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
+		F88A5F812E83F4B50033A454 /* UIDeleteWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeleteWallet.swift; sourceTree = "<group>"; };
 		F88B28D72E27A8D1005B9B13 /* MinerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinerStats.swift; sourceTree = "<group>"; };
 		F88B28D92E27AE67005B9B13 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		F899FBC52E532C7F00653B5A /* UpdateRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateRequired.swift; sourceTree = "<group>"; };
@@ -3009,6 +3011,7 @@
 				F815DBF22E7C6145001483A9 /* UIThemeSettings.swift */,
 				F815DBF42E7D3078001483A9 /* UIScreenRecording.swift */,
 				F815DBF62E7D3102001483A9 /* UIAbout.swift */,
+				F88A5F812E83F4B50033A454 /* UIDeleteWallet.swift */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -3539,6 +3542,7 @@
 				F8C065382E2E7220009BFC8F /* Text+Style.swift in Sources */,
 				5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */,
 				3A2F30B428F5940A0095E25D /* ConsoleLogger.swift in Sources */,
+				F88A5F822E83F4C00033A454 /* UIDeleteWallet.swift in Sources */,
 				545A9D1F294F9323008D24A6 /* RadioButtonView.swift in Sources */,
 				3ABF91A9283FFA790001C766 /* AboutModel.swift in Sources */,
 				5455969829B08D7B00D6719E /* FormTextField.swift in Sources */,

@@ -110,12 +110,13 @@ struct Home: View, ChainTipObserver {
 
 private extension Home {
     var toolbar: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
+        ToolbarItem(placement: .principal) {
             HStack {
                 Text("Tari Universe")
                     .heading2XL()
                     .foregroundStyle(.primaryText)
                 connectionStatusTag
+                Spacer()
             }
         }
     }

@@ -71,9 +71,10 @@ struct EditContactNameSheet: View {
             }
             .disabled(alias.isEmpty)
         }
+        .padding(.top)
         .padding(.vertical)
         .padding()
-        .presentationDetents([.height(128)])
+        .presentationDetents([.height(150)])
         .onAppear {
             isFocused = true
             load()
