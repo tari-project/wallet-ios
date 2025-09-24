@@ -60,19 +60,15 @@ final class SplashView: DynamicThemeView {
 //    }()
 
     @TariView private var iconView: UIImageView = {
-        let image = UIImage(named: "GemBlackSmall")
-        let view = UIImageView(image: image?.withRenderingMode(.alwaysTemplate))
-        return view
+        UIImageView(image: .gemBlackSmall.withRenderingMode(.alwaysTemplate))
     }()
 
     @TariView private var staticSplashView: UIImageView = {
-        let view = UIImageView()
-        return view
+        UIImageView()
     }()
 
     @TariView private var separatorView: UIView = {
-        let view = UIView()
-        return view
+        UIView()
     }()
 
     @TariView private var titleLabel: UILabel = {

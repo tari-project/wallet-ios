@@ -88,8 +88,11 @@ private extension AppTabs {
     }
     
     var settings: some View {
-        UISettingsViewController()
-            .background(Color.secondaryBackground)
+        Settings()
+        
+        // TODO: remove UISettingsViewController from the project after SwiftUI transition is complete
+//        UISettingsViewController()
+//            .background(Color.secondaryBackground)
             .tab(.settings, selected: state.selected)
     }
 }

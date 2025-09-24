@@ -1,10 +1,10 @@
-//  BugReportingConstructor.swift
-
+//  UIDeleteWallet.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/10/2022
-	Using Swift 5.0
-	Running on macOS 12.6
+	Created by Tomas Hakel on 24.09.2025
+	Using Swift 6.0
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum BugReportingConstructor {
+import SwiftUI
 
-    static func buildScene() -> BugReportingViewController {
-        let model = BugReportingModel()
-        return BugReportingViewController(model: model)
+struct UIDeleteWallet: UIViewControllerRepresentable {
+    typealias UIViewControllerType = DeleteWalletViewController
+
+    func makeUIViewController(context: Context) -> DeleteWalletViewController {
+        DeleteWalletViewController()
     }
+    
+    func updateUIViewController(_ uiViewController: DeleteWalletViewController, context: Context) { }
 }

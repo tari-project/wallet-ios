@@ -105,8 +105,8 @@ final class AboutViewCell: DynamicThemeCell {
         label.textColor = theme.text.heading
     }
 
-    func update(icon: UIImage?, text: String?) {
-        iconView.image = icon
+    func update(icon: ImageResource, text: String?) {
+        iconView.image = UIImage(resource: icon)
         label.text = text
     }
 }

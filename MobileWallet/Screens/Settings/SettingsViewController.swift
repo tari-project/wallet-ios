@@ -106,8 +106,8 @@ final class SettingsViewController: SettingsParentTableViewController {
         }
     }
 
-    private let backUpWalletItem = SystemMenuTableViewCellItem(icon: .Icons.Settings.walletBackups, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
-    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .Icons.Settings.camera, title: SettingsItemTitle.screenRecording.rawValue)
+    private let backUpWalletItem = SystemMenuTableViewCellItem(icon: .walletBackups, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
+    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .camera, title: SettingsItemTitle.screenRecording.rawValue)
 
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
         backUpWalletItem,
@@ -115,37 +115,34 @@ final class SettingsViewController: SettingsParentTableViewController {
     ]
 
     private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(icon: .Icons.Settings.theme, title: SettingsItemTitle.selectTheme.rawValue),
+        SystemMenuTableViewCellItem(icon: .theme, title: SettingsItemTitle.selectTheme.rawValue),
         screenRecordingItem,
-        SystemMenuTableViewCellItem(icon: .Icons.Settings.network, title: SettingsItemTitle.selectNetwork.rawValue),
-        SystemMenuTableViewCellItem(icon: .Icons.Settings.delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
+        SystemMenuTableViewCellItem(icon: .network, title: SettingsItemTitle.selectNetwork.rawValue),
+        SystemMenuTableViewCellItem(icon: .delete, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
     ]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = {
-
         var items = [
-            SystemMenuTableViewCellItem(icon: .Icons.Settings.about, title: SettingsItemTitle.about.rawValue),
-            SystemMenuTableViewCellItem(icon: .Icons.Settings.reportBug, title: SettingsItemTitle.reportBug.rawValue),
-            SystemMenuTableViewCellItem(icon: .Icons.Settings.visitTari, title: SettingsItemTitle.visitTari.rawValue),
-            SystemMenuTableViewCellItem(icon: .Icons.Settings.contribute, title: SettingsItemTitle.contributeToTariAurora.rawValue),
-            SystemMenuTableViewCellItem(icon: .Icons.Settings.userAgreement, title: SettingsItemTitle.userAgreement.rawValue),
-            SystemMenuTableViewCellItem(icon: .Icons.Settings.privacyPolicy, title: SettingsItemTitle.privacyPolicy.rawValue),
-            SystemMenuTableViewCellItem(icon: .Icons.Settings.disclaimer, title: SettingsItemTitle.disclaimer.rawValue),
+            SystemMenuTableViewCellItem(icon: .about, title: SettingsItemTitle.about.rawValue),
+            SystemMenuTableViewCellItem(icon: .reportBug, title: SettingsItemTitle.reportBug.rawValue),
+            SystemMenuTableViewCellItem(icon: .visitTari, title: SettingsItemTitle.visitTari.rawValue),
+            SystemMenuTableViewCellItem(icon: .contribute, title: SettingsItemTitle.contributeToTariAurora.rawValue),
+            SystemMenuTableViewCellItem(icon: .userAgreement, title: SettingsItemTitle.userAgreement.rawValue),
+            SystemMenuTableViewCellItem(icon: .privacyPolicy, title: SettingsItemTitle.privacyPolicy.rawValue),
+            SystemMenuTableViewCellItem(icon: .disclaimer, title: SettingsItemTitle.disclaimer.rawValue),
         ]
-
         if NetworkManager.shared.selectedNetwork.isBlockExplorerAvailable {
-            items.append(SystemMenuTableViewCellItem(icon: .Icons.Settings.blockExplorer, title: SettingsItemTitle.blockExplorer.rawValue))
+            items.append(SystemMenuTableViewCellItem(icon: .blockExplorer, title: SettingsItemTitle.blockExplorer.rawValue))
         }
-
         return items
     }()
 
     private let links: [SettingsItemTitle: URL?] = [
-        .visitTari: URL(string: TariSettings.shared.tariUrl),
-        .contributeToTariAurora: URL(string: TariSettings.shared.contributeUrl),
-        .userAgreement: URL(string: TariSettings.shared.userAgreementUrl),
-        .privacyPolicy: URL(string: TariSettings.shared.privacyPolicyUrl),
-        .disclaimer: URL(string: TariSettings.shared.disclaimer),
+        .visitTari: TariSettings.shared.tariUrl,
+        .contributeToTariAurora: TariSettings.shared.contributeUrl,
+        .userAgreement: TariSettings.shared.userAgreementUrl,
+        .privacyPolicy: TariSettings.shared.privacyPolicyUrl,
+        .disclaimer: TariSettings.shared.disclaimer,
         .blockExplorer: NetworkManager.shared.selectedNetwork.blockExplorerURL
     ]
     
@@ -185,33 +182,29 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onBackupWalletAction() {
         localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) { [weak self] in
-            let controller = BackupWalletSettingsConstructor.buildScene(backButtonType: .back)
+            let controller = BackupWalletSettingsViewController(backButtonType: .back)
             self?.navigationController?.pushViewController(controller, animated: true)
         }
     }
 
     private func onDataCollectionAction() {
-        let controller = DataCollectionSettingsConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
+        navigationController?.pushViewController(DataCollectionViewController(), animated: true)
     }
 
     private func onAboutAction() {
-        let controller = AboutViewController()
-        navigationController?.pushViewController(controller, animated: true)
+        navigationController?.pushViewController(AboutViewController(), animated: true)
     }
 
     private func onReportBugAction() {
-        let controller = BugReportingConstructor.buildScene()
-        present(controller, animated: true)
+        present(BugReportingViewController(), animated: true)
     }
 
     private func onSelectThemeAction() {
-        let controller = ThemeSettingsConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
+        navigationController?.pushViewController(ThemeSettingsViewController(), animated: true)
     }
 
     private func onScreenRecordingSettingsAction() {
-        let controller = ScreenRecordingSettingsConstructor.buildScene(backButtonType: .back)
+        let controller = ScreenRecordingSettingsViewController(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -220,8 +213,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onDeleteWalletAction() {
-        let deleteWalletViewController = DeleteWalletViewController()
-        navigationController?.pushViewController(deleteWalletViewController, animated: true)
+        navigationController?.pushViewController(DeleteWalletViewController(), animated: true)
     }
 
     private func onLinkAction(indexPath: IndexPath) {
@@ -232,8 +224,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onProfileAction() {
-        let controller = ProfileViewController()
-        navigationController?.pushViewController(controller, animated: true)
+        navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
 
     private func updateItems(syncStatus: BackupManager.BackupSyncState) {

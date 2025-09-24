@@ -45,13 +45,12 @@ final class DataCollectionViewController: SecureViewController<DataCollectionSet
 
     // MARK: - Properties
 
-    private let model: DataCollectionSettingsModel
+    private let model = DataCollectionSettingsModel()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: DataCollectionSettingsModel) {
-        self.model = model
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -69,7 +68,6 @@ final class DataCollectionViewController: SecureViewController<DataCollectionSet
     // MARK: - Setups
 
     private func setupCallbacks() {
-
         model.$isDataCollectionTurnedOn
             .removeDuplicates()
             .receive(on: DispatchQueue.main)

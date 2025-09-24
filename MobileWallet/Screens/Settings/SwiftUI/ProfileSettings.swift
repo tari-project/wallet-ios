@@ -1,10 +1,10 @@
-//  ScreenRecordingSettingsConstructor.swift
-
+//  ProfileSettings.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 06/03/2024
-	Using Swift 5.0
-	Running on macOS 14.2
+	Created by Tomas Hakel on 18.09.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,16 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum ScreenRecordingSettingsConstructor {
+import SwiftUI
 
-    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> ScreenRecordingSettingsViewController {
-        let model = ScreenRecordingSettingsModel()
-        return ScreenRecordingSettingsViewController(model: model, backButtonType: backButtonType)
+struct ProfileSettings: View {
+    var body: some View {
+        SettingsDetail(title: "Profile") {
+            
+        }
     }
+}
+
+#Preview {
+    ProfileSettings()
 }

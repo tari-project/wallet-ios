@@ -45,7 +45,7 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
 
     // MARK: - Properties
 
-    private let model: BackupWalletSettingsModel
+    private let model = BackupWalletSettingsModel()
     private let seedWordsItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.with_recovery_phrase"))
     private let iCloudItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.icloud_backups"), hasSwitch: true)
     private let passwordItem = SystemMenuTableViewCellItem(title: "")
@@ -57,8 +57,7 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
 
     // MARK: - Initialisers
 
-    init(model: BackupWalletSettingsModel, backButtonType: NavigationBar.BackButtonType) {
-        self.model = model
+    init(backButtonType: NavigationBar.BackButtonType) {
         super.init(nibName: nil, bundle: nil)
         mainView.navigationBar.backButtonType = backButtonType
     }

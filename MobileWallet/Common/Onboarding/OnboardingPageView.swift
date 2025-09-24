@@ -64,7 +64,7 @@ final class OnboardingPageView: DynamicThemeView {
     @TariView private var backgroundImageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.image = .Images.Security.Onboarding.background
+        view.image = .onboardingBackground
         return view
     }()
 
@@ -225,7 +225,7 @@ extension OnboardingPageView.ViewModel {
 
     static var page1: Self {
         OnboardingPageView.ViewModel(
-            image: .Images.Security.Onboarding.page1,
+            image: .onboardingPage1,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page1.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page1.title.part2.bold"), style: .bold)
@@ -243,7 +243,7 @@ extension OnboardingPageView.ViewModel {
 
     static var page2: Self {
         OnboardingPageView.ViewModel(
-            image: .Images.Security.Onboarding.page2,
+            image: .onboardingPage2,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.title.part2.bold"), style: .bold)
@@ -263,7 +263,7 @@ extension OnboardingPageView.ViewModel {
 
     static var page3: Self {
         OnboardingPageView.ViewModel(
-            image: .Images.Security.Onboarding.page3,
+            image: .onboardingPage3,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page3.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page3.title.part2.bold"), style: .bold)
@@ -281,7 +281,7 @@ extension OnboardingPageView.ViewModel {
 
     static var page4: Self {
         OnboardingPageView.ViewModel(
-            image: .Images.Security.Onboarding.page4,
+            image: .onboardingPage4,
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page4.title.part1"), style: .normal),
                 StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page4.title.part2.bold"), style: .bold)

@@ -41,7 +41,6 @@
 import UIKit
 
 extension String {
-
     static var dots: Self { "•••" }
 
     var firstOrEmpty: String {
@@ -65,20 +64,16 @@ extension String {
     }
 
     func tokenize() -> [String] {
-
         var result = split(separator: " ").map { String($0) }
 
         if !result.isEmpty, hasSuffix(" ") {
             result.append("")
         }
-
         return result
     }
 
     func withCurrencySymbol(imageBounds: CGRect) -> NSAttributedString {
-
-        guard let symbol = Theme.shared.images.currencySymbol else { return NSAttributedString() }
-
+        let symbol = Theme.shared.images.currencySymbol
         let currencySymbol = NSTextAttachment(image: symbol)
         currencySymbol.bounds = imageBounds
 
@@ -97,7 +92,6 @@ extension String {
 }
 
 extension StringProtocol {
-
     func indexDistance<S: StringProtocol>(of string: S) -> Int? {
         range(of: string)?.lowerBound.distance(in: self)
     }
@@ -116,7 +110,6 @@ extension String.Index {
 }
 
 extension Array where Element == String.SubSequence {
-
     var firstString: String? {
         guard let first else { return nil }
         return String(first)

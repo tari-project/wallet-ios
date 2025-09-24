@@ -1,10 +1,10 @@
-//  DataCollectionSettingsConstructor.swift
-
+//  UIBugReporting.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 22/09/2023
-	Using Swift 5.0
-	Running on macOS 13.5
+	Created by Tomas Hakel on 18.09.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum DataCollectionSettingsConstructor {
+import SwiftUI
 
-    static func buildScene() -> DataCollectionViewController {
-        let model = DataCollectionSettingsModel()
-        return DataCollectionViewController(model: model)
+struct UIBugReporting: UIViewControllerRepresentable {
+    typealias UIViewControllerType = BugReportingViewController
+
+    func makeUIViewController(context: Context) -> BugReportingViewController {
+        BugReportingViewController()
     }
+    
+    func updateUIViewController(_ uiViewController: BugReportingViewController, context: Context) { }
 }

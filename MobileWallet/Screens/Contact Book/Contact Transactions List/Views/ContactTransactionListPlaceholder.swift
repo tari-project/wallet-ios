@@ -148,7 +148,7 @@ final class PaintBackgroundImageView: DynamicThemeView {
 
     @TariView private var backgroundView: UIImageView = {
         let view = UIImageView()
-        view.image = .Images.Security.Onboarding.background
+        view.image = .onboardingBackground
         view.contentMode = .scaleAspectFit
         return view
     }()

@@ -45,13 +45,12 @@ final class BugReportingViewController: SecureViewController<BugReportingView> {
 
     // MARK: - Properties
 
-    private let model: BugReportingModel
+    private let model = BugReportingModel()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: BugReportingModel) {
-        self.model = model
+    init() {
         super.init(nibName: nil, bundle: nil)
     }
 

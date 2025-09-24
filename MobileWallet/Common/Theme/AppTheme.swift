@@ -316,7 +316,7 @@ extension AppTheme {
     static var light: Self {
         Self(
             graphics: Graphics(
-                splashScreenImage: UIImage(resource: .staticSplash)
+                splashScreenImage: .staticSplash
             ),
 
             brand: Brand(
@@ -383,7 +383,7 @@ extension AppTheme {
     static var dark: Self {
         Self(
             graphics: Graphics(
-                splashScreenImage: UIImage(resource: .staticSplash)
+                splashScreenImage: .staticSplash
             ),
 
             brand: Brand(

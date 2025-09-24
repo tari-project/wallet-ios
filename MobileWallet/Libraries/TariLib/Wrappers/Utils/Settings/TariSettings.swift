@@ -69,11 +69,11 @@ struct TariSettings {
 
     let iCloudContainerIdentifier = "iCloud.com.tari.wallet"
 
-    let tariUrl = "https://www.tari.com/"
-    let contributeUrl = "https://www.github.com/tari-project/wallet-ios/"
-    let disclaimer = "https://www.tari.com/disclaimer"
-    let userAgreementUrl = "https://www.tari.com/user_agreement/"
-    let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
+    let tariUrl = URL(string: "https://www.tari.com/")
+    let contributeUrl = URL(string: "https://www.github.com/tari-project/wallet-ios/")
+    let disclaimer = URL(string: "https://www.tari.com/disclaimer")
+    let userAgreementUrl = URL(string: "https://www.tari.com/user_agreement/")
+    let privacyPolicyUrl = URL(string: "https://www.tari.com/privacy_policy/")
     let storeUrl = "https://store.tarilabs.com/"
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
     let appStoreUrl = "https://apps.apple.com/app/id1503654828"
