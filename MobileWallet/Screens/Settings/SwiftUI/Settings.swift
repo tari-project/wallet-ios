@@ -49,8 +49,7 @@ struct Settings: View {
                 VStack(spacing: 0) {
                     // TODO: Find profile
 //                    item(.profile)
-                    // TODO: Add contacts
-//                    item(.contacts)
+                    item(.contacts)
                     item(.walletSettings)
                     item(.support)
                     item(.legal)
@@ -86,7 +85,7 @@ private extension Settings {
     func destination(for item: Item) -> some View {
         switch item {
         case .profile: ProfileSettings()
-        case .contacts: Text("Contacts") // TODO: integrate Contact Book
+        case .contacts: ContactBook()
         case .walletSettings: WalletUserSettings()
         case .support: SupportSettings()
         case .legal: LegalSettings()

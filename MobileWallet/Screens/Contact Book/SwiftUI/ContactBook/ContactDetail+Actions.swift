@@ -1,10 +1,10 @@
-//  HomeRouter.swift
+//  ContactDetail+Actions.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 04.08.2025
+	Created by Tomas Hakel on 24.09.2025
 	Using Swift 6.0
-	Running on macOS 15.5
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -40,16 +40,49 @@
 
 import SwiftUI
 
-@Observable
-class HomeRouter {
-    // TODO: Remove along with UIKit
-    static let shared = HomeRouter()
+extension ContactDetail {
+    func load() {
+        contactName = contact.alias ?? ""
+    }
     
-    var isHomeSendPresented = false
-    var isContactsSendPresented = false
+    func update(transactions: [Transaction]) {
+        Task {
+            guard let rawAddress = contact.address?.fullRaw else { return }
+            let formatter = TransactionFormatter()
+            self.transactions = transactions
+                .filter { (try? $0.address.components.fullRaw) == rawAddress }
+                .filterDuplicates()
+                .compactMap { try? formatter.model(transaction: $0, contactName: contactName) }
+        }
+    }
     
-    func dismissSendPresentation() {
-        isHomeSendPresented = false
-        isContactsSendPresented = false
+    func edit() {
+        withAnimation {
+            isEditingName = true
+            isFocused = true
+        }
+    }
+    
+    func saveEdit() {
+        Task {
+            do {
+                guard let address = contact.address else { return }
+                try await contacts.update(alias: contactName, for: address) { _ in
+                    withAnimation {
+                        isFocused = false
+                        isEditingName = false
+                    }
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func delete() {
+        if let address = contact.address {
+            try? contacts.remove(contact: address)
+            dismiss()
+        }
     }
 }

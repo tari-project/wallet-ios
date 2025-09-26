@@ -70,6 +70,18 @@ final class TransactionFormatter {
             note: messageComponents.note
         )
     }
+    
+    func model(transaction: Transaction, contactName: String) throws -> FormattedTransaction {
+        try FormattedTransaction(
+            id: transaction.identifier,
+            emojiId: transaction.address.emojis,
+            titleComponents: transactionTitleComponents(transaction: transaction, name: contactName),
+            timestamp: TimeInterval(transaction.timestamp),
+            amount: amountViewModel(transaction: transaction),
+            status: status(transaction: transaction),
+            note: nil
+        )
+    }
 
     func contact(components: TariAddressComponents) -> ContactsManager.Model? {
         // TODO: fix concurrent crash

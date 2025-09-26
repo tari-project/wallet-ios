@@ -140,11 +140,33 @@ final class ContactsManager {
             }
         }
     }
+    
+    func update(alias: String, for components: TariAddressComponents, onContactUpdate: (ContactsManager.Model) -> Void) async throws {
+        let address = try TariAddress(base58: components.fullRaw)
+        try await update(alias: alias, for: address, onContactUpdate: onContactUpdate)
+    }
+    
+    func update(alias: String, for address: TariAddress, onContactUpdate: (ContactsManager.Model) -> Void) async throws {
+        if let contact = try await contact(for: address) {
+            try update(alias: alias, isFavorite: contact.isFavorite, contact: contact)
+            if let contact = try await self.contact(for: address) {
+                onContactUpdate(contact)
+            }
+        } else {
+            let contact = try createInternalModel(name: alias, isFavorite: false, address: address)
+            onContactUpdate(contact)
+        }
+        Tari.mainWallet.transactions.fetchData()
+    }
 
     func remove(contact: Model) throws {
         if let components = contact.internalModel?.addressComponents {
             try internalContactsManager.remove(components: components)
         }
+    }
+    
+    func remove(contact: TariAddressComponents) throws {
+        try internalContactsManager.remove(components: contact)
     }
 
     func createInternalModel(name: String, isFavorite: Bool, address: TariAddress) throws -> Model {

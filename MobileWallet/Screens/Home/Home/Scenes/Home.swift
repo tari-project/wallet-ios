@@ -88,7 +88,7 @@ struct Home: View, ChainTipObserver {
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
             }
-            .fullScreenCover(isPresented: $router.isSendPresented) {
+            .fullScreenCover(isPresented: $router.isHomeSendPresented) {
                 NavigationStack {
                     Send()
                 }
@@ -217,7 +217,7 @@ private extension Home {
             
             HStack(spacing: 8) {
                 TariButton("Send", style: .label, size: .large) {
-                    router.isSendPresented = true
+                    router.isHomeSendPresented = true
                 }
                 .disabled(!isChainTipSynced)
                 
