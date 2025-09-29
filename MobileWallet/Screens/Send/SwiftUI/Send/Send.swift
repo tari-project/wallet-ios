@@ -65,6 +65,8 @@ struct Send: View {
     @State var presentedConfirmation: SendConfirmation?
     @State var feeManager = TransactionFeesManager()
     
+    var preffiledAddress = ""
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -107,6 +109,11 @@ struct Send: View {
         }
         .onChange(of: amount) { updateAmount() }
         .onChange(of: address) { updateAddress() }
+        .onFirstAppear {
+            Task(after: 0.1) {
+                address = preffiledAddress
+            }
+        }
     }
 }
 

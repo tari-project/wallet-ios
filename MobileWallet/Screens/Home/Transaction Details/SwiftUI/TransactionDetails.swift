@@ -193,7 +193,7 @@ private extension TransactionDetails {
 extension String {
     func truncated(to length: Int) -> String {
         guard count > length else { return self }
-        return "\(prefix(length / 2))...\(suffix(length / 2))"
+        return "\(prefix(length / 2))•••\(suffix(length / 2))"
     }
     
     var truncatedAddress: String {

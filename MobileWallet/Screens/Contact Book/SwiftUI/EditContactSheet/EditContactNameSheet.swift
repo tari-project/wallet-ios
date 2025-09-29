@@ -93,19 +93,9 @@ private extension EditContactNameSheet {
     }
     
     func save() {
-        Task { // TODO: sync contact access with actor
-            // TODO: Setup contact service and move contact manipulation there
+        Task {
             do {
-                if let contact = try await contacts.contact(for: address) {
-                    try contacts.update(alias: alias, isFavorite: contact.isFavorite, contact: contact)
-                    if let contact = try await contacts.contact(for: address) {
-                        onContactUpdate(contact)
-                    }
-                } else {
-                    let contact = try contacts.createInternalModel(name: alias, isFavorite: false, address: address)
-                    onContactUpdate(contact)
-                }
-                Tari.mainWallet.transactions.fetchData()
+                try await contacts.update(alias: alias, for: address, onContactUpdate: onContactUpdate)
                 dismiss()
             } catch {
                 print(error.localizedDescription)

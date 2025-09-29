@@ -1,10 +1,10 @@
-//  HomeRouter.swift
+//  ContactBook.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 04.08.2025
+	Created by Tomas Hakel on 24.09.2025
 	Using Swift 6.0
-	Running on macOS 15.5
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -40,16 +40,29 @@
 
 import SwiftUI
 
-@Observable
-class HomeRouter {
-    // TODO: Remove along with UIKit
-    static let shared = HomeRouter()
+struct ContactBook: View {
+    @Environment(\.dismiss) var dismiss
+    @State var presentedContact: ContactModel?
     
-    var isHomeSendPresented = false
-    var isContactsSendPresented = false
-    
-    func dismissSendPresentation() {
-        isHomeSendPresented = false
-        isContactsSendPresented = false
+    var body: some View {
+        ContactList(style: .list) {
+            select($0)
+        }
+        .toolbar {
+            toolbarTitle("Contact Book")
+        }
+        .navigationDestination(item: $presentedContact) {
+            ContactDetail(contact: $0)
+        }
     }
+}
+
+private extension ContactBook {
+    func select(_ contact: ContactModel) {
+        presentedContact = contact
+    }
+}
+
+#Preview {
+    ContactBook()
 }

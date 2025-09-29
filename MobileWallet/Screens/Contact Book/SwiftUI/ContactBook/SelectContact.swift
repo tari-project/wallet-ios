@@ -47,7 +47,7 @@ struct SelectContact: View {
 
     var body: some View {
         NavigationStack {
-            ContactList {
+            ContactList(style: .select) {
                 selectAction($0)
                 dismiss()
             }

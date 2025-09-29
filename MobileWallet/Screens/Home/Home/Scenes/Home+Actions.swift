@@ -61,7 +61,6 @@ extension Home {
     func update(transactions: [Transaction]) {
         isLoadingTransactions = true
         Task {
-            // TODO: load first 10
             defer { isLoadingTransactions = false }
             let uniqueTransactions = transactions.filterDuplicates()
             let transactionFormatter = TransactionFormatter()

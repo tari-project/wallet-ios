@@ -550,6 +550,9 @@
 		F8472F722E745A3E0094163D /* ProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F712E745A3D0094163D /* ProgressIndicator.swift */; };
 		F88A33E62E4F901D00AFA71E /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A33E52E4F901B00AFA71E /* AppVersion.swift */; };
 		F88A5F822E83F4C00033A454 /* UIDeleteWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F812E83F4B50033A454 /* UIDeleteWallet.swift */; };
+		F88A5F842E8408F90033A454 /* ContactBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F832E8408F90033A454 /* ContactBook.swift */; };
+		F88A5F862E84134D0033A454 /* ContactDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F852E84134D0033A454 /* ContactDetail.swift */; };
+		F88A5F882E8459D40033A454 /* ContactDetail+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F872E8459D00033A454 /* ContactDetail+Actions.swift */; };
 		F88B28D82E27A8D2005B9B13 /* MinerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D72E27A8D1005B9B13 /* MinerStats.swift */; };
 		F88B28DA2E27AE6C005B9B13 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D92E27AE67005B9B13 /* Tab.swift */; };
 		F899FBC62E532C7F00653B5A /* UpdateRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = F899FBC52E532C7F00653B5A /* UpdateRequired.swift */; };
@@ -1149,6 +1152,9 @@
 		F8472F712E745A3D0094163D /* ProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicator.swift; sourceTree = "<group>"; };
 		F88A33E52E4F901B00AFA71E /* AppVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersion.swift; sourceTree = "<group>"; };
 		F88A5F812E83F4B50033A454 /* UIDeleteWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeleteWallet.swift; sourceTree = "<group>"; };
+		F88A5F832E8408F90033A454 /* ContactBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBook.swift; sourceTree = "<group>"; };
+		F88A5F852E84134D0033A454 /* ContactDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetail.swift; sourceTree = "<group>"; };
+		F88A5F872E8459D00033A454 /* ContactDetail+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactDetail+Actions.swift"; sourceTree = "<group>"; };
 		F88B28D72E27A8D1005B9B13 /* MinerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinerStats.swift; sourceTree = "<group>"; };
 		F88B28D92E27AE67005B9B13 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		F899FBC52E532C7F00653B5A /* UpdateRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateRequired.swift; sourceTree = "<group>"; };
@@ -3137,6 +3143,9 @@
 			children = (
 				F8472F552E5DA9A00094163D /* Views */,
 				F8472F482E5CB6960094163D /* SelectContact.swift */,
+				F88A5F832E8408F90033A454 /* ContactBook.swift */,
+				F88A5F852E84134D0033A454 /* ContactDetail.swift */,
+				F88A5F872E8459D00033A454 /* ContactDetail+Actions.swift */,
 			);
 			path = ContactBook;
 			sourceTree = "<group>";
@@ -3518,6 +3527,7 @@
 				3A8005CD28EAF9110022A38A /* WalletBalance.swift in Sources */,
 				3A4D90A4273A75FC00A23FA8 /* Wallet.swift in Sources */,
 				3A4CE33026A18DFC00ECF460 /* UserDefaults.swift in Sources */,
+				F88A5F862E84134D0033A454 /* ContactDetail.swift in Sources */,
 				3A3D70B9291A625700A8CD7A /* BackupStatus.swift in Sources */,
 				3A4376EE269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */,
 				3AF335E028D7983100B48F33 /* MessageMetadata.swift in Sources */,
@@ -3548,6 +3558,7 @@
 				5455969829B08D7B00D6719E /* FormTextField.swift in Sources */,
 				3A8473D228EC568A0015E63A /* TariMessageSignService.swift in Sources */,
 				F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */,
+				F88A5F842E8408F90033A454 /* ContactBook.swift in Sources */,
 				71AFC9242DA41A6D00684FA7 /* ReceiveModel.swift in Sources */,
 				F88B28D82E27A8D2005B9B13 /* MinerStats.swift in Sources */,
 				54D782F62BA8616F00DD3BFE /* BaseNodeState.swift in Sources */,
@@ -3584,6 +3595,7 @@
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
 				F8BA7D232E1D75DE00BDBEF1 /* AppTabs.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
+				F88A5F882E8459D40033A454 /* ContactDetail+Actions.swift in Sources */,
 				3AFAC362271C6F9E008AA842 /* UITextField+Combine.swift in Sources */,
 				373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */,
