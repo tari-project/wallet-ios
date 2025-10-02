@@ -540,6 +540,9 @@
 		F82150482E0D78F4003EBB25 /* TransactionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F82150472E0D78F4003EBB25 /* TransactionItem.swift */; };
 		F821504B2E0E8D7C003EBB25 /* ScalingButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821504A2E0E8D7C003EBB25 /* ScalingButtonStyle.swift */; };
 		F82150502E0EA9BA003EBB25 /* Shape+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821504F2E0EA9B5003EBB25 /* Shape+Style.swift */; };
+		F845B6F22E8A8D5A0011E4E3 /* AddContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845B6F12E8A8D5A0011E4E3 /* AddContact.swift */; };
+		F845B6F52E8A916E0011E4E3 /* TariTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845B6F42E8A916E0011E4E3 /* TariTextEditor.swift */; };
+		F845B6F72E8AAC500011E4E3 /* QRScaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F845B6F62E8AAC4D0011E4E3 /* QRScaner.swift */; };
 		F8472F452E5C50020094163D /* Send+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F442E5C4FFD0094163D /* Send+Actions.swift */; };
 		F8472F492E5CB6960094163D /* SelectContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F482E5CB6960094163D /* SelectContact.swift */; };
 		F8472F4D2E5CB8D80094163D /* ContactBookItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F4C2E5CB8D80094163D /* ContactBookItem.swift */; };
@@ -1142,6 +1145,9 @@
 		F82150472E0D78F4003EBB25 /* TransactionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionItem.swift; sourceTree = "<group>"; };
 		F821504A2E0E8D7C003EBB25 /* ScalingButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalingButtonStyle.swift; sourceTree = "<group>"; };
 		F821504F2E0EA9B5003EBB25 /* Shape+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shape+Style.swift"; sourceTree = "<group>"; };
+		F845B6F12E8A8D5A0011E4E3 /* AddContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContact.swift; sourceTree = "<group>"; };
+		F845B6F42E8A916E0011E4E3 /* TariTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariTextEditor.swift; sourceTree = "<group>"; };
+		F845B6F62E8AAC4D0011E4E3 /* QRScaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScaner.swift; sourceTree = "<group>"; };
 		F8472F442E5C4FFD0094163D /* Send+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Send+Actions.swift"; sourceTree = "<group>"; };
 		F8472F482E5CB6960094163D /* SelectContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectContact.swift; sourceTree = "<group>"; };
 		F8472F4C2E5CB8D80094163D /* ContactBookItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookItem.swift; sourceTree = "<group>"; };
@@ -3042,6 +3048,7 @@
 		F82150022E02DE4B003EBB25 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
+				F845B6F32E8A91550011E4E3 /* TextField */,
 				F82150032E02DE6A003EBB25 /* Buttons */,
 				F821501F2E060207003EBB25 /* Extensions */,
 				F821500B2E048709003EBB25 /* ListItems */,
@@ -3138,10 +3145,19 @@
 			path = Scenes;
 			sourceTree = "<group>";
 		};
+		F845B6F32E8A91550011E4E3 /* TextField */ = {
+			isa = PBXGroup;
+			children = (
+				F845B6F42E8A916E0011E4E3 /* TariTextEditor.swift */,
+			);
+			path = TextField;
+			sourceTree = "<group>";
+		};
 		F8472F472E5CB6810094163D /* ContactBook */ = {
 			isa = PBXGroup;
 			children = (
 				F8472F552E5DA9A00094163D /* Views */,
+				F845B6F12E8A8D5A0011E4E3 /* AddContact.swift */,
 				F8472F482E5CB6960094163D /* SelectContact.swift */,
 				F88A5F832E8408F90033A454 /* ContactBook.swift */,
 				F88A5F852E84134D0033A454 /* ContactDetail.swift */,
@@ -3168,6 +3184,7 @@
 				F8472F582E60B9D00094163D /* ConfirmSend.swift */,
 				F8472F6A2E69BBCB0094163D /* SendingTransaction.swift */,
 				F8472F6C2E744AFA0094163D /* SendingTransaction+Actions.swift */,
+				F845B6F62E8AAC4D0011E4E3 /* QRScaner.swift */,
 			);
 			path = Send;
 			sourceTree = "<group>";
@@ -3579,6 +3596,7 @@
 				3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */,
 				3AE138C928044A1800443D34 /* PopUpComponentsFactory.swift in Sources */,
 				4CDEC323273A5E3600999DCB /* Balance.swift in Sources */,
+				F845B6F22E8A8D5A0011E4E3 /* AddContact.swift in Sources */,
 				3AAE90B3291C176700BEA262 /* ICloudDocsUploadService.swift in Sources */,
 				3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				3A8473DA28EC57AA0015E63A /* Publisher+Binding.swift in Sources */,
@@ -3608,6 +3626,7 @@
 				3A8473D028EC56600015E63A /* TariRecoveryService.swift in Sources */,
 				F815DBE92E7C37BA001483A9 /* ProfileSettings.swift in Sources */,
 				5499CF2B2C3EA31F001C417F /* AddressViewDefaultActions.swift in Sources */,
+				F845B6F52E8A916E0011E4E3 /* TariTextEditor.swift in Sources */,
 				5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */,
 				3AABFC9D28F59B2200D87773 /* StatusLoggerManager.swift in Sources */,
 				54F306112A3B049500B5689D /* UIView+Utils.swift in Sources */,
@@ -3717,6 +3736,7 @@
 				54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */,
 				F815DBE72E7C3164001483A9 /* SettingsDetail.swift in Sources */,
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
+				F845B6F72E8AAC500011E4E3 /* QRScaner.swift in Sources */,
 				546B270D2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift in Sources */,
 				F82150502E0EA9BA003EBB25 /* Shape+Style.swift in Sources */,
 				3A1D8E4B28400AB8004129D5 /* AboutViewHeader.swift in Sources */,
@@ -4162,7 +4182,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -4197,7 +4217,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

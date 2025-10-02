@@ -68,7 +68,9 @@ struct ContactDetail: View {
             .padding(.vertical, 20)
             .padding(.horizontal, 16)
         }
+        .navigationBarBackButtonHidden()
         .toolbar {
+            toolbarBackItem { dismiss() }
             toolbarTitle("Contact Detail")
         }
         .sceneBackground(.secondaryBackground)

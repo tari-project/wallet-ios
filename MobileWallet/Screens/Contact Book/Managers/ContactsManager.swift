@@ -39,6 +39,7 @@
 */
 
 import SwiftUI
+import Combine
 
 struct ContactModel: Identifiable, Hashable {
     let id = UUID()
@@ -97,9 +98,10 @@ final class ContactsManager {
             avatar = internalModel?.addressComponents.spendKey.firstOrEmpty ?? ""
         }
     }
-    var isPermissionGranted: Bool { true }
 
     // MARK: - Properties
+    
+    static var contactUpdated = PassthroughSubject<Void, Never>()
 
     private(set) var tariContactModels: [Model] = []
     private let internalContactsManager = InternalContactsManager()
@@ -138,6 +140,7 @@ final class ContactsManager {
             } else {
                 try internalContactsManager.remove(components: internalContact.addressComponents)
             }
+            Self.contactUpdated.send()
         }
     }
     
@@ -157,16 +160,18 @@ final class ContactsManager {
             onContactUpdate(contact)
         }
         Tari.mainWallet.transactions.fetchData()
+        Self.contactUpdated.send()
     }
 
     func remove(contact: Model) throws {
         if let components = contact.internalModel?.addressComponents {
-            try internalContactsManager.remove(components: components)
+            try remove(contact: components)
         }
     }
     
     func remove(contact: TariAddressComponents) throws {
         try internalContactsManager.remove(components: contact)
+        Self.contactUpdated.send()
     }
 
     func createInternalModel(name: String, isFavorite: Bool, address: TariAddress) throws -> Model {

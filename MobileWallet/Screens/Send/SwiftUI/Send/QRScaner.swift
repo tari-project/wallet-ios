@@ -1,10 +1,10 @@
-//  Toolbar+Items.swift
+//  QRScaner.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 20.06.2025
+	Created by Tomas Hakel on 29.09.2025
 	Using Swift 6.0
-	Running on macOS 15.5
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -40,38 +40,24 @@
 
 import SwiftUI
 
-extension View {
-    func toolbarTitle(_ title: String) -> some ToolbarContent {
-        ToolbarItem(placement: .principal) {
-            Text(title)
-                .headingLarge()
-                .foregroundStyle(.primaryText)
+protocol QRScaner { }
+
+@MainActor
+extension QRScaner {
+    func scanQR(completion: @escaping (QRCodeData) -> Void) {
+        UIApplication.shared.hideKeyboard()
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.base64Address, .deeplink(.transactionSend), .deeplink(.profile)], disabledDataTypes: []) { qrData in
+            completion(qrData)
         }
     }
     
-    func toolbarBackItem(_ action: @escaping () -> Void) -> some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            Button(action: action) {
-                Image(.backArrow)
-                    .foregroundStyle(.navbarIcons)
-            }
-        }
-    }
-    
-    func toolbarCloseItem(_ action: @escaping () -> Void) -> some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button(action: action) {
-                Image(.close)
-                    .foregroundStyle(.navbarIcons)
-            }
-        }
-    }
-    
-    func toolbarTrailingAction(_ icon: ImageResource, _ action: @escaping () -> Void) -> some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button(action: action) {
-                Image(icon)
-                    .foregroundStyle(.navbarIcons)
+    func scanQRAddress(completion: @escaping (TariAddress?) -> Void) {
+        UIApplication.shared.hideKeyboard()
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.base64Address], disabledDataTypes: []) { qrData in
+            switch qrData {
+            case let .base64Address(encodedAddress):
+                completion(try? TariAddress(base58: encodedAddress))
+            default: completion(nil)
             }
         }
     }
