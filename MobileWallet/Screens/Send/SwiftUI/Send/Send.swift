@@ -135,25 +135,7 @@ private extension Send {
             }
             .foregroundStyle(.primaryText)
             
-            VStack(alignment: .leading, spacing: 8) {
-                TextEditor(text: $address)
-                    .padding(.vertical, -6)
-                    .padding(.horizontal, -5)
-                    .frame(minHeight: 24)
-                    .overlay(alignment: .leading) {
-                        if address.isEmpty {
-                            placeholder("Recipient address")
-                                .allowsHitTesting(false)
-                        }
-                    }
-                    .textFieldBorder()
-                
-                if let addressError {
-                    Text(addressError)
-                        .body2()
-                        .foregroundStyle(.errorMain)
-                }
-            }
+            TariTextEditor($address, placeholder: "Recipient address", error: addressError)
         }
     }
     
@@ -215,18 +197,6 @@ private extension Send {
     
     var formattedAvailableBalance: String? {
         availableBalance?.formattedWithCurrency
-    }
-}
-
-extension View {
-    func textFieldBorder() -> some View {
-        self.body2()
-            .padding(.vertical, 12)
-            .padding(.horizontal, 10)
-            .background {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.primaryBackground, stroke: .outlined)
-            }
     }
 }
 

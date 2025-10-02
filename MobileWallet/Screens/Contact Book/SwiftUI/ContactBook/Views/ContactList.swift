@@ -74,6 +74,11 @@ struct ContactList: View {
         }
         .sceneBackground(.secondaryBackground)
         .onAppear { load() }
+        .onReceive(ContactsManager.contactUpdated) { _ in
+            Task {
+                await refresh()
+            }
+        }
     }
 }
 
@@ -112,14 +117,18 @@ private extension ContactList {
     func load() {
         Task {
             isLoading = true
-            defer { isLoading = false }
-            do {
-                try await contactsManager.fetchModels()
-                contacts = contactsManager.contacts()
-                recents = loadRecentContacts()
-            } catch {
-                contacts = []
-            }
+            await refresh()
+            isLoading = false
+        }
+    }
+    
+    func refresh() async {
+        do {
+            try await contactsManager.fetchModels()
+            contacts = contactsManager.contacts()
+            recents = loadRecentContacts()
+        } catch {
+            contacts = []
         }
     }
     

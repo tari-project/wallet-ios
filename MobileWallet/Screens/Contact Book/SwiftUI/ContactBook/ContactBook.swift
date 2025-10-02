@@ -43,16 +43,25 @@ import SwiftUI
 struct ContactBook: View {
     @Environment(\.dismiss) var dismiss
     @State var presentedContact: ContactModel?
+    @State var isAddContactPresented = false
     
     var body: some View {
         ContactList(style: .list) {
             select($0)
         }
+        .navigationBarBackButtonHidden()
         .toolbar {
+            toolbarBackItem { dismiss() }
             toolbarTitle("Contact Book")
+            toolbarTrailingAction(.addContact) {
+                isAddContactPresented = true
+            }
         }
         .navigationDestination(item: $presentedContact) {
             ContactDetail(contact: $0)
+        }
+        .fullScreenCover(isPresented: $isAddContactPresented) {
+            AddContact()
         }
     }
 }
