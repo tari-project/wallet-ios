@@ -560,7 +560,7 @@ extension WalletCreationViewController {
     }
 
     private func setupNumpadImageView() {
-        numpadImageView.image = Theme.shared.images.createWalletNumpad!
+        numpadImageView.image = Theme.shared.images.createWalletNumpad
         numpadImageView.isHidden = true
         numpadImageView.alpha = 0.0
         stackView.addArrangedSubview(numpadImageView)

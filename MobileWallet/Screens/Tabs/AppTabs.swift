@@ -68,6 +68,7 @@ struct AppTabs: View {
             profile
             settings
         }
+        .environment(HomeRouter.shared)
         .sheet(item: $state.requiredUpdate) {
             UpdateRequiredSheet(appVersion: $0)
         }
@@ -77,7 +78,6 @@ struct AppTabs: View {
 private extension AppTabs {
     var home: some View {
         Home(walletState: walletState)
-            .environment(HomeRouter.shared)
             .tab(.home, selected: state.selected)
     }
     
@@ -88,9 +88,12 @@ private extension AppTabs {
     }
     
     var settings: some View {
-        UISettingsViewController()
-            .background(Color.secondaryBackground)
+        Settings()
             .tab(.settings, selected: state.selected)
+        
+        // TODO: remove UISettingsViewController from the project after SwiftUI transition is complete
+//        UISettingsViewController()
+//            .background(Color.secondaryBackground)
     }
 }
 

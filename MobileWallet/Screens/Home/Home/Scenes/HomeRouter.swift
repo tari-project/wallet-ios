@@ -45,5 +45,11 @@ class HomeRouter {
     // TODO: Remove along with UIKit
     static let shared = HomeRouter()
     
-    var isSendPresented = false
+    var isHomeSendPresented = false
+    var isContactsSendPresented = false
+    
+    func dismissSendPresentation() {
+        isHomeSendPresented = false
+        isContactsSendPresented = false
+    }
 }

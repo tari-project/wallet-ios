@@ -213,7 +213,7 @@ extension WebBrowserViewController {
         navigationPanel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
 
         backButton.addTarget(self, action: #selector(backAction), for: .touchUpInside)
-        backButton.setImage(Theme.shared.images.backArrow, for: .normal)
+        backButton.setImage(.backArrow, for: .normal)
         navigationPanel.addSubview(backButton)
 
         backButton.translatesAutoresizingMaskIntoConstraints = false
@@ -223,7 +223,7 @@ extension WebBrowserViewController {
         backButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
 
         forwardButton.addTarget(self, action: #selector(forwardAction), for: .touchUpInside)
-        forwardButton.setImage(Theme.shared.images.forwardArrow, for: .normal)
+        forwardButton.setImage(.forwardArrow, for: .normal)
         navigationPanel.addSubview(forwardButton)
 
         forwardButton.translatesAutoresizingMaskIntoConstraints = false

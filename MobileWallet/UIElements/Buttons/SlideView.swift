@@ -75,7 +75,7 @@ final class SlideView: DynamicThemeView {
         let view = UIImageView()
         view.isUserInteractionEnabled = true
         view.contentMode = .center
-        view.image = Theme.shared.images.forwardArrow
+        view.image = .forwardArrow
         view.layer.cornerRadius = 4.0
         return view
     }()

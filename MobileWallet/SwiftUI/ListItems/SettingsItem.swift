@@ -41,28 +41,32 @@
 import SwiftUI
 
 struct SettingsItem: View {
-    let image: String
+    let image: ImageResource
     let title: String
     let action: () -> Void
     
     var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 16) {
-                Image(image)
-                    .foregroundStyle(Color.Icons.default)
-                Text(title)
-                    .menuItem()
-                    .foregroundStyle(.primaryText)
-                Spacer()
+        Button(action: action) {
+            VStack(spacing: 0) {
+                HStack(spacing: 16) {
+                    Image(image)
+                        .renderingMode(.template)
+                        .foregroundStyle(Color.Icons.default)
+                        .frame(square: 24)
+                    Text(title)
+                        .menuItem()
+                        .foregroundStyle(.primaryText)
+                    Spacer()
+                }
+                .padding(.vertical, 24)
+                
+                Divider()
             }
-            .padding(.vertical, 24)
-            
-            Divider()
         }
     }
 }
 
 #Preview {
-    SettingsItem(image: "Icons/Settings/About", title: "Settings") { }
+    SettingsItem(image: .settingsTab, title: "Settings") { }
         .padding()
 }

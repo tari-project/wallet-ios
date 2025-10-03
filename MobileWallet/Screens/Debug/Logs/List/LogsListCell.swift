@@ -53,7 +53,7 @@ final class LogsListCell: DynamicThemeCell {
 
     @TariView private var arrowImageView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.forwardArrow
+        view.image = .forwardArrow
         view.contentMode = .scaleAspectFit
         return view
     }()

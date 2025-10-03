@@ -42,6 +42,7 @@ import SwiftUI
 
 struct ContactBookItem: View {
     let contact: ContactModel
+    let hasChevron: Bool
     let action: (ContactModel) -> Void
     
     var body: some View {
@@ -58,6 +59,10 @@ struct ContactBookItem: View {
                     }
                 }
                 Spacer()
+                if hasChevron {
+                    Image(.chevronRight)
+                        .foregroundStyle(.primaryText)
+                }
             }
             .padding(16)
             .background {

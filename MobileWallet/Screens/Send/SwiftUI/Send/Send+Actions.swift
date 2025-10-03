@@ -40,22 +40,9 @@
 
 import SwiftUI
 
-extension Send {
-    var isContinueEnabled: Bool {
-        isAddressValid && amountError == nil && !amount.isEmpty
-    }
-    
-    var isAddressValid: Bool {
-        contact != nil || (try? TariAddress(base58: address)) != nil
-    }
-    
-    func update(walletBalance: WalletBalance) {
-        availableBalance = MicroTari(walletBalance.available)
-    }
-    
+extension Send: QRScaner {
     func scanQR() {
-        hideKeyboard()
-        AppRouter.presentQrCodeScanner(expectedDataTypes: [.base64Address, .deeplink(.transactionSend), .deeplink(.profile)], disabledDataTypes: []) { qrData in
+        scanQR { qrData in
             switch qrData {
             case let .base64Address(encodedAddress):
                 decodeAddress(base58: encodedAddress)
@@ -71,6 +58,20 @@ extension Send {
             default: ()
             }
         }
+    }
+}
+
+extension Send {
+    var isContinueEnabled: Bool {
+        isAddressValid && amountError == nil && !amount.isEmpty
+    }
+    
+    var isAddressValid: Bool {
+        contact != nil || (try? TariAddress(base58: address)) != nil
+    }
+    
+    func update(walletBalance: WalletBalance) {
+        availableBalance = MicroTari(walletBalance.available)
     }
     
     func selectContact() {

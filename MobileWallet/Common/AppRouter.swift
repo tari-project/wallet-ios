@@ -147,7 +147,6 @@ enum AppRouter {
     }
 
     static func presentOnTop(controller: UIViewController, onFullScreen: Bool = false) {
-
         guard var topViewController = UIApplication.shared.topController else { return }
 
         while let presentedViewController = topViewController.presentedViewController {
@@ -162,7 +161,6 @@ enum AppRouter {
     }
 
     static func presentVerifiySeedPhrase() {
-
         let controller = SeedWordsListConstructor.buildScene(backButtonType: .close)
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
 
@@ -171,8 +169,7 @@ enum AppRouter {
     }
 
     static func presentBackupSettings() {
-
-        let controller = BackupWalletSettingsConstructor.buildScene(backButtonType: .close)
+        let controller = BackupWalletSettingsViewController(backButtonType: .close)
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
 
         navigationController.setNavigationBarHidden(true, animated: false)
@@ -180,7 +177,6 @@ enum AppRouter {
     }
 
     static func presentBackupPasswordSettings() {
-
         let controller = SecureBackupViewController(backButtonType: .close)
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
 

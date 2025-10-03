@@ -59,7 +59,7 @@ class MenuCell: DynamicThemeCell {
 
     @TariView private var arrowView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.forwardArrow
+        view.image = .forwardArrow
         view.contentMode = .scaleAspectFit
         return view
     }()

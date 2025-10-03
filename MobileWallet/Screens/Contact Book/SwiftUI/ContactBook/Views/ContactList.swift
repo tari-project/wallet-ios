@@ -44,9 +44,11 @@ struct ContactList: View {
     @State private var recents = [ContactModel]()
     @State private var contacts = [ContactModel]()
     @State private var searchText = ""
+    @State private var isLoading = false
     
     private let contactsManager = ContactsManager()
     
+    let style: Style
     let selectAction: (ContactModel) -> Void
     
     var body: some View {
@@ -64,12 +66,25 @@ struct ContactList: View {
         .searchable(text: $searchText, placement: .toolbar, prompt: Text("Find Contact"))
         .body()
         .background {
-            if filteredContacts.isEmpty && filteredRecents.isEmpty {
+            if isLoading {
+                ProgressView()
+            } else if filteredContacts.isEmpty && filteredRecents.isEmpty {
                 Text("No result")
             }
         }
         .sceneBackground(.secondaryBackground)
         .onAppear { load() }
+        .onReceive(ContactsManager.contactUpdated) { _ in
+            Task {
+                await refresh()
+            }
+        }
+    }
+}
+
+extension ContactList {
+    enum Style {
+        case list, select
     }
 }
 
@@ -85,7 +100,7 @@ private extension ContactList {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(spacing: 4) {
                     ForEach(contacts) { contact in
-                        ContactBookItem(contact: contact, action: selectAction)
+                        ContactBookItem(contact: contact, hasChevron: style.hasChevron, action: selectAction)
                     }
                 }
             }
@@ -101,13 +116,19 @@ private extension ContactList {
     
     func load() {
         Task {
-            do {
-                try await contactsManager.fetchModels()
-                contacts = contactsManager.contacts()
-                recents = loadRecentContacts()
-            } catch {
-                contacts = []
-            }
+            isLoading = true
+            await refresh()
+            isLoading = false
+        }
+    }
+    
+    func refresh() async {
+        do {
+            try await contactsManager.fetchModels()
+            contacts = contactsManager.contacts()
+            recents = loadRecentContacts()
+        } catch {
+            contacts = []
         }
     }
     
@@ -125,6 +146,15 @@ private extension ContactList {
     }
 }
 
+private extension ContactList.Style {
+    var hasChevron: Bool {
+        switch self {
+        case .list: true
+        case .select: false
+        }
+    }
+}
+
 #Preview {
-    ContactList { _ in }
+    ContactList(style: .list) { _ in }
 }

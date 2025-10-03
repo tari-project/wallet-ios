@@ -85,7 +85,7 @@ extension SendingTransaction {
             finishingProgress = 1
         } completion: {
             TabState.shared.selected = .home
-            HomeRouter.shared.isSendPresented = false
+            HomeRouter.shared.dismissSendPresentation()
         }
     }
     

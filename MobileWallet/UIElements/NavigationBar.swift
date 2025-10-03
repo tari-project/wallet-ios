@@ -235,15 +235,14 @@ final class NavigationBar: DynamicThemeView {
     }
 
     private func updateLeftButton() {
-
         var text: String?
         var image: UIImage?
 
         switch backButtonType {
         case .back:
-            image = Theme.shared.images.backArrow
+            image = .backArrow
         case .close:
-            image = Theme.shared.images.close
+            image = .close
         case let .text(buttonText):
             text = buttonText
         case .none:

@@ -41,10 +41,18 @@
 import SwiftUI
 
 extension View {
+    func toolbarTitle(_ title: String) -> some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            Text(title)
+                .headingLarge()
+                .foregroundStyle(.primaryText)
+        }
+    }
+    
     func toolbarBackItem(_ action: @escaping () -> Void) -> some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
             Button(action: action) {
-                Image(uiImage: .backArrow)
+                Image(.backArrow)
                     .foregroundStyle(.navbarIcons)
             }
         }
@@ -53,17 +61,18 @@ extension View {
     func toolbarCloseItem(_ action: @escaping () -> Void) -> some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Button(action: action) {
-                Image(uiImage: .close)
+                Image(.close)
                     .foregroundStyle(.navbarIcons)
             }
         }
     }
     
-    func toolbarTitle(_ title: String) -> some ToolbarContent {
-        ToolbarItem(placement: .principal) {
-            Text(title)
-                .headingLarge()
-                .foregroundStyle(.primaryText)
+    func toolbarTrailingAction(_ icon: ImageResource, _ action: @escaping () -> Void) -> some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(action: action) {
+                Image(icon)
+                    .foregroundStyle(.navbarIcons)
+            }
         }
     }
 }

@@ -88,7 +88,7 @@ struct Home: View, ChainTipObserver {
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
             }
-            .fullScreenCover(isPresented: $router.isSendPresented) {
+            .fullScreenCover(isPresented: $router.isHomeSendPresented) {
                 NavigationStack {
                     Send()
                 }
@@ -110,12 +110,13 @@ struct Home: View, ChainTipObserver {
 
 private extension Home {
     var toolbar: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
+        ToolbarItem(placement: .principal) {
             HStack {
                 Text("Tari Universe")
                     .heading2XL()
                     .foregroundStyle(.primaryText)
                 connectionStatusTag
+                Spacer()
             }
         }
     }
@@ -179,8 +180,8 @@ private extension Home {
         VStack(spacing: 10) {
             ZStack(alignment: .bottomLeading) {
                 Image(.walletCard)
+                    .resizable()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                
                 VStack(alignment: .leading, spacing: 0) {
                     HStack(spacing: 4) {
                         Text("Wallet Balance")
@@ -216,7 +217,7 @@ private extension Home {
             
             HStack(spacing: 8) {
                 TariButton("Send", style: .label, size: .large) {
-                    router.isSendPresented = true
+                    router.isHomeSendPresented = true
                 }
                 .disabled(!isChainTipSynced)
                 
