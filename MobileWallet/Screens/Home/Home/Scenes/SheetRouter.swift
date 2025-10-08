@@ -1,4 +1,4 @@
-//  HomeRouter.swift
+//  SheetRouter.swift
 	
 /*
 	Package MobileWallet
@@ -41,12 +41,13 @@
 import SwiftUI
 
 @Observable
-class HomeRouter {
+class SheetRouter {
     // TODO: Remove along with UIKit
-    static let shared = HomeRouter()
+    static let shared = SheetRouter()
     
     var isHomeSendPresented = false
     var isContactsSendPresented = false
+    var isAddContactPresented = false
     
     func dismissSendPresentation() {
         isHomeSendPresented = false

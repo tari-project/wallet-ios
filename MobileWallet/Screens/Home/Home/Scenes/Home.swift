@@ -43,7 +43,7 @@ import Combine
 
 struct Home: View, ChainTipObserver {
     @ObservedObject var network = NetworkManager.shared
-    @Environment(HomeRouter.self) var router
+    @Environment(SheetRouter.self) var router
     @State var activeMiners = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
@@ -219,8 +219,6 @@ private extension Home {
                 TariButton("Send", style: .label, size: .large) {
                     router.isHomeSendPresented = true
                 }
-                .disabled(!isChainTipSynced)
-                
                 TariButton("Receive", style: .label, size: .large) {
                     isReceivePresented = true
                 }

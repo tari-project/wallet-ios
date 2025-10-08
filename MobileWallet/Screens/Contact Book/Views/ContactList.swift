@@ -125,7 +125,7 @@ private extension ContactList {
     func refresh() async {
         do {
             try await contactsManager.fetchModels()
-            contacts = contactsManager.contacts()
+            contacts = contactsManager.contacts { $0.alias != nil }
             recents = loadRecentContacts()
         } catch {
             contacts = []

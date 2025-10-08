@@ -39,9 +39,7 @@
 */
 
 extension PopUpPresenter {
-
     @MainActor static func showUnlinkConfirmationDialog(address: String, name: String, confirmationCallback: @escaping () -> Void) {
-
         let model = PopUpDialogModel(
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.confirmation.title"), style: .normal)
@@ -56,12 +54,10 @@ extension PopUpPresenter {
             ],
             hapticType: .none
         )
-
         showPopUp(model: model)
     }
 
     @MainActor static func showUnlinkSuccessDialog(address: String, name: String) {
-
         let model = PopUpDialogModel(
             titleComponents: [
                 StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.success.title"), style: .normal)
@@ -75,7 +71,6 @@ extension PopUpPresenter {
             ],
             hapticType: .none
         )
-
         showPopUp(model: model)
     }
 }
