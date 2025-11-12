@@ -159,7 +159,6 @@ private extension ConfirmSend {
     try? ConfirmSend(confirmation: SendConfirmation(
         amount: MicroTari(10),
         fee: MicroTari(1),
-        feePerGram: MicroTari(1),
         address: TariAddressComponents(address: TariAddress(base58: "BB2384F5793C8D8D4E08A9FA7380DBC249A48181F21DAD3EF46DBFE504400C7C")),
         note: nil,
         contact: nil

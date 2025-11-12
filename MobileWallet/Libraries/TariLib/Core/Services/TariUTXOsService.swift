@@ -48,12 +48,12 @@ final class TariUTXOsService: CoreTariService {
 
     // MARK: - Actions
 
-    func coinBreakPreview(commitments: [String], splitsCount: UInt, feePerGram: UInt64 = TariConstants.defaultFeePerGram.rawValue) throws -> TariCoinPreview {
-        try walletManager.coinSplitPreview(commitments: commitments, splitsCount: splitsCount, feePerGram: feePerGram)
+    func coinBreakPreview(commitments: [String], splitsCount: UInt) throws -> TariCoinPreview {
+        try walletManager.coinSplitPreview(commitments: commitments, splitsCount: splitsCount)
     }
 
-    func combineCoinsPreview(commitments: [String], feePerGram: UInt64 = TariConstants.defaultFeePerGram.rawValue) throws -> TariCoinPreview {
-        try walletManager.coinsJoinPreview(commitments: commitments, feePerGram: feePerGram)
+    func combineCoinsPreview(commitments: [String]) throws -> TariCoinPreview {
+        try walletManager.coinsJoinPreview(commitments: commitments)
     }
 
     func breakCoins(commitments: [String], splitsCount: UInt, feePerGram: UInt64 = TariConstants.defaultFeePerGram.rawValue) throws {
@@ -62,9 +62,9 @@ final class TariUTXOsService: CoreTariService {
         _ = try walletManager.coinSplit(commitments: commitmentsVector, splitsCount: splitsCount, feePerGram: feePerGram)
     }
 
-    func combineCoins(commitments: [String], feePerGram: UInt64 = TariConstants.defaultFeePerGram.rawValue) throws {
+    func combineCoins(commitments: [String]) throws {
         let commitmentsVector = TariVectorWrapper(type: TariTypeTag(0))
         try commitmentsVector.add(commitments: commitments)
-        _ = try walletManager.coinJoin(commitments: commitmentsVector, feePerGram: feePerGram)
+        try walletManager.coinJoin(commitments: commitmentsVector)
     }
 }

@@ -206,32 +206,17 @@ final class TariTransactionsService: CoreTariService {
     func send(
         toAddress address: TariAddress,
         amount: UInt64,
-        feePerGram: UInt64,
         paymentID: String,
         kernelsCount: UInt32 = TariConstants.defaultKernelCount,
         outputsCount: UInt32 = TariConstants.defaultOutputCount
     ) throws -> UInt64 {
-        let estimatedFee = try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
+        let estimatedFee = try walletManager.feeEstimate(amount: amount, kernelsCount: kernelsCount, outputsCount: outputsCount)
         let total = estimatedFee + amount
         let availableBalance = services.walletBalance.balance.available
         guard availableBalance >= total else {
             throw InternalError.insufficientFunds(spendableMicroTari: availableBalance)
         }
-        return try walletManager.sendTransaction(address: address, amount: amount, feePerGram: feePerGram, paymentID: paymentID)
-    }
-    
-    @discardableResult
-    func send(
-        toAddress address: TariAddress,
-        amount: UInt64,
-        paymentID: String,
-    ) throws -> UInt64 {
-        let feeManager = TransactionFeesManager()
-        feeManager.amount = MicroTari(amount)
-        guard let feeData = feeManager.feeData else {
-            throw InternalError.failedToCalculateFee
-        }
-        return try send(toAddress: address, amount: amount, feePerGram: feeData.feePerGram.rawValue, paymentID: paymentID)
+        return try walletManager.sendTransaction(address: address, amount: amount, paymentID: paymentID)
     }
     
     func paymentReference(transaction: Transaction) throws -> PaymentReference? {

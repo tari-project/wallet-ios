@@ -43,7 +43,6 @@ import SwiftUI
 struct SendConfirmation: Hashable {
     let amount: MicroTari
     let fee: MicroTari
-    let feePerGram: MicroTari
     let address: TariAddressComponents
     let note: String?
     let contact: ContactModel?
@@ -53,7 +52,6 @@ struct Send: View {
     @Environment(\.dismiss) var dismiss
     @State var availableBalance: MicroTari?
     @State var fee: MicroTari?
-    @State var feePerGram: MicroTari?
     @State var address: String = ""
     @State var amount: String = ""
     @State var note: String = ""

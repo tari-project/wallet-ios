@@ -41,110 +41,13 @@
 import Foundation
 
 final class TransactionFeesManager {
-    enum Status {
-        case calculating
-        case data(FeeData)
-        case dataUnavailable
-    }
-
-    struct FeeData {
-        let feePerGram: MicroTari
-        let fee: MicroTari
-    }
-
-    enum InternalError: Error {
-        case unexpectedBlockCount
-    }
-
-    // MARK: - Constants
-
-    private let timeout: TimeInterval = 3.0
     private let rawMaxAmountBuffer: UInt64 = 2000
 
-    // MARK: - Properties
-
-    var amount: MicroTari = MicroTari() {
-        didSet { handleNewAmount() }
-    }
-
-    @Published private(set) var feesStatus: Status = .calculating
-    @Published private(set) var lastError: Error?
-
-    private(set) var feeData: FeeData?
-    private var feePerGram: MicroTari?
-
-    // MARK: - Initialisers
-
-    init() {
-        updateData()
-    }
-
-    // MARK: - Actions
-
-    private func updateData() {
-        fetchFeesPerGram { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case let .success(feePerGram):
-                self.feePerGram = feePerGram
-                self.updateFee(feePerGram: feePerGram)
-            case let .failure(error):
-                self.lastError = error
-                self.feesStatus = .dataUnavailable
-            }
-        }
-    }
-
-    private func updateFee(feePerGram: MicroTari) {
-        do {
-            let fee = try calculateFee(amount: amount, feePerGram: feePerGram)
-            let feeData = FeeData(feePerGram: feePerGram, fee: fee)
-            self.feeData = feeData
-            feesStatus = .data(feeData)
-        } catch {
-            lastError = error
-            self.feesStatus = .dataUnavailable
-        }
-    }
-
-    private func handleNewAmount() {
-        guard let feePerGram else {
-            updateData()
-            return
-        }
-        updateFee(feePerGram: feePerGram)
-    }
-
-    private func fetchFeesPerGram(result: @escaping (Result<MicroTari, Error>) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self else { return }
-
-            let dispatchGroup = DispatchGroup()
-            dispatchGroup.enter()
-
-            var response: MicroTari?
-
-            DispatchQueue.global().async {
-                response = try? self.calculateFeesPerGram()
-                dispatchGroup.leave()
-            }
-            _ = dispatchGroup.wait(timeout: .now() + self.timeout)
-
-            result(.success(response ?? TariConstants.defaultFeePerGram))
-        }
-    }
-
-    private func calculateFeesPerGram() throws -> MicroTari {
-        let stats = try Tari.mainWallet.fees.feePerGramStats(count: 3)
-        let feePerGram = try stats.minFeePerGram()
-        return MicroTari(max(1, feePerGram))
-    }
-
-    private func calculateFee(amount: MicroTari, feePerGram: MicroTari) throws -> MicroTari {
-        let totalBalance = Tari.shared.wallet(.main).walletBalance.balance.total
+    func fee(for amount: MicroTari) throws -> MicroTari {
+        let totalBalance = Tari.mainWallet.walletBalance.balance.total
         let maxAmountRaw = totalBalance > rawMaxAmountBuffer ? totalBalance - rawMaxAmountBuffer : 0
         let amount = min(amount.rawValue, maxAmountRaw)
-        let option = try Tari.mainWallet.fees.estimateFee(amount: amount, feePerGram: feePerGram.rawValue)
+        let option = try Tari.mainWallet.fees.estimateFee(amount: amount)
         return MicroTari(option)
     }
 }

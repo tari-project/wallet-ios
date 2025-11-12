@@ -184,12 +184,13 @@ final class FFIWalletHandler {
         return result
     }
 
-    func feeEstimate(amount: UInt64, feePerGram: UInt64, kernelsCount: UInt32, outputsCount: UInt32) throws -> UInt64 {
+    func feeEstimate(amount: UInt64, kernelsCount: UInt32, outputsCount: UInt32) throws -> UInt64 {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_fee_estimate(wallet.pointer, amount, nil, feePerGram, kernelsCount, outputsCount, errorCodePointer)
+        let fee = try feePerGram()
+        let result = wallet_get_fee_estimate(wallet.pointer, amount, nil, fee, kernelsCount, outputsCount, errorCodePointer)
 
         try checkError(errorCode)
         return result
@@ -229,43 +230,46 @@ final class FFIWalletHandler {
         return result.array()
     }
 
-    func coinSplitPreview(commitments: [String], splitsCount: UInt, feePerGram: UInt64) throws -> TariCoinPreview {
+    func coinSplitPreview(commitments: [String], splitsCount: UInt) throws -> TariCoinPreview {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
+        let fee = try feePerGram()
         let vector = TariVectorWrapper(type: TariTypeTag(0))
         try vector.add(commitments: commitments)
 
-        let result = wallet_preview_coin_split(wallet.pointer, vector.pointer, splitsCount, feePerGram, errorCodePointer)
+        let result = wallet_preview_coin_split(wallet.pointer, vector.pointer, splitsCount, fee, errorCodePointer)
 
         guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return result.pointee
     }
 
-    func coinsJoinPreview(commitments: [String], feePerGram: UInt64) throws -> TariCoinPreview {
+    func coinsJoinPreview(commitments: [String]) throws -> TariCoinPreview {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
+        let fee = try feePerGram()
         let vector = TariVectorWrapper(type: TariTypeTag(0))
         try vector.add(commitments: commitments)
 
-        let result = wallet_preview_coin_join(wallet.pointer, vector.pointer, feePerGram, errorCodePointer)
+        let result = wallet_preview_coin_join(wallet.pointer, vector.pointer, fee, errorCodePointer)
 
         guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return result.pointee
     }
 
-    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, paymentID: String) throws -> UInt64 {
+    func sendTransaction(address: TariAddress, amount: UInt64, paymentID: String) throws -> UInt64 {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, paymentID, errorCodePointer)
+        let fee = try feePerGram()
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, fee, paymentID, errorCodePointer)
 
         try checkError(errorCode)
         return result
@@ -393,12 +397,14 @@ final class FFIWalletHandler {
         return result
     }
 
-    func coinJoin(commitments: TariVectorWrapper, feePerGram: UInt64) throws -> UInt64 {
+    @discardableResult
+    func coinJoin(commitments: TariVectorWrapper) throws -> UInt64 {
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_coin_join(wallet.pointer, commitments.pointer, feePerGram, errorCodePointer)
+        let fee = try feePerGram()
+        let result = wallet_coin_join(wallet.pointer, commitments.pointer, fee, errorCodePointer)
 
         try checkError(errorCode)
         return result
@@ -451,5 +457,11 @@ final class FFIWalletHandler {
 private extension FFIWalletHandler {
     func checkError(_ code: Int32) throws {
         guard code == 0 else { throw WalletError(code: code) }
+    }
+    
+    func feePerGram() throws -> UInt64 {
+        let stats = try Tari.mainWallet.fees.feePerGramStats(count: 3)
+        let feePerGram = try stats.minFeePerGram()
+        return max(1, feePerGram)
     }
 }
