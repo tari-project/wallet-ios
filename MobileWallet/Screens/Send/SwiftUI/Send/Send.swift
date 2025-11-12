@@ -63,7 +63,6 @@ struct Send: View {
     @State var isPresentingFeeInfo = false
     @State var isSelectingContact = false
     @State var presentedConfirmation: SendConfirmation?
-    @State var feeManager = TransactionFeesManager()
     
     var preffiledAddress = ""
     
@@ -141,27 +140,7 @@ private extension Send {
     
     var amountSection: some View {
         VStack(spacing: 16) {
-            HStack {
-                Text("Amount")
-                    .foregroundStyle(.primaryText)
-                Spacer()
-                if let formattedAvailableBalance {
-                    Text("Available: \(formattedAvailableBalance)")
-                        .foregroundStyle(.secondaryText)
-                }
-            }
-            .body()
-            
-            VStack(alignment: .leading, spacing: 8) {
-                TextField(text: $amount, prompt: placeholder("Enter XTM amount to send")) { }
-                    .keyboardType(.decimalPad)
-                    .textFieldBorder()
-                if let amountError {
-                    Text(amountError)
-                        .body2()
-                        .foregroundStyle(.errorMain)
-                }
-            }
+            AmountField(amount: $amount, availableBalance: availableBalance, error: amountError)
             Divider()
             HStack {
                 Text("Transaction Fee")
@@ -184,19 +163,9 @@ private extension Send {
                     .foregroundStyle(.primaryText)
                 Spacer()
             }
-            TextField(text: $note, prompt: placeholder("Add note or payment reference")) { }
+            TextField(text: $note, prompt: .placeholder("Add note or payment reference")) { }
                 .textFieldBorder()
         }
-    }
-    
-    func placeholder(_ text: String) -> Text {
-        Text(text)
-            .body2()
-            .foregroundStyle(.secondaryText)
-    }
-    
-    var formattedAvailableBalance: String? {
-        availableBalance?.formattedWithCurrency
     }
 }
 

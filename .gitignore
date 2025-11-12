@@ -24,6 +24,7 @@ xcuserdata/
 *.xcscmblueprint
 *.hhea.xml
 GoogleService-Info.plist
+Secret.plist
 
 ## Obj-C/Swift specific
 *.hmap

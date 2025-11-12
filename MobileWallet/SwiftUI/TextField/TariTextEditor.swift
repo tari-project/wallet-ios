@@ -57,6 +57,7 @@ struct TariTextEditor<Item: View>: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 TextEditor(text: $value)
+                    .scrollContentBackground(.hidden)
                     .padding(.vertical, -6)
                     .padding(.horizontal, -5)
                     .frame(minHeight: 24)

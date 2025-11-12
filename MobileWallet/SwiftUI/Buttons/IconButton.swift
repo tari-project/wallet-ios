@@ -42,17 +42,19 @@ import SwiftUI
 
 struct IconButton: View {
     let icon: UIImage
+    let color: Color
     let action: () -> Void
     
-    init(_ icon: UIImage, action: @escaping () -> Void) {
+    init(_ icon: UIImage, color: Color = .primaryText, action: @escaping () -> Void) {
         self.icon = icon
+        self.color = color
         self.action = action
     }
     
     var body: some View {
         Button(action: action) {
             Image(uiImage: icon)
-                .templateStyle(.primaryText)
+                .templateStyle(color)
         }
     }
 }

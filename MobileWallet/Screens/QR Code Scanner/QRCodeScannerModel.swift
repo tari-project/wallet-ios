@@ -44,6 +44,7 @@ enum QRCodeData {
     case deeplink(DeepLinkable)
     case bridges(String)
     case base64Address(String)
+    case text(String)
 }
 
 final class QRCodeScannerModel {
@@ -55,6 +56,7 @@ final class QRCodeScannerModel {
     enum DataType {
         case deeplink(DeeplinkType)
         case base64Address
+        case text
     }
 
     enum CompletionAction {
@@ -133,6 +135,8 @@ final class QRCodeScannerModel {
             onCompletion = .unexpectedData({ try? DeeplinkHandler.handle(deeplink: deeplink, showDefaultDialogIfNeeded: false) })
         case let .base64Address(address):
             onCompletion = .expectedData(.base64Address(address))
+        case let .text(text):
+            onCompletion = .expectedData(.text(text))
         case .invalid:
             break
         }
@@ -146,7 +150,6 @@ final class QRCodeScannerModel {
     // MARK: - Handlers
 
     private func handle(scanResult: VideoCaptureManager.ScanResult?) {
-
         guard actionModel?.isValid != true, onCompletion == nil, let scanResult else { return }
 
         switch scanResult {
@@ -154,6 +157,8 @@ final class QRCodeScannerModel {
             handle(validDeeplink: deeplink, scanResult: scanResult)
         case let .base64Address(address):
             handle(base64Address: address, scanResult: scanResult)
+        case let .text(text):
+            onCompletion = .expectedData(.text(text))
         case .invalid:
             handleInvalidData()
         }
@@ -176,12 +181,10 @@ final class QRCodeScannerModel {
             handleInvalidData()
             return
         }
-
-        guard let addressComponents = try? TariAddress(base58: base64Address).components else {
+        guard (try? TariAddress(base58: base64Address).components) != nil else {
             handleInvalidData()
             return
         }
-
         onCompletion = .expectedData(.base64Address(base64Address))
     }
 

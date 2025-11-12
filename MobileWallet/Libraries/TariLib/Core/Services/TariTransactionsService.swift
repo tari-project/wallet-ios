@@ -44,6 +44,7 @@ final class TariTransactionsService: CoreTariService {
 
     enum InternalError: Error {
         case insufficientFunds(spendableMicroTari: UInt64)
+        case failedToCalculateFee
     }
 
     // MARK: - Properties
@@ -217,6 +218,20 @@ final class TariTransactionsService: CoreTariService {
             throw InternalError.insufficientFunds(spendableMicroTari: availableBalance)
         }
         return try walletManager.sendTransaction(address: address, amount: amount, feePerGram: feePerGram, paymentID: paymentID)
+    }
+    
+    @discardableResult
+    func send(
+        toAddress address: TariAddress,
+        amount: UInt64,
+        paymentID: String,
+    ) throws -> UInt64 {
+        let feeManager = TransactionFeesManager()
+        feeManager.amount = MicroTari(amount)
+        guard let feeData = feeManager.feeData else {
+            throw InternalError.failedToCalculateFee
+        }
+        return try send(toAddress: address, amount: amount, feePerGram: feeData.feePerGram.rawValue, paymentID: paymentID)
     }
     
     func paymentReference(transaction: Transaction) throws -> PaymentReference? {

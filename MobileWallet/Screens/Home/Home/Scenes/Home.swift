@@ -42,6 +42,7 @@ import SwiftUI
 import Combine
 
 struct Home: View, ChainTipObserver {
+    @AppStorage("swapInProgressId") var swapInProgressId: String?
     @ObservedObject var network = NetworkManager.shared
     @Environment(SheetRouter.self) var router
     @State var activeMiners = " "
@@ -54,10 +55,13 @@ struct Home: View, ChainTipObserver {
     @State var chainTip: UInt64 = 0
     @State var recentTransactions = [FormattedTransaction]()
     @State var presentedTransaction: FormattedTransaction?
+    @State var presentedSwapProgress: ExolixTransactionResponse?
+    @State var swapTransaction: ExolixTransactionResponse?
     @State var isReceivePresented = false
     @State var isTransactionHistoryPresented = false
     @State var isConnectionStatusPresented = false
     
+    let exolix = Exolix()
     let walletState: WalletState
     
     var body: some View {
@@ -66,9 +70,13 @@ struct Home: View, ChainTipObserver {
             ScrollView {
                 VStack(spacing: 10) {
                     miningStatus
-                    wallet
-                    recentActivity
-                        .padding(.top, 24)
+                    VStack(spacing: 24) {
+                        wallet
+                        if let swapTransaction {
+                            swapInProgress(swapTransaction)
+                        }
+                        recentActivity
+                    }
                 }
                 .padding(16)
             }
@@ -88,9 +96,19 @@ struct Home: View, ChainTipObserver {
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
             }
+            .fullScreenCover(isPresented: $router.isSwapPresented) {
+                NavigationStack {
+                    Swaps()
+                }
+            }
             .fullScreenCover(isPresented: $router.isHomeSendPresented) {
                 NavigationStack {
                     Send()
+                }
+            }
+            .fullScreenCover(item: $presentedSwapProgress) { transaction in
+                NavigationStack {
+                    SwapProgress(exolix: Exolix(), transaction: transaction)
                 }
             }
             .sheet(isPresented: $isConnectionStatusPresented) {
@@ -211,7 +229,13 @@ private extension Home {
                         }
                     }
                     .foregroundStyle(.whiteMain.opacity(0.5))
+                    
+                    TariButton("Buy XTM", style: .green, size: .large) {
+                        router.isSwapPresented = true
+                    }
+                    .padding(.top)
                 }
+                .padding(.top, 50)
                 .padding(20)
             }
             
@@ -226,14 +250,27 @@ private extension Home {
         }
     }
     
+    func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .headingXL()
+            .foregroundStyle(.primaryText)
+    }
+    
+    func swapInProgress(_ swapTransaction: ExolixTransactionResponse) -> some View {
+        VStack {
+            sectionHeader("Swap in progress")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            SwapInProgressItem(transaction: swapTransaction) {
+                presentedSwapProgress = swapTransaction
+            }
+        }
+    }
+    
     var recentActivity: some View {
         VStack {
             HStack {
-                Text("Recent Activity")
-                    .headingXL()
-                    .foregroundStyle(.primaryText)
+                sectionHeader("Recent Activity")
                 Spacer(minLength: 8)
-
                 HStack(spacing: 2) {
                     if isChainTipSynced {
                         Image(.successIcon)

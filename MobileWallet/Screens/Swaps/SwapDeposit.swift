@@ -1,0 +1,166 @@
+//  SwapDeposit.swift
+	
+/*
+	Package MobileWallet
+	Created by Tomas Hakel on 29.10.2025
+	Using Swift 6.0
+	Running on macOS 26.0
+
+	Copyright 2019 The Tari Project
+
+	Redistribution and use in source and binary forms, with or
+	without modification, are permitted provided that the
+	following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above
+	copyright notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of
+	its contributors may be used to endorse or promote products
+	derived from this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+import SwiftUI
+
+struct SwapDeposit: View {
+    @AppStorage("swapInProgressId") var swapInProgressId: String?
+    @Environment(SheetRouter.self) var router
+    @Environment(\.dismiss) var dismiss
+    @State var isQrHidden = true
+    @State var transaction: ExolixTransactionResponse?
+    @State var presentedTransactionProgress: ExolixTransactionResponse?
+    @State var isTransactionCancelled = false
+    
+    let exolix: Exolix
+    let request: ExolixConfirmation
+    
+    var body: some View {
+        VStack {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Send the exact amount to the address below in one transaction")
+                    .headingLarge()
+                    .foregroundStyle(.primaryText)
+                    .multilineTextAlignment(.leading)
+                depositInfo
+            }
+            Text("Send funds to the address above only once.")
+                .headingSmall()
+                .foregroundStyle(.successDark)
+                .padding(20)
+                .background {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(.systemSecondaryGreen, stroke: .successDark)
+                }
+                .padding(.top, 8)
+            Spacer()
+            
+            TariButton("Cancel transaction", style: .destructiveText, size: .medium) {
+                router.isSwapPresented = false
+            }
+        }
+        .padding(.top, 40)
+        .padding([.horizontal, .bottom], 24)
+        .background(Color.secondaryBackground)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            toolbarTitle("Send funds")
+            toolbarBackItem { dismiss() }
+        }
+        .navigationDestination(item: $presentedTransactionProgress) {
+            SwapProgress(exolix: exolix, transaction: $0)
+        }
+        .onAppear { load() }
+        .onDisappear {
+            isTransactionCancelled = true
+        }
+    }
+}
+
+private extension SwapDeposit {
+    var depositInfo: some View {
+        VStack(spacing: 14) {
+            if let transaction {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("You need to send")
+                        .headingSmall()
+                        .foregroundStyle(.secondaryText)
+                    HStack(spacing: 14) {
+                        Text("\(transaction.amount) \(transaction.coinFrom.coinCode)")
+                            .body2()
+                            .foregroundStyle(.primaryText)
+                        Text(transaction.coinFrom.networkName)
+                            .body2()
+                            .foregroundStyle(.secondaryText)
+                        Spacer()
+                        copy("\(transaction.amount)")
+                    }
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("To Exolix address")
+                        .headingSmall()
+                        .foregroundStyle(.secondaryText)
+                    HStack {
+                        Text(transaction.depositAddress)
+                            .body2()
+                            .foregroundStyle(.primaryText)
+                        Spacer()
+                        copy(transaction.depositAddress)
+                    }
+                }
+                if let depositId = transaction.depositExtraId {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Deposit id")
+                            .headingSmall()
+                            .foregroundStyle(.secondaryText)
+                        HStack {
+                            Text(depositId)
+                                .body2()
+                                .foregroundStyle(.primaryText)
+                            Spacer()
+                            copy(depositId)
+                        }
+                    }
+                }
+                if isQrHidden {
+                    TariButton("Show QR Code", style: .primary, size: .medium) {
+                        withAnimation {
+                            isQrHidden.toggle()
+                        }
+                    }
+                } else {
+                    QRImage(transaction.depositAddress)
+                        .frame(square: 180)
+                }
+            } else {
+                ProgressView()
+            }
+        }
+        .padding(16)
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.primaryBackground)
+        }
+    }
+    
+    func copy(_ value: String) -> some View {
+        CopyButton(value: value, color: .secondaryMain)
+    }
+}

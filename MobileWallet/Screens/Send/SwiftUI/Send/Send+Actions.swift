@@ -88,6 +88,7 @@ extension Send {
                 } else {
                     let microTariAmount = try MicroTari(tariValue: amount)
                     if let availableBalance, microTariAmount < availableBalance {
+                        let feeManager = TransactionFeesManager()
                         feeManager.amount = microTariAmount
                         if let feeData = feeManager.feeData {
                             feePerGram = feeData.feePerGram
