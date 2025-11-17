@@ -48,6 +48,7 @@ struct SwapDeposit: View {
     @State var transaction: ExolixTransactionResponse?
     @State var presentedTransactionProgress: ExolixTransactionResponse?
     @State var isTransactionCancelled = false
+    @State var errorMessage: String?
     
     let exolix: Exolix
     let request: ExolixConfirmation
@@ -73,17 +74,20 @@ struct SwapDeposit: View {
             Spacer()
             
             TariButton("Cancel transaction", style: .destructiveText, size: .medium) {
+                swapInProgressId = nil
                 router.isSwapPresented = false
             }
         }
         .padding(.top, 40)
         .padding([.horizontal, .bottom], 24)
+        .frame(maxWidth: .infinity)
         .background(Color.secondaryBackground)
         .navigationBarBackButtonHidden()
         .toolbar {
             toolbarTitle("Send funds")
             toolbarBackItem { dismiss() }
         }
+        .alert(title: "Exolix error", message: $errorMessage)
         .navigationDestination(item: $presentedTransactionProgress) {
             SwapProgress(exolix: exolix, transaction: $0)
         }
@@ -99,45 +103,17 @@ private extension SwapDeposit {
         VStack(spacing: 14) {
             if let transaction {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("You need to send")
-                        .headingSmall()
-                        .foregroundStyle(.secondaryText)
-                    HStack(spacing: 14) {
-                        Text("\(transaction.amount) \(transaction.coinFrom.coinCode)")
-                            .body2()
-                            .foregroundStyle(.primaryText)
-                        Text(transaction.coinFrom.networkName)
-                            .body2()
-                            .foregroundStyle(.secondaryText)
-                        Spacer()
-                        copy("\(transaction.amount)")
-                    }
+                    depositItem("You need to send",
+                        value: "\(transaction.amount) \(transaction.coinFrom.coinCode)",
+                        copy: "\(transaction.amount)",
+                        subtitle: transaction.coinFrom.networkName
+                    )
                 }
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("To Exolix address")
-                        .headingSmall()
-                        .foregroundStyle(.secondaryText)
-                    HStack {
-                        Text(transaction.depositAddress)
-                            .body2()
-                            .foregroundStyle(.primaryText)
-                        Spacer()
-                        copy(transaction.depositAddress)
-                    }
+                    depositItem("To Exolix address", value: transaction.depositAddress)
                 }
                 if let depositId = transaction.depositExtraId {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Deposit id")
-                            .headingSmall()
-                            .foregroundStyle(.secondaryText)
-                        HStack {
-                            Text(depositId)
-                                .body2()
-                                .foregroundStyle(.primaryText)
-                            Spacer()
-                            copy(depositId)
-                        }
-                    }
+                    depositItem("Deposit id", value: depositId)
                 }
                 if isQrHidden {
                     TariButton("Show QR Code", style: .primary, size: .medium) {
@@ -151,12 +127,33 @@ private extension SwapDeposit {
                 }
             } else {
                 ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: 160)
             }
         }
         .padding(16)
         .background {
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.primaryBackground)
+        }
+    }
+    
+    func depositItem(_ header: String, value: String, copy copyValue: String? = nil, subtitle: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(header)
+                .headingSmall()
+                .foregroundStyle(.secondaryText)
+            HStack(spacing: 14) {
+                Text(value)
+                    .body2()
+                    .foregroundStyle(.primaryText)
+                if let subtitle {
+                    Text(subtitle)
+                        .body2()
+                        .foregroundStyle(.secondaryText)
+                }
+                Spacer()
+                copy(copyValue ?? value)
+            }
         }
     }
     

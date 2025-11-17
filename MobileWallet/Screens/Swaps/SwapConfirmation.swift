@@ -45,6 +45,7 @@ struct SwapConfirmation: View {
     @Environment(\.dismiss) var dismiss
     @State var transaction: ExolixTransactionResponse?
     @State var presentedTransactionProgress: ExolixTransactionResponse?
+    @State var errorMessage: String?
     
     let exolix: Exolix
     var sellRequest: ExolixConfirmation
@@ -59,6 +60,7 @@ struct SwapConfirmation: View {
                     ProgressView()
                 }
             }
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
             .padding(.horizontal, 24)
         }
@@ -80,6 +82,7 @@ struct SwapConfirmation: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 12)
         }
+        .alert(title: "Exolix error", message: $errorMessage)
         .navigationDestination(item: $presentedTransactionProgress) {
             SwapProgress(exolix: exolix, transaction: $0)
         }
@@ -97,7 +100,9 @@ private extension SwapConfirmation {
     
     func transactionInfo(for transaction: ExolixTransactionResponse) -> some View {
         VStack(spacing: 0) {
-            SwapItem(label: "Network cost", value: "")
+            if let fee = try? TransactionFeesManager().fee(for: MicroTari(decimalValue: transaction.amount)).formattedWithCurrency {
+                SwapItem(label: "Network cost", value: fee)
+            }
             SwapItem(label: "Rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted()) \(transaction.coinTo.coinCode)")
         }
     }

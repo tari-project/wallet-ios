@@ -568,6 +568,7 @@
 		F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */; };
 		F8E279862E2540570017C3F5 /* UIReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */; };
 		F8F1EBDD2E1C1DEE00B09007 /* FormattedTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F1EBDC2E1C1DEB00B09007 /* FormattedTransaction.swift */; };
+		F8F22B8A2ECB260B000A6B8F /* View+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F22B892ECB2607000A6B8F /* View+Alert.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1163,6 +1164,7 @@
 		F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProfileViewController.swift; sourceTree = "<group>"; };
 		F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIReceiveViewController.swift; sourceTree = "<group>"; };
 		F8F1EBDC2E1C1DEB00B09007 /* FormattedTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattedTransaction.swift; sourceTree = "<group>"; };
+		F8F22B892ECB2607000A6B8F /* View+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Alert.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2901,13 +2903,14 @@
 		F82150022E02DE4B003EBB25 /* SwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				F88781C62EB38B3300207D0B /* QR */,
-				F845B6F32E8A91550011E4E3 /* TextField */,
+				F8F22B872ECB25DE000A6B8F /* Alert */,
 				F82150032E02DE6A003EBB25 /* Buttons */,
 				F821501F2E060207003EBB25 /* Extensions */,
 				F821500B2E048709003EBB25 /* ListItems */,
-				F82150062E02EBEF003EBB25 /* Typography */,
+				F88781C62EB38B3300207D0B /* QR */,
 				F899FBCF2E548C0600653B5A /* Sheets */,
+				F845B6F32E8A91550011E4E3 /* TextField */,
+				F82150062E02EBEF003EBB25 /* Typography */,
 			);
 			path = SwiftUI;
 			sourceTree = "<group>";
@@ -3176,6 +3179,14 @@
 				F8F1EBDC2E1C1DEB00B09007 /* FormattedTransaction.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		F8F22B872ECB25DE000A6B8F /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				F8F22B892ECB2607000A6B8F /* View+Alert.swift */,
+			);
+			path = Alert;
 			sourceTree = "<group>";
 		};
 		F8F2AE502E93DDBA00E26491 /* UIKitBridge */ = {
@@ -3681,6 +3692,7 @@
 				548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */,
 				54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */,
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,
+				F8F22B8A2ECB260B000A6B8F /* View+Alert.swift in Sources */,
 				54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */,
 				F815DBE72E7C3164001483A9 /* SettingsDetail.swift in Sources */,
 				F88781C82EB38B4C00207D0B /* QRImage.swift in Sources */,

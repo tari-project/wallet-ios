@@ -41,7 +41,6 @@
 import SwiftUI
 
 struct TokenPicker: View {
-    var localIcon: ImageResource?
     var icon: String?
     let code: String
     let network: String?
@@ -62,7 +61,7 @@ private extension TokenPicker {
     var content: some View {
         HStack(spacing: 0) {
             HStack(spacing: 2) {
-                TokenIcon(icon, locaIcon: localIcon, size: 24)
+                TokenIcon(icon, size: 24)
                 VStack(alignment: .leading, spacing: -8) {
                     Text(code)
                         .body()

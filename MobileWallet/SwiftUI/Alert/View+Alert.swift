@@ -1,8 +1,8 @@
-//  SwapTransactionMonitoring.swift
+//  View+Alert.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 30.10.2025
+	Created by Tomas Hakel on 17.11.2025
 	Using Swift 6.0
 	Running on macOS 26.0
 
@@ -38,25 +38,17 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol SwapTransactionMonitoring {
-    var exolix: Exolix { get }
-    var latestTransaction: ExolixTransactionResponse? { get nonmutating set }
-    var isTransactionProcessed: Bool { get }
-    var isTransactionCancelled: Bool { get }
-    func finaliseTransaction()
-}
+import SwiftUI
 
-extension SwapTransactionMonitoring {
-    func monitorTransactionStatus(transactionId: String) async {
-        guard let transaction = try? await exolix.getTransaction(id: transactionId) else { return }
-        latestTransaction = transaction
-        if isTransactionProcessed {
-            finaliseTransaction()
-        } else if !isTransactionCancelled {
-            Task(after: 2) {
-                if transaction.id == latestTransaction?.id {
-                    await monitorTransactionStatus(transactionId: transactionId)
-                }
+extension View {
+    func alert(title: String, message: Binding<String?>, buttonTitle: String = "OK") -> some View {
+        alert(title, isPresented: .constant(message.wrappedValue != nil)) {
+            Button(buttonTitle) {
+                message.wrappedValue = nil
+            }
+        } message: {
+            if let message = message.wrappedValue {
+                Text(message)
             }
         }
     }

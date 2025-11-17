@@ -173,7 +173,9 @@ extension Swaps {
     }
     
     func swap() {
-        guard let xtmCurrency, let xtmNetwork, let externalCurrency, let externalNetwork, let rate, amount.double != nil else { return }
+        guard let xtmCurrency, let xtmNetwork, let externalCurrency, let externalNetwork, let rate,
+              let tariAddress = try? Tari.mainWallet.address.components.fullRaw, amount.double != nil
+        else { return }
         let rateType = isFixedRate ? ExolixRateType.fixed : .float
         if isBuyingXtm {
             presentedDeposit = ExolixConfirmation(
@@ -184,7 +186,7 @@ extension Swaps {
                 amount: amount,
                 rate: rate,
                 rateType: rateType,
-                withdrawalAddress: withdrawalAddress,
+                withdrawalAddress: tariAddress,
                 withdrawalExtraId: nil
             )
         } else {

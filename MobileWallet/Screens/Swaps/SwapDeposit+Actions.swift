@@ -54,16 +54,20 @@ extension SwapDeposit: SwapTransactionMonitoring {
 extension SwapDeposit {
     func load() {
         Task {
-            let response = try await exolix.postTransaction(
-                request: request,
-                refundAddress: Tari.mainWallet.address.components.fullRaw,
-                refundExtraId: nil
-            )
-            swapInProgressId = response.id
-            if response.isFunded {
-                presentedTransactionProgress = response
-            } else {
-                await monitorTransactionStatus(transactionId: response.id)
+            do {
+                let response = try await exolix.postTransaction(
+                    request: request,
+                    refundAddress: Tari.mainWallet.address.components.fullRaw,
+                    refundExtraId: nil
+                )
+                swapInProgressId = response.id
+                if response.isFunded {
+                    presentedTransactionProgress = response
+                } else {
+                    await monitorTransactionStatus(transactionId: response.id)
+                }
+            } catch {
+                errorMessage = error.localizedDescription
             }
         }
     }

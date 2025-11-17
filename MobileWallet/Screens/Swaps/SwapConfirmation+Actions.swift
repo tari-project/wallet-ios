@@ -41,12 +41,15 @@
 extension SwapConfirmation {
     func load() {
         Task {
-            transaction = try await exolix.postTransaction(
-                request: sellRequest,
-                refundAddress: Tari.mainWallet.address.components.fullRaw,
-                refundExtraId: nil
-            )
-            swapInProgressId = transaction?.id
+            do {
+                transaction = try await exolix.postTransaction(
+                    request: sellRequest,
+                    refundAddress: Tari.mainWallet.address.components.fullRaw,
+                    refundExtraId: nil
+                )
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
     }
     
@@ -60,9 +63,10 @@ extension SwapConfirmation {
                 amount: tariAmount.rawValue,
                 paymentID: transaction.depositExtraId ?? ""
             )
+            swapInProgressId = transaction.id
             presentedTransactionProgress = transaction
         } catch {
-            print(error)
+            errorMessage = error.localizedDescription
         }
     }
 }

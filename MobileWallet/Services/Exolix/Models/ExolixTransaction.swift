@@ -66,11 +66,17 @@ struct ExolixTransactionResponse: Decodable, Identifiable, Hashable {
     let coinFrom: ExolixTransactionCoin
     let coinTo: ExolixTransactionCoin
     let comment: String?
-    let createdAt: Date
+    let createdAt: String
     let depositAddress: String
     let depositExtraId: String?
+    let refundAddress: String?
+    let refundExtraId: String?
     let rate: Double
     let status: ExolixTransactionStatus?
+    
+    var createdAtDate: Date? {
+        try? Date(createdAt, strategy: .iso8601)
+    }
 }
 
 struct ExolixTransactionCoin: Decodable, Hashable {

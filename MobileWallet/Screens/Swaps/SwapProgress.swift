@@ -74,7 +74,10 @@ struct SwapProgress: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             toolbarTitle("Exchange status")
-            toolbarBackItem { dismiss() }
+            toolbarBackItem {
+                router.isSwapPresented = false
+                dismiss()
+            }
         }
         .safeAreaInset(edge: .bottom) {
             if transaction.isProcessed {
@@ -126,11 +129,20 @@ private extension SwapProgress {
                 Divider()
                 SwapItem(label: "Deposit id", value: depositId)
             }
-            SwapItem(label: "Created", value: transaction.createdAt.formatted())
+            SwapItem(label: "Transaction id", value: transaction.id)
+            if let createdAt = transaction.createdAtDate {
+                SwapItem(label: "Created", value: createdAt.formatted())
+            }
             SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted()) \(transaction.coinTo.coinCode)")
             if let comment = transaction.comment {
                 Divider()
                 SwapItem(label: "Comment", value: comment)
+            }
+            if let refundAddress = transaction.refundAddress {
+                SwapItem(label: "Refund address \(transaction.coinFrom.coinName)", value: refundAddress)
+            }
+            if let refundId = transaction.refundExtraId {
+                SwapItem(label: "Refund extra id", value: refundId)
             }
         }
     }
@@ -164,14 +176,16 @@ private extension SwapProgress {
         switch transaction.status {
         case .wait, .none:
             "Waiting for deposit"
-        case .confirmation, .confirmed, .exchanging, .sending:
+        case .confirmation, .confirmed, .exchanging:
             "Funds Received"
+        case .sending:
+            "Sending Your \(transaction.coinTo.coinCode)"
         case .success:
-            "Swapped"
+            "Exchange Complete"
         case .overdue:
-            "Deposit Overdue"
+            "Transaction Expired"
         case .refunded:
-            "Funds Refunded"
+            "Transaction Refunded"
         }
     }
     
@@ -184,13 +198,13 @@ private extension SwapProgress {
         case .exchanging:
             "We have received your \(transaction.coinFrom.coinCode). Your exchange is processing."
         case .sending:
-            "We have received your \(transaction.coinFrom.coinCode). Sending \(transaction.coinTo.coinCode)."
+            "The exchange is complete. Your \(transaction.coinTo.coinCode) is on its way to your wallet."
         case .success:
-            "You’ve successfully swapped \(transaction.amount) \(transaction.coinFrom.coinCode) to \(transaction.amountTo) \(transaction.coinTo.coinCode)"
+            "The exchange is complete. Your \(transaction.coinTo.coinCode) is on its way to your wallet."
         case .overdue:
-            "Deposit \(transaction.amount) \(transaction.coinFrom.coinCode) is overdue."
+            "We did not receive your deposit within the time limit. Please start a new transaction."
         case .refunded:
-            "Your \(transaction.amount) \(transaction.coinFrom.coinCode) was refunded."
+            "Your exchange could not be completed. We have returned your original \(transaction.coinFrom.coinCode) to your wallet."
         }
     }
 }

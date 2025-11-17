@@ -122,6 +122,9 @@ struct Home: View, ChainTipObserver {
             .onReceive(Tari.mainWallet.transactions.$all) {
                 update(transactions: $0)
             }
+            .onChange(of: swapInProgressId) {
+                loadSwapInProgress()
+            }
         }
     }
 }

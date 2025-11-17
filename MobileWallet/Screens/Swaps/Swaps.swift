@@ -87,8 +87,7 @@ struct Swaps: View {
             TariButton("Next Step", style: .primary, size: .large) {
                 swap()
             }
-            .disabled( // amount.isEmpty || amountError != nil ||
-                      withdrawalAddressError != nil || externalCurrency == nil || rate == nil)
+            .disabled(amount.isEmpty || amountError != nil || withdrawalAddressError != nil || externalCurrency == nil || rate == nil || (!isBuyingXtm && withdrawalAddress.isEmpty))
             .padding(.horizontal, 24)
             .padding(.bottom, 12)
         }
@@ -106,6 +105,7 @@ struct Swaps: View {
         .background(Color.secondaryBackground)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
+        .onTapGesture { UIApplication.shared.hideKeyboard() }
         .toolbar {
             toolbarTitle("Swaps")
             toolbarBackItem { dismiss() }
@@ -297,7 +297,7 @@ private extension Swaps {
     }
     
     var xtmTokenPicker: some View {
-        TokenPicker(localIcon: .tariIcon, icon: xtmNetwork?.icon, code: "XTM", network: xtmNetwork?.name ?? "Tari", action: nil)
+        TokenPicker(icon: xtmNetwork?.icon, code: "XTM", network: xtmNetwork?.name ?? "Tari", action: nil)
     }
     
     var amountField: some View {

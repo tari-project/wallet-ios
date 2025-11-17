@@ -41,12 +41,10 @@
 import SwiftUI
 
 struct TokenIcon: View {
-    let localIcon: ImageResource?
     let icon: String?
     let size: CGFloat
     
-    init(_ icon: String?, locaIcon: ImageResource? = nil, size: CGFloat) {
-        self.localIcon = locaIcon
+    init(_ icon: String?, size: CGFloat) {
         self.icon = icon
         self.size = size
     }
@@ -58,11 +56,6 @@ struct TokenIcon: View {
             }
             .frame(square: size)
             .clipShape(Circle())
-        } else if let localIcon {
-            Image(localIcon)
-                .resizable()
-                .frame(square: size)
-                .clipShape(Circle())
         } else {
             Color.clear.frame(square: size)
         }
