@@ -45,15 +45,19 @@ struct SwapItem: View {
     let value: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(label)
-                .body2()
-                .foregroundStyle(.secondaryText)
-            Text(value)
-                .body()
-                .foregroundStyle(.primaryText)
+        VStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(label)
+                    .body2()
+                    .foregroundStyle(.secondaryText)
+                Text(value)
+                    .body()
+                    .foregroundStyle(.primaryText)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Divider()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

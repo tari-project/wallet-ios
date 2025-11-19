@@ -84,6 +84,8 @@ struct SwapProgress: View {
                 TariButton("Done", style: .secondary, size: .large) {
                     router.isSwapPresented = false
                 }
+                .padding(.vertical, 12)
+                .padding(.bottom, 16)
             }
         }
         .task { await monitorTransactionStatus() }
@@ -123,10 +125,8 @@ private extension SwapProgress {
     var processingInfo: some View {
         VStack(spacing: 10) {
             amountItem
-            Divider()
             SwapItem(label: "Destination address (\(transaction.coinTo.coinCode))", value: transaction.depositAddress)
-            if let depositId = transaction.depositExtraId {
-                Divider()
+            if let depositId = transaction.depositExtraId, !depositId.isEmpty {
                 SwapItem(label: "Deposit id", value: depositId)
             }
             SwapItem(label: "Transaction id", value: transaction.id)
@@ -134,14 +134,13 @@ private extension SwapProgress {
                 SwapItem(label: "Created", value: createdAt.formatted())
             }
             SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted()) \(transaction.coinTo.coinCode)")
-            if let comment = transaction.comment {
-                Divider()
+            if let comment = transaction.comment, !comment.isEmpty {
                 SwapItem(label: "Comment", value: comment)
             }
-            if let refundAddress = transaction.refundAddress {
+            if let refundAddress = transaction.refundAddress, !refundAddress.isEmpty {
                 SwapItem(label: "Refund address \(transaction.coinFrom.coinName)", value: refundAddress)
             }
-            if let refundId = transaction.refundExtraId {
+            if let refundId = transaction.refundExtraId, !refundId.isEmpty {
                 SwapItem(label: "Refund extra id", value: refundId)
             }
         }
@@ -168,7 +167,7 @@ private extension SwapProgress {
         case .success:
             .swapSuccess
         case .overdue, .refunded:
-            .attentionIcon
+            .swapError
         }
     }
     

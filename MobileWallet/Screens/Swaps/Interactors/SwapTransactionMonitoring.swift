@@ -53,7 +53,7 @@ extension SwapTransactionMonitoring {
         if isTransactionProcessed {
             finaliseTransaction()
         } else if !isTransactionCancelled {
-            Task(after: 2) {
+            Task(after: 10) {
                 if transaction.id == latestTransaction?.id {
                     await monitorTransactionStatus(transactionId: transactionId)
                 }

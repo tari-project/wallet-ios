@@ -68,6 +68,7 @@ struct Swaps: View {
     @State var isCurrencySelectionPresented = false
     @State var presentedDeposit: ExolixConfirmation?
     @State var presentedConfirmation: ExolixConfirmation?
+    @State var errorMessage: String?
 
     let exolix = Exolix()
     
@@ -110,6 +111,7 @@ struct Swaps: View {
             toolbarTitle("Swaps")
             toolbarBackItem { dismiss() }
         }
+        .alert(title: "Exolix error", message: $errorMessage)
         .navigationDestination(item: $presentedDeposit) {
             SwapDeposit(exolix: exolix, request: $0)
         }
@@ -156,7 +158,7 @@ private extension Swaps {
                         .body2()
                         .foregroundStyle(.errorMain)
                 }
-                rateInfo
+                amountRange(min: minAmount, max: maxAmount)
             }
             .animation(.easeInOut, value: rate)
         }
@@ -168,11 +170,7 @@ private extension Swaps {
             xtmTokenPicker
         }
     }
-    
-    var rateInfo: some View {
-        amountRange(min: minAmount, max: maxAmount)
-    }
-    
+
     func amountRange(min: Double?, max: Double?) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             if !isBuyingXtm, let availableBalance {
@@ -278,8 +276,8 @@ private extension Swaps {
     var targetRate: some View {
         if let rate, let externalCurrency {
             Text(isBuyingXtm
-                ? "\(amount) \(externalCurrency.code) ≈ \(rate.toAmount.formatted()) XTM"
-                : "\(amount) XTM ≈ \(rate.toAmount.formatted()) \(externalCurrency.code)"
+                ? "1 \(externalCurrency.code) ≈ \(rate.rate.formatted()) XTM"
+                : "1 XTM ≈ \(rate.rate.formatted()) \(externalCurrency.code)"
             )
             .body()
             .foregroundStyle(.primaryText)

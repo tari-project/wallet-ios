@@ -85,9 +85,9 @@ extension ExolixTransactionResponse {
     
     var isProcessed: Bool {
         switch status {
-        case .wait, .confirmation, .confirmed, .exchanging, .sending, .none:
+        case .wait, .confirmation, .confirmed, .exchanging, .sending, .overdue, .none:
             return false
-        case .success, .refunded, .overdue:
+        case .success, .refunded:
             return true
         }
     }

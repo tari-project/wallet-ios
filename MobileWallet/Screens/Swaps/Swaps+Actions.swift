@@ -105,6 +105,8 @@ extension Swaps {
                 if case let ExolixError.rate(error) = error {
                     errorMinAmount = error.minAmount
                     errorMaxAmount = error.maxAmount
+                } else {
+                    errorMessage = error.localizedDescription
                 }
                 rate = nil
             }

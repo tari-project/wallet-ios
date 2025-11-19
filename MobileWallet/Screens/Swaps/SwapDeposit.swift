@@ -146,6 +146,8 @@ private extension SwapDeposit {
                 Text(value)
                     .body2()
                     .foregroundStyle(.primaryText)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 if let subtitle {
                     Text(subtitle)
                         .body2()
