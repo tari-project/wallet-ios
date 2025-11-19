@@ -46,6 +46,7 @@ class SheetRouter {
     static let shared = SheetRouter()
     
     var isHomeSendPresented = false
+    var isSwapPresented = false
     var isContactsSendPresented = false
     var isAddContactPresented = false
     

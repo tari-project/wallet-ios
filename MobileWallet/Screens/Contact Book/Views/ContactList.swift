@@ -69,7 +69,7 @@ struct ContactList: View {
             if isLoading {
                 ProgressView()
             } else if filteredContacts.isEmpty && filteredRecents.isEmpty {
-                Text("No result")
+                Text("No contacts")
             }
         }
         .sceneBackground(.secondaryBackground)

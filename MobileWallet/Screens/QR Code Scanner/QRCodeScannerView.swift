@@ -42,7 +42,6 @@ import TariCommon
 import AVFoundation
 
 final class QRCodeScannerView: UIView {
-
     enum ActionType {
         case normal
         case error

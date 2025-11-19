@@ -88,12 +88,9 @@ extension Send {
                 } else {
                     let microTariAmount = try MicroTari(tariValue: amount)
                     if let availableBalance, microTariAmount < availableBalance {
-                        feeManager.amount = microTariAmount
-                        if let feeData = feeManager.feeData {
-                            feePerGram = feeData.feePerGram
-                            fee = feeData.fee
-                            amountError = nil
-                        } else {
+                        do {
+                            fee = try TransactionFeesManager().fee(for: microTariAmount)
+                        } catch {
                             amountError = "Failed to load transaction fee"
                         }
                     } else {
@@ -125,7 +122,6 @@ extension Send {
             presentedConfirmation = try SendConfirmation(
                 amount: MicroTari(tariValue: amount),
                 fee: fee ?? .zero,
-                feePerGram: feePerGram ?? .zero,
                 address: contact?.address ?? TariAddress(base58: address).components,
                 note: note.isEmpty ? nil : note,
                 contact: contact

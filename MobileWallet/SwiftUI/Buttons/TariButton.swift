@@ -41,7 +41,7 @@
 import SwiftUI
 
 enum TariButtonStyle {
-    case primary, secondary, outlined, text, label
+    case primary, secondary, green, outlined, text, destructiveText, label
 }
 
 enum TariButtonSize {
@@ -113,8 +113,9 @@ private extension TariButtonStyle {
     var textColor: Color {
         switch self {
         case .primary: .primaryButtonText
-        case .secondary: .Common.blackmain
+        case .secondary, .green: .Common.blackmain
         case .outlined, .text, .label: .primaryText
+        case .destructiveText: .systemRed
         }
     }
     
@@ -122,8 +123,9 @@ private extension TariButtonStyle {
         switch self {
         case .primary: .primaryText
         case .secondary: .primaryMain
+        case .green: .systemGreen
         case .outlined, .label: .primaryBackground
-        case .text: nil
+        case .text, .destructiveText: nil
         }
     }
     
@@ -131,7 +133,7 @@ private extension TariButtonStyle {
         switch self {
         case .outlined: .buttonOutline
         case .label: .divider
-        case .primary, .secondary, .text: nil
+        case .primary, .secondary, .green, .text, .destructiveText: nil
         }
     }
 }
@@ -153,14 +155,15 @@ private extension TariButtonSize {
     
     func height(for style: TariButtonStyle) -> CGFloat {
         switch style {
-        case .text, .label: 40
+        case .label, .text, .destructiveText: 40
+        case .green: 42
         case .primary, .secondary, .outlined:
             switch self {
             case .large: 50
             case .medium:
                 switch style {
                 case .primary, .secondary: 36
-                case .outlined, .text, .label: 40
+                case .green, .outlined, .text, .destructiveText, .label: 40
                 }
             case .small: 30
             }
