@@ -1,4 +1,4 @@
-//  AppSecrets.swift
+//  AppSecret.swift
 	
 /*
 	Package MobileWallet

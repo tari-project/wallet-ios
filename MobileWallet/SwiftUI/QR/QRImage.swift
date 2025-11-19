@@ -42,25 +42,30 @@ import SwiftUI
 import QRCode
 
 public struct QRImage: View {
-    let document: QRCode.Document
+    let document: QRCode.Document?
     
     public init(_ value: String, colors: [Color] = [.black, .black], backgroundColor: Color = .white) {
-        let document = try! QRCode.Document(utf8String: value)
-        document.design.shape.eye = QRCode.EyeShape.Square()
-        document.design.shape.onPixels = QRCode.PixelShape.Square()
-        let gradientPins = colors.enumerated().map {
-            DSFGradient.Pin(UIColor($1).cgColor, CGFloat($0 / (colors.count - 1)))
+        if let document = try? QRCode.Document(utf8String: value) {
+            document.design.shape.eye = QRCode.EyeShape.Square()
+            document.design.shape.onPixels = QRCode.PixelShape.Square()
+            let gradientPins = colors.enumerated().map {
+                DSFGradient.Pin(UIColor($1).cgColor, CGFloat($0 / max(1, (colors.count - 1))))
+            }
+            if let gradient = try? DSFGradient(pins: gradientPins) {
+                document.design.style.onPixels = QRCode.FillStyle.LinearGradient(gradient,
+                    startPoint: CGPoint(x: 0, y: 0),
+                    endPoint: CGPoint(x: 1, y: 1)
+                )
+            }
+            self.document = document
+        } else {
+            self.document = nil
         }
-        if let gradient = try? DSFGradient(pins: gradientPins) {
-            document.design.style.onPixels = QRCode.FillStyle.LinearGradient(gradient,
-                startPoint: CGPoint(x: 0, y: 0),
-                endPoint: CGPoint(x: 1, y: 1)
-            )
-        }
-        self.document = document
     }
     
     public var body: some View {
-        QRCodeDocumentUIView(document: document)
+        if let document {
+            QRCodeDocumentUIView(document: document)
+        }
     }
 }
