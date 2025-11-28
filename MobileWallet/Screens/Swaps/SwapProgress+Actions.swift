@@ -42,12 +42,17 @@ extension SwapProgress: SwapTransactionMonitoring {
     var isTransactionProcessed: Bool {
         transaction.isProcessed
     }
-    
-    func finaliseTransaction() {
-        swapInProgressId = nil
+
+    func monitorTransactionStatus() async {
+        await monitorSwapTransaction(id: transaction.id)
     }
     
-    func monitorTransactionStatus() async {
-        await monitorTransactionStatus(transactionId: transaction.id)
+    func cancelTransaction() {
+        Task {
+            await exolix.cancelTransaction(transactionId: transaction.id)
+            swapTransactions.remove(transaction.id)
+            router.isSwapPresented = false
+            dismiss()
+        }
     }
 }

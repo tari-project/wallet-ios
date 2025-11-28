@@ -42,7 +42,6 @@ struct ExolixCurrency: Decodable, Hashable {
     let code: String
     let name: String
     let icon: String
-    let addresRegex: String?
     let networks: [ExolixNetwork]
     
     var defaultNetwork: ExolixNetwork? {
@@ -65,7 +64,6 @@ extension ExolixCurrency {
         code: "AAA",
         name: "Placeholder",
         icon: "",
-        addresRegex: nil,
         networks: [.placeholder]
     )
 }

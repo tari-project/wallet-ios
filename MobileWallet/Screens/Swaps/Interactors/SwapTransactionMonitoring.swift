@@ -40,24 +40,18 @@
 
 protocol SwapTransactionMonitoring {
     var exolix: Exolix { get }
-    var latestTransaction: ExolixTransactionResponse? { get nonmutating set }
-    var isTransactionProcessed: Bool { get }
-    var isTransactionCancelled: Bool { get }
-    func finaliseTransaction()
 }
 
 extension SwapTransactionMonitoring {
-    func monitorTransactionStatus(transactionId: String) async {
-        guard let transaction = try? await exolix.getTransaction(id: transactionId) else { return }
-        latestTransaction = transaction
-        if isTransactionProcessed {
-            finaliseTransaction()
-        } else if !isTransactionCancelled {
-            Task(after: 10) {
-                if transaction.id == latestTransaction?.id {
-                    await monitorTransactionStatus(transactionId: transactionId)
-                }
-            }
-        }
+    func monitorSwapTransaction(id: String) async {
+        await exolix.monitor(transactions: [id])
+    }
+    
+    func monitorSwapTransactions(_ transactions: SwapTransactionList) async {
+        await exolix.monitor(transactions: Array(transactions.swaps))
+    }
+    
+    func latestTransaction(id: String) -> ExolixTransactionResponse? {
+        exolix.latestTransaction(id: id)
     }
 }

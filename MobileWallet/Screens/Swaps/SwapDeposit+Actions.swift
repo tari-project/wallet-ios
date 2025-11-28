@@ -39,36 +39,29 @@
 */
 
 extension SwapDeposit: SwapTransactionMonitoring {
-    var latestTransaction: ExolixTransactionResponse? {
-        get { transaction }
-        nonmutating set { transaction = newValue }
-    }
-    
-    var isTransactionProcessed: Bool { transaction?.isFunded ?? false }
-    
-    func finaliseTransaction() {
-        presentedTransactionProgress = transaction
-    }
-}
-
-extension SwapDeposit {
     func load() {
         Task {
             do {
-                let response = try await exolix.postTransaction(
-                    request: request,
-                    refundAddress: Tari.mainWallet.address.components.fullRaw,
-                    refundExtraId: nil
-                )
-                swapInProgressId = response.id
+                let response = try await exolix.postTransaction(request)
+                transaction = response
+                swapTransactions.add(response.id)
                 if response.isFunded {
                     presentedTransactionProgress = response
                 } else {
-                    await monitorTransactionStatus(transactionId: response.id)
+                    await monitorSwapTransaction(id: response.id)
                 }
             } catch {
                 errorMessage = error.localizedDescription
             }
+        }
+    }
+    
+    func cancelTransaction() {
+        Task {
+            if let transaction {
+                await exolix.cancelTransaction(transactionId: transaction.id)
+            }
+            router.isSwapPresented = false
         }
     }
 }
@@ -85,9 +78,9 @@ extension ExolixTransactionResponse {
     
     var isProcessed: Bool {
         switch status {
-        case .wait, .confirmation, .confirmed, .exchanging, .sending, .overdue, .none:
+        case .wait, .confirmation, .confirmed, .exchanging, .sending, .none:
             return false
-        case .success, .refunded:
+        case .success, .refunded, .overdue:
             return true
         }
     }

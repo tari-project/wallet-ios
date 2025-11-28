@@ -1,10 +1,10 @@
-//  UserDefault.swift
-
+//  SwapInProgress.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
-	Using Swift 5.0
-	Running on macOS 12.0
+	Created by Tomas Hakel on 25.11.2025
+	Using Swift 6.0
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -40,27 +40,28 @@
 
 import Foundation
 
-@propertyWrapper struct UserDefault<T: Codable> {
-    private let key: String
-    private let userDefaults: UserDefaults
+struct SwapTransactionList: Codable, Hashable {
+    var maxSwaps: Int { 5 }
+    var swaps = [String]()
     
-    init(key: UserDefaultName, suiteName: String? = nil) {
-        self.init(key.rawValue, suiteName: suiteName)
+    init() {
+        swaps = []
     }
-
-    init(_ key: String, suiteName: String? = nil) {
-        self.key = key
-        userDefaults = UserDefaults(suiteName: suiteName) ?? UserDefaults.standard
-    }
-
-    var wrappedValue: T? {
-        get {
-            guard let encodedData = UserDefaults.standard.data(forKey: key) else { return nil }
-            return try? JSONDecoder().decode(T.self, from: encodedData)
+    
+    mutating func add(_ id: String) {
+        if let index = swaps.firstIndex(of: id) {
+            swaps[index] = id
+        } else {
+            swaps.insert(id, at: 0)
         }
-        set {
-            guard let encodedValue = try? JSONEncoder().encode(newValue) else { return }
-            UserDefaults.standard.set(encodedValue, forKey: key)
+        if maxSwaps < swaps.count {
+            _ = swaps.popLast()
+        }
+    }
+    
+    mutating func remove(_ id: String) {
+        if let index = swaps.firstIndex(of: id) {
+            swaps.remove(at: index)
         }
     }
 }

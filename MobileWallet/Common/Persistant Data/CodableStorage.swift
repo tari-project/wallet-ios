@@ -1,10 +1,10 @@
-//  UserDefault.swift
-
+//  CodableStorage.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
-	Using Swift 5.0
-	Running on macOS 12.0
+	Created by Tomas Hakel on 25.11.2025
+	Using Swift 6.0
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,29 +38,41 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import SwiftUI
 
-@propertyWrapper struct UserDefault<T: Codable> {
-    private let key: String
-    private let userDefaults: UserDefaults
-    
-    init(key: UserDefaultName, suiteName: String? = nil) {
-        self.init(key.rawValue, suiteName: suiteName)
-    }
-
-    init(_ key: String, suiteName: String? = nil) {
+@propertyWrapper
+public struct CodableStorage<Value: Codable>: DynamicProperty {
+    public init(
+        _ key: String,
+        store: UserDefaults = .standard,
+        defaultValue: Value
+    ) {
         self.key = key
-        userDefaults = UserDefaults(suiteName: suiteName) ?? UserDefaults.standard
+        self.store = store
+        self.defaultValue = defaultValue
     }
 
-    var wrappedValue: T? {
+    private let defaultValue: Value
+    private let key: String
+    private let store: UserDefaults
+
+    public var wrappedValue: Value {
         get {
-            guard let encodedData = UserDefaults.standard.data(forKey: key) else { return nil }
-            return try? JSONDecoder().decode(T.self, from: encodedData)
+            Self.initialValue(for: key, in: store) ?? defaultValue
         }
-        set {
-            guard let encodedValue = try? JSONEncoder().encode(newValue) else { return }
-            UserDefaults.standard.set(encodedValue, forKey: key)
+        nonmutating set {
+            let data = try? JSONEncoder().encode(newValue)
+            store.set(data, forKey: key)
         }
+    }
+}
+
+private extension CodableStorage {
+    static func initialValue(
+        for key: String,
+        in store: UserDefaults
+    ) -> Value? {
+        guard let data = store.object(forKey: key) as? Data else { return nil }
+        return try? JSONDecoder().decode(Value.self, from: data)
     }
 }

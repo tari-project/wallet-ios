@@ -1,17 +1,37 @@
 
 import Foundation
+import Combine
 
 @globalActor actor ExolixActor: GlobalActor {
     static let shared = ExolixActor()
 }
 
+@Observable
 final class Exolix {
+    @ObservationIgnored @CodableStorage("swapTransactions", defaultValue: SwapTransactionList()) var swapTransactions
+
+    static let shared = Exolix()
+    
     private let baseURL = URL(string: "https://exolix.com/api/v2")!
     private let session: URLSession = .shared
     private let apiKey: String?
     
+    private var isMonitoringTransactions = false
+    var monitoredTransactions: Set<String> = []
+    var latestTransactions = [String: ExolixTransactionResponse]()
+
     init() {
         self.apiKey = AppSecret.load()?.exolixApiKey
+    }
+    
+    var sortedTransactions: [ExolixTransactionResponse] {
+        latestTransactions.values
+            .filter { swapTransactions.swaps.contains($0.id) }
+            .sorted { $1.createdAt < $0.createdAt }
+    }
+    
+    func latestTransaction(id: String) -> ExolixTransactionResponse? {
+        latestTransactions[id]
     }
 }
 
@@ -37,19 +57,17 @@ extension Exolix {
         ])
     }
     
-    func postTransaction(request: ExolixConfirmation, refundAddress: String?, refundExtraId: String?) async throws -> ExolixTransactionResponse {
+    func postTransaction(_ request: ExolixConfirmation) async throws -> ExolixTransactionResponse {
         try await postTransaction(
             coinFrom: request.coinFrom.code,
             networkFrom: request.networkFrom.network,
             coinTo: request.coinTo.code,
             networkTo: request.networkTo.network,
             amount: request.amount.double ?? 0,
-            withdrawalAmount: request.rate.toAmount,
+            withdrawalAmount: nil,
             withdrawalAddress: request.withdrawalAddress,
             withdrawalExtraId: request.withdrawalExtraId,
-            rateType: request.rateType,
-            refundAddress: refundAddress,
-            refundExtraId: refundExtraId
+            rateType: request.rateType
         )
     }
     
@@ -62,9 +80,7 @@ extension Exolix {
         withdrawalAmount: Double?,
         withdrawalAddress: String,
         withdrawalExtraId: String?,
-        rateType: ExolixRateType?,
-        refundAddress: String?,
-        refundExtraId: String?
+        rateType: ExolixRateType?
     ) async throws -> ExolixTransactionResponse {
         try await request("/transactions", method: "POST", as: ExolixTransactionResponse.self, body: ExolixTransactionRequest(
             coinFrom: coinFrom,
@@ -75,9 +91,7 @@ extension Exolix {
             withdrawalAmount: withdrawalAmount,
             withdrawalAddress: withdrawalAddress,
             withdrawalExtraId: withdrawalExtraId,
-            rateType: rateType,
-            refundAddress: refundAddress,
-            refundExtraId: refundExtraId
+            rateType: rateType
         ))
     }
     
@@ -88,6 +102,50 @@ extension Exolix {
     func getActiveTransaction(id: String) async -> ExolixTransactionResponse? {
         let transaction = try? await getTransaction(id: id)
         return transaction?.isProcessed == false ? transaction : nil
+    }
+    
+    func monitor(transactions ids: [String]) {
+        for id in ids {
+            monitoredTransactions.insert(id)
+        }
+        if !isMonitoringTransactions {
+            startMonitoringTransactions()
+        }
+    }
+    
+    func startMonitoringTransactions() {
+        isMonitoringTransactions = true
+        monitorTransactions()
+    }
+    
+    func monitorTransactions() {
+        Task {
+            for transactionId in monitoredTransactions {
+                if let transaction = try? await getTransaction(id: transactionId) {
+                    if transaction.isProcessed {
+                        monitoredTransactions.remove(transaction.id)
+                    }
+                    latestTransactions[transaction.id] = transaction
+                }
+            }
+            if monitoredTransactions.isEmpty {
+                stopMonitoringTransactions()
+            }
+            if isMonitoringTransactions {
+                Task(after: 10) { @ExolixActor in
+                    self.monitorTransactions()
+                }
+            }
+        }
+    }
+    
+    func cancelTransaction(transactionId: String) {
+        latestTransactions.removeValue(forKey: transactionId)
+        monitoredTransactions.remove(transactionId)
+    }
+    
+    func stopMonitoringTransactions() {
+        isMonitoringTransactions = false
     }
 }
 

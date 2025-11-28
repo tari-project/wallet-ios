@@ -42,9 +42,10 @@ import SwiftUI
 import Combine
 
 struct Home: View, ChainTipObserver {
-    @AppStorage("swapInProgressId") var swapInProgressId: String?
+    @CodableStorage("swapTransactions", defaultValue: SwapTransactionList()) var swapTransactions
     @ObservedObject var network = NetworkManager.shared
     @Environment(SheetRouter.self) var router
+    @Environment(\.scenePhase) var scenePhase
     @State var activeMiners = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
@@ -60,8 +61,8 @@ struct Home: View, ChainTipObserver {
     @State var isReceivePresented = false
     @State var isTransactionHistoryPresented = false
     @State var isConnectionStatusPresented = false
+    @State var exolix = Exolix.shared
     
-    let exolix = Exolix()
     let walletState: WalletState
     
     var body: some View {
@@ -72,9 +73,7 @@ struct Home: View, ChainTipObserver {
                     miningStatus
                     VStack(spacing: 24) {
                         wallet
-                        if let swapTransaction {
-                            swapInProgress(swapTransaction)
-                        }
+                        swapInProgress
                         recentActivity
                     }
                 }
@@ -108,7 +107,7 @@ struct Home: View, ChainTipObserver {
             }
             .fullScreenCover(item: $presentedSwapProgress) { transaction in
                 NavigationStack {
-                    SwapProgress(exolix: Exolix(), transaction: transaction)
+                    SwapProgress(transaction: transaction)
                 }
             }
             .sheet(isPresented: $isConnectionStatusPresented) {
@@ -122,8 +121,17 @@ struct Home: View, ChainTipObserver {
             .onReceive(Tari.mainWallet.transactions.$all) {
                 update(transactions: $0)
             }
-            .onChange(of: swapInProgressId) {
+            .onChange(of: swapTransactions) {
                 loadSwapInProgress()
+            }
+            .onChange(of: scenePhase) {
+                Task {
+                    if scenePhase == .active {
+                        await exolix.monitor(transactions: Array(swapTransactions.swaps))
+                    } else {
+                        await exolix.stopMonitoringTransactions()
+                    }
+                }
             }
         }
     }
@@ -259,12 +267,18 @@ private extension Home {
             .foregroundStyle(.primaryText)
     }
     
-    func swapInProgress(_ swapTransaction: ExolixTransactionResponse) -> some View {
-        VStack {
-            sectionHeader("Swap in progress")
-                .frame(maxWidth: .infinity, alignment: .leading)
-            SwapInProgressItem(transaction: swapTransaction) {
-                presentedSwapProgress = swapTransaction
+    @ViewBuilder
+    var swapInProgress: some View {
+        let transactions = exolix.sortedTransactions
+        if !transactions.isEmpty {
+            VStack {
+                sectionHeader("Recent Swaps")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                ForEach(transactions) { swapTransaction in
+                    SwapInProgressItem(transaction: swapTransaction) {
+                        presentedSwapProgress = swapTransaction
+                    }
+                }
             }
         }
     }

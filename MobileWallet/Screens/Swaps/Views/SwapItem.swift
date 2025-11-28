@@ -43,16 +43,23 @@ import SwiftUI
 struct SwapItem: View {
     let label: String
     let value: String
+    var isCoppiable = true
     
     var body: some View {
         VStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(label)
-                    .body2()
-                    .foregroundStyle(.secondaryText)
-                Text(value)
-                    .body()
-                    .foregroundStyle(.primaryText)
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(label)
+                        .body2()
+                        .foregroundStyle(.secondaryText)
+                    Text(value)
+                        .body()
+                        .foregroundStyle(.primaryText)
+                }
+                Spacer(minLength: 8)
+                if isCoppiable {
+                    CopyButton(value: value, color: .secondaryText)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             

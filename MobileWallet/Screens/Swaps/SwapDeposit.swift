@@ -41,17 +41,22 @@
 import SwiftUI
 
 struct SwapDeposit: View {
-    @AppStorage("swapInProgressId") var swapInProgressId: String?
+    @CodableStorage("swapTransactions", defaultValue: SwapTransactionList()) var swapTransactions
     @Environment(SheetRouter.self) var router
     @Environment(\.dismiss) var dismiss
+    @State var exolix = Exolix.shared
     @State var isQrHidden = true
     @State var transaction: ExolixTransactionResponse?
     @State var presentedTransactionProgress: ExolixTransactionResponse?
-    @State var isTransactionCancelled = false
     @State var errorMessage: String?
     
-    let exolix: Exolix
     let request: ExolixConfirmation
+    
+    var latestTransaction: ExolixTransactionResponse? {
+        if let transaction {
+            exolix.latestTransaction(id: transaction.id) ?? transaction
+        } else { nil }
+    }
     
     var body: some View {
         VStack {
@@ -74,8 +79,7 @@ struct SwapDeposit: View {
             Spacer()
             
             TariButton("Cancel transaction", style: .destructiveText, size: .medium) {
-                swapInProgressId = nil
-                router.isSwapPresented = false
+                cancelTransaction()
             }
         }
         .padding(.top, 40)
@@ -89,11 +93,13 @@ struct SwapDeposit: View {
         }
         .alert(title: "Exolix error", message: $errorMessage)
         .navigationDestination(item: $presentedTransactionProgress) {
-            SwapProgress(exolix: exolix, transaction: $0)
+            SwapProgress(transaction: $0)
         }
-        .onAppear { load() }
-        .onDisappear {
-            isTransactionCancelled = true
+        .onFirstAppear { load() }
+        .onChange(of: exolix.latestTransactions) {
+            if latestTransaction?.isFunded == true {
+                presentedTransactionProgress = transaction
+            }
         }
     }
 }
@@ -101,7 +107,7 @@ struct SwapDeposit: View {
 private extension SwapDeposit {
     var depositInfo: some View {
         VStack(spacing: 14) {
-            if let transaction {
+            if let transaction = latestTransaction {
                 VStack(alignment: .leading, spacing: 4) {
                     depositItem("You need to send",
                         value: "\(transaction.amount) \(transaction.coinFrom.coinCode)",

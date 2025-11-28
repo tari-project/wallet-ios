@@ -534,6 +534,8 @@
 		F8472F6B2E69BBCB0094163D /* SendingTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F6A2E69BBCB0094163D /* SendingTransaction.swift */; };
 		F8472F6D2E744AFF0094163D /* SendingTransaction+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F6C2E744AFA0094163D /* SendingTransaction+Actions.swift */; };
 		F8472F722E745A3E0094163D /* ProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F712E745A3D0094163D /* ProgressIndicator.swift */; };
+		F849ACB62ED5D024005B38AF /* SwapInProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F849ACB52ED5D01C005B38AF /* SwapInProgress.swift */; };
+		F849ACBA2ED5F823005B38AF /* CodableStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F849ACB92ED5F822005B38AF /* CodableStorage.swift */; };
 		F88781AF2EB10B1E00207D0B /* TokenPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88781AE2EB10B1E00207D0B /* TokenPicker.swift */; };
 		F88781B12EB1EC5A00207D0B /* SwapDeposit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88781B02EB1EC5A00207D0B /* SwapDeposit.swift */; };
 		F88781B32EB1EE4C00207D0B /* SwapProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88781B22EB1EE4C00207D0B /* SwapProgress.swift */; };
@@ -1130,6 +1132,8 @@
 		F8472F6A2E69BBCB0094163D /* SendingTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTransaction.swift; sourceTree = "<group>"; };
 		F8472F6C2E744AFA0094163D /* SendingTransaction+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SendingTransaction+Actions.swift"; sourceTree = "<group>"; };
 		F8472F712E745A3D0094163D /* ProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicator.swift; sourceTree = "<group>"; };
+		F849ACB52ED5D01C005B38AF /* SwapInProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapInProgress.swift; sourceTree = "<group>"; };
+		F849ACB92ED5F822005B38AF /* CodableStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableStorage.swift; sourceTree = "<group>"; };
 		F88781AE2EB10B1E00207D0B /* TokenPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPicker.swift; sourceTree = "<group>"; };
 		F88781B02EB1EC5A00207D0B /* SwapDeposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapDeposit.swift; sourceTree = "<group>"; };
 		F88781B22EB1EE4C00207D0B /* SwapProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapProgress.swift; sourceTree = "<group>"; };
@@ -1907,6 +1911,7 @@
 				545A9D22294F9E66008D24A6 /* User Settings */,
 				37B48A8224B3968F00F8A8D2 /* AppKeychainWrapper.swift */,
 				3A4CE32F26A18DFC00ECF460 /* UserDefaults.swift */,
+				F849ACB92ED5F822005B38AF /* CodableStorage.swift */,
 			);
 			path = "Persistant Data";
 			sourceTree = "<group>";
@@ -3036,6 +3041,7 @@
 		F82888B22EC39D730085A103 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F849ACB52ED5D01C005B38AF /* SwapInProgress.swift */,
 				F82888B32EC39D7B0085A103 /* ExolixConfirmation.swift */,
 			);
 			path = Models;
@@ -3633,6 +3639,7 @@
 				3AE5E5682874696E00D3AF85 /* ValuePickerView.swift in Sources */,
 				3A0391E6290BA40E00352D73 /* BugReportingView.swift in Sources */,
 				546B032A2983F33600DBED8E /* OnboardingPagerView.swift in Sources */,
+				F849ACB62ED5D024005B38AF /* SwapInProgress.swift in Sources */,
 				54E007B62B8DF55600AFCD7C /* SecurityManager.swift in Sources */,
 				711D7FA42D511FDE0080A987 /* LogViewController.swift in Sources */,
 				71F2B2232D8C20E700104073 /* LoginDeeplink.swift in Sources */,
@@ -3744,6 +3751,7 @@
 				5422CBFC2B88C79200428394 /* ScreenRecordingSettingsView.swift in Sources */,
 				711F28EB2DA3322D00751986 /* ReceiveViewController.swift in Sources */,
 				711D7FA82D5503540080A987 /* StylisedButton.swift in Sources */,
+				F849ACBA2ED5F823005B38AF /* CodableStorage.swift in Sources */,
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				54D46A952CA6909800E554C0 /* WalletTag.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
@@ -4125,7 +4133,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = Dev;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -4160,7 +4168,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = Dev;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
