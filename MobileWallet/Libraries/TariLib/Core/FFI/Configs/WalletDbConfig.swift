@@ -1,4 +1,4 @@
-//  CommsConfig.swift
+//  WalletDbConfig.swift
 
 /*
 	Package MobileWallet
@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class CommsConfig {
+final class WalletDbConfig {
 
     // MARK: - Properties
 
@@ -50,7 +50,7 @@ final class CommsConfig {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
-        let result = comms_config_create(databaseName, databaseFolderPath, errorCodePointer)
+        let result = wallet_db_config_create(databaseName, databaseFolderPath, errorCodePointer)
 
         guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         pointer = result
@@ -59,6 +59,6 @@ final class CommsConfig {
     // MARK: - Deinitialiser
 
     deinit {
-        comms_config_destroy(pointer)
+        wallet_db_config_destroy(pointer)
     }
 }
