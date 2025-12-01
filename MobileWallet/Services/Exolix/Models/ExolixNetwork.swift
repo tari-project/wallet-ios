@@ -41,6 +41,7 @@
 struct ExolixNetwork: Decodable, Hashable {
     let network: String
     let name: String
+    let addressRegex: String?
     let isDefault: Bool
     let icon: String?
 }
@@ -53,6 +54,7 @@ extension ExolixNetwork {
     static let placeholder = ExolixNetwork(
         network: "Network",
         name: "Network",
+        addressRegex: nil,
         isDefault: false,
         icon: nil
     )

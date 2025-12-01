@@ -48,7 +48,7 @@ struct SelectSwapCurrency: View {
     @State var page: Int = 1
     @State var isLoading = true
     
-    let exolix: Exolix
+    let exolix = Exolix.shared
     let select: (ExolixCurrency, ExolixNetwork) -> Void
     
     var body: some View {

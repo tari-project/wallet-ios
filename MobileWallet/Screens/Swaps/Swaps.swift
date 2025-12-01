@@ -47,9 +47,9 @@ extension Swaps {
 }
 
 struct Swaps: View {
-    @AppStorage("swapInProgressId") var swapInProgressId: String?
     @Environment(\.dismiss) var dismiss
     @FocusState var fieldFocus: FieldFocus?
+    @State var exolix = Exolix.shared
     @State var availableBalance: MicroTari?
     @State var amount = ""
     @State var amountError: String?
@@ -69,8 +69,6 @@ struct Swaps: View {
     @State var presentedDeposit: ExolixConfirmation?
     @State var presentedConfirmation: ExolixConfirmation?
     @State var errorMessage: String?
-
-    let exolix = Exolix()
     
     var body: some View {
         ScrollView {
@@ -84,6 +82,9 @@ struct Swaps: View {
             .padding(.vertical, 12)
             .padding(.horizontal, 24)
         }
+        .refreshable {
+            updateRate()
+        }
         .safeAreaInset(edge: .bottom) {
             TariButton("Next Step", style: .primary, size: .large) {
                 swap()
@@ -91,11 +92,6 @@ struct Swaps: View {
             .disabled(amount.isEmpty || amountError != nil || withdrawalAddressError != nil || externalCurrency == nil || rate == nil || (!isBuyingXtm && withdrawalAddress.isEmpty))
             .padding(.horizontal, 24)
             .padding(.bottom, 12)
-        }
-        .overlay {
-            if isLoading {
-                ProgressView()
-            }
         }
         .overlay(alignment: .bottom) {
             if fieldFocus == nil {
@@ -113,13 +109,13 @@ struct Swaps: View {
         }
         .alert(title: "Exolix error", message: $errorMessage)
         .navigationDestination(item: $presentedDeposit) {
-            SwapDeposit(exolix: exolix, request: $0)
+            SwapDeposit(request: $0)
         }
         .navigationDestination(item: $presentedConfirmation) {
-            SwapConfirmation(exolix: exolix, sellRequest: $0)
+            SwapConfirmation(sellRequest: $0)
         }
         .fullScreenCover(isPresented: $isCurrencySelectionPresented) {
-            SelectSwapCurrency(exolix: exolix) {
+            SelectSwapCurrency() {
                 select(currency: $0, network: $1)
             }
         }
@@ -133,6 +129,9 @@ struct Swaps: View {
         .onChange(of: externalCurrency) {
             updateRate()
             validateWithdrawalAddress()
+        }
+        .onChange(of: isFixedRate) {
+            updateRate()
         }
         .onReceive(Tari.mainWallet.walletBalance.$balance) {
             update(walletBalance: $0)
@@ -175,17 +174,30 @@ private extension Swaps {
         VStack(alignment: .leading, spacing: 4) {
             if !isBuyingXtm, let availableBalance {
                 Text("Available: \(availableBalance.taris.formatted()) XTM")
+                    .body()
+                    .foregroundStyle(.secondaryText)
             }
             if let min {
-                Text("Min amount: \(min.formatted())")
+                rangeValue("Min", value: min)
             }
             if let max {
-                Text("Max amount: \(max.formatted())")
+                rangeValue("Max", value: max)
             }
         }
-        .body2()
-        .foregroundStyle(.secondaryText)
         .frame(minHeight: 50, alignment: .top)
+    }
+    
+    func rangeValue(_ label: String, value: Double) -> some View {
+        Button(action: { amount = value.formatted().replacingOccurrences(of: " ", with: "") }) {
+            HStack {
+                Text("\(label):")
+                    .body()
+                    .foregroundStyle(.secondaryText)
+                Text(value.formatted())
+                    .headingMedium()
+                    .foregroundStyle(.primaryText)
+            }
+        }
     }
     
     var externalSource: some View {
@@ -320,11 +332,21 @@ private extension Swaps {
     }
     
     var reverseDirection: some View {
-        HStack(spacing: 30) {
+        HStack(spacing: 24) {
             VStack { Divider() }
-            Button(action: reverseSwapDirection) {
-                Image(.swap)
+            Group {
+                if isLoading {
+                    ProgressView()
+                        .controlSize(.large)
+                        .tint(.primaryMain)
+                } else {
+                    Button(action: reverseSwapDirection) {
+                        Image(.swap)
+                    }
+                }
             }
+            .frame(square: 44)
+            
             VStack { Divider() }
         }
     }

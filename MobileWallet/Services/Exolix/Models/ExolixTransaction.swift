@@ -50,8 +50,6 @@ struct ExolixTransactionRequest: Encodable {
     let withdrawalAddress: String
     let withdrawalExtraId: String?
     let rateType: ExolixRateType?
-    let refundAddress: String?
-    let refundExtraId: String?
 }
 
 enum ExolixRateType: String, Codable, Hashable {

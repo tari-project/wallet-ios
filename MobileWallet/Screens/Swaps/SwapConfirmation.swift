@@ -41,13 +41,13 @@
 import SwiftUI
 
 struct SwapConfirmation: View {
-    @AppStorage("swapInProgressId") var swapInProgressId: String?
+    @CodableStorage("swapTransactions", defaultValue: SwapTransactionList()) var swapTransactions
     @Environment(\.dismiss) var dismiss
+    @State var exolix = Exolix.shared
     @State var transaction: ExolixTransactionResponse?
     @State var presentedTransactionProgress: ExolixTransactionResponse?
     @State var errorMessage: String?
     
-    let exolix: Exolix
     var sellRequest: ExolixConfirmation
     
     var body: some View {
@@ -73,7 +73,7 @@ struct SwapConfirmation: View {
         }
         .overlay(alignment: .bottom) {
             ExolixLogo()
-                .padding(.bottom, 80)
+                .padding(.bottom, 60)
         }
         .safeAreaInset(edge: .bottom) {
             TariButton("Confirm", style: .primary, size: .large) {
@@ -84,9 +84,9 @@ struct SwapConfirmation: View {
         }
         .alert(title: "Exolix error", message: $errorMessage)
         .navigationDestination(item: $presentedTransactionProgress) {
-            SwapProgress(exolix: exolix, transaction: $0)
+            SwapProgress(transaction: $0)
         }
-        .onAppear { load() }
+        .onFirstAppear { load() }
     }
 }
 
@@ -96,11 +96,14 @@ private extension SwapConfirmation {
             headerItem(label: "You send", amount: transaction.amount, coin: transaction.coinFrom)
             headerItem(label: "You receive", amount: transaction.amountTo, coin: transaction.coinTo)
         }
+        .overlay {
+            Image(.sendFundsSeparator)
+        }
     }
     
     func transactionInfo(for transaction: ExolixTransactionResponse) -> some View {
-        VStack(spacing: 0) {
-            if let fee = try? TransactionFeesManager().fee(for: MicroTari(decimalValue: transaction.amount)).formattedWithCurrency {
+        VStack(spacing: 8) {
+            if let fee = try? TransactionFeesManager().fee(for: MicroTari(decimalValue: transaction.amount)).formattedPreciseWithCurrency {
                 SwapItem(label: "Network cost", value: fee)
             }
             SwapItem(label: "Rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted()) \(transaction.coinTo.coinCode)")

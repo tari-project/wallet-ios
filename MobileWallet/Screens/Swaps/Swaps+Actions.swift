@@ -58,12 +58,16 @@ extension Swaps {
     }
     
     func load() {
-        Task {
-            externalCurrency = try await exolix.getCurrencies(page: 1, size: 1).currencies.first
-            externalNetwork = externalCurrency?.defaultNetwork
-            xtmCurrency = try await exolix.getXtmCurrency()
-            xtmNetwork = xtmCurrency?.defaultNetwork // try await exolix.getXtmNetwork()
-            isLoading = false
+        if externalCurrency == nil {
+            Task {
+                externalCurrency = try await exolix.getCurrencies(page: 1, size: 1).currencies.first
+                externalNetwork = externalCurrency?.defaultNetwork
+                xtmCurrency = try await exolix.getXtmCurrency()
+                xtmNetwork = xtmCurrency?.defaultNetwork
+                isLoading = false
+                updateRate()
+            }
+        } else {
             updateRate()
         }
     }
@@ -94,6 +98,8 @@ extension Swaps {
     
     func loadRate(from sourceCurrency: String, to targetCurrency: String, amount: String) {
         Task {
+            isLoading = true
+            defer { isLoading = false }
             do {
                 rate = try await exolix.getRate(
                     from: sourceCurrency,
@@ -145,21 +151,27 @@ extension Swaps {
     }
     
     func validateAmount(_ amount: Double) {
-        if let minAmount, amount < minAmount {
-            amountError = "Amount must be greater than \(minAmount)"
-        } else if let maxAmount, maxAmount < amount {
-            amountError = "Amount must be less than \(maxAmount)"
-        } else {
-            amountError = nil
+        withAnimation {
+            if let minAmount, amount < minAmount {
+                amountError = "Amount must be greater than \(minAmount)"
+            } else if let maxAmount, maxAmount < amount {
+                amountError = "Amount must be less than \(maxAmount)"
+            } else {
+                amountError = nil
+            }
         }
     }
     
     func validateWithdrawalAddress() {
-        guard let addresRegex = externalCurrency?.addresRegex else { return }
-        if withdrawalAddress.matches(addresRegex) {
-            withdrawalAddressError = nil
+        guard let addressRegex = externalNetwork?.addressRegex else { return }
+        if withdrawalAddress.isEmpty || withdrawalAddress.matches(addressRegex) {
+            withAnimation {
+                withdrawalAddressError = nil
+            }
         } else {
-            withdrawalAddressError = "Invalid address"
+            withAnimation {
+                withdrawalAddressError = "Invalid address"
+            }
         }
     }
     

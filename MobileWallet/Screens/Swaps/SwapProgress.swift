@@ -41,22 +41,19 @@
 import SwiftUI
 
 struct SwapProgress: View {
-    @AppStorage("swapInProgressId") var swapInProgressId: String?
+    @CodableStorage("swapTransactions", defaultValue: SwapTransactionList()) var swapTransactions
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.dismiss) var dismiss
     @Environment(SheetRouter.self) var router
-    @State var latestTransaction: ExolixTransactionResponse?
-    @State var isTransactionCancelled = false
+    @State var exolix = Exolix.shared
     
-    let exolix: Exolix
     let initialTransaction: ExolixTransactionResponse
     
     var transaction: ExolixTransactionResponse {
-        latestTransaction ?? initialTransaction
+        latestTransaction(id: initialTransaction.id) ?? initialTransaction
     }
     
-    init(exolix: Exolix, transaction: ExolixTransactionResponse) {
-        self.exolix = exolix
+    init(transaction: ExolixTransactionResponse) {
         self.initialTransaction = transaction
     }
     
@@ -65,6 +62,11 @@ struct SwapProgress: View {
             VStack(spacing: 24) {
                 header
                 processingInfo
+                if (transaction.status == .wait && transaction.coinFrom.coinCode != "XTM") || transaction.status == .overdue {
+                    TariButton("Cancel transaction", style: .destructiveText, size: .medium) {
+                        cancelTransaction()
+                    }
+                }
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 24)
@@ -83,20 +85,20 @@ struct SwapProgress: View {
             if transaction.isProcessed {
                 TariButton("Done", style: .secondary, size: .large) {
                     router.isSwapPresented = false
+                    dismiss()
                 }
-                .padding(.vertical, 12)
+                .padding(.horizontal, 24)
                 .padding(.bottom, 16)
             }
         }
         .task { await monitorTransactionStatus() }
-        .onDisappear { isTransactionCancelled = true }
         .onChange(of: scenePhase) {
-            if scenePhase == .active {
-                Task {
+            Task {
+                if scenePhase == .active {
                     await monitorTransactionStatus()
+                } else {
+                    await exolix.stopMonitoringTransactions()
                 }
-            } else {
-                isTransactionCancelled = true
             }
         }
     }
@@ -131,9 +133,9 @@ private extension SwapProgress {
             }
             SwapItem(label: "Transaction id", value: transaction.id)
             if let createdAt = transaction.createdAtDate {
-                SwapItem(label: "Created", value: createdAt.formatted())
+                SwapItem(label: "Created", value: createdAt.formatted(), isCoppiable: false)
             }
-            SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted()) \(transaction.coinTo.coinCode)")
+            SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted()) \(transaction.coinTo.coinCode)", isCoppiable: false)
             if let comment = transaction.comment, !comment.isEmpty {
                 SwapItem(label: "Comment", value: comment)
             }
@@ -150,13 +152,13 @@ private extension SwapProgress {
     var amountItem: some View {
         switch transaction.status {
         case .none, .wait, .confirmation, .confirmed, .exchanging, .sending:
-            SwapItem(label: "You will receive", value: "\(transaction.amountTo) \(transaction.coinTo.coinCode)")
+            SwapItem(label: "You will receive", value: "\(transaction.amountTo) \(transaction.coinTo.coinCode)", isCoppiable: false)
         case .success:
-            SwapItem(label: "Amount received", value: "\(transaction.amountTo) \(transaction.coinTo.coinCode)")
+            SwapItem(label: "Amount received", value: "\(transaction.amountTo) \(transaction.coinTo.coinCode)", isCoppiable: false)
         case .overdue:
-            SwapItem(label: "Amount overdue", value: "\(transaction.amount) \(transaction.coinFrom.coinCode)")
+            SwapItem(label: "Amount overdue", value: "\(transaction.amount) \(transaction.coinFrom.coinCode)", isCoppiable: false)
         case .refunded:
-            SwapItem(label: "Amount refunded", value: "\(transaction.amount) \(transaction.coinFrom.coinCode)")
+            SwapItem(label: "Amount refunded", value: "\(transaction.amount) \(transaction.coinFrom.coinCode)", isCoppiable: false)
         }
     }
     
@@ -204,6 +206,15 @@ private extension SwapProgress {
             "We did not receive your deposit within the time limit. Please start a new transaction."
         case .refunded:
             "Your exchange could not be completed. We have returned your original \(transaction.coinFrom.coinCode) to your wallet."
+        }
+    }
+}
+
+private extension ExolixTransactionStatus {
+    var isCancellable: Bool {
+        switch self {
+        case .wait, .overdue: true
+        default: false
         }
     }
 }

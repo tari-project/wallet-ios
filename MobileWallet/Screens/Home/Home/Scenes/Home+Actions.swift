@@ -202,28 +202,9 @@ private extension Home {
 }
 
 extension Home: SwapTransactionMonitoring {
-    var latestTransaction: ExolixTransactionResponse? {
-        get { swapTransaction }
-        nonmutating set { swapTransaction = newValue }
-    }
-    
-    var isTransactionProcessed: Bool {
-        swapTransaction?.isProcessed == true
-    }
-    
-    var isTransactionCancelled: Bool {
-        false
-    }
-    
-    func finaliseTransaction() {
-        swapTransaction = nil
-        swapInProgressId = nil
-    }
-    
     func loadSwapInProgress() {
-        guard let swapInProgressId else { return }
         Task {
-            await monitorTransactionStatus(transactionId: swapInProgressId)
+            await monitorSwapTransactions(swapTransactions)
         }
     }
 }

@@ -38,15 +38,11 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension SwapConfirmation {
+extension SwapConfirmation: SwapTransactionMonitoring {
     func load() {
         Task {
             do {
-                transaction = try await exolix.postTransaction(
-                    request: sellRequest,
-                    refundAddress: Tari.mainWallet.address.components.fullRaw,
-                    refundExtraId: nil
-                )
+                transaction = try await exolix.postTransaction(sellRequest)
             } catch {
                 errorMessage = error.localizedDescription
             }
@@ -63,7 +59,7 @@ extension SwapConfirmation {
                 amount: tariAmount.rawValue,
                 paymentID: transaction.depositExtraId ?? ""
             )
-            swapInProgressId = transaction.id
+            swapTransactions.add(transaction.id)
             presentedTransactionProgress = transaction
         } catch {
             errorMessage = error.localizedDescription
