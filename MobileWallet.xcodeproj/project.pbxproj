@@ -536,6 +536,7 @@
 		F8472F722E745A3E0094163D /* ProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8472F712E745A3D0094163D /* ProgressIndicator.swift */; };
 		F849ACB62ED5D024005B38AF /* SwapInProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F849ACB52ED5D01C005B38AF /* SwapInProgress.swift */; };
 		F849ACBA2ED5F823005B38AF /* CodableStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F849ACB92ED5F822005B38AF /* CodableStorage.swift */; };
+		F849ACC02EDF47BF005B38AF /* SwapHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F849ACBF2EDF47BF005B38AF /* SwapHistory.swift */; };
 		F88781AF2EB10B1E00207D0B /* TokenPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88781AE2EB10B1E00207D0B /* TokenPicker.swift */; };
 		F88781B12EB1EC5A00207D0B /* SwapDeposit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88781B02EB1EC5A00207D0B /* SwapDeposit.swift */; };
 		F88781B32EB1EE4C00207D0B /* SwapProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88781B22EB1EE4C00207D0B /* SwapProgress.swift */; };
@@ -566,6 +567,7 @@
 		F8C0653F2E37C3A5009BFC8F /* ConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */; };
 		F8C065422E38A2F5009BFC8F /* ChainTipObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */; };
 		F8CDD7AD2E40CFD4008E82B5 /* SheetRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CDD7AC2E40CFCE008E82B5 /* SheetRouter.swift */; };
+		F8D011962EE087FA009476FA /* MailFeedbackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D011952EE087F3009476FA /* MailFeedbackViewController.swift */; };
 		F8D63B252E81684400071B66 /* UIVideoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D63B242E81684100071B66 /* UIVideoPlayer.swift */; };
 		F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */; };
 		F8E279862E2540570017C3F5 /* UIReceiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */; };
@@ -1134,6 +1136,7 @@
 		F8472F712E745A3D0094163D /* ProgressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressIndicator.swift; sourceTree = "<group>"; };
 		F849ACB52ED5D01C005B38AF /* SwapInProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapInProgress.swift; sourceTree = "<group>"; };
 		F849ACB92ED5F822005B38AF /* CodableStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableStorage.swift; sourceTree = "<group>"; };
+		F849ACBF2EDF47BF005B38AF /* SwapHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapHistory.swift; sourceTree = "<group>"; };
 		F88781AE2EB10B1E00207D0B /* TokenPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenPicker.swift; sourceTree = "<group>"; };
 		F88781B02EB1EC5A00207D0B /* SwapDeposit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapDeposit.swift; sourceTree = "<group>"; };
 		F88781B22EB1EE4C00207D0B /* SwapProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwapProgress.swift; sourceTree = "<group>"; };
@@ -1164,6 +1167,7 @@
 		F8C065412E38A2F4009BFC8F /* ChainTipObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainTipObserver.swift; sourceTree = "<group>"; };
 		F8CDD7AC2E40CFCE008E82B5 /* SheetRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheetRouter.swift; sourceTree = "<group>"; };
 		F8CDD7EF2E42159B008E82B5 /* dependencies.env */ = {isa = PBXFileReference; lastKnownFileType = text; path = dependencies.env; sourceTree = SOURCE_ROOT; };
+		F8D011952EE087F3009476FA /* MailFeedbackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailFeedbackViewController.swift; sourceTree = "<group>"; };
 		F8D63B242E81684100071B66 /* UIVideoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVideoPlayer.swift; sourceTree = "<group>"; };
 		F8E2797F2E24F5F80017C3F5 /* UIProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIProfileViewController.swift; sourceTree = "<group>"; };
 		F8E279852E25404A0017C3F5 /* UIReceiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIReceiveViewController.swift; sourceTree = "<group>"; };
@@ -3023,6 +3027,7 @@
 				F88781B22EB1EE4C00207D0B /* SwapProgress.swift */,
 				F88781CD2EB3B7C300207D0B /* SwapProgress+Actions.swift */,
 				F8246B382E9FBB0400376CD7 /* SelectSwapCurrency.swift */,
+				F849ACBF2EDF47BF005B38AF /* SwapHistory.swift */,
 			);
 			path = Swaps;
 			sourceTree = "<group>";
@@ -3154,6 +3159,7 @@
 		F899FBCF2E548C0600653B5A /* Sheets */ = {
 			isa = PBXGroup;
 			children = (
+				F8D011952EE087F3009476FA /* MailFeedbackViewController.swift */,
 				F899FBD02E548C1F00653B5A /* InfoSheet.swift */,
 			);
 			path = Sheets;
@@ -3584,6 +3590,7 @@
 				F8BA7D232E1D75DE00BDBEF1 /* AppTabs.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				F88A5F882E8459D40033A454 /* ContactDetail+Actions.swift in Sources */,
+				F849ACC02EDF47BF005B38AF /* SwapHistory.swift in Sources */,
 				3AFAC362271C6F9E008AA842 /* UITextField+Combine.swift in Sources */,
 				373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */,
@@ -3824,6 +3831,7 @@
 				3ACC4F602876D2F100632F64 /* NSAttributedString+Format.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
+				F8D011962EE087FA009476FA /* MailFeedbackViewController.swift in Sources */,
 				3AF985FA286B233100290387 /* PopUpSelectionView.swift in Sources */,
 				375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				F899FBCA2E532F7700653B5A /* UpdateRequiredSheet.swift in Sources */,

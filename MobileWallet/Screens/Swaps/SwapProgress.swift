@@ -45,6 +45,7 @@ struct SwapProgress: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.dismiss) var dismiss
     @Environment(SheetRouter.self) var router
+    @State var isPresentingContactSupport = false
     @State var exolix = Exolix.shared
     
     let initialTransaction: ExolixTransactionResponse
@@ -62,11 +63,6 @@ struct SwapProgress: View {
             VStack(spacing: 24) {
                 header
                 processingInfo
-                if (transaction.status == .wait && transaction.coinFrom.coinCode != "XTM") || transaction.status == .overdue {
-                    TariButton("Cancel transaction", style: .destructiveText, size: .medium) {
-                        cancelTransaction()
-                    }
-                }
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 24)
@@ -75,23 +71,37 @@ struct SwapProgress: View {
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            toolbarTitle("Exchange status")
+            toolbarTitle("Exchange Status")
             toolbarBackItem {
                 router.isSwapPresented = false
                 dismiss()
             }
         }
         .safeAreaInset(edge: .bottom) {
-            if transaction.isProcessed {
-                TariButton("Done", style: .secondary, size: .large) {
-                    router.isSwapPresented = false
-                    dismiss()
+            VStack {
+                if transaction.isProcessed {
+                    TariButton("Done", style: .secondary, size: .large) {
+                        router.isSwapPresented = false
+                        dismiss()
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 16)
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 16)
+                if (transaction.status == .wait && transaction.coinFrom.coinCode != "XTM") || transaction.status == .overdue {
+                    TariButton("Remove transaction", style: .destructiveText, size: .medium) {
+                        cancelTransaction()
+                    }
+                }
             }
         }
         .task { await monitorTransactionStatus() }
+        .sheet(isPresented: $isPresentingContactSupport) {
+            MailFeedback(
+                recipient: "support@exolix.com",
+                subject: "Exchange Support Request - Transaction ID: \(transaction.id)",
+                messageBody: supportMessage
+            )
+        }
         .onChange(of: scenePhase) {
             Task {
                 if scenePhase == .active {
@@ -135,7 +145,7 @@ private extension SwapProgress {
             if let createdAt = transaction.createdAtDate {
                 SwapItem(label: "Created", value: createdAt.formatted(), isCoppiable: false)
             }
-            SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted()) \(transaction.coinTo.coinCode)", isCoppiable: false)
+            SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted(maxDecimals: 10)) \(transaction.coinTo.coinCode)", isCoppiable: false)
             if let comment = transaction.comment, !comment.isEmpty {
                 SwapItem(label: "Comment", value: comment)
             }
@@ -144,6 +154,11 @@ private extension SwapProgress {
             }
             if let refundId = transaction.refundExtraId, !refundId.isEmpty {
                 SwapItem(label: "Refund extra id", value: refundId)
+            }
+            if MailFeedback.canSendFeedback {
+                TariButton("Contact support", style: .text, size: .small) {
+                    isPresentingContactSupport = true
+                }
             }
         }
     }
@@ -193,9 +208,9 @@ private extension SwapProgress {
     var subtitle: String {
         switch transaction.status {
         case .wait, .none:
-            "We have not received your \(transaction.coinFrom.coinCode) yet."
+            "We have not received your \(transaction.coinFrom.coinCode) yet. We are waiting for the network to confirm the transaction."
         case .confirmation, .confirmed:
-            "We have received your \(transaction.coinFrom.coinCode)."
+            "We have received your \(transaction.coinFrom.coinCode). Your exchange is processing. Your exchange may take up to 60 minutes to update."
         case .exchanging:
             "We have received your \(transaction.coinFrom.coinCode). Your exchange is processing."
         case .sending:
@@ -207,6 +222,20 @@ private extension SwapProgress {
         case .refunded:
             "Your exchange could not be completed. We have returned your original \(transaction.coinFrom.coinCode) to your wallet."
         }
+    }
+    
+    var supportMessage: String {
+        """
+        Hello Exolix Support,
+        I need assistance with my exchange transaction.
+        Transaction ID: \(transaction.id)
+        From: \(transaction.coinFrom.coinCode)
+        To: \(transaction.coinTo.coinCode)
+        Description of the issue:
+        [Please describe your issue here]
+        
+        Thank you for your help.
+        """
     }
 }
 

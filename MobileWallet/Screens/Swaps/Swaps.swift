@@ -51,7 +51,7 @@ struct Swaps: View {
     @FocusState var fieldFocus: FieldFocus?
     @State var exolix = Exolix.shared
     @State var availableBalance: MicroTari?
-    @State var amount = ""
+    @State var amount = (0.1).formatted(maxDecimals: 1)
     @State var amountError: String?
     @State var withdrawalAddress = ""
     @State var withdrawalAddressError: String?
@@ -104,7 +104,7 @@ struct Swaps: View {
         .navigationBarTitleDisplayMode(.inline)
         .onTapGesture { UIApplication.shared.hideKeyboard() }
         .toolbar {
-            toolbarTitle("Swaps")
+            toolbarTitle("Select Pair")
             toolbarBackItem { dismiss() }
         }
         .alert(title: "Exolix error", message: $errorMessage)
@@ -288,8 +288,8 @@ private extension Swaps {
     var targetRate: some View {
         if let rate, let externalCurrency {
             Text(isBuyingXtm
-                ? "1 \(externalCurrency.code) ≈ \(rate.rate.formatted()) XTM"
-                : "1 XTM ≈ \(rate.rate.formatted()) \(externalCurrency.code)"
+                 ? "1 \(externalCurrency.code) ≈ \(rate.rate.formatted()) XTM"
+                 : "1 XTM ≈ \(rate.rate.formatted(maxDecimals: 10)) \(externalCurrency.code)"
             )
             .body()
             .foregroundStyle(.primaryText)

@@ -60,6 +60,7 @@ struct Home: View, ChainTipObserver {
     @State var swapTransaction: ExolixTransactionResponse?
     @State var isReceivePresented = false
     @State var isTransactionHistoryPresented = false
+    @State var isSwapHistoryPresented = false
     @State var isConnectionStatusPresented = false
     @State var exolix = Exolix.shared
     
@@ -94,6 +95,9 @@ struct Home: View, ChainTipObserver {
             }
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
+            }
+            .navigationDestination(isPresented: $isSwapHistoryPresented) {
+                SwapHistory(presentedSwap: $presentedSwapProgress)
             }
             .fullScreenCover(isPresented: $router.isSwapPresented) {
                 NavigationStack {
@@ -274,9 +278,14 @@ private extension Home {
             VStack {
                 sectionHeader("Recent Swaps")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                ForEach(transactions) { swapTransaction in
+                ForEach(transactions.prefix(2)) { swapTransaction in
                     SwapInProgressItem(transaction: swapTransaction) {
                         presentedSwapProgress = swapTransaction
+                    }
+                }
+                if 2 < transactions.count {
+                    TariButton("View all swaps", style: .text, size: .medium) {
+                        isSwapHistoryPresented = true
                     }
                 }
             }

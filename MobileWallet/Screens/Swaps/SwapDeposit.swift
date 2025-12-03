@@ -78,7 +78,7 @@ struct SwapDeposit: View {
                 .padding(.top, 8)
             Spacer()
             
-            TariButton("Cancel transaction", style: .destructiveText, size: .medium) {
+            TariButton("Remove transaction", style: .destructiveText, size: .medium) {
                 cancelTransaction()
             }
         }
@@ -88,7 +88,7 @@ struct SwapDeposit: View {
         .background(Color.secondaryBackground)
         .navigationBarBackButtonHidden()
         .toolbar {
-            toolbarTitle("Send funds")
+            toolbarTitle("Send Funds")
             toolbarBackItem { dismiss() }
         }
         .alert(title: "Exolix error", message: $errorMessage)

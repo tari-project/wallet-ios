@@ -49,3 +49,12 @@ extension String {
         NumberFormatter().number(from: self)?.doubleValue
     }
 }
+
+extension Double {
+    func formatted(maxDecimals: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = maxDecimals
+        return formatter.string(from: self as NSNumber) ?? String(format: "%.\(maxDecimals)f", self)
+    }
+}
