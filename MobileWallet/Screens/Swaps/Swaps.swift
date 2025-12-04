@@ -289,7 +289,7 @@ private extension Swaps {
         if let rate, let externalCurrency {
             Text(isBuyingXtm
                  ? "1 \(externalCurrency.code) ≈ \(rate.rate.formatted()) XTM"
-                 : "1 XTM ≈ \(rate.rate.formatted(maxDecimals: 10)) \(externalCurrency.code)"
+                 : "1 XTM ≈ \(rate.rate.formattedAnyAmount) \(externalCurrency.code)"
             )
             .body()
             .foregroundStyle(.primaryText)

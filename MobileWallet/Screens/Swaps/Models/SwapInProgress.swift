@@ -41,7 +41,7 @@
 import Foundation
 
 struct SwapTransactionList: Codable, Hashable {
-    var maxSwaps: Int { 1000 }
+    var maxSwaps: Int { .max }
     var swaps = [String]()
     
     init() {

@@ -51,6 +51,10 @@ extension String {
 }
 
 extension Double {
+    var formattedAnyAmount: String {
+        abs(self) < 0.000001 ? formatted(maxDecimals: 10) : formatted(maxDecimals: 6)
+    }
+
     func formatted(maxDecimals: Int) -> String {
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 0

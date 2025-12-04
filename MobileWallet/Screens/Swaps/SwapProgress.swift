@@ -84,8 +84,6 @@ struct SwapProgress: View {
                         router.isSwapPresented = false
                         dismiss()
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 16)
                 }
                 if (transaction.status == .wait && transaction.coinFrom.coinCode != "XTM") || transaction.status == .overdue {
                     TariButton("Remove transaction", style: .destructiveText, size: .medium) {
@@ -93,6 +91,8 @@ struct SwapProgress: View {
                     }
                 }
             }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 16)
         }
         .task { await monitorTransactionStatus() }
         .sheet(isPresented: $isPresentingContactSupport) {
@@ -145,7 +145,7 @@ private extension SwapProgress {
             if let createdAt = transaction.createdAtDate {
                 SwapItem(label: "Created", value: createdAt.formatted(), isCoppiable: false)
             }
-            SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formatted(maxDecimals: 10)) \(transaction.coinTo.coinCode)", isCoppiable: false)
+            SwapItem(label: "Exchange rate", value: "1 \(transaction.coinFrom.coinCode) = \(transaction.rate.formattedAnyAmount) \(transaction.coinTo.coinCode)", isCoppiable: false)
             if let comment = transaction.comment, !comment.isEmpty {
                 SwapItem(label: "Comment", value: comment)
             }
