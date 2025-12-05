@@ -39,6 +39,7 @@
 */
 
 struct ExolixRate: Decodable, Hashable {
+    let fromAmount: Double
     let toAmount: Double
     let rate: Double
     let minAmount: Double

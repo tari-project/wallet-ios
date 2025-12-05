@@ -46,7 +46,7 @@ extension String {
     }
     
     var double: Double? {
-        NumberFormatter().number(from: self)?.doubleValue
+        NumberFormatter().number(from: self.replacingOccurrences(of: " ", with: ""))?.doubleValue
     }
 }
 

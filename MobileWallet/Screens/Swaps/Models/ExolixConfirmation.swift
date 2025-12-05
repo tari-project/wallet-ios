@@ -44,6 +44,7 @@ struct ExolixConfirmation: Hashable {
     let coinTo: ExolixCurrency
     let networkTo: ExolixNetwork
     let amount: String
+    let withdrawalAmount: String?
     let rate: ExolixRate
     let rateType: ExolixRateType
     let withdrawalAddress: String

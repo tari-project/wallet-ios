@@ -86,13 +86,53 @@ extension Swaps {
     }
     
     func updateRate() {
-        guard let externalCurrency else { return }
+        if fieldFocus == .receivedAmount {
+            updateReceiveRate()
+        } else {
+            updateSendRate()
+        }
+    }
+    
+    func updateSendRate() {
+        guard let externalCurrency, fieldFocus != .receivedAmount else { return }
         if isBuyingXtm {
             guard amount.double != nil else { return }
             loadRate(from: externalCurrency.code, to: "xtm", amount: amount)
         } else {
             guard (try? MicroTari(tariValue: amount)) != nil else { return }
             loadRate(from: "xtm", to: externalCurrency.code, amount: amount)
+        }
+    }
+    
+    func updateReceiveRate() {
+        guard let externalCurrency, fieldFocus == .receivedAmount else { return }
+        guard withdrawalAmount.double != nil else {
+            withdrawalAmountError = "Error parsing amount"
+            return
+        }
+        Task {
+            isLoading = true
+            defer { isLoading = false }
+            do {
+                rate = try await exolix.getRate(
+                    from: isBuyingXtm ? externalCurrency.code : "xtm",
+                    to: isBuyingXtm ? "xtm" : externalCurrency.code,
+                    withdrawalAmount: withdrawalAmount.withDecimalDot,
+                    rateType: isFixedRate ? .fixed : .float
+                )
+                withdrawalAmountError = nil
+            } catch {
+                if case let ExolixError.rate(error) = error {
+                    errorMinAmount = error.minAmount
+                    errorMaxAmount = error.maxAmount
+                    rate = nil
+                    withdrawalAmountError = "Sent amount must be greater than \(error.minAmount) and less than \(error.maxAmount)"
+                } else {
+                    withdrawalAmountError  = error.localizedDescription
+                }
+            }
+            amount = rate?.fromAmount.formattedAnyAmount ?? ""
+            updateAmount()
         }
     }
     
@@ -116,6 +156,8 @@ extension Swaps {
                 }
                 rate = nil
             }
+            withdrawalAmount = rate?.toAmount.formattedAnyAmount ?? ""
+            withdrawalAmountError = nil
             updateAmount()
         }
     }
@@ -183,6 +225,9 @@ extension Swaps {
             fieldFocus = nil
             isBuyingXtm.toggle()
         }
+        let value = amount
+        amount = withdrawalAmount
+        withdrawalAmount = value
         updateRate()
     }
     
@@ -198,6 +243,7 @@ extension Swaps {
                 coinTo: xtmCurrency,
                 networkTo: xtmNetwork,
                 amount: amount,
+                withdrawalAmount: isWithdrawalEdited ? withdrawalAmount : nil,
                 rate: rate,
                 rateType: rateType,
                 withdrawalAddress: tariAddress,
@@ -210,6 +256,7 @@ extension Swaps {
                 coinTo: externalCurrency,
                 networkTo: externalNetwork,
                 amount: amount,
+                withdrawalAmount: isWithdrawalEdited ? withdrawalAmount : nil,
                 rate: rate,
                 rateType: rateType,
                 withdrawalAddress: withdrawalAddress,

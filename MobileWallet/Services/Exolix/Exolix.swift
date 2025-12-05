@@ -57,6 +57,12 @@ extension Exolix {
         ])
     }
     
+    func getRate(from: String, to: String, withdrawalAmount: String, rateType: ExolixRateType) async throws -> ExolixRate {
+        try await request("/rate", as: ExolixRate.self, query: [
+            "coinFrom": from, "coinTo": to, "withdrawalAmount": withdrawalAmount, "rateType": rateType.rawValue
+        ])
+    }
+    
     func postTransaction(_ request: ExolixConfirmation) async throws -> ExolixTransactionResponse {
         try await postTransaction(
             coinFrom: request.coinFrom.code,
@@ -64,7 +70,7 @@ extension Exolix {
             coinTo: request.coinTo.code,
             networkTo: request.networkTo.network,
             amount: request.amount.double ?? 0,
-            withdrawalAmount: nil,
+            withdrawalAmount: request.withdrawalAmount?.double,
             withdrawalAddress: request.withdrawalAddress,
             withdrawalExtraId: request.withdrawalExtraId,
             rateType: request.rateType

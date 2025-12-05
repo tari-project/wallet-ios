@@ -42,7 +42,7 @@ import SwiftUI
 
 extension Swaps {
     enum FieldFocus: Hashable {
-        case amount, address
+        case amount, receivedAmount, address
     }
 }
 
@@ -52,8 +52,11 @@ struct Swaps: View {
     @State var exolix = Exolix.shared
     @State var availableBalance: MicroTari?
     @State var amount = (0.1).formatted(maxDecimals: 1)
+    @State var withdrawalAmount = ""
     @State var amountError: String?
+    @State var isWithdrawalEdited = false
     @State var withdrawalAddress = ""
+    @State var withdrawalAmountError: String?
     @State var withdrawalAddressError: String?
     @State var xtmCurrency: ExolixCurrency?
     @State var xtmNetwork: ExolixNetwork?
@@ -89,7 +92,7 @@ struct Swaps: View {
             TariButton("Next Step", style: .primary, size: .large) {
                 swap()
             }
-            .disabled(amount.isEmpty || amountError != nil || withdrawalAddressError != nil || externalCurrency == nil || rate == nil || (!isBuyingXtm && withdrawalAddress.isEmpty))
+            .disabled(amount.isEmpty || amountError != nil || withdrawalAmountError != nil || withdrawalAddressError != nil || externalCurrency == nil || rate == nil || (!isBuyingXtm && withdrawalAddress.isEmpty))
             .padding(.horizontal, 24)
             .padding(.bottom, 12)
         }
@@ -121,7 +124,11 @@ struct Swaps: View {
         }
         .onChange(of: amount) {
             updateAmount()
-            updateRate()
+            updateSendRate()
+        }
+        .onChange(of: withdrawalAmount) {
+            isWithdrawalEdited = fieldFocus == .receivedAmount
+            updateReceiveRate()
         }
         .onChange(of: withdrawalAddress) {
             validateWithdrawalAddress()
@@ -142,10 +149,9 @@ struct Swaps: View {
 
 private extension Swaps {
     var sourceCurrency: some View {
-        VStack(spacing: 20) {
+        VStack(alignment: .leading, spacing: 20) {
             Text("You send")
                 .headingSmall()
-                .frame(maxWidth: .infinity)
             VStack(alignment: .leading) {
                 if isBuyingXtm {
                     externalSource
@@ -177,10 +183,10 @@ private extension Swaps {
                     .body()
                     .foregroundStyle(.secondaryText)
             }
-            if let min {
+            if let min, 0 < min {
                 rangeValue("Min", value: min)
             }
-            if let max {
+            if let max, 0 < max {
                 rangeValue("Max", value: max)
             }
         }
@@ -219,14 +225,15 @@ private extension Swaps {
     }
     
     var targetCurrency: some View {
-        VStack(spacing: 20) {
+        VStack(alignment: .leading, spacing: 20) {
             Text("You receive")
                 .headingSmall()
-                .frame(maxWidth: .infinity)
-            if isBuyingXtm {
-                xtmTarget
-            } else {
-                externalTarget
+            VStack(alignment: .leading) {
+                if isBuyingXtm {
+                    xtmTarget
+                } else {
+                    externalTarget
+                }
             }
             fixedRateToggle
         }
@@ -235,11 +242,14 @@ private extension Swaps {
     var xtmTarget: some View {
         VStack(alignment: .leading) {
             HStack {
-                Text("\(rate?.toAmount.formatted() ?? "0")")
-                    .heading2XL()
-                    .foregroundStyle(.secondaryMain)
-                Spacer()
+                withdrawalAmountField
                 xtmTokenPicker
+            }
+            if let withdrawalAmountError {
+                Text(withdrawalAmountError)
+                    .body2()
+                    .foregroundStyle(.errorMain)
+                    .padding(.bottom, 4)
             }
             targetRate
                 .padding(.bottom, 32)
@@ -263,12 +273,15 @@ private extension Swaps {
         VStack(alignment: .leading) {
             HStack {
                 if let externalCurrency {
-                    Text("\(rate?.toAmount.formatted() ?? "0")")
-                        .heading2XL()
-                        .foregroundStyle(.secondaryMain)
-                    Spacer()
+                    withdrawalAmountField
                     tokenPicker(currency: externalCurrency, network: externalNetwork)
                 }
+            }
+            if let withdrawalAmountError {
+                Text(withdrawalAmountError)
+                    .body2()
+                    .foregroundStyle(.errorMain)
+                    .padding(.bottom, 4)
             }
             targetRate
             HStack {
@@ -311,12 +324,17 @@ private extension Swaps {
     }
     
     var amountField: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            TextField(text: $amount, prompt: .placeholder("Amount to send")) { }
-                .keyboardType(.decimalPad)
-                .focused($fieldFocus, equals: .amount)
-                .textFieldBorder()
-        }
+        TextField(text: $amount, prompt: .placeholder("Amount to send")) { }
+            .keyboardType(.decimalPad)
+            .focused($fieldFocus, equals: .amount)
+            .textFieldBorder()
+    }
+    
+    var withdrawalAmountField: some View {
+        TextField(text: $withdrawalAmount, prompt: .placeholder("Received amount")) { }
+            .keyboardType(.decimalPad)
+            .focused($fieldFocus, equals: .receivedAmount)
+            .textFieldBorder()
     }
     
     var fixedRateToggle: some View {
