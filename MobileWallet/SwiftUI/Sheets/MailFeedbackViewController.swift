@@ -1,8 +1,8 @@
-//  TokenPicker.swift
+//  MailFeedbackViewController.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 28.10.2025
+	Created by Tomas Hakel on 03.12.2025
 	Using Swift 6.0
 	Running on macOS 26.0
 
@@ -39,52 +39,44 @@
 */
 
 import SwiftUI
+import MessageUI
 
-struct TokenPicker: View {
-    var icon: String?
-    let code: String
-    let network: String?
-    let action: (() -> Void)?
-    
-    var body: some View {
-        if let action {
-            Button(action: action) {
-                content
-            }
-        } else {
-            content
+struct MailFeedback: UIViewControllerRepresentable {
+    @Environment(\.dismiss) var dismiss
+    var recipient: String
+    var subject: String
+    var messageBody: String
+
+    func makeUIViewController(context: Context) -> MFMailComposeViewController {
+        let mailComposer = MFMailComposeViewController()
+        mailComposer.mailComposeDelegate = context.coordinator
+        mailComposer.setToRecipients([recipient])
+        mailComposer.setSubject(subject)
+        mailComposer.setMessageBody(messageBody, isHTML: false)
+        context.coordinator.composer = mailComposer
+        return mailComposer
+    }
+
+    func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
+        var parent: MailFeedback
+        var composer: MFMailComposeViewController?
+
+        init(_ parent: MailFeedback) {
+            self.parent = parent
+        }
+
+        func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+            parent.dismiss()
         }
     }
-}
-
-private extension TokenPicker {
-    var content: some View {
-        HStack(spacing: 0) {
-            HStack(spacing: 2) {
-                TokenIcon(icon, size: 24)
-                VStack(alignment: .leading, spacing: -8) {
-                    Text(code)
-                        .body()
-                        .foregroundStyle(.primaryText)
-                    if let network {
-                        Text(network)
-                            .body2()
-                            .foregroundStyle(.secondaryText)
-                    }
-                }
-            }
-            .padding(.trailing, 8)
-            
-            if action != nil {
-                Image(.chevronDown)
-                    .foregroundStyle(.primaryText)
-                    .padding(4)
-            }
-        }
-        .padding(.vertical, 2)
-        .padding(.horizontal, 8)
-        .background {
-            Capsule().fill(.outlined)
-        }
+    
+    static var canSendFeedback: Bool {
+        MFMailComposeViewController.canSendMail()
     }
 }

@@ -46,6 +46,19 @@ extension String {
     }
     
     var double: Double? {
-        NumberFormatter().number(from: self)?.doubleValue
+        NumberFormatter().number(from: self.replacingOccurrences(of: " ", with: ""))?.doubleValue
+    }
+}
+
+extension Double {
+    var formattedAnyAmount: String {
+        abs(self) < 0.000001 ? formatted(maxDecimals: 10) : formatted(maxDecimals: 6)
+    }
+
+    func formatted(maxDecimals: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = maxDecimals
+        return formatter.string(from: self as NSNumber) ?? String(format: "%.\(maxDecimals)f", self)
     }
 }

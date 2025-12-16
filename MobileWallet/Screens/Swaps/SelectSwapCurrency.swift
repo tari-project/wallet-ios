@@ -81,7 +81,7 @@ struct SelectSwapCurrency: View {
             .navigationBarBackButtonHidden()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                toolbarTitle("Select token")
+                toolbarTitle("Select Currency")
                 toolbarCloseItem { dismiss() }
             }
         }

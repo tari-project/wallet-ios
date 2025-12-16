@@ -1,8 +1,8 @@
-//  TokenPicker.swift
+//  SwiftUIView.swift
 	
 /*
 	Package MobileWallet
-	Created by Tomas Hakel on 28.10.2025
+	Created by Tomas Hakel on 02.12.2025
 	Using Swift 6.0
 	Running on macOS 26.0
 
@@ -40,51 +40,43 @@
 
 import SwiftUI
 
-struct TokenPicker: View {
-    var icon: String?
-    let code: String
-    let network: String?
-    let action: (() -> Void)?
+struct SwapHistory: View {
+    @Environment(\.dismiss) var dismiss
+    @State var exolix = Exolix.shared
+
+    @Binding var presentedSwap: ExolixTransactionResponse?
     
     var body: some View {
-        if let action {
-            Button(action: action) {
-                content
+        let transactions = exolix.sortedTransactions
+        ScrollView {
+            VStack {
+                ForEach(transactions) { swapTransaction in
+                    SwapInProgressItem(transaction: swapTransaction) {
+                        presentedSwap = swapTransaction
+                    }
+                }
             }
-        } else {
-            content
+            .padding(16)
+            .toolbar {
+                toolbarTitle("Swap History")
+                toolbarBackItem { dismiss() }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.secondaryBackground)
+        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
+        .overlay {
+            if transactions.isEmpty {
+                Text("No recent swaps")
+                    .body2()
+                    .foregroundStyle(.secondaryText)
+                    
+            }
         }
     }
 }
 
-private extension TokenPicker {
-    var content: some View {
-        HStack(spacing: 0) {
-            HStack(spacing: 2) {
-                TokenIcon(icon, size: 24)
-                VStack(alignment: .leading, spacing: -8) {
-                    Text(code)
-                        .body()
-                        .foregroundStyle(.primaryText)
-                    if let network {
-                        Text(network)
-                            .body2()
-                            .foregroundStyle(.secondaryText)
-                    }
-                }
-            }
-            .padding(.trailing, 8)
-            
-            if action != nil {
-                Image(.chevronDown)
-                    .foregroundStyle(.primaryText)
-                    .padding(4)
-            }
-        }
-        .padding(.vertical, 2)
-        .padding(.horizontal, 8)
-        .background {
-            Capsule().fill(.outlined)
-        }
-    }
+#Preview {
+    SwapHistory(presentedSwap: .constant(nil))
 }
