@@ -47,9 +47,14 @@ class HomeRouter {
     
     var isHomeSendPresented = false
     var isContactsSendPresented = false
+    var isBridgePresented = false
     
     func dismissSendPresentation() {
         isHomeSendPresented = false
         isContactsSendPresented = false
+    }
+    
+    func dismissBridgePresentation() {
+        isBridgePresented = false
     }
 }

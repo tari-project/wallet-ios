@@ -87,6 +87,7 @@ struct TariSettings {
     var yatOrganizationKey: String?
     var yatWebServiceURL: URL?
     var yatApiURL: URL?
+    var bridgeAPIURL: String?
 
     let pushNotificationServer = "https://push.tari.com"
 
@@ -143,6 +144,10 @@ struct TariSettings {
 
             if let yatApiRawURL = jsonResult["yatApiURL"] as? String, !yatApiRawURL.isEmpty, let url = URL(string: yatApiRawURL) {
                 self.yatApiURL = url
+            }
+            
+            if let bridgeAPIURL = jsonResult["bridgeAPIURL"] as? String, !bridgeAPIURL.isEmpty {
+                self.bridgeAPIURL = bridgeAPIURL
             }
         } catch {
             Logger.log(message: "Could not load env vars: \(error)", domain: .general, level: .error)
