@@ -51,9 +51,9 @@ struct BridgeConfig: Codable {
 }
 
 struct BridgeFees {
-    let feeAmount: Double
-    let amountAfterFee: Double
-    let feePercentage: Double
+    let feeAmount: Decimal
+    let amountAfterFee: Decimal
+    let feePercentage: Decimal
     let isOverHighBridgeThreshold: Bool
 }
 

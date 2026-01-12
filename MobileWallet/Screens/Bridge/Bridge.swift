@@ -13,6 +13,8 @@ struct Bridge: View {
     @State private var isProcessing = false
     @State private var showConfirmation = false
     @State private var showHistory = false
+    @State private var showErrorAlert = false
+    @State private var errorMessage: String?
     @State private var availableBalance: MicroTari?
     
     var body: some View {
@@ -56,6 +58,11 @@ struct Bridge: View {
             }
             .sheet(isPresented: $showHistory) {
                 BridgeHistory()
+            }
+            .alert("Bridge Error", isPresented: $showErrorAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(errorMessage ?? "An unknown error occurred")
             }
             .onFirstAppear {
                 loadData()
@@ -115,10 +122,10 @@ struct Bridge: View {
             
             if let fees = bridgeService.calculateFees(amount: amount, isWrap: true), amount.isEmpty == false {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Fee: \(String(format: "%.6f", fees.feeAmount)) XTM (\(String(format: "%.2f", fees.feePercentage))%)")
+                    Text("Fee: \(formatDecimal(fees.feeAmount)) XTM (\(formatDecimal(fees.feePercentage))%)")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text("You'll receive: \(String(format: "%.6f", fees.amountAfterFee)) XTM")
+                    Text("You'll receive: \(formatDecimal(fees.amountAfterFee)) XTM")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -181,8 +188,10 @@ struct Bridge: View {
     }
     
     private var isContinueEnabled: Bool {
-        guard !amount.isEmpty, !ethAddress.isEmpty else { return false }
-        guard amountError == nil, addressError == nil else { return false }
+        guard !amount.isEmpty, amountError == nil else { return false }
+        if isWrapping {
+            return !ethAddress.isEmpty && addressError == nil
+        }
         return true
     }
     
@@ -228,11 +237,23 @@ struct Bridge: View {
             return
         }
         
-        if ethAddress.hasPrefix("0x") && ethAddress.count == 42 {
-            addressError = nil
-        } else {
-            addressError = "Invalid Ethereum address"
+        // Basic validation: 0x prefix and 42 characters (0x + 40 hex chars)
+        guard ethAddress.hasPrefix("0x"), ethAddress.count == 42 else {
+            addressError = "Invalid Ethereum address format"
+            return
         }
+        
+        // Check if remaining characters are valid hex
+        let hexPart = String(ethAddress.dropFirst(2))
+        let hexCharacterSet = CharacterSet(charactersIn: "0123456789abcdefABCDEF")
+        guard hexPart.rangeOfCharacter(from: hexCharacterSet.inverted) == nil else {
+            addressError = "Invalid Ethereum address: contains non-hex characters"
+            return
+        }
+        
+        // Note: EIP-55 checksum validation would require additional implementation
+        // For now, we accept valid hex addresses. Full checksum validation can be added later.
+        addressError = nil
     }
     
     private func confirmBridge() {
@@ -270,10 +291,21 @@ struct Bridge: View {
                     isProcessing = false
                     if case BridgeError.dailyLimitExceeded = error {
                         store.exceededDailyLimit = true
+                    } else {
+                        errorMessage = error.localizedDescription
+                        showErrorAlert = true
                     }
                 }
                 print("Bridge error: \(error)")
             }
         }
+    }
+    
+    private func formatDecimal(_ value: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 6
+        return formatter.string(from: value as NSDecimalNumber) ?? "0"
     }
 }

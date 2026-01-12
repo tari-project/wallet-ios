@@ -49,7 +49,7 @@ struct BridgeTransactionRow: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                Text(formatDate(transaction.createdAt))
+                Text(BridgeHistory.formatDate(transaction.createdAt, style: .short))
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
@@ -57,7 +57,7 @@ struct BridgeTransactionRow: View {
             Spacer()
             
             VStack(alignment: .trailing, spacing: 4) {
-                Text(formatAmount(transaction.tokenAmount))
+                Text(BridgeHistory.formatAmount(transaction.tokenAmount))
                     .font(.headline)
                 
                 statusBadge
@@ -94,20 +94,6 @@ struct BridgeTransactionRow: View {
         return "\(address.prefix(8))...\(address.suffix(8))"
     }
     
-    private func formatAmount(_ microXtm: String) -> String {
-        guard let micro = UInt64(microXtm) else { return "0 XTM" }
-        let xtm = Double(micro) / 1_000_000.0
-        return String(format: "%.6f XTM", xtm)
-    }
-    
-    private func formatDate(_ dateString: String) -> String {
-        let formatter = ISO8601DateFormatter()
-        guard let date = formatter.date(from: dateString) else { return dateString }
-        let displayFormatter = DateFormatter()
-        displayFormatter.dateStyle = .short
-        displayFormatter.timeStyle = .short
-        return displayFormatter.string(from: date)
-    }
 }
 
 struct BridgeTransactionDetails: View {
@@ -120,8 +106,8 @@ struct BridgeTransactionDetails: View {
                 VStack(alignment: .leading, spacing: 16) {
                     detailRow("Type", transaction.type == .wrap ? "Wrap to Ethereum" : "Unwrap to Tari")
                     detailRow("Status", transaction.status.rawValue)
-                    detailRow("Amount", formatAmount(transaction.tokenAmount))
-                    detailRow("Amount After Fee", formatAmount(transaction.amountAfterFee))
+                    detailRow("Amount", BridgeHistory.formatAmount(transaction.tokenAmount))
+                    detailRow("Amount After Fee", BridgeHistory.formatAmount(transaction.amountAfterFee))
                     detailRow("Destination", transaction.destinationAddress)
                     if let source = transaction.sourceAddress {
                         detailRow("Source", source)
@@ -130,7 +116,7 @@ struct BridgeTransactionDetails: View {
                     if let hash = transaction.transactionHash {
                         detailRow("Transaction Hash", hash)
                     }
-                    detailRow("Created", formatDate(transaction.createdAt))
+                    detailRow("Created", BridgeHistory.formatDate(transaction.createdAt, style: .medium))
                 }
                 .padding()
             }
@@ -155,20 +141,5 @@ struct BridgeTransactionDetails: View {
                 .font(.body)
         }
         .padding(.vertical, 4)
-    }
-    
-    private func formatAmount(_ microXtm: String) -> String {
-        guard let micro = UInt64(microXtm) else { return "0 XTM" }
-        let xtm = Double(micro) / 1_000_000.0
-        return String(format: "%.6f XTM", xtm)
-    }
-    
-    private func formatDate(_ dateString: String) -> String {
-        let formatter = ISO8601DateFormatter()
-        guard let date = formatter.date(from: dateString) else { return dateString }
-        let displayFormatter = DateFormatter()
-        displayFormatter.dateStyle = .medium
-        displayFormatter.timeStyle = .medium
-        return displayFormatter.string(from: date)
     }
 }

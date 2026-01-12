@@ -7,6 +7,8 @@ final class BridgeService {
     private let apiService = BridgeAPIService.shared
     private let store = BridgeStore.shared
     
+    private static let HIGH_BRIDGE_THRESHOLD: Decimal = 100_000
+    
     private init() {}
     
     // MARK: - Configuration
@@ -115,13 +117,16 @@ final class BridgeService {
         // Note: Unwrapping requires Ethereum wallet connection and smart contract interaction
         // This would need Web3 integration or WalletConnect
         // For now, we'll create a placeholder transaction
+        let feeBps = store.config?.unwrapTokenFeePercentageBps ?? 50
+        let amountAfterFeeValue = amountMicro * UInt64(10000 - feeBps) / 10000
+        
         let ongoingTx = BridgeTransaction(
             id: UUID().uuidString,
             paymentId: "",
             destinationAddress: tariAddress,
             sourceAddress: ethAddress,
             tokenAmount: String(amountMicro),
-            amountAfterFee: String(amountMicro * 995 / 1000), // 0.5% fee
+            amountAfterFee: String(amountAfterFeeValue),
             status: .pending,
             type: .unwrap,
             createdAt: ISO8601DateFormatter().string(from: Date()),
@@ -176,13 +181,22 @@ final class BridgeService {
             )
         }
         
-        let amountDouble = Double(amount) ?? 0
-        let feePercentageBps = isWrap ? config.wrapTokenFeePercentageBps : config.unwrapTokenFeePercentageBps
-        let feePercentage = Double(feePercentageBps) / 100.0
+        let cleaned = amount.replacingOccurrences(of: ",", with: "")
+        guard let amountDecimal = Decimal(string: cleaned), amountDecimal > 0 else {
+            return BridgeFees(
+                feeAmount: 0,
+                amountAfterFee: 0,
+                feePercentage: 0,
+                isOverHighBridgeThreshold: false
+            )
+        }
         
-        let feeAmount = amountDouble * feePercentage / 100.0
-        let amountAfterFee = amountDouble - feeAmount
-        let isOverHighBridgeThreshold = amountDouble > 100000 // HIGH_BRIDGE_THRESHOLD
+        let feePercentageBps = isWrap ? config.wrapTokenFeePercentageBps : config.unwrapTokenFeePercentageBps
+        let feePercentage = Decimal(feePercentageBps) / 100
+        
+        let feeAmount = amountDecimal * feePercentage / 100
+        let amountAfterFee = amountDecimal - feeAmount
+        let isOverHighBridgeThreshold = amountDecimal > Self.HIGH_BRIDGE_THRESHOLD
         
         return BridgeFees(
             feeAmount: feeAmount,

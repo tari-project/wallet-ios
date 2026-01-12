@@ -18,17 +18,18 @@ final class BridgeAPIService {
         tokenAmount: String,
         debug: String? = nil
     ) async throws -> CreateWrapTransactionResponse {
-        let request = CreateWrapTransactionRequest(
+        let requestBody = CreateWrapTransactionRequest(
             to: ethAddress,
             from: tariAddress,
             tokenAmount: tokenAmount,
             debug: debug
         )
         
+        let bodyData = try JSONEncoder().encode(requestBody)
         return try await request(
             endpoint: "/api/wrap-token/transaction",
             method: "POST",
-            body: request
+            body: bodyData
         )
     }
     
@@ -38,10 +39,11 @@ final class BridgeAPIService {
     ) async throws -> UpdateTokensSentResponse {
         let requestBody = UpdateTokensSentRequest(debug: debug)
         
+        let bodyData = try JSONEncoder().encode(requestBody)
         return try await request(
             endpoint: "/api/wrap-token/transaction/\(paymentId)/tokens-sent",
             method: "PUT",
-            body: requestBody
+            body: bodyData
         )
     }
     
@@ -77,10 +79,10 @@ final class BridgeAPIService {
     
     // MARK: - Network Request
     
-    private func request<T: Decodable, B: Encodable>(
+    private func request<T: Decodable>(
         endpoint: String,
         method: String,
-        body: B? = nil
+        body: Data?
     ) async throws -> T {
         guard let url = URL(string: "\(baseURL)\(endpoint)") else {
             throw BridgeAPIError.invalidURL
@@ -91,7 +93,7 @@ final class BridgeAPIService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         if let body = body {
-            request.httpBody = try JSONEncoder().encode(body)
+            request.httpBody = body
         }
         
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -111,39 +113,18 @@ final class BridgeAPIService {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.dateDecodingStrategy = .iso8601
         
-        return try decoder.decode(T.self, from: data)
+        do {
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            throw BridgeAPIError.decodingError(error)
+        }
     }
     
     private func request<T: Decodable>(
         endpoint: String,
         method: String
     ) async throws -> T {
-        guard let url = URL(string: "\(baseURL)\(endpoint)") else {
-            throw BridgeAPIError.invalidURL
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = method
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw BridgeAPIError.invalidResponse
-        }
-        
-        guard (200...299).contains(httpResponse.statusCode) else {
-            if httpResponse.statusCode == 403 {
-                throw BridgeAPIError.dailyLimitExceeded
-            }
-            throw BridgeAPIError.httpError(statusCode: httpResponse.statusCode)
-        }
-        
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .iso8601
-        
-        return try decoder.decode(T.self, from: data)
+        try await request(endpoint: endpoint, method: method, body: nil as Data?)
     }
 }
 
