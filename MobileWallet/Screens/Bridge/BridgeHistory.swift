@@ -1,0 +1,145 @@
+import SwiftUI
+
+struct BridgeHistory: View {
+    @Environment(\.dismiss) var dismiss
+    @StateObject private var store = BridgeStore.shared
+    @State private var selectedTransaction: BridgeTransaction?
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(store.combinedTransactions) { transaction in
+                    BridgeTransactionRow(transaction: transaction)
+                        .onTapGesture {
+                            selectedTransaction = transaction
+                        }
+                }
+            }
+            .navigationTitle("Bridge History")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+            .sheet(item: $selectedTransaction) { transaction in
+                BridgeTransactionDetails(transaction: transaction)
+            }
+            .onFirstAppear {
+                Task {
+                    try? await BridgeService.shared.refreshTransactions()
+                }
+            }
+        }
+    }
+}
+
+struct BridgeTransactionRow: View {
+    let transaction: BridgeTransaction
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(transaction.type == .wrap ? "Wrap to Ethereum" : "Unwrap to Tari")
+                    .font(.headline)
+                
+                Text(formatAddress(transaction.destinationAddress))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Text(BridgeHistory.formatDate(transaction.createdAt, style: .short))
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(BridgeHistory.formatAmount(transaction.tokenAmount))
+                    .font(.headline)
+                
+                statusBadge
+            }
+        }
+        .padding(.vertical, 4)
+    }
+    
+    private var statusBadge: some View {
+        Text(transaction.status.rawValue)
+            .font(.caption2)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(statusColor.opacity(0.2))
+            .foregroundColor(statusColor)
+            .cornerRadius(4)
+    }
+    
+    private var statusColor: Color {
+        switch transaction.status {
+        case .success:
+            return .green
+        case .pending, .processing, .tokensReceived:
+            return .orange
+        case .timeout, .error:
+            return .red
+        }
+    }
+    
+    private func formatAddress(_ address: String) -> String {
+        if address.hasPrefix("0x") {
+            return "\(address.prefix(6))...\(address.suffix(4))"
+        }
+        return "\(address.prefix(8))...\(address.suffix(8))"
+    }
+    
+}
+
+struct BridgeTransactionDetails: View {
+    @Environment(\.dismiss) var dismiss
+    let transaction: BridgeTransaction
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    detailRow("Type", transaction.type == .wrap ? "Wrap to Ethereum" : "Unwrap to Tari")
+                    detailRow("Status", transaction.status.rawValue)
+                    detailRow("Amount", BridgeHistory.formatAmount(transaction.tokenAmount))
+                    detailRow("Amount After Fee", BridgeHistory.formatAmount(transaction.amountAfterFee))
+                    detailRow("Destination", transaction.destinationAddress)
+                    if let source = transaction.sourceAddress {
+                        detailRow("Source", source)
+                    }
+                    detailRow("Payment ID", transaction.paymentId)
+                    if let hash = transaction.transactionHash {
+                        detailRow("Transaction Hash", hash)
+                    }
+                    detailRow("Created", BridgeHistory.formatDate(transaction.createdAt, style: .medium))
+                }
+                .padding()
+            }
+            .navigationTitle("Transaction Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func detailRow(_ label: String, _ value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Text(value)
+                .font(.body)
+        }
+        .padding(.vertical, 4)
+    }
+}

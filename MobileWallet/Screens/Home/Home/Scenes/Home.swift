@@ -93,6 +93,9 @@ struct Home: View, ChainTipObserver {
                     Send()
                 }
             }
+            .fullScreenCover(isPresented: $router.isBridgePresented) {
+                Bridge()
+            }
             .sheet(isPresented: $isConnectionStatusPresented) {
                 ConnectionStatusSheet()
             }
@@ -218,6 +221,11 @@ private extension Home {
             HStack(spacing: 8) {
                 TariButton("Send", style: .label, size: .large) {
                     router.isHomeSendPresented = true
+                }
+                .disabled(!isChainTipSynced)
+                
+                TariButton("Bridge", style: .label, size: .large) {
+                    router.isBridgePresented = true
                 }
                 .disabled(!isChainTipSynced)
                 
