@@ -19,6 +19,8 @@ final class Exolix {
     private var isMonitoringTransactions = false
     var monitoredTransactions: Set<String> = []
     var latestTransactions = [String: ExolixTransactionResponse]()
+    
+    let isFeatureSupported = false
 
     init() {
         self.apiKey = AppSecret.load()?.exolixApiKey
