@@ -65,13 +65,13 @@ final class FFIWalletHandler {
 
     // MARK: - Actions
 
-    func connectWallet(network: TariNetwork, commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, isDnsSecureOn: Bool, logVerbosity: Int32, isCreatedWallet: Bool, callbacks: WalletCallbacks) throws {
+    func connectWallet(network: TariNetwork, walletDbConfig: WalletDbConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, isDnsSecureOn: Bool, logVerbosity: Int32, isCreatedWallet: Bool, callbacks: WalletCallbacks) throws {
         do {
             let beforeWalletCreationDate = Date()
             Logger.log(message: "Wallet will be created", domain: .general, level: .info)
             wallet = try Wallet(
                 network: network,
-                commsConfig: commsConfig,
+                walletDbConfig: walletDbConfig,
                 loggingFilePath: logFilePath,
                 seedWords: seedWords,
                 passphrase: passphrase,
@@ -205,17 +205,6 @@ final class FFIWalletHandler {
 
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
         return TariFeePerGramStat(pointer: pointer)
-    }
-
-    func seedPeers() throws -> PublicKeys {
-        let wallet = try exisingWallet
-
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_seed_peers(wallet.pointer, errorCodePointer)
-
-        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
-        return PublicKeys(pointer: result)
     }
 
     func utxos() throws -> [TariUtxo] {
@@ -371,10 +360,10 @@ final class FFIWalletHandler {
         return String(cString: result)
     }
 
-    func walletVersion(commsConfig: CommsConfig) throws -> String? {
+    func walletVersion(walletDbConfig: WalletDbConfig) throws -> String? {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_get_last_version(commsConfig.pointer, errorCodePointer)
+        let result = wallet_get_last_version(walletDbConfig.pointer, errorCodePointer)
         
         try checkError(errorCode)
         guard let result else { return nil }

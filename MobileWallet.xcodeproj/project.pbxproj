@@ -28,7 +28,7 @@
 		00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD809237D80C800EBF5E6 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD808237D80C800EBF5E6 /* Date.swift */; };
 		00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD80D237DA07400EBF5E6 /* ByteVector.swift */; };
-		00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
+		00BBD81A237EB31900EBF5E6 /* WalletDbConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* WalletDbConfig.swift */; };
 		00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E21238554FD00036DDC /* libsqlite3.tbd */; };
 		00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160A241CCE0600C955B4 /* TariSettings.swift */; };
 		00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160E241CD41D00C955B4 /* BaseNode.swift */; };
@@ -169,7 +169,6 @@
 		3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C128EC556C0015E63A /* CoreTariService.swift */; };
 		3A8473C428EC55B10015E63A /* TariTransactionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C328EC55B10015E63A /* TariTransactionsService.swift */; };
 		3A8473CA28EC56180015E63A /* TariFeesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C928EC56180015E63A /* TariFeesService.swift */; };
-		3A8473CC28EC562E0015E63A /* TariConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CB28EC562E0015E63A /* TariConnectionService.swift */; };
 		3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CD28EC56480015E63A /* TariUTXOsService.swift */; };
 		3A8473D028EC56600015E63A /* TariRecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CF28EC56600015E63A /* TariRecoveryService.swift */; };
 		3A8473D228EC568A0015E63A /* TariMessageSignService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D128EC568A0015E63A /* TariMessageSignService.swift */; };
@@ -368,7 +367,6 @@
 		54AC12922BCD1C1E0007FFEA /* StringBaseNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */; };
 		54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */; };
 		54BB5E052A2F081300E239C7 /* UserProfileDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */; };
-		54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BFE3F52B99C74800273272 /* PublicKeys.swift */; };
 		54C02B912BA075120057301A /* BaseNodeConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C02B902BA075120057301A /* BaseNodeConnectionError.swift */; };
 		54C36D0B2A5D3E9800BD973A /* QRCodeScannerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0A2A5D3E9800BD973A /* QRCodeScannerModel.swift */; };
 		54C36D0D2A5D3EA400BD973A /* QRCodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0C2A5D3EA400BD973A /* QRCodeScannerViewController.swift */; };
@@ -621,7 +619,7 @@
 		00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineArgs.swift; sourceTree = "<group>"; };
 		00BBD808237D80C800EBF5E6 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		00BBD80D237DA07400EBF5E6 /* ByteVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteVector.swift; sourceTree = "<group>"; };
-		00BBD819237EB31900EBF5E6 /* CommsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsConfig.swift; sourceTree = "<group>"; };
+		00BBD819237EB31900EBF5E6 /* WalletDbConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDbConfig.swift; sourceTree = "<group>"; };
 		00C520AE2469716E0077BF7F /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "usr/lib/libc++.1.tbd"; sourceTree = SDKROOT; };
 		00DC2E21238554FD00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		00DD160A241CCE0600C955B4 /* TariSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariSettings.swift; sourceTree = "<group>"; };
@@ -766,7 +764,6 @@
 		3A8473C128EC556C0015E63A /* CoreTariService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTariService.swift; sourceTree = "<group>"; };
 		3A8473C328EC55B10015E63A /* TariTransactionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariTransactionsService.swift; sourceTree = "<group>"; };
 		3A8473C928EC56180015E63A /* TariFeesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariFeesService.swift; sourceTree = "<group>"; };
-		3A8473CB28EC562E0015E63A /* TariConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariConnectionService.swift; sourceTree = "<group>"; };
 		3A8473CD28EC56480015E63A /* TariUTXOsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUTXOsService.swift; sourceTree = "<group>"; };
 		3A8473CF28EC56600015E63A /* TariRecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariRecoveryService.swift; sourceTree = "<group>"; };
 		3A8473D128EC568A0015E63A /* TariMessageSignService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariMessageSignService.swift; sourceTree = "<group>"; };
@@ -965,7 +962,6 @@
 		54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringBaseNodeTests.swift; sourceTree = "<group>"; };
 		54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Utlis.swift"; sourceTree = "<group>"; };
 		54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDeeplink.swift; sourceTree = "<group>"; };
-		54BFE3F52B99C74800273272 /* PublicKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeys.swift; sourceTree = "<group>"; };
 		54C02B902BA075120057301A /* BaseNodeConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNodeConnectionError.swift; sourceTree = "<group>"; };
 		54C36D0A2A5D3E9800BD973A /* QRCodeScannerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerModel.swift; sourceTree = "<group>"; };
 		54C36D0C2A5D3EA400BD973A /* QRCodeScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerViewController.swift; sourceTree = "<group>"; };
@@ -2102,7 +2098,6 @@
 				3A8473C128EC556C0015E63A /* CoreTariService.swift */,
 				3A8473C328EC55B10015E63A /* TariTransactionsService.swift */,
 				3A8473C928EC56180015E63A /* TariFeesService.swift */,
-				3A8473CB28EC562E0015E63A /* TariConnectionService.swift */,
 				3A8473CD28EC56480015E63A /* TariUTXOsService.swift */,
 				3A8473CF28EC56600015E63A /* TariRecoveryService.swift */,
 				3A8473D128EC568A0015E63A /* TariMessageSignService.swift */,
@@ -2339,7 +2334,6 @@
 			children = (
 				3A890EC829262744000F5DA6 /* TariAddress.swift */,
 				5499CF2C2C3EA7F5001C417F /* TariAddressComponents.swift */,
-				54BFE3F52B99C74800273272 /* PublicKeys.swift */,
 				001F6CDB238011CA00FA7002 /* PublicKey.swift */,
 			);
 			path = Keys;
@@ -2348,7 +2342,7 @@
 		3AF335DD28D7905C00B48F33 /* Configs */ = {
 			isa = PBXGroup;
 			children = (
-				00BBD819237EB31900EBF5E6 /* CommsConfig.swift */,
+				00BBD819237EB31900EBF5E6 /* WalletDbConfig.swift */,
 			);
 			path = Configs;
 			sourceTree = "<group>";
@@ -3622,7 +3616,7 @@
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				3A2C0B8927DA22C20018C5A8 /* ExpandButton.swift in Sources */,
 				F8D63B252E81684400071B66 /* UIVideoPlayer.swift in Sources */,
-				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
+				00BBD81A237EB31900EBF5E6 /* WalletDbConfig.swift in Sources */,
 				3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */,
 				3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				54DF83C52A4C5A220040E3F4 /* RoundedGlassContentView.swift in Sources */,
@@ -3679,7 +3673,6 @@
 				546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				549E1A012A5EB7B00063022C /* QRCodeScannerBoxView.swift in Sources */,
-				3A8473CC28EC562E0015E63A /* TariConnectionService.swift in Sources */,
 				3A84CDD62846089B005F2F8D /* UTXOsWalletModel.swift in Sources */,
 				54F1FDA62C296CC5007B3CD8 /* ScreenshotPopUpHandler.swift in Sources */,
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
@@ -3900,7 +3893,6 @@
 				F82150312E0A76DA003EBB25 /* EmojiToggle.swift in Sources */,
 				717B28A52DB8622200EDD05A /* APIService.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
-				54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */,
 				711D7FB02D5532DC0080A987 /* StylisedLabel.swift in Sources */,
 				3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */,
 				F88B28DA2E27AE6C005B9B13 /* Tab.swift in Sources */,

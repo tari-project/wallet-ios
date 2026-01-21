@@ -49,7 +49,6 @@ protocol WalletInteractable {
 
     var connectionCallbacks: WalletConnectionCallbacks { get }
 
-    var connection: TariConnectionService { get }
     var fees: TariFeesService { get }
     var keyValues: TariKeyValueService { get }
     var messageSign: TariMessageSignService { get }
@@ -87,7 +86,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     var dataVersion: String? {
         get throws {
-            try manager.walletVersion(commsConfig: try makeCommsConfig())
+            try manager.walletVersion(walletDbConfig: try makeWalletDbConfig())
         }
     }
 
@@ -96,7 +95,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
     private(set) lazy var connectionCallbacks = WalletConnectionCallbacks(scannedHeightPublisher: $scannedHeight, blockHeight: $blockHeight)
 
-    private(set) lazy var connection: TariConnectionService = TariConnectionService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var fees = TariFeesService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var keyValues = TariKeyValueService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
     private(set) lazy var messageSign = TariMessageSignService(walletManager: manager, walletCallbacks: walletCallbacks, services: self)
@@ -158,7 +156,7 @@ final class WalletContainer: WalletInteractable, MainServiceable {
 
         try manager.connectWallet(
             network: NetworkManager.shared.selectedNetwork,
-            commsConfig: makeCommsConfig(),
+            walletDbConfig: makeWalletDbConfig(),
             logFilePath: logPath,
             seedWords: walletSeedWords,
             passphrase: passphrase,
@@ -197,8 +195,8 @@ final class WalletContainer: WalletInteractable, MainServiceable {
         return try SeedWords(words: seedWords)
     }
 
-    private func makeCommsConfig() throws -> CommsConfig {
-        try CommsConfig(
+    private func makeWalletDbConfig() throws -> WalletDbConfig {
+        try WalletDbConfig(
             databaseName: databaseName,
             databaseFolderPath: databaseDirectoryURL.path
         )

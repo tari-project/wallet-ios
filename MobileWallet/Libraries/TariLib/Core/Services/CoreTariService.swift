@@ -39,7 +39,6 @@
 */
 
 protocol MainServiceable: AnyObject {
-    var connection: TariConnectionService { get }
     var walletBalance: TariBalanceService { get }
 }
 

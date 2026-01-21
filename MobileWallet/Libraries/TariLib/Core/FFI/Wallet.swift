@@ -54,7 +54,7 @@ final class Wallet {
 
     init(
         network: TariNetwork,
-        commsConfig: CommsConfig,
+        walletDbConfig: WalletDbConfig,
         loggingFilePath: String,
         seedWords: SeedWords?,
         passphrase: String?,
@@ -129,7 +129,7 @@ final class Wallet {
         let storedMessagesReceivedCallback: (@convention(c) (UnsafeMutableRawPointer?) -> Void) = { _ in
         }
 
-        let connectivityStatusCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = { context, status in
+        let connectivityStatusCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void) = { context, status, latency in
             // TODO: not used anymore, should be removed once FFI is updated
         }
 
@@ -157,7 +157,7 @@ final class Wallet {
 
         let result = wallet_create(
             callbacksPointer,
-            commsConfig.pointer,
+            walletDbConfig.pointer,
             loggingFilePath,
             logVerbosity,
             Self.numberOfRollingLogFiles,
@@ -166,9 +166,6 @@ final class Wallet {
             nil,
             seedWords?.pointer,
             network.name,
-            network.dnsPeer,
-            nil,
-            isDnsSecureOn,
             network.httpBaseNode,
             walletBirthdayOffset,
             receivedTransactionCallback,
@@ -184,7 +181,6 @@ final class Wallet {
             txoValidationCallback, // TODO: not used anymore, should be removed once FFI is updated
             balanceUpdatedCallback,
             trasactionValidationCompleteCallback, // TODO: not used anymore, should be removed once FFI is updated
-            storedMessagesReceivedCallback,
             connectivityStatusCallback,
             walletScannedHeightCallback,
             baseNodeStateCallback,
