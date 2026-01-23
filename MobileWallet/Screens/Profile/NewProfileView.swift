@@ -426,7 +426,6 @@ final class NewProfileView: DynamicThemeView {
         vstack.alignment = .center
         vstack.distribution = .fill
         vstack.spacing = 0
-        vstack.translatesAutoresizingMaskIntoConstraints = false
         
         let title = UILabel()
         title.text = "You don’t have any activity yet."

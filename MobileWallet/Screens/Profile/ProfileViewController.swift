@@ -88,7 +88,6 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
             }
             .store(in: &cancellables)
 
-        Tari.shared.wallet(.main).walletBalance.$balance
         Tari.shared.wallet(.main).transactions.$completed
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
