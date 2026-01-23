@@ -226,6 +226,13 @@ final class TariTransactionsService: CoreTariService {
     func transaction(id: UInt64) -> Transaction? {
         all.first { (try? $0.identifier) == id }
     }
+    
+    func minedTari() -> UInt64 {
+        completed
+            .filter { (try? $0.isCoinbase) == true }
+            .compactMap { try? $0.amount }
+            .reduce(0, +)
+    }
 }
 
 extension TariTransactionsService {
