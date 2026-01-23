@@ -56,6 +56,8 @@ final class NewProfileModel {
     @Published private(set) var errorMessage: MessageModel?
 
     @Published private(set) var state: State = .Initial
+    
+    @Published private(set) var isAirdropSupported = false
 
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()

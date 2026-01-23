@@ -324,20 +324,10 @@ private extension Home {
             } else if isLoadingTransactions {
                 ProgressView()
             } else {
-                noActivity
+                NoActivity()
             }
         }
         .frame(maxWidth: .infinity)
-    }
-    
-    var noActivity: some View {
-        VStack(spacing: 0) {
-            Text("You don’t have any activity yet.")
-                .headingLarge()
-            Text("Once you receive some tXTM, you’ll see it here.")
-                .body2()
-        }
-        .foregroundStyle(.primaryText)
     }
     
     var formattedBalance: String {
