@@ -245,10 +245,12 @@ private extension Home {
                     }
                     .foregroundStyle(.whiteMain.opacity(0.5))
                     
-                    TariButton("Buy XTM", style: .green, size: .large) {
-                        router.isSwapPresented = true
+                    if exolix.isFeatureSupported {
+                        TariButton("Buy XTM", style: .green, size: .large) {
+                            router.isSwapPresented = true
+                        }
+                        .padding(.top)
                     }
-                    .padding(.top)
                 }
                 .padding(.top, 50)
                 .padding(20)
