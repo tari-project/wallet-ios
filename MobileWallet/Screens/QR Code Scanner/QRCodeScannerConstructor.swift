@@ -42,6 +42,9 @@ enum QRCodeScannerConstructor {
 
     static func buildScene(expectedDataTypes: [QRCodeScannerModel.DataType], disabledDataTypes: [QRCodeScannerModel.DataType]) throws -> QRCodeScannerViewController {
         let videoCaptureManager = VideoCaptureManager()
+        videoCaptureManager.scansAnyText = expectedDataTypes.contains {
+            if case .text = $0 { return true } else { return false }
+        }
         try videoCaptureManager.setupSession()
         let model = QRCodeScannerModel(videoCaptureManager: videoCaptureManager, expectedDataTypes: expectedDataTypes, disabledDataTypes: disabledDataTypes)
         return QRCodeScannerViewController(model: model, videoSession: videoCaptureManager.captureSession)

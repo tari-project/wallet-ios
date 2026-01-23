@@ -78,6 +78,8 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
     }
 
     private func setupCallbacks() {
+        mainView.isAirdropSupported = model.isAirdropSupported
+
         // Keep strong reference to self in subscription
         model.$state
             .receive(on: DispatchQueue.main)
@@ -86,9 +88,12 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
             }
             .store(in: &cancellables)
 
-        Tari.shared.wallet(.main).walletBalance.$balance
+        Tari.shared.wallet(.main).transactions.$completed
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.update(mined: MicroTari($0.total).formatted) }
+            .sink { [weak self] _ in
+                let minedTari = Tari.shared.wallet(.main).transactions.minedTari()
+                self?.mainView.update(mined: MicroTari(minedTari).formatted, value: minedTari)
+            }
             .store(in: &cancellables)
 
         mainView.inviteView.onShareButtonTap = { [weak self] in
@@ -131,28 +136,34 @@ final class ProfileViewController: SecureViewController<NewProfileView>, WKNavig
 
     func handleState(state: NewProfileModel.State) {
         print("Handling state in ProfileViewController: \(state)")
-        switch state {
-        case .LoggedOut:
-            mainView.containerView.isHidden = true
-            mainView.loginView.isHidden = false
-            mainView.hideLoading()
-        case .Error:
-            mainView.containerView.isHidden = true
-            mainView.loginView.isHidden = false
-            mainView.hideLoading()
-        case .Initial:
-            mainView.containerView.isHidden = true
-            mainView.loginView.isHidden = true
-            mainView.hideLoading()
-        case .Loading:
-            mainView.containerView.isHidden = true
-            mainView.loginView.isHidden = false
-            mainView.showLoading()
-        case .Profile(let userDetails):
+        if model.isAirdropSupported {
+            switch state {
+            case .LoggedOut:
+                mainView.containerView.isHidden = true
+                mainView.loginView.isHidden = false
+                mainView.hideLoading()
+            case .Error:
+                mainView.containerView.isHidden = true
+                mainView.loginView.isHidden = false
+                mainView.hideLoading()
+            case .Initial:
+                mainView.containerView.isHidden = true
+                mainView.loginView.isHidden = true
+                mainView.hideLoading()
+            case .Loading:
+                mainView.containerView.isHidden = true
+                mainView.loginView.isHidden = false
+                mainView.showLoading()
+            case .Profile(let userDetails):
+                mainView.containerView.isHidden = false
+                mainView.loginView.isHidden = true
+                mainView.hideLoading()
+                mainView.update(profile: userDetails)
+            }
+        } else {
             mainView.containerView.isHidden = false
             mainView.loginView.isHidden = true
             mainView.hideLoading()
-            mainView.update(profile: userDetails)
         }
     }
 }

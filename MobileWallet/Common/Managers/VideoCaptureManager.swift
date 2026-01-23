@@ -45,6 +45,7 @@ final class VideoCaptureManager: NSObject {
         case invalid
         case validDeeplink(DeepLinkable)
         case base64Address(String)
+        case text(String)
     }
 
     enum SetupError: Error {
@@ -54,6 +55,8 @@ final class VideoCaptureManager: NSObject {
     }
 
     // MARK: - Properties
+    
+    var scansAnyText = false
 
     let captureSession = AVCaptureSession()
 
@@ -103,6 +106,8 @@ extension VideoCaptureManager: AVCaptureMetadataOutputObjectsDelegate {
                 result = .validDeeplink(deeplink)
             } else if (try? TariAddress(base58: rawData)) != nil {
                 result = .base64Address(rawData)
+            } else if scansAnyText {
+                result = .text(rawData)
             } else {
                 result = .invalid
             }

@@ -42,8 +42,10 @@ import SwiftUI
 import Combine
 
 struct Home: View, ChainTipObserver {
+    @CodableStorage("swapTransactions", defaultValue: SwapTransactionList()) var swapTransactions
     @ObservedObject var network = NetworkManager.shared
-    @Environment(HomeRouter.self) var router
+    @Environment(SheetRouter.self) var router
+    @Environment(\.scenePhase) var scenePhase
     @State var activeMiners = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
@@ -54,9 +56,13 @@ struct Home: View, ChainTipObserver {
     @State var chainTip: UInt64 = 0
     @State var recentTransactions = [FormattedTransaction]()
     @State var presentedTransaction: FormattedTransaction?
+    @State var presentedSwapProgress: ExolixTransactionResponse?
+    @State var swapTransaction: ExolixTransactionResponse?
     @State var isReceivePresented = false
     @State var isTransactionHistoryPresented = false
+    @State var isSwapHistoryPresented = false
     @State var isConnectionStatusPresented = false
+    @State var exolix = Exolix.shared
     
     let walletState: WalletState
     
@@ -66,9 +72,11 @@ struct Home: View, ChainTipObserver {
             ScrollView {
                 VStack(spacing: 10) {
                     miningStatus
-                    wallet
-                    recentActivity
-                        .padding(.top, 24)
+                    VStack(spacing: 24) {
+                        wallet
+                        swapInProgress
+                        recentActivity
+                    }
                 }
                 .padding(16)
             }
@@ -88,9 +96,22 @@ struct Home: View, ChainTipObserver {
             .navigationDestination(isPresented: $isTransactionHistoryPresented) {
                 TransactionHistory(transactions: recentTransactions)
             }
+            .navigationDestination(isPresented: $isSwapHistoryPresented) {
+                SwapHistory(presentedSwap: $presentedSwapProgress)
+            }
+            .fullScreenCover(isPresented: $router.isSwapPresented) {
+                NavigationStack {
+                    Swaps()
+                }
+            }
             .fullScreenCover(isPresented: $router.isHomeSendPresented) {
                 NavigationStack {
                     Send()
+                }
+            }
+            .fullScreenCover(item: $presentedSwapProgress) { transaction in
+                NavigationStack {
+                    SwapProgress(transaction: transaction)
                 }
             }
             .sheet(isPresented: $isConnectionStatusPresented) {
@@ -103,6 +124,18 @@ struct Home: View, ChainTipObserver {
             }
             .onReceive(Tari.mainWallet.transactions.$all) {
                 update(transactions: $0)
+            }
+            .onChange(of: swapTransactions) {
+                loadSwapInProgress()
+            }
+            .onChange(of: scenePhase) {
+                Task {
+                    if scenePhase == .active {
+                        await exolix.monitor(transactions: Array(swapTransactions.swaps))
+                    } else {
+                        await exolix.stopMonitoringTransactions()
+                    }
+                }
             }
         }
     }
@@ -211,7 +244,15 @@ private extension Home {
                         }
                     }
                     .foregroundStyle(.whiteMain.opacity(0.5))
+                    
+                    if exolix.isFeatureSupported {
+                        TariButton("Buy XTM", style: .green, size: .large) {
+                            router.isSwapPresented = true
+                        }
+                        .padding(.top)
+                    }
                 }
+                .padding(.top, 50)
                 .padding(20)
             }
             
@@ -219,10 +260,35 @@ private extension Home {
                 TariButton("Send", style: .label, size: .large) {
                     router.isHomeSendPresented = true
                 }
-                .disabled(!isChainTipSynced)
-                
                 TariButton("Receive", style: .label, size: .large) {
                     isReceivePresented = true
+                }
+            }
+        }
+    }
+    
+    func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .headingXL()
+            .foregroundStyle(.primaryText)
+    }
+    
+    @ViewBuilder
+    var swapInProgress: some View {
+        let transactions = exolix.sortedTransactions
+        if !transactions.isEmpty {
+            VStack {
+                sectionHeader("Recent Swaps")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                ForEach(transactions.prefix(2)) { swapTransaction in
+                    SwapInProgressItem(transaction: swapTransaction) {
+                        presentedSwapProgress = swapTransaction
+                    }
+                }
+                if 2 < transactions.count {
+                    TariButton("View all swaps", style: .text, size: .medium) {
+                        isSwapHistoryPresented = true
+                    }
                 }
             }
         }
@@ -231,11 +297,8 @@ private extension Home {
     var recentActivity: some View {
         VStack {
             HStack {
-                Text("Recent Activity")
-                    .headingXL()
-                    .foregroundStyle(.primaryText)
+                sectionHeader("Recent Activity")
                 Spacer(minLength: 8)
-
                 HStack(spacing: 2) {
                     if isChainTipSynced {
                         Image(.successIcon)
@@ -263,20 +326,10 @@ private extension Home {
             } else if isLoadingTransactions {
                 ProgressView()
             } else {
-                noActivity
+                NoActivity()
             }
         }
         .frame(maxWidth: .infinity)
-    }
-    
-    var noActivity: some View {
-        VStack(spacing: 0) {
-            Text("You don’t have any activity yet.")
-                .headingLarge()
-            Text("Once you receive some tXTM, you’ll see it here.")
-                .body2()
-        }
-        .foregroundStyle(.primaryText)
     }
     
     var formattedBalance: String {

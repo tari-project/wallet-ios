@@ -104,9 +104,6 @@ private extension API {
         if httpResponse.statusCode == 401 {
             throw APIError.unauthorized
         }
-        if let responseString = String(data: data, encoding: .utf8) {
-            print("API Response for \(endpoint): \(responseString)")
-        }
     }
     
     func refreshToken() async throws {

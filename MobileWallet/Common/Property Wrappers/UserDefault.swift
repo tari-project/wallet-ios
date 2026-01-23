@@ -43,8 +43,12 @@ import Foundation
 @propertyWrapper struct UserDefault<T: Codable> {
     private let key: String
     private let userDefaults: UserDefaults
+    
+    init(key: UserDefaultName, suiteName: String? = nil) {
+        self.init(key.rawValue, suiteName: suiteName)
+    }
 
-    init(key: String, suiteName: String? = nil) {
+    init(_ key: String, suiteName: String? = nil) {
         self.key = key
         userDefaults = UserDefaults(suiteName: suiteName) ?? UserDefaults.standard
     }

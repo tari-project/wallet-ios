@@ -116,6 +116,7 @@ enum DeepLinkDefaultActionsHandler {
         switch actionType {
         case .direct:
             try add(contacts: contacts)
+            SheetRouter.shared.isAddContactPresented = false
         case .popUp:
             Task { @MainActor in
                 try await showAddContactsPopUp(contacts: contacts)
@@ -221,6 +222,7 @@ enum DeepLinkDefaultActionsHandler {
             let address = try TariAddress(base58: $0.address)
             _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)
         }
+        contactsManager.notifyContactsUpdated()
     }
 
     private static func showRecoveryPasswordDialog(privateKey: String) {

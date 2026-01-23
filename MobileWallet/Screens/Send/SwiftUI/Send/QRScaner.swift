@@ -44,9 +44,12 @@ protocol QRScaner { }
 
 @MainActor
 extension QRScaner {
-    func scanQR(completion: @escaping (QRCodeData) -> Void) {
+    func scanQR(
+        expectedDataTypes: [QRCodeScannerModel.DataType] = [.base64Address, .deeplink(.transactionSend), .deeplink(.profile)],
+        completion: @escaping (QRCodeData) -> Void
+    ) {
         UIApplication.shared.hideKeyboard()
-        AppRouter.presentQrCodeScanner(expectedDataTypes: [.base64Address, .deeplink(.transactionSend), .deeplink(.profile)], disabledDataTypes: []) { qrData in
+        AppRouter.presentQrCodeScanner(expectedDataTypes: expectedDataTypes, disabledDataTypes: []) { qrData in
             completion(qrData)
         }
     }

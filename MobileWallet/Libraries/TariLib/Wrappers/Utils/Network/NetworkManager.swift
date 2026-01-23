@@ -60,14 +60,10 @@ final class NetworkManager: ObservableObject {
 
     @Published var selectedNetwork: TariNetwork
 
-    var defaultBaseNodes: [BaseNode] { (try? Tari.shared.wallet(.main).connection.defaultBaseNodePeers()) ?? [] }
-
     var blockHeight: UInt64 {
         get { settings.blockHeight }
         set { update(settings: settings.update(blockHeight: newValue)) }
     }
-
-    var allBaseNodes: [BaseNode] { defaultBaseNodes }
 
     var currencySymbol: String { selectedNetwork.currencySymbol }
 
@@ -109,11 +105,6 @@ final class NetworkManager: ObservableObject {
     func removeSelectedNetworkSettings() {
         GroupUserDefaults.networksSettings?.removeAll { $0.name == GroupUserDefaults.selectedNetworkName }
         GroupUserDefaults.selectedNetworkName = nil
-    }
-
-    func randomBaseNode() throws -> BaseNode {
-        guard let newBaseNode = defaultBaseNodes.randomElement() else { throw InternalError.noBaseNode }
-        return newBaseNode
     }
 
     private func update(settings: NetworkSettings) {

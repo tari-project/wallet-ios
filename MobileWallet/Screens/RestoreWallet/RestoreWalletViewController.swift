@@ -310,9 +310,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         case let .deeplink(deeplink):
             guard let deeplink = deeplink as? PaperWalletDeeplink else { return }
             model.requestWalletRecovery(paperWalletDeeplink: deeplink)
-        case .bridges:
-            break
-        case .base64Address:
+        case .bridges, .base64Address, .text:
             break
         }
     }

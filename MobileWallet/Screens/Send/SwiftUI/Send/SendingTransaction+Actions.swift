@@ -64,7 +64,6 @@ extension SendingTransaction {
                 try Tari.mainWallet.transactions.send(
                     toAddress: try TariAddress(base58: confirmation.address.fullRaw),
                     amount: confirmation.amount.rawValue,
-                    feePerGram: confirmation.feePerGram.rawValue,
                     paymentID: confirmation.note ?? ""
                 )
                 Task { @MainActor in
@@ -85,7 +84,7 @@ extension SendingTransaction {
             finishingProgress = 1
         } completion: {
             TabState.shared.selected = .home
-            HomeRouter.shared.dismissSendPresentation()
+            SheetRouter.shared.dismissSendPresentation()
         }
     }
     

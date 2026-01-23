@@ -44,10 +44,11 @@ struct CopyButton: View, Copying {
     @State var isCopied = false
     
     let value: String
+    var color: Color = .primaryText
     
     var body: some View {
-        IconButton(isCopied ? .Icons.General.checkmark : .sendCopy, action: copy)
-            .frame(width: 24, height: 24)
+        IconButton(isCopied ? .Icons.General.checkmark : .sendCopy, color: color, action: copy)
+            .frame(square: 24)
     }
 }
 

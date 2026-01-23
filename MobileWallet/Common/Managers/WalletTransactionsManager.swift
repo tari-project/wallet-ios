@@ -61,13 +61,13 @@ final class WalletTransactionsManager {
 
     // MARK: - Actions
 
-    func performTransactionPublisher(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String) -> AnyPublisher<State, TransactionError> {
+    func performTransactionPublisher(address: String, amount: MicroTari, paymentID: String) -> AnyPublisher<State, TransactionError> {
         let subject = CurrentValueSubject<State, TransactionError>(.connectionCheck)
 
         waitForConnection { [weak self] result in
             switch result {
             case .success:
-                self?.sendTransactionToBlockchain(address: address, amount: amount, feePerGram: feePerGram, paymentID: paymentID) { result in
+                self?.sendTransactionToBlockchain(address: address, amount: amount, paymentID: paymentID) { result in
                     switch result {
                     case .success:
                         subject.send(completion: .finished)
@@ -90,12 +90,11 @@ final class WalletTransactionsManager {
         result(.success)
     }
 
-    private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, paymentID: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func sendTransactionToBlockchain(address: String, amount: MicroTari, paymentID: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
         do {
             try Tari.mainWallet.transactions.send(
                 toAddress: try TariAddress(base58: address),
                 amount: amount.rawValue,
-                feePerGram: feePerGram.rawValue,
                 paymentID: paymentID
             )
             result(.success)

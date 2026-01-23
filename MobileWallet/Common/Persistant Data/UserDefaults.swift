@@ -42,7 +42,7 @@ import Foundation
 
 // MARK: - Generic User Defaults
 
-private enum UserDefaultName: String, CaseIterable {
+enum UserDefaultName: String, CaseIterable {
     case selectedNetworkName
     case networksSettings
     case walletSettings
@@ -53,13 +53,13 @@ private enum UserDefaultName: String, CaseIterable {
 }
 
 enum GroupUserDefaults {
-    @UserDefault(key: UserDefaultName.selectedNetworkName.rawValue, suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: UserDefaultName.networksSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
-    @UserDefault(key: UserDefaultName.userSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var userSettings: UserSettings?
-    @UserDefault(key: UserDefaultName.isTrackingEnabled.rawValue, suiteName: TariSettings.groupIndentifier) static var isTrackingEnabled: Bool?
-    @UserDefault(key: UserDefaultName.areScreenshotsDisabled.rawValue, suiteName: TariSettings.groupIndentifier) static var areScreenshotsDisabled: Bool?
-    @UserDefault(key: UserDefaultName.trustedAddresses.rawValue, suiteName: TariSettings.groupIndentifier) static var trustedAddresses: Set<String>?
+    @UserDefault(key: UserDefaultName.selectedNetworkName, suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
+    @UserDefault(key: UserDefaultName.networksSettings, suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
+    @UserDefault(key: UserDefaultName.walletSettings, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+    @UserDefault(key: UserDefaultName.userSettings, suiteName: TariSettings.groupIndentifier) static var userSettings: UserSettings?
+    @UserDefault(key: UserDefaultName.isTrackingEnabled, suiteName: TariSettings.groupIndentifier) static var isTrackingEnabled: Bool?
+    @UserDefault(key: UserDefaultName.areScreenshotsDisabled, suiteName: TariSettings.groupIndentifier) static var areScreenshotsDisabled: Bool?
+    @UserDefault(key: UserDefaultName.trustedAddresses, suiteName: TariSettings.groupIndentifier) static var trustedAddresses: Set<String>?
 }
 
 // MARK: - Extensions

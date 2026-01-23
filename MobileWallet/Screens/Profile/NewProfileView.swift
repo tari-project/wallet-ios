@@ -252,6 +252,7 @@ final class GaugeView: DynamicThemeView {
 }
 
 final class NewProfileView: DynamicThemeView {
+    public var isAirdropSupported = false
 
     public var onLoginButtonTap: (() -> Void)? {
         didSet {
@@ -418,6 +419,26 @@ final class NewProfileView: DynamicThemeView {
         label.isHidden = true
         return label
     }()
+    
+    @TariView private var noActivityView: UIStackView = {
+        let vstack = UIStackView()
+        vstack.axis = .vertical
+        vstack.alignment = .center
+        vstack.distribution = .fill
+        vstack.spacing = 0
+        
+        let title = UILabel()
+        title.text = "You don’t have any activity yet."
+        title.font = .Poppins.SemiBold.withSize(16)
+        vstack.addArrangedSubview(title)
+
+        let subtitle = UILabel()
+        subtitle.text = "Once you receive some XTM, you’ll see it here."
+        subtitle.font = .Poppins.Medium.withSize(12)
+        vstack.addArrangedSubview(subtitle)
+        
+        return vstack
+    }()
 
     func setupViews() {
         backgroundColor = .Background.secondary
@@ -433,76 +454,96 @@ final class NewProfileView: DynamicThemeView {
     }
 
     func setupConstraints() {
+        if isAirdropSupported {
+            [containerView, loginView].forEach(addSubview)
+            [minedGaugeView, gemsGaugeView].forEach(gaugesContainerView.addSubview)
+            [usernameLabel, gaugesContainerView, inviteView, noInvitesView, logoutButton].forEach(containerView.addSubview)
+            [loginBanner, loginTitleLabel, loginDescriptionLabel, loginButton, loadingIndicator, loadingLabel].forEach(loginView.addSubview)
 
-        [containerView, loginView].forEach(addSubview)
-        [minedGaugeView, gemsGaugeView].forEach(gaugesContainerView.addSubview)
-        [usernameLabel, gaugesContainerView, inviteView, noInvitesView, logoutButton].forEach(containerView.addSubview)
-        [loginBanner, loginTitleLabel, loginDescriptionLabel, loginButton, loadingIndicator, loadingLabel].forEach(loginView.addSubview)
+            NSLayoutConstraint.activate([
+                containerView.topAnchor.constraint(equalTo: topAnchor),
+                containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                containerView.widthAnchor.constraint(lessThanOrEqualToConstant: 400),
+                containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-        NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            containerView.widthAnchor.constraint(lessThanOrEqualToConstant: 400),
-            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+                loginView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                loginView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                loginView.bottomAnchor.constraint(equalTo: bottomAnchor),
+                loginView.topAnchor.constraint(equalTo: topAnchor),
+    
+                // loginBanner.topAnchor.constraint(equalTo: topAnchor, constant: 170),
+                loginBanner.widthAnchor.constraint(equalToConstant: 362),
+                loginBanner.heightAnchor.constraint(equalToConstant: 275),
+                loginBanner.centerXAnchor.constraint(equalTo: centerXAnchor),
+                loginBanner.bottomAnchor.constraint(equalTo: centerYAnchor, constant: 40),
+    
+                loginTitleLabel.topAnchor.constraint(equalTo: loginBanner.bottomAnchor, constant: 25),
+                loginTitleLabel.leftAnchor.constraint(equalTo: loginBanner.leftAnchor),
+    
+                loginDescriptionLabel.topAnchor.constraint(equalTo: loginTitleLabel.bottomAnchor, constant: 30),
+                loginDescriptionLabel.leftAnchor.constraint(equalTo: loginBanner.leftAnchor),
+                loginDescriptionLabel.rightAnchor.constraint(equalTo: loginBanner.rightAnchor),
+    
+                loginButton.centerXAnchor.constraint(equalTo: loginView.centerXAnchor),
+                loginButton.widthAnchor.constraint(equalToConstant: 362),
+                loginButton.heightAnchor.constraint(equalToConstant: 50),
+                loginButton.bottomAnchor.constraint(equalTo: loginView.bottomAnchor, constant: -50),
 
-            loginView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            loginView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            loginView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            loginView.topAnchor.constraint(equalTo: topAnchor),
-
-            // loginBanner.topAnchor.constraint(equalTo: topAnchor, constant: 170),
-            loginBanner.widthAnchor.constraint(equalToConstant: 362),
-            loginBanner.heightAnchor.constraint(equalToConstant: 275),
-            loginBanner.centerXAnchor.constraint(equalTo: centerXAnchor),
-            loginBanner.bottomAnchor.constraint(equalTo: centerYAnchor, constant: 40),
-
-            loginTitleLabel.topAnchor.constraint(equalTo: loginBanner.bottomAnchor, constant: 25),
-            loginTitleLabel.leftAnchor.constraint(equalTo: loginBanner.leftAnchor),
-
-            loginDescriptionLabel.topAnchor.constraint(equalTo: loginTitleLabel.bottomAnchor, constant: 30),
-            loginDescriptionLabel.leftAnchor.constraint(equalTo: loginBanner.leftAnchor),
-            loginDescriptionLabel.rightAnchor.constraint(equalTo: loginBanner.rightAnchor),
-
-            loginButton.centerXAnchor.constraint(equalTo: loginView.centerXAnchor),
-            loginButton.widthAnchor.constraint(equalToConstant: 362),
-            loginButton.heightAnchor.constraint(equalToConstant: 50),
-            loginButton.bottomAnchor.constraint(equalTo: loginView.bottomAnchor, constant: -50),
-
-            // usernameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 124),
-            usernameLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            usernameLabel.bottomAnchor.constraint(equalTo: gaugesContainerView.topAnchor, constant: -40),
-            gaugesContainerView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 21),
-            gaugesContainerView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -21),
-            gaugesContainerView.widthAnchor.constraint(lessThanOrEqualToConstant: 370),
-            minedGaugeView.topAnchor.constraint(equalTo: gaugesContainerView.topAnchor),
-            minedGaugeView.leadingAnchor.constraint(equalTo: gaugesContainerView.leadingAnchor),
-            minedGaugeView.bottomAnchor.constraint(equalTo: gaugesContainerView.bottomAnchor),
-            minedGaugeView.widthAnchor.constraint(equalToConstant: 164),
-            minedGaugeView.heightAnchor.constraint(equalToConstant: 120),
-            gemsGaugeView.topAnchor.constraint(equalTo: gaugesContainerView.topAnchor),
-            gemsGaugeView.rightAnchor.constraint(equalTo: gaugesContainerView.rightAnchor),
-            gemsGaugeView.widthAnchor.constraint(equalToConstant: 164),
-            gemsGaugeView.heightAnchor.constraint(equalToConstant: 120),
-
-            gaugesContainerView.bottomAnchor.constraint(equalTo: inviteView.topAnchor, constant: -30),
-            inviteView.topAnchor.constraint(equalTo: centerYAnchor, constant: -30),
-            inviteView.leftAnchor.constraint(equalTo: gaugesContainerView.leftAnchor),
-            inviteView.rightAnchor.constraint(equalTo: gaugesContainerView.rightAnchor),
-            inviteView.heightAnchor.constraint(equalToConstant: 220),
-            inviteView.widthAnchor.constraint(lessThanOrEqualToConstant: 370),
-
-            logoutButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            logoutButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50),
-            logoutButton.widthAnchor.constraint(equalToConstant: 362),
-            logoutButton.heightAnchor.constraint(equalToConstant: 50),
-
-            loadingIndicator.centerXAnchor.constraint(equalTo: loginView.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: loginView.centerYAnchor),
-
-            loadingLabel.topAnchor.constraint(equalTo: loadingIndicator.bottomAnchor, constant: 16),
-            loadingLabel.centerXAnchor.constraint(equalTo: loginView.centerXAnchor),
-            loadingLabel.widthAnchor.constraint(equalToConstant: 362)
-        ])
+                // usernameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 124),
+                usernameLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                usernameLabel.bottomAnchor.constraint(equalTo: gaugesContainerView.topAnchor, constant: -40),
+                gaugesContainerView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 21),
+                gaugesContainerView.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -21),
+                gaugesContainerView.widthAnchor.constraint(lessThanOrEqualToConstant: 370),
+                minedGaugeView.topAnchor.constraint(equalTo: gaugesContainerView.topAnchor),
+                minedGaugeView.leadingAnchor.constraint(equalTo: gaugesContainerView.leadingAnchor),
+                minedGaugeView.bottomAnchor.constraint(equalTo: gaugesContainerView.bottomAnchor),
+                minedGaugeView.widthAnchor.constraint(equalToConstant: 164),
+                minedGaugeView.heightAnchor.constraint(equalToConstant: 120),
+                gemsGaugeView.topAnchor.constraint(equalTo: gaugesContainerView.topAnchor),
+                gemsGaugeView.rightAnchor.constraint(equalTo: gaugesContainerView.rightAnchor),
+                gemsGaugeView.widthAnchor.constraint(equalToConstant: 164),
+                gemsGaugeView.heightAnchor.constraint(equalToConstant: 120),
+    
+                gaugesContainerView.bottomAnchor.constraint(equalTo: inviteView.topAnchor, constant: -30),
+                inviteView.topAnchor.constraint(equalTo: centerYAnchor, constant: -30),
+                inviteView.leftAnchor.constraint(equalTo: gaugesContainerView.leftAnchor),
+                inviteView.rightAnchor.constraint(equalTo: gaugesContainerView.rightAnchor),
+                inviteView.heightAnchor.constraint(equalToConstant: 220),
+                inviteView.widthAnchor.constraint(lessThanOrEqualToConstant: 370),
+    
+                logoutButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                logoutButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -50),
+                logoutButton.widthAnchor.constraint(equalToConstant: 362),
+                logoutButton.heightAnchor.constraint(equalToConstant: 50),
+    
+                loadingIndicator.centerXAnchor.constraint(equalTo: loginView.centerXAnchor),
+                loadingIndicator.centerYAnchor.constraint(equalTo: loginView.centerYAnchor),
+    
+                loadingLabel.topAnchor.constraint(equalTo: loadingIndicator.bottomAnchor, constant: 16),
+                loadingLabel.centerXAnchor.constraint(equalTo: loginView.centerXAnchor),
+                loadingLabel.widthAnchor.constraint(equalToConstant: 362)
+            ])
+        } else {
+            [containerView].forEach(addSubview)
+            [noActivityView, minedGaugeView].forEach(containerView.addSubview)
+            
+            NSLayoutConstraint.activate([
+                containerView.topAnchor.constraint(equalTo: topAnchor),
+                containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                containerView.widthAnchor.constraint(lessThanOrEqualToConstant: 400),
+                containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+                
+                minedGaugeView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 32),
+                minedGaugeView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                minedGaugeView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                minedGaugeView.heightAnchor.constraint(equalToConstant: 120),
+                
+                noActivityView.topAnchor.constraint(equalTo: minedGaugeView.bottomAnchor, constant: 20),
+                noActivityView.leftAnchor.constraint(equalTo: containerView.leftAnchor),
+                noActivityView.rightAnchor.constraint(equalTo: containerView.rightAnchor),
+            ])
+        }
     }
 
     override func update(theme: AppTheme) {
@@ -522,8 +563,9 @@ final class NewProfileView: DynamicThemeView {
         invitedLabel.text = "Invited Friends " + "(0)"
     }
 
-    func update(mined: String) {
+    func update(mined: String, value: UInt64) {
         minedGaugeView.setAmount(amount: mined)
+        noActivityView.isHidden = value != 0
     }
 
     func showLoading() {

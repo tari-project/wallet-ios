@@ -53,7 +53,6 @@ final class YatTransactionModel {
     struct InputData {
         let address: String
         let amount: MicroTari
-        let feePerGram: MicroTari
         let message: String
         let yatID: String
     }
@@ -152,7 +151,7 @@ final class YatTransactionModel {
     // MARK: - Wallet
 
     private func sendTransactionToBlockchain() {
-        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, paymentID: inputData.message)
+        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, paymentID: inputData.message)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:

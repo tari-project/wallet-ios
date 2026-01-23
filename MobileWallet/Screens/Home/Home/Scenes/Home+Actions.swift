@@ -47,6 +47,7 @@ extension Home {
         loadWalletState()
         ShortcutsManager.executeQueuedShortcut()
         StagedWalletSecurityManager.shared.start()
+        loadSwapInProgress()
     }
     
     func transaction(for transaction: FormattedTransaction) -> Transaction? {
@@ -196,6 +197,14 @@ private extension Home {
             NotificationManager.shared.requestAuthorization { _ in
                 completion()
             }
+        }
+    }
+}
+
+extension Home: SwapTransactionMonitoring {
+    func loadSwapInProgress() {
+        Task {
+            await monitorSwapTransactions(swapTransactions)
         }
     }
 }

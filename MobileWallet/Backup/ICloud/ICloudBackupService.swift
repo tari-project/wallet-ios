@@ -56,19 +56,14 @@ final class ICloudBackupService {
         var internalError: Error? {
             switch self {
             case .noUbiquityContainer:
-                return nil
-            case let .unableToCreateBackup(error):
-                return error
-            case let .unableToCreateFolderStructure(error):
-                return error
-            case let .unableToDeleteFile(error):
-                return error
-            case let .unableToCopyFile(error):
-                return error
-            case let .unableToDownloadBackup(error):
-                return error
-            case let .unableToSaveBackup(error):
-                return error
+                nil
+            case let .unableToCreateBackup(error),
+                 let .unableToCreateFolderStructure(error),
+                 let .unableToDeleteFile(error),
+                 let .unableToCopyFile(error),
+                 let .unableToDownloadBackup(error),
+                 let .unableToSaveBackup(error):
+                error
             }
         }
     }
@@ -276,7 +271,6 @@ extension ICloudBackupService: BackupServicable {
     var lastBackupTimestamp: AnyPublisher<Date?, Never> { $syncDate.eraseToAnyPublisher() }
 
     func performBackup(forced: Bool) {
-
         guard !AppValues.general.isSimulator, isOn else { return }
         guard forced || backupStatusValue.isFailed else { return }
 
