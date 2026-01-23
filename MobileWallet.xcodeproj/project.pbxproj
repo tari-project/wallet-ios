@@ -558,6 +558,7 @@
 		F899FBD62E548C9C00653B5A /* View+AutoheightDetents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F899FBD52E548C9600653B5A /* View+AutoheightDetents.swift */; };
 		F899FBD82E548D1500653B5A /* View+ObservableFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F899FBD72E548D0F00653B5A /* View+ObservableFrame.swift */; };
 		F899FBDC2E54901100653B5A /* FeeInfoSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F899FBDB2E54901100653B5A /* FeeInfoSheet.swift */; };
+		F8A536702F2379B400F69E64 /* NoActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A5366F2F2379B400F69E64 /* NoActivity.swift */; };
 		F8BA7D232E1D75DE00BDBEF1 /* AppTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BA7D222E1D75DE00BDBEF1 /* AppTabs.swift */; };
 		F8C065242E2A554D009BFC8F /* TransactionHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065232E2A554D009BFC8F /* TransactionHistory.swift */; };
 		F8C065382E2E7220009BFC8F /* Text+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C065372E2E721B009BFC8F /* Text+Style.swift */; };
@@ -1155,6 +1156,7 @@
 		F899FBD52E548C9600653B5A /* View+AutoheightDetents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AutoheightDetents.swift"; sourceTree = "<group>"; };
 		F899FBD72E548D0F00653B5A /* View+ObservableFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ObservableFrame.swift"; sourceTree = "<group>"; };
 		F899FBDB2E54901100653B5A /* FeeInfoSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeInfoSheet.swift; sourceTree = "<group>"; };
+		F8A5366F2F2379B400F69E64 /* NoActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoActivity.swift; sourceTree = "<group>"; };
 		F8BA7D222E1D75DE00BDBEF1 /* AppTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabs.swift; sourceTree = "<group>"; };
 		F8C065232E2A554D009BFC8F /* TransactionHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistory.swift; sourceTree = "<group>"; };
 		F8C065372E2E721B009BFC8F /* Text+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Style.swift"; sourceTree = "<group>"; };
@@ -2055,6 +2057,7 @@
 				F82150472E0D78F4003EBB25 /* TransactionItem.swift */,
 				F8C0653E2E37C3A5009BFC8F /* ConnectionStatus.swift */,
 				F82888A52EBCA4770085A103 /* SwapInProgressItem.swift */,
+				F8A5366F2F2379B400F69E64 /* NoActivity.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3563,6 +3566,7 @@
 				3ACFA5EA2937532A00E1455A /* SplashViewConstructor.swift in Sources */,
 				3AB136D62906643700A5373D /* ICloudBackupService.swift in Sources */,
 				3A8473C428EC55B10015E63A /* TariTransactionsService.swift in Sources */,
+				F8A536702F2379B400F69E64 /* NoActivity.swift in Sources */,
 				71F94EC52DA32D0B00D3F2AC /* ReceiveView.swift in Sources */,
 				3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */,
 				3AE138C928044A1800443D34 /* PopUpComponentsFactory.swift in Sources */,
