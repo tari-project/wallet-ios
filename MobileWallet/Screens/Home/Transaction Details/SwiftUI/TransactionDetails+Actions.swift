@@ -111,7 +111,10 @@ extension TransactionDetails {
                 case .timeLocked: "This transaction was cancelled due to the funds not having reached their time-lock period yet."
                 case .invalidTransaction:
                     "The transaction failed to the invalid input data. This situation shouldn\'t happen. Please send a bug report or contact us directly."
-                case .abandonedCoinbase: "The coinbase was abandoned."
+                case .oversized: "The transaction was cancelled because it was too large to fit in a block."
+                case .feeTooLow: "The transaction was cancelled because its fee was too low."
+                case .alreadyMined: "The transaction was cancelled because the funds were already mined."
+                case .invalidEncryptedValue: "The transaction was cancelled because an output did not open to its encrypted value."
                 case .notCancelled: "The transaction was not cancelled, but for some reason looks like cancelled. Please, contact us directly if you see this message."
                 }
                 return (value, .errorMain)
