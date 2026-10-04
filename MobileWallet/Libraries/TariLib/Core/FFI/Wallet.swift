@@ -125,10 +125,7 @@ final class Wallet {
             // TODO: not used anymore, should be removed once FFI is updated
         }
 
-        let storedMessagesReceivedCallback: (@convention(c) (UnsafeMutableRawPointer?) -> Void) = { _ in
-        }
-
-        let connectivityStatusCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64) -> Void) = { context, status in
+        let connectivityStatusCallback: (@convention(c) (UnsafeMutableRawPointer?, UInt64, UInt64) -> Void) = { context, status, _ in
             // TODO: not used anymore, should be removed once FFI is updated
         }
 
@@ -180,7 +177,6 @@ final class Wallet {
             txoValidationCallback, // TODO: not used anymore, should be removed once FFI is updated
             balanceUpdatedCallback,
             trasactionValidationCompleteCallback, // TODO: not used anymore, should be removed once FFI is updated
-            storedMessagesReceivedCallback,
             connectivityStatusCallback,
             walletScannedHeightCallback,
             baseNodeStateCallback,
