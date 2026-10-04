@@ -1,4 +1,4 @@
-//  MinerStats.swift
+//  NetmapStats.swift
 	
 /*
 	Package MobileWallet
@@ -38,19 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct MinerStats: Decodable {
-    let totalMiners: Int
-}
-
-struct MiningStatus: Decodable {
-    let mining: Bool?
+struct NetmapStats: Decodable {
+    let confirmedNodes24h: Int
 
     enum CodingKeys: String, CodingKey {
-        case mining
-    }
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        mining = try? container.decode(Bool.self, forKey: .mining)
+        case confirmedNodes24h = "confirmed_nodes_24h"
     }
 }

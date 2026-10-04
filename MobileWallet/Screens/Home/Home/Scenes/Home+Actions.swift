@@ -42,8 +42,7 @@ import SwiftUI
 
 extension Home {
     func load() {
-        fetchMinerStats()
-        fetchMiningStatus()
+        fetchActiveNodesStats()
         loadWalletState()
         ShortcutsManager.executeQueuedShortcut()
         StagedWalletSecurityManager.shared.start()
@@ -92,27 +91,10 @@ private extension Home {
         nonmutating set { UserDefaults.standard.set(newValue, forKey: "ShouldShowWelcomeOverlay") }
     }
     
-    func fetchMinerStats() {
+    func fetchActiveNodesStats() {
         Task {
-            let stats = await API.service.minerStats()
-            activeMiners = formatLargeNumber(stats?.totalMiners ?? 0)
-        }
-    }
-
-    func fetchMiningStatus() {
-        guard let appId = NotificationManager.shared.appId else {
-            isMining = false
-            return
-        }
-        print("Fetching mining status for appId: \(appId)")
-        Task {
-            let status = await API.service.minerStatus(appId: appId)
-            isMining = status?.mining ?? false
-            
-            // Check mining status periodically
-            Task(after: 10) {
-                fetchMiningStatus()
-            }
+            let stats = await API.service.netmapStats()
+            activeNodes = formatLargeNumber(stats?.confirmedNodes24h ?? 0)
         }
     }
     
