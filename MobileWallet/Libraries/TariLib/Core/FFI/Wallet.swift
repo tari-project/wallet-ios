@@ -58,7 +58,6 @@ final class Wallet {
         loggingFilePath: String,
         seedWords: SeedWords?,
         passphrase: String?,
-        isDnsSecureOn: Bool,
         logVerbosity: Int32,
         isCreatedWallet: Bool,
         callbacks: WalletCallbacks
@@ -166,9 +165,6 @@ final class Wallet {
             nil,
             seedWords?.pointer,
             network.name,
-            network.dnsPeer,
-            nil,
-            isDnsSecureOn,
             network.httpBaseNode,
             walletBirthdayOffset,
             receivedTransactionCallback,

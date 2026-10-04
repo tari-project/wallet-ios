@@ -43,13 +43,4 @@ final class TariConnectionService: CoreTariService {
     enum InternalError: Error {
         case invalidPeerString
     }
-
-    // MARK: - Actions
-
-    func defaultBaseNodePeers() throws -> [BaseNode] {
-        try walletManager.seedPeers()
-            .all
-            .enumerated()
-            .map { try BaseNode(name: "\(NetworkManager.shared.selectedNetwork.presentedName) \($0 + 1)", hex: $1.byteVector.hex, address: nil) }
-    }
 }

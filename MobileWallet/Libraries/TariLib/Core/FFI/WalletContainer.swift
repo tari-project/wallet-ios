@@ -162,7 +162,6 @@ final class WalletContainer: WalletInteractable, MainServiceable {
             logFilePath: logPath,
             seedWords: walletSeedWords,
             passphrase: passphrase,
-            isDnsSecureOn: false,
             logVerbosity: TariSettings.shared.environment == .debug ? 11 : 4,
             isCreatedWallet: true, // TODO: is created?
             callbacks: walletCallbacks
