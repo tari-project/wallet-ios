@@ -49,7 +49,7 @@ final class CompletedTransaction: Transaction {
         case orphan
         case timeLocked
         case invalidTransaction
-         // As of libminotari_wallet_ffi v6.1.0, `abandonedCoinbase` (previously raw value 7)
+        // As of libminotari_wallet_ffi v6.1.0, `abandonedCoinbase` (previously raw value 7)
         // no longer exists in the FFI. It was removed, not renumbered - four new reasons now
         // occupy raw values 7-10. Explicit raw values are used below to avoid a silent
         // renumbering bug from implicit sequencing.
