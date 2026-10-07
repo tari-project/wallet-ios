@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// As of libminotari_wallet_ffi v6.0.1-pre.2, `wallet_get_fee_per_gram_stats` returns a pointer to
+// As of libminotari_wallet_ffi v6.1.0, `wallet_get_fee_per_gram_stats` returns a pointer to
 // the opaque collection type `TariFeePerGramStats` (plural), not a single `TariFeePerGramStat`.
 // `TariFeePerGramStat` wraps that collection pointer and walks it (via `fee_per_gram_stats_get_at`)
 // to compute genuine min/avg/max reductions across every entry, since `minFeePerGram()` /
