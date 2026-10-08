@@ -44,10 +44,9 @@ import Combine
 struct Home: View, ChainTipObserver {
     @ObservedObject var network = NetworkManager.shared
     @Environment(HomeRouter.self) var router
-    @State var activeMiners = " "
+    @State var activeNodes = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
-    @State var isMining = false
     @State var isBalanceHidden = false
     @State var isLoadingTransactions = false
     @State var scannedHeight: UInt64 = 0
@@ -65,7 +64,7 @@ struct Home: View, ChainTipObserver {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 10) {
-                    miningStatus
+                    activeNodesStatus
                     wallet
                     recentActivity
                         .padding(.top, 24)
@@ -145,25 +144,19 @@ private extension Home {
         }
     }
     
-    var miningStatus: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: -6) {
-                Text("Active Miners")
-                    .headingSmall()
-                    .foregroundStyle(.white.opacity(0.5))
-                HStack(spacing: 6) {
-                    Image(.minersIcon)
-                    Text(activeMiners)
-                        .heading2XL()
-                        .foregroundStyle(.white)
-                }
-            }
-            Spacer()
-            
-            Text(isMining ? "You're mining" : "You're not mining")
+    var activeNodesStatus: some View {
+        VStack(alignment: .leading, spacing: -6) {
+            Text("Active Nodes")
                 .headingSmall()
-                .foregroundStyle(isMining ? .systemGreen : .systemRed)
+                .foregroundStyle(.white.opacity(0.5))
+            HStack(spacing: 6) {
+                Image(.minersIcon)
+                Text(activeNodes)
+                    .heading2XL()
+                    .foregroundStyle(.white)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 15)
         .padding(.horizontal, 20)
         .background {

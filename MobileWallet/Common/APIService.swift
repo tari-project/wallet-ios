@@ -13,15 +13,12 @@ final class API {
     static let service = API()
     private static let airdropBaseUrl = "https://airdrop.tari.com/api"
     private static let rwaBaseUrl = "https://rwa.y.at"
+    private static let netmapBaseUrl = "https://netmap.supportxtm.com/api"
 
     private init() {}
     
-    func minerStats() async -> MinerStats? {
-        await request(endpoint: "/miner/stats")
-    }
-    
-    func minerStatus(appId: String) async -> MiningStatus? {
-        await request(endpoint: "/miner/status/\(appId)")
+    func netmapStats() async -> NetmapStats? {
+        await request(endpoint: "/v1/stats", baseUrl: Self.netmapBaseUrl)
     }
     
     func requiredAppVersion() async -> AppVersion? {

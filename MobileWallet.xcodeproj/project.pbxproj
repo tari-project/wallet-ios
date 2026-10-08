@@ -396,7 +396,6 @@
 		54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7F4442996583800BB484B /* ContactBookCell.swift */; };
 		54B854B929BF993600A2367A /* ContactBookListPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */; };
 		54BB5E052A2F081300E239C7 /* UserProfileDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */; };
-		54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BFE3F52B99C74800273272 /* PublicKeys.swift */; };
 		54C02B912BA075120057301A /* BaseNodeConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C02B902BA075120057301A /* BaseNodeConnectionError.swift */; };
 		54C36D0B2A5D3E9800BD973A /* QRCodeScannerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0A2A5D3E9800BD973A /* QRCodeScannerModel.swift */; };
 		54C36D0D2A5D3EA400BD973A /* QRCodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0C2A5D3EA400BD973A /* QRCodeScannerViewController.swift */; };
@@ -556,7 +555,7 @@
 		F88A5F842E8408F90033A454 /* ContactBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F832E8408F90033A454 /* ContactBook.swift */; };
 		F88A5F862E84134D0033A454 /* ContactDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F852E84134D0033A454 /* ContactDetail.swift */; };
 		F88A5F882E8459D40033A454 /* ContactDetail+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88A5F872E8459D00033A454 /* ContactDetail+Actions.swift */; };
-		F88B28D82E27A8D2005B9B13 /* MinerStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D72E27A8D1005B9B13 /* MinerStats.swift */; };
+		581F7BFFF543C6371CCE7D8D /* NetmapStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FBB1E95992EC236422F1345 /* NetmapStats.swift */; };
 		F88B28DA2E27AE6C005B9B13 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88B28D92E27AE67005B9B13 /* Tab.swift */; };
 		F899FBC62E532C7F00653B5A /* UpdateRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = F899FBC52E532C7F00653B5A /* UpdateRequired.swift */; };
 		F899FBCA2E532F7700653B5A /* UpdateRequiredSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F899FBC92E532F7700653B5A /* UpdateRequiredSheet.swift */; };
@@ -998,7 +997,6 @@
 		54B7F4442996583800BB484B /* ContactBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookCell.swift; sourceTree = "<group>"; };
 		54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookListPlaceholder.swift; sourceTree = "<group>"; };
 		54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDeeplink.swift; sourceTree = "<group>"; };
-		54BFE3F52B99C74800273272 /* PublicKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeys.swift; sourceTree = "<group>"; };
 		54C02B902BA075120057301A /* BaseNodeConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNodeConnectionError.swift; sourceTree = "<group>"; };
 		54C36D0A2A5D3E9800BD973A /* QRCodeScannerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerModel.swift; sourceTree = "<group>"; };
 		54C36D0C2A5D3EA400BD973A /* QRCodeScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerViewController.swift; sourceTree = "<group>"; };
@@ -1161,7 +1159,7 @@
 		F88A5F832E8408F90033A454 /* ContactBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBook.swift; sourceTree = "<group>"; };
 		F88A5F852E84134D0033A454 /* ContactDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetail.swift; sourceTree = "<group>"; };
 		F88A5F872E8459D00033A454 /* ContactDetail+Actions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactDetail+Actions.swift"; sourceTree = "<group>"; };
-		F88B28D72E27A8D1005B9B13 /* MinerStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinerStats.swift; sourceTree = "<group>"; };
+		0FBB1E95992EC236422F1345 /* NetmapStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetmapStats.swift; sourceTree = "<group>"; };
 		F88B28D92E27AE67005B9B13 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		F899FBC52E532C7F00653B5A /* UpdateRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateRequired.swift; sourceTree = "<group>"; };
 		F899FBC92E532F7700653B5A /* UpdateRequiredSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateRequiredSheet.swift; sourceTree = "<group>"; };
@@ -2359,7 +2357,6 @@
 			children = (
 				3A890EC829262744000F5DA6 /* TariAddress.swift */,
 				5499CF2C2C3EA7F5001C417F /* TariAddressComponents.swift */,
-				54BFE3F52B99C74800273272 /* PublicKeys.swift */,
 				001F6CDB238011CA00FA7002 /* PublicKey.swift */,
 			);
 			path = Keys;
@@ -3255,7 +3252,7 @@
 			isa = PBXGroup;
 			children = (
 				F8C0653C2E37BFC4009BFC8F /* NetworkStatus.swift */,
-				F88B28D72E27A8D1005B9B13 /* MinerStats.swift */,
+				0FBB1E95992EC236422F1345 /* NetmapStats.swift */,
 				F8F1EBDC2E1C1DEB00B09007 /* FormattedTransaction.swift */,
 			);
 			path = Models;
@@ -3577,7 +3574,7 @@
 				F8E279802E24F6010017C3F5 /* UIProfileViewController.swift in Sources */,
 				F88A5F842E8408F90033A454 /* ContactBook.swift in Sources */,
 				71AFC9242DA41A6D00684FA7 /* ReceiveModel.swift in Sources */,
-				F88B28D82E27A8D2005B9B13 /* MinerStats.swift in Sources */,
+				581F7BFFF543C6371CCE7D8D /* NetmapStats.swift in Sources */,
 				54D782F62BA8616F00DD3BFE /* BaseNodeState.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				F82150232E060249003EBB25 /* Toolbar+Items.swift in Sources */,
@@ -3926,7 +3923,6 @@
 				F82150312E0A76DA003EBB25 /* EmojiToggle.swift in Sources */,
 				717B28A52DB8622200EDD05A /* APIService.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
-				54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */,
 				711D7FB02D5532DC0080A987 /* StylisedLabel.swift in Sources */,
 				3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */,
 				F88B28DA2E27AE6C005B9B13 /* Tab.swift in Sources */,

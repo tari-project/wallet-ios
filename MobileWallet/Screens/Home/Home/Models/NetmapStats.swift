@@ -1,10 +1,10 @@
-//  PublicKeys.swift
-
+//  NetmapStats.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 07/03/2024
-	Using Swift 5.0
-	Running on macOS 14.2
+	Created by Tomas Hakel on 16.07.2025
+	Using Swift 6.0
+	Running on macOS 15.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,44 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class PublicKeys {
+struct NetmapStats: Decodable {
+    let confirmedNodes24h: Int
 
-    // MARK: - Properties
-
-    var pointer: OpaquePointer
-
-    var count: UInt32 {
-        get throws {
-            var errorCode: Int32 = -1
-            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = public_keys_get_length(pointer, errorCodePointer)
-            guard errorCode == 0 else { throw WalletError(code: errorCode) }
-            return result
-        }
-    }
-
-    // MARK: - Initialisers
-
-    init(pointer: OpaquePointer) {
-        self.pointer = pointer
-    }
-
-    // MARK: - Actions
-
-    func publicKey(index: UInt32) throws -> PublicKey {
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = public_keys_get_at(pointer, index, errorCodePointer)
-        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
-        return PublicKey(pointer: result)
-    }
-}
-
-extension PublicKeys {
-
-    var all: [PublicKey] {
-        get throws {
-            try (0..<count).map { try publicKey(index: $0) }
-        }
+    enum CodingKeys: String, CodingKey {
+        case confirmedNodes24h = "confirmed_nodes_24h"
     }
 }

@@ -45,7 +45,6 @@ struct TariNetwork {
     let presentedName: String
     let httpBaseNode: String
     let isRecommended: Bool
-    let dnsPeer: String
     let blockExplorerURL: URL?
     let currencySymbol: String
     let minValidVersion: String
@@ -59,11 +58,10 @@ extension TariNetwork {
             presentedName: "Mainnet",
             httpBaseNode: "https://rpc.tari.com",
             isRecommended: true,
-            dnsPeer: "seeds.tari.com",
             blockExplorerURL: URL(string: "https://explore.tari.com"),
             currencySymbol: "XTM",
             minValidVersion: "2.0.0-alpha.1",
-            version: "5.0.0"
+            version: "6.1.0"
         )
     }
 
@@ -73,7 +71,6 @@ extension TariNetwork {
             presentedName: "Nextnet",
             httpBaseNode: "https://rpc.nextnet.tari.com",
             isRecommended: false,
-            dnsPeer: "aurora.nextnet.tari.com",
             blockExplorerURL: URL(string: "https://explore-nextnet.tari.com"),
             currencySymbol: "tXTM",
             minValidVersion: "1.4.1-rc.0",
@@ -87,7 +84,6 @@ extension TariNetwork {
             presentedName: "Esmeralda",
             httpBaseNode: "https://rpc.esmeralda.tari.com",
             isRecommended: true,
-            dnsPeer: "seeds.esmeralda.tari.com",
             blockExplorerURL: nil,
             currencySymbol: "tXTM",
             minValidVersion: "1.6.0-pre.0",

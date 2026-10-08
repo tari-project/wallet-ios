@@ -78,3 +78,6 @@ MobileWallet/Constants.plist
 fastlane/.env*
 env.json
 GoogleService-Info.plist
+
+# Scratch dir for manually downloaded FFI headers, never committed
+_ffi_header_scratch/
