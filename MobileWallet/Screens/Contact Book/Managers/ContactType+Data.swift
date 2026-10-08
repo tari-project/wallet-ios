@@ -1,8 +1,8 @@
-//  LinkContactsConstructor.swift
+//  ContactType+Data.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 07/03/2023
+	Created by Adrian Truszczyński on 14/03/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,10 +38,20 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum LinkContactsConstructor {
+import UIKit
 
-    static func buildScene(contactModel: ContactsManager.Model) -> LinkContactsViewController {
-        let model = ContactSelectionModel(contactModel: contactModel)
-        return LinkContactsViewController(model: model)
+extension ContactsManager.ContactType {
+    var image: UIImage? {
+        switch self {
+        case .internalOrEmojiID: .Icons.ContactTypes.internal
+        case .empty: nil
+        }
+    }
+
+    var text: String? {
+        switch self {
+        case .internalOrEmojiID: localized("contact_book.contact_type.internal")
+        case .empty: nil
+        }
     }
 }

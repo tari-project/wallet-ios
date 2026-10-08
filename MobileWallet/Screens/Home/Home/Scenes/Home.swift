@@ -43,7 +43,7 @@ import Combine
 
 struct Home: View, ChainTipObserver {
     @ObservedObject var network = NetworkManager.shared
-    @Environment(HomeRouter.self) var router
+    @Environment(SheetRouter.self) var router
     @State var activeNodes = " "
     @State var totalBalance = ""
     @State var availableBalance = ""
@@ -212,8 +212,6 @@ private extension Home {
                 TariButton("Send", style: .label, size: .large) {
                     router.isHomeSendPresented = true
                 }
-                .disabled(!isChainTipSynced)
-                
                 TariButton("Receive", style: .label, size: .large) {
                     isReceivePresented = true
                 }
@@ -256,20 +254,10 @@ private extension Home {
             } else if isLoadingTransactions {
                 ProgressView()
             } else {
-                noActivity
+                NoActivity()
             }
         }
         .frame(maxWidth: .infinity)
-    }
-    
-    var noActivity: some View {
-        VStack(spacing: 0) {
-            Text("You don’t have any activity yet.")
-                .headingLarge()
-            Text("Once you receive some tXTM, you’ll see it here.")
-                .body2()
-        }
-        .foregroundStyle(.primaryText)
     }
     
     var formattedBalance: String {

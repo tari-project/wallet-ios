@@ -1,10 +1,10 @@
-//  ContactType+Data.swift
-
+//  ContactBook.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 14/03/2023
-	Using Swift 5.0
-	Running on macOS 13.0
+	Created by Tomas Hakel on 24.09.2025
+	Using Swift 6.0
+	Running on macOS 26.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,25 +38,41 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import SwiftUI
 
-extension ContactsManager.ContactType {
-
-    var image: UIImage? {
-        switch self {
-        case .internalOrEmojiID:
-            return .Icons.ContactTypes.internal
-        case .empty:
-            return nil
+struct ContactBook: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(SheetRouter.self) var router
+    @State var presentedContact: ContactModel?
+    
+    var body: some View {
+        @Bindable var router = router
+        ContactList(style: .list) {
+            select($0)
+        }
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            toolbarBackItem { dismiss() }
+            toolbarTitle("Contact Book")
+            toolbarTrailingAction(.addContact) {
+                router.isAddContactPresented = true
+            }
+        }
+        .navigationDestination(item: $presentedContact) {
+            ContactDetail(contact: $0)
+        }
+        .fullScreenCover(isPresented: $router.isAddContactPresented) {
+            AddContact()
         }
     }
+}
 
-    var text: String? {
-        switch self {
-        case .internalOrEmojiID:
-            return localized("contact_book.contact_type.internal")
-        case .empty:
-            return nil
-        }
+private extension ContactBook {
+    func select(_ contact: ContactModel) {
+        presentedContact = contact
     }
+}
+
+#Preview {
+    ContactBook()
 }

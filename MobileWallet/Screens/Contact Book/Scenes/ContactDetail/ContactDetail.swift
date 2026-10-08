@@ -41,7 +41,7 @@
 import SwiftUI
 
 struct ContactDetail: View {
-    @Environment(HomeRouter.self) var router
+    @Environment(SheetRouter.self) var router
     @Environment(\.dismiss) var dismiss
     @State var transactions = [FormattedTransaction]()
     @State var presentedTransaction: FormattedTransaction?

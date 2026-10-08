@@ -140,7 +140,7 @@ private extension ConfirmSend {
                 sendingTransaction = confirmation
             }
             TariButton("Cancel", style: .text, size: .medium) {
-                HomeRouter.shared.dismissSendPresentation()
+                SheetRouter.shared.dismissSendPresentation()
             }
         }
     }

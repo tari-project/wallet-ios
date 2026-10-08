@@ -107,9 +107,10 @@ final class ContactsManager {
     private let internalContactsManager = InternalContactsManager()
 
     // MARK: - Actions
-    func contacts() -> [ContactModel] {
-        tariContactModels.map {
-            ContactModel(internalModel: $0.internalModel)
+    func contacts(where isIncluded: (ContactModel) -> Bool = { _ in true }) -> [ContactModel] {
+        tariContactModels.compactMap {
+            let contact = ContactModel(internalModel: $0.internalModel)
+            return isIncluded(contact) ? contact : nil
         }
     }
     
@@ -140,7 +141,7 @@ final class ContactsManager {
             } else {
                 try internalContactsManager.remove(components: internalContact.addressComponents)
             }
-            Self.contactUpdated.send()
+            notifyContactsUpdated()
         }
     }
     
@@ -160,7 +161,7 @@ final class ContactsManager {
             onContactUpdate(contact)
         }
         Tari.mainWallet.transactions.fetchData()
-        Self.contactUpdated.send()
+        notifyContactsUpdated()
     }
 
     func remove(contact: Model) throws {
@@ -171,7 +172,7 @@ final class ContactsManager {
     
     func remove(contact: TariAddressComponents) throws {
         try internalContactsManager.remove(components: contact)
-        Self.contactUpdated.send()
+        notifyContactsUpdated()
     }
 
     func createInternalModel(name: String, isFavorite: Bool, address: TariAddress) throws -> Model {
@@ -192,6 +193,10 @@ final class ContactsManager {
             .output
             .prefix(3)
         return Array(addresses)
+    }
+    
+    func notifyContactsUpdated() {
+        Self.contactUpdated.send()
     }
 
     private func update(tariContactModels: [Model]) async {

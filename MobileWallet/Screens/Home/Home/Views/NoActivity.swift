@@ -1,10 +1,10 @@
-//  TransactionDetailsConstructor.swift
-
+//  NoActivity.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 15/03/2022
-	Using Swift 5.0
-	Running on macOS 12.2
+	Created by Tomas Hakel on 23.01.2026
+	Using Swift 6.0
+	Running on macOS 26.2
 
 	Copyright 2019 The Tari Project
 
@@ -40,8 +40,18 @@
 
 import SwiftUI
 
-enum TransactionDetailsConstructor {
-    static func buildScene(transaction: Transaction) -> UIHostingController<TransactionDetails> {
-        UIHostingController(rootView: TransactionDetails(transaction))
+struct NoActivity: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            Text("You don’t have any activity yet.")
+                .headingLarge()
+            Text("Once you receive some XTM, you’ll see it here.")
+                .body2()
+        }
+        .foregroundStyle(.primaryText)
     }
+}
+
+#Preview {
+    NoActivity()
 }

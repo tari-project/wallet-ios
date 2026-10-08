@@ -137,7 +137,7 @@ final class SplashViewModel {
     }
 
     func openWalletIfExists() -> Bool {
-        if Tari.mainWallet.isWalletDBExist {
+        if Tari.shared.wallet(.main).isWalletDBExist {
             openWallet()
             return true
         } else {
