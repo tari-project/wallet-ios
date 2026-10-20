@@ -71,8 +71,7 @@ enum DeeplinkHandler {
     }
 
     static func handle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool) throws {
-        // Re-enabling airdrop login requires a user confirmation flow for this deeplink.
-        if deeplink.type == .login && !TariSettings.isAirdropSupported { return }
+        if deeplink.type == .login && !TariSettings.allowsAirdropLoginDeeplink { return }
 
         let actionType: DeepLinkDefaultActionsHandler.ActionType
 

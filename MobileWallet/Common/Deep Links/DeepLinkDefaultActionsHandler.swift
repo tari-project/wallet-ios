@@ -93,7 +93,7 @@ enum DeepLinkDefaultActionsHandler {
     }
 
     static func handle(loginDeepLink: LoginDeeplink) {
-        guard TariSettings.isAirdropSupported else { return }
+        guard TariSettings.allowsAirdropLoginDeeplink else { return }
         Task { @MainActor in
             // Set the access token
             UserManager.shared.accessToken = loginDeepLink.token

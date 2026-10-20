@@ -41,8 +41,8 @@ import XCTest
 
 final class AirdropLoginDeeplinkTests: XCTestCase {
 
-    func testLoginDeeplinkIsIgnoredWhileAirdropUnsupported() throws {
-        XCTAssertFalse(TariSettings.isAirdropSupported)
+    func testLoginDeeplinkIsIgnoredWhileNotAllowed() throws {
+        XCTAssertFalse(TariSettings.allowsAirdropLoginDeeplink)
 
         UserManager.shared.accessToken = nil
         UserManager.shared.refreshToken = nil
