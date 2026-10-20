@@ -64,6 +64,9 @@ struct TariSettings {
 
     static let shared = TariSettings()
     static var showDisabledFeatures = false
+    static let isAirdropSupported = false
+    // Must stay false until the airdrop login deeplink has a user confirmation flow.
+    static let allowsAirdropLoginDeeplink = false
 
     let walletSettings = WalletSettingsManager()
 

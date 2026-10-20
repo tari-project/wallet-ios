@@ -95,7 +95,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } catch {
             print("Failed to handle deeplink in SceneDelegate: \(error)")
             // If it's a login deeplink, try again after a short delay
-            if url.path == "/airdrop/auth" {
+            if url.path == "/airdrop/auth" && TariSettings.allowsAirdropLoginDeeplink {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
                 }
