@@ -71,6 +71,8 @@ enum DeeplinkHandler {
     }
 
     static func handle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool) throws {
+        if deeplink.type == .login && !TariSettings.allowsAirdropLoginDeeplink { return }
+
         let actionType: DeepLinkDefaultActionsHandler.ActionType
 
         if showDefaultDialogIfNeeded {

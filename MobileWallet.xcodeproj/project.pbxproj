@@ -366,6 +366,7 @@
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
 		54AC12922BCD1C1E0007FFEA /* StringBaseNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */; };
+		9CC20BE6E006460CF95A400F /* AirdropLoginDeeplinkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA065EE75118D3DE274BC981 /* AirdropLoginDeeplinkTests.swift */; };
 		54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */; };
 		54BB5E052A2F081300E239C7 /* UserProfileDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */; };
 		54C02B912BA075120057301A /* BaseNodeConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C02B902BA075120057301A /* BaseNodeConnectionError.swift */; };
@@ -928,6 +929,7 @@
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
 		54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringBaseNodeTests.swift; sourceTree = "<group>"; };
+		BA065EE75118D3DE274BC981 /* AirdropLoginDeeplinkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirdropLoginDeeplinkTests.swift; sourceTree = "<group>"; };
 		54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Utlis.swift"; sourceTree = "<group>"; };
 		54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDeeplink.swift; sourceTree = "<group>"; };
 		54C02B902BA075120057301A /* BaseNodeConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNodeConnectionError.swift; sourceTree = "<group>"; };
@@ -1624,6 +1626,7 @@
 				3A70C4F3292E4C1700212026 /* VersionValidatorTests.swift */,
 				545C92B22B5EDA4000FCB3ED /* StringSimilarityTests.swift */,
 				54AC12912BCD1C1E0007FFEA /* StringBaseNodeTests.swift */,
+				BA065EE75118D3DE274BC981 /* AirdropLoginDeeplinkTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
@@ -3769,6 +3772,7 @@
 				3AEDBE5927CE4F80006B0166 /* DeepLinkFormatterTests.swift in Sources */,
 				545C92B32B5EDA4000FCB3ED /* StringSimilarityTests.swift in Sources */,
 				54AC12922BCD1C1E0007FFEA /* StringBaseNodeTests.swift in Sources */,
+				9CC20BE6E006460CF95A400F /* AirdropLoginDeeplinkTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
