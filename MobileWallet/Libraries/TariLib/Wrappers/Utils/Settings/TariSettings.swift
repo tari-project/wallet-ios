@@ -64,6 +64,7 @@ struct TariSettings {
 
     static let shared = TariSettings()
     static var showDisabledFeatures = false
+    static let isAirdropSupported = false
 
     let walletSettings = WalletSettingsManager()
 

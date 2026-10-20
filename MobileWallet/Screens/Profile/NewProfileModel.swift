@@ -57,7 +57,7 @@ final class NewProfileModel {
 
     @Published private(set) var state: State = .Initial
     
-    @Published private(set) var isAirdropSupported = false
+    @Published private(set) var isAirdropSupported = TariSettings.isAirdropSupported
 
     // MARK: - Properties
     private var cancellables = Set<AnyCancellable>()
