@@ -43,17 +43,21 @@ import Foundation
 extension URL {
     var keysValueComponents: [[String]: String]? {
         query?
-            .removingPercentEncoding?
             .split(separator: "&")
-            .map { $0.split(separator: "=") }
+            .map { $0.split(separator: "=", maxSplits: 1, omittingEmptySubsequences: false) }
             .reduce(into: [:]) { result, element in
                 switch element.count {
                 case 1:
-                    let keys = String(element[0]).splitElementsInBrackets()
+                    let rawKey = String(element[0]).removingPercentEncoding ?? String(element[0])
+                    let keys = rawKey.splitElementsInBrackets()
+                    guard !keys.isEmpty else { break }
                     result[keys] = ""
                 case 2:
-                    let keys = String(element[0]).splitElementsInBrackets()
-                    let value = String(element[1])
+                    let rawKey = String(element[0]).removingPercentEncoding ?? String(element[0])
+                    let keys = rawKey.splitElementsInBrackets()
+                    guard !keys.isEmpty else { break }
+                    let rawValue = String(element[1])
+                    let value = rawValue.removingPercentEncoding ?? rawValue
                     result[keys] = value
                 default:
                     break

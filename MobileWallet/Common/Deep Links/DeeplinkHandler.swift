@@ -71,6 +71,10 @@ enum DeeplinkHandler {
     }
 
     static func handle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool) throws {
+        try handle(deeplink: deeplink, showDefaultDialogIfNeeded: showDefaultDialogIfNeeded, isRetry: false)
+    }
+
+    private static func handle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool, isRetry: Bool) throws {
         if deeplink.type == .login && !TariSettings.allowsAirdropLoginDeeplink { return }
 
         let actionType: DeepLinkDefaultActionsHandler.ActionType
@@ -82,12 +86,14 @@ enum DeeplinkHandler {
         }
 
         if deeplink.type == .login && !AppRouter.isNavigationReady {
-            retryHandle(deeplink: deeplink)
+            guard !isRetry else { throw DeepLinkError.invalidCommandName }
+            retryHandle(deeplink: deeplink, showDefaultDialogIfNeeded: showDefaultDialogIfNeeded)
             return
         }
 
         if deeplink.type != .login && actionType == .popUp, !(Tari.shared.wallet(.main).isWalletRunning.value && AppRouter.isNavigationReady) {
-            retryHandle(deeplink: deeplink)
+            guard !isRetry else { throw DeepLinkError.invalidCommandName }
+            retryHandle(deeplink: deeplink, showDefaultDialogIfNeeded: showDefaultDialogIfNeeded)
             return
         }
 
@@ -130,7 +136,7 @@ enum DeeplinkHandler {
         DeepLinkDefaultActionsHandler.handle(loginDeepLink: deeplink)
     }
 
-    private static func retryHandle(deeplink: DeepLinkable) {
+    private static func retryHandle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool) {
         var retryCount = 0
         let maxRetries = 3
         let retryDelay = 0.5
@@ -138,7 +144,7 @@ enum DeeplinkHandler {
         func attempt() {
             DispatchQueue.main.asyncAfter(deadline: .now() + retryDelay) {
                 do {
-                    try handle(deeplink: deeplink, showDefaultDialogIfNeeded: true)
+                    try handle(deeplink: deeplink, showDefaultDialogIfNeeded: showDefaultDialogIfNeeded, isRetry: true)
                 } catch {
                     print("Failed to handle deeplink after retry \(retryCount + 1): \(error)")
                     if retryCount < maxRetries {

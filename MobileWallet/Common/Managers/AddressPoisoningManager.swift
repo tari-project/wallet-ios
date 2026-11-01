@@ -76,7 +76,8 @@ final class AddressPoisoningManager {
             try result.append(inputAddressData(address: address))
         }
 
-        result += try similarContacts(toSpendKey: spendKey)
+        let existingAddresses = Set(result.map(\.address))
+        result += try similarContacts(toSpendKey: spendKey).filter { !existingAddresses.contains($0.address) }
         return result
     }
 
@@ -116,7 +117,7 @@ final class AddressPoisoningManager {
     }
 
     private func formattedLastTransaction(transactions: [Transaction]) throws -> String? {
-        guard let timestamp = try transactions.last?.timestamp else { return nil }
+        guard let timestamp = try transactions.first?.timestamp else { return nil }
         return Date(timeIntervalSince1970: TimeInterval(timestamp)).relativeDayFromToday()
     }
 }
