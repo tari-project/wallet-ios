@@ -56,7 +56,7 @@ struct DeepLinkDecoder {
 
     private static func object(keys: [String], value: Any) -> [String: Any] {
         var keys = keys
-        let workingKey = keys.popLast()!
+        guard let workingKey = keys.popLast(), !workingKey.isEmpty else { return [:] }
         let value = [workingKey: value]
         guard !keys.isEmpty else { return value }
         return object(keys: keys, value: value)
