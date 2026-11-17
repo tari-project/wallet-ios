@@ -59,11 +59,34 @@ final class Tari {
 
     private var passphrase: String {
         guard let passphrase = AppKeychainWrapper.dbPassphrase else {
-            let newPassphrase = String.random(length: 32)
+            let newPassphrase = Self.makeDatabasePassphrase()
             AppKeychainWrapper.dbPassphrase = newPassphrase
             return newPassphrase
         }
         return passphrase
+    }
+
+    /// 32 bytes from the system CSPRNG, Base64 encoded (44 ASCII characters, 256 bits).
+    ///
+    /// The passphrase crosses the FFI boundary as a C string, so it must never contain a NUL character:
+    /// the wallet library reads it with `CStr::from_ptr` and stops at the first NUL.
+    static func makeDatabasePassphrase() -> String {
+        let bytes = (0..<32).map { _ in UInt8.random(in: UInt8.min...UInt8.max) }
+        return Data(bytes).base64EncodedString()
+    }
+
+    /// Passphrases generated before this fix were built from the Unicode scalars 0...254. Every scalar had a
+    /// 1 in 255 chance of being NUL, and the wallet library only used the characters in front of the first one.
+    static func isTruncatedByFFI(passphrase: String) -> Bool {
+        passphrase.unicodeScalars.contains { $0.value == 0 }
+    }
+
+    /// True if the stored passphrase of this device is affected. The database cannot be re-encrypted from the app,
+    /// because the wallet library does not expose a passphrase change. Affected users should create a new wallet
+    /// and move their funds.
+    var isDatabasePassphraseWeak: Bool {
+        guard let passphrase = AppKeychainWrapper.dbPassphrase else { return false }
+        return Self.isTruncatedByFFI(passphrase: passphrase)
     }
 
     var logsURLs: [URL] {
@@ -122,6 +145,7 @@ final class Tari {
     func delete(wallet tag: String) {
         walletContainer(tag).stop()
         removeWallet(tag: tag)
+        removePassphraseIfUnused()
         try? deleteAllLogs()
         removeSettings()
     }
@@ -169,6 +193,16 @@ final class Tari {
     private func resetServices(_ tag: String) {
         wallet(tag).walletBalance.reset()
         wallet(tag).transactions.reset()
+    }
+
+    /// The passphrase used to stay in the keychain after the wallet was deleted, so a new wallet on the same device
+    /// inherited it. Drop it once no wallet database is left that still needs it.
+    private func removePassphraseIfUnused() {
+        let databaseDirectoryPrefix = "tari_wallet_"
+        let remainingDatabases = (try? FileManager.default.contentsOfDirectory(at: TariSettings.storageDirectory, includingPropertiesForKeys: nil))?
+            .filter { $0.lastPathComponent.hasPrefix(databaseDirectoryPrefix) } ?? []
+        guard remainingDatabases.isEmpty else { return }
+        AppKeychainWrapper.dbPassphrase = nil
     }
 
     private func removeSettings() {
