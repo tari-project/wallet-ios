@@ -53,7 +53,8 @@ extension String {
         return self.enumerated().map({String($0.element) + (($0.offset != self.count - 1 && $0.offset % n ==  n - 1) ? "\(separatorString)" : "")}).joined()
     }
 
-    static func random(unicodeRange: Range<UInt8> = 0..<UInt8.max, length: Int) -> String {
+    /// Not suitable for secrets that are passed to C code: keep NUL (0) out of the range, a C string ends there.
+    static func random(unicodeRange: Range<UInt8> = 1..<UInt8.max, length: Int) -> String {
         (0..<length)
             .map { _ in
                 let charNumber = UInt8.random(in: unicodeRange)
