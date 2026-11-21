@@ -40,6 +40,7 @@
 
 import Foundation
 import CommonCrypto
+import CryptoKit
 
 enum AESError: Error {
     case generic(_ description: String)
@@ -72,7 +73,19 @@ extension AESError: LocalizedError {
     }
 }
 
+/// Backup file formats:
+///
+/// - current: `magic (8) | salt (16) | nonce (12) | ciphertext | tag (16)`, AES-256-GCM, key from PBKDF2-HMAC-SHA256
+///   with 600,000 rounds. The magic and the salt are authenticated together with the ciphertext.
+/// - legacy: `salt (16) | iv (16) | ciphertext`, AES-256-CBC, key from PBKDF2-HMAC-SHA1 with 10,000 rounds. It has no
+///   integrity protection and is only read, never written.
 struct AESEncryption {
+    private static let magic = Data("TARIBKP2".utf8)
+    private static let nonceSize = 12
+    private static let tagSize = 16
+    private static let rounds: UInt32 = 600_000
+    private static let legacyRounds: UInt32 = 10_000
+
     private let keyString: String
     private let ivSize: Int = kCCBlockSizeAES128
     private let saltSize: Int = kCCBlockSizeAES128
@@ -88,63 +101,48 @@ struct AESEncryption {
 extension AESEncryption {
     func encrypt(_ data: Data) throws -> Data {
         let salt = try generateSalt()
-        let key = try createKey(password: keyString, salt: salt)
-
-        let bufferSize: Int = data.count + ivSize + kCCBlockSizeAES128
-        var buffer = Data(count: bufferSize)
-
-        try generateRandomIV(for: &buffer)
-        var numberEncryptedBytes: Int = 0
+        let key = try createKey(password: keyString, salt: salt, algorithm: CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256), rounds: Self.rounds)
+        let header = Self.magic + salt
 
         do {
-            try key.withUnsafeBytes { keyBytes in
-                try data.withUnsafeBytes { dataToEncryptBytes in
-                    try buffer.withUnsafeMutableBytes { bufferBytes in
-
-                        guard
-                            let keyBytesBaseAddress = keyBytes.baseAddress,
-                            let dataToEncryptBytesBaseAddress = dataToEncryptBytes.baseAddress,
-                            let bufferBytesBaseAddress = bufferBytes.baseAddress
-                        else { throw AESError.invalidInputData }
-
-                        let dataInLength = dataToEncryptBytes.count
-                        let dataToEncryptBytes = dataToEncryptBytesBaseAddress
-                        let encryptedDataBuffer = bufferBytesBaseAddress + ivSize
-
-                        let cryptStatus: CCCryptorStatus = CCCrypt(
-                            CCOperation(kCCEncrypt),                // op: CCOperation
-                            CCAlgorithm(kCCAlgorithmAES),           // alg: CCAlgorithm
-                            options,                                // options: CCOptions
-                            keyBytesBaseAddress,                    // key: the "password"
-                            keySize,                                // keyLength: the "password" size
-                            bufferBytesBaseAddress,                 // iv: Initialization Vector
-                            dataToEncryptBytes,                     // dataIn: Data to encrypt bytes
-                            dataInLength,                           // dataInLength: Data to encrypt size
-                            encryptedDataBuffer,                    // dataOut: encrypted Data buffer
-                            bufferSize,                             // dataOutAvailable: encrypted Data buffer size
-                            &numberEncryptedBytes                   // dataOutMoved: the number of bytes written
-                        )
-
-                        guard cryptStatus == CCCryptorStatus(kCCSuccess) else {
-                            throw AESError.decryptionFailed(cryptStatus)
-                        }
-                    }
-                }
-            }
+            let sealedBox = try AES.GCM.seal(data, using: SymmetricKey(data: key), authenticating: header)
+            return header + Data(sealedBox.nonce) + sealedBox.ciphertext + sealedBox.tag
         } catch {
-            throw error
+            throw AESError.encryptionFailed(Int32(kCCUnspecifiedError))
         }
-
-        var outData: Data = buffer[..<(numberEncryptedBytes + ivSize)]
-        outData.insert(contentsOf: [UInt8](salt), at: 0)
-
-        return outData
     }
 
     func decrypt(_ dataIn: Data) throws -> Data {
+        // `Data` slices keep the indices of their base, rebase first
+        let dataIn = Data(dataIn)
+        guard dataIn.starts(with: Self.magic) else { return try decryptLegacy(dataIn) }
+
+        let headerSize = Self.magic.count + saltSize
+        guard dataIn.count >= headerSize + Self.nonceSize + Self.tagSize else { throw AESError.invalidInputData }
+
+        let header = dataIn.prefix(headerSize)
+        let salt = dataIn.subdata(in: Self.magic.count..<headerSize)
+        let nonce = dataIn.subdata(in: headerSize..<(headerSize + Self.nonceSize))
+        let ciphertext = dataIn.subdata(in: (headerSize + Self.nonceSize)..<(dataIn.count - Self.tagSize))
+        let tag = dataIn.suffix(Self.tagSize)
+        let key = try createKey(password: keyString, salt: salt, algorithm: CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256), rounds: Self.rounds)
+
+        do {
+            let sealedBox = try AES.GCM.SealedBox(nonce: AES.GCM.Nonce(data: nonce), ciphertext: ciphertext, tag: tag)
+            return try AES.GCM.open(sealedBox, using: SymmetricKey(data: key), authenticating: header)
+        } catch {
+            // Wrong password or modified file, the two cannot be told apart
+            throw AESError.decryptionFailed(Int32(kCCDecodeError))
+        }
+    }
+
+    private func decryptLegacy(_ dataIn: Data) throws -> Data {
+        // salt, iv and at least one cipher block
+        guard dataIn.count >= saltSize + ivSize + kCCBlockSizeAES128 else { throw AESError.invalidInputData }
+
         let data = dataIn.dropFirst(saltSize)
         let salt = dataIn.subdata(in: 0..<saltSize)
-        let key = try createKey(password: keyString, salt: salt)
+        let key = try createKey(password: keyString, salt: salt, algorithm: CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA1), rounds: Self.legacyRounds)
 
         let bufferSize: Int = data.count - ivSize
         var buffer = Data(count: bufferSize)
@@ -196,10 +194,6 @@ extension AESEncryption {
 }
 
 extension AESEncryption {
-    private func generateRandomIV(for data: inout Data) throws {
-        try generateRandomData(for: &data, length: kCCBlockSizeAES128)
-    }
-
     private func generateSalt() throws -> Data {
         var data = Data(count: saltSize)
         try generateRandomData(for: &data, length: saltSize)
@@ -222,7 +216,7 @@ extension AESEncryption {
         }
     }
 
-    private func createKey(password: String, salt: Data) throws -> Data {
+    private func createKey(password: String, salt: Data, algorithm: CCPseudoRandomAlgorithm, rounds: UInt32) throws -> Data {
         guard let password = password.data(using: .utf8) else { throw AESError.generic("Failed to get data from password") }
 
         let length = keySize
@@ -241,8 +235,8 @@ extension AESEncryption {
                     password.count,                               // passwordLen
                     saltBytesUnt8,                                // salt
                     salt.count,                                   // saltLen
-                    CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA1),   // prf
-                    10000,                                        // rounds
+                    algorithm,                                    // prf
+                    rounds,                                       // rounds
                     &derivedBytes,                                // derivedKey
                     length)                                       // derivedKeyLen
 
