@@ -148,7 +148,7 @@ final class TransactionFormatter {
             return localized("refresh_view.final_processing_with_param", arguments: 1, requiredConfirmationCount + 1)
         case .minedUnconfirmed:
             return localized("refresh_view.final_processing")
-        case .imported, .coinbase, .minedConfirmed, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain, .txNullError, .unknown:
+        case .imported, .coinbase, .minedConfirmed, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain, .minedConfirmedLocked, .oneSidedConfirmedLocked, .coinbaseConfirmedLocked, .txNullError, .unknown:
             return nil
         }
     }
