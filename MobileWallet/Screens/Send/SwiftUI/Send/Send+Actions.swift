@@ -50,7 +50,8 @@ extension Send: QRScaner {
                 if let link = link as? TransactionsSendDeeplink {
                     decodeAddress(base58: link.receiverAddress)
                     if let linkAmount = link.amount {
-                        amount = "\(linkAmount)"
+                        // The deeplink carries the amount in µT, the text field takes XTM
+                        amount = MicroTari(linkAmount).formattedPrecise
                     }
                 } else if let link = link as? UserProfileDeeplink {
                     decodeAddress(base58: link.tariAddress)
