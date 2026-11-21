@@ -178,8 +178,8 @@ final class CompletedTransaction: Transaction {
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = completed_transaction_get_status(pointer, errorCodePointer)
 
-            guard errorCode == 0, let status = TransactionStatus(rawValue: result) else { throw WalletError(code: errorCode) }
-            return status
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return TransactionStatus(ffiValue: result)
         }
     }
 

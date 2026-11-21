@@ -57,6 +57,15 @@ enum TransactionStatus: Int32 {
     case coinbaseUnconfirmed
     case coinbaseConfirmed
     case coinbaseNotInBlockChain
+    case minedConfirmedLocked
+    case oneSidedConfirmedLocked
+    case coinbaseConfirmedLocked
+
+    /// The wallet library adds status values over time. A value this app does not know yet maps to `unknown`
+    /// instead of failing, so one transaction cannot take the history and the contact list down with it.
+    init(ffiValue: Int32) {
+        self = TransactionStatus(rawValue: ffiValue) ?? .unknown
+    }
 }
 
 protocol Transaction {
@@ -76,14 +85,14 @@ extension Transaction {
     var isOneSidedPayment: Bool {
         get throws {
             let status = try status
-            return status == .oneSidedConfirmed || status == .oneSidedUnconfirmed
+            return status == .oneSidedConfirmed || status == .oneSidedUnconfirmed || status == .oneSidedConfirmedLocked
         }
     }
 
     var isCoinbase: Bool {
         get throws {
             let status = try status
-            return status == .coinbase || status == .coinbaseUnconfirmed || status == .coinbaseConfirmed || status == .coinbaseNotInBlockChain
+            return status == .coinbase || status == .coinbaseUnconfirmed || status == .coinbaseConfirmed || status == .coinbaseNotInBlockChain || status == .coinbaseConfirmedLocked
         }
     }
 
