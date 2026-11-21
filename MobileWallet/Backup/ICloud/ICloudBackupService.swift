@@ -127,6 +127,11 @@ final class ICloudBackupService {
         try remove(fileURL: remoteDirectoryURL)
     }
 
+    private func removeUnencryptedRemoteBackup() throws {
+        let remoteFileURL = try ubiquityContainerURL.appendingPathComponent(BackupFilesManager.unencryptedFileName)
+        try remove(fileURL: remoteFileURL)
+    }
+
     private func updateBackupStatus(isOn: Bool, syncDate: Date?) {
         backupStatusValue = isOn ? .enabled : .disabled
         self.syncDate = syncDate
@@ -276,6 +281,12 @@ extension ICloudBackupService: BackupServicable {
 
         Task {
             do {
+                guard let backupPassword else {
+                    // Without a password the backup is a JSON file that holds the spending keys of every unspent
+                    // output in clear text. Do not write it, and remove the one from an earlier run.
+                    try removeUnencryptedRemoteBackup()
+                    return
+                }
                 try await uploadBackup(password: backupPassword)
             } catch {
                 backupStatusValue = .failed(error: error)
