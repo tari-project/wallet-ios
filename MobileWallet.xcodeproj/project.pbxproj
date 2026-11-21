@@ -200,6 +200,7 @@
 		3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A08F426E0A83D00D2E75C /* AppRouter.swift */; };
 		3AA2717A279028BF0076E51F /* RequestTariAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA27179279028BF0076E51F /* RequestTariAmountViewController.swift */; };
 		3AA2DD902796C98A00DC3CF7 /* AmountNumberFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA2DD8F2796C98A00DC3CF7 /* AmountNumberFormatterTests.swift */; };
+		7A11E5D02EC0000100A0B002 /* AESEncryptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A11E5D02EC0000100A0B001 /* AESEncryptionTests.swift */; };
 		3AA2E2212885755A00D30B62 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA2E2202885755A00D30B62 /* NetworkMonitor.swift */; };
 		3AABFC9B28F5960100D87773 /* LogFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AABFC9A28F5960100D87773 /* LogFormatter.swift */; };
 		3AABFC9D28F59B2200D87773 /* StatusLoggerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AABFC9C28F59B2200D87773 /* StatusLoggerManager.swift */; };
@@ -763,6 +764,7 @@
 		3A9A08F426E0A83D00D2E75C /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		3AA27179279028BF0076E51F /* RequestTariAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTariAmountViewController.swift; sourceTree = "<group>"; };
 		3AA2DD8F2796C98A00DC3CF7 /* AmountNumberFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountNumberFormatterTests.swift; sourceTree = "<group>"; };
+		7A11E5D02EC0000100A0B001 /* AESEncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncryptionTests.swift; sourceTree = "<group>"; };
 		3AA2E2202885755A00D30B62 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		3AABFC9A28F5960100D87773 /* LogFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFormatter.swift; sourceTree = "<group>"; };
 		3AABFC9C28F59B2200D87773 /* StatusLoggerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusLoggerManager.swift; sourceTree = "<group>"; };
@@ -1621,6 +1623,7 @@
 				3AF53B8027311D9800C78562 /* MobileWalletTests.swift */,
 				3A6734652742664C00F6203C /* YatCacheManagerTests.swift */,
 				3AA2DD8F2796C98A00DC3CF7 /* AmountNumberFormatterTests.swift */,
+				7A11E5D02EC0000100A0B001 /* AESEncryptionTests.swift */,
 				3A87C3B827A96423007A553F /* ErrorMessageManagerTests.swift */,
 				3AEDBE5827CE4F80006B0166 /* DeepLinkFormatterTests.swift */,
 				3A70C4F3292E4C1700212026 /* VersionValidatorTests.swift */,
@@ -3765,6 +3768,7 @@
 				3A7097CF27D0E29900641250 /* TariNetwork+Mocks.swift in Sources */,
 				3AB21730272BEC7A007139F1 /* StringTokenizationTests.swift in Sources */,
 				3AA2DD902796C98A00DC3CF7 /* AmountNumberFormatterTests.swift in Sources */,
+				7A11E5D02EC0000100A0B002 /* AESEncryptionTests.swift in Sources */,
 				3A6734662742664C00F6203C /* YatCacheManagerTests.swift in Sources */,
 				3AF53B7E27311D1400C78562 /* SeedWordsTests.swift in Sources */,
 				3A70C4F4292E4C1700212026 /* VersionValidatorTests.swift in Sources */,
