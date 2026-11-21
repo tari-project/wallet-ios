@@ -91,6 +91,14 @@ enum DeeplinkHandler {
             return
         }
 
+        // The dialogs and screens below are presented on top of the app lock. Hold the deeplink back until the user
+        // has authenticated, otherwise it leads past `LocalAuthViewController`. The scene is still inactive while the
+        // system authentication sheet goes away, and a pop-up presented in that moment never becomes visible.
+        if deeplink.type != .login, isAppLocked || UIApplication.shared.applicationState == .inactive {
+            retryHandle(deeplink: deeplink)
+            return
+        }
+
         switch deeplink.type {
         case .contacts:
             try handle(contactsDeepLink: deeplink, actionType: actionType)
@@ -128,6 +136,14 @@ enum DeeplinkHandler {
     private static func handle(loginDeepLink: DeepLinkable) {
         guard let deeplink = loginDeepLink as? LoginDeeplink else { return }
         DeepLinkDefaultActionsHandler.handle(loginDeepLink: deeplink)
+    }
+
+    /// `SceneDelegate` sets the state back to `initialized` every time the app enters the foreground with an existing
+    /// wallet. It becomes `authorized` (or `ready`, after the wallet was created) once the user has passed the app lock.
+    private static var isAppLocked: Bool {
+        guard Tari.shared.wallet(.main).isWalletDBExist else { return false }
+        let state = TariSettings.shared.walletSettings.configurationState
+        return state != .authorized && state != .ready
     }
 
     private static func retryHandle(deeplink: DeepLinkable) {
