@@ -62,7 +62,6 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
                                           longDefinition: localized("restore_pending_view.description_long"))
     private let items: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: RestoreCellTitle.syncWithDesktop.rawValue),
-        SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
     ]
 
@@ -70,13 +69,11 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
 
     private enum RestoreCellTitle: CaseIterable {
         case syncWithDesktop
-        case iCloudRestore
         case phraseRestore
 
         var rawValue: String {
             switch self {
             case .syncWithDesktop: return localized("restore_wallet.item.desktop_restore")
-            case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
             case .phraseRestore: return localized("restore_wallet.item.phrase_restore")
             }
         }
@@ -162,18 +159,12 @@ final class RestoreWalletViewController: SettingsParentTableViewController, UITa
         switch item {
         case .syncWithDesktop:
             onPaperWalletRestoreAction()
-        case .iCloudRestore: oniCloudRestoreAction()
         case .phraseRestore: onPhraseRestoreAction()
         }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return .none
-    }
-
-    private func oniCloudRestoreAction() {
-        // Commenting out iCloud restore
-        // authenticateUserAndRestoreWallet(from: .iCloud)
     }
 
     private func onPhraseRestoreAction() {
